@@ -2,7 +2,6 @@ import { log } from "../utils/Log.js";
 
 
 function load(manifest) {
-	log("Loading sprites...", "AssetLoader");
 	return new Promise(function(resolve) {
 
 		var fnGetCallback = function (oResource, sType) {
@@ -30,12 +29,6 @@ function load(manifest) {
 			}
 		};
 
-
-		// Spritesheets & Fonts
-		// make sure we have at least an empty spritesheet & font object
-		manifest.spritesheets = manifest.spritesheets || {};
-		manifest.fonts = manifest.fonts || {};
-
 		// count the number of resources to load
 		var aSheets = Object.keys(manifest.spritesheets);
 		var aFonts = Object.keys(manifest.fonts);
@@ -43,8 +36,11 @@ function load(manifest) {
 
 		// nothing to do, no sprites used
 		if (iResourcesToLoad == 0) {
+			log("Nothing to load.", "AssetLoader");
 			return resolve();
 		}
+
+		log("Loading sprites...", "AssetLoader");
 
 		fnLoadResources("spritesheets");
 

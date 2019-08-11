@@ -7,7 +7,13 @@ var _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@! .
  * Creates the Font tileset
  */
 function init(manifest) {
-	log("Processing fonts ...", "GFX.Font");
+
+	if (Object.keys(manifest.fonts).length === 0) {
+		log("No fonts defined.", "GFX.Fonts");
+		return;
+	}
+
+	log("Processing fonts ...", "GFX.Fonts");
 
 	for (var s in manifest.fonts) {
 		var oFont = manifest.fonts[s];
@@ -32,7 +38,7 @@ function init(manifest) {
 		}
 	}
 
-	log("All fonts processed.", "GFX.Font");
+	log("All fonts processed.", "GFX.Fonts");
 }
 
 /**

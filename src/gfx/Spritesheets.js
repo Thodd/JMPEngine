@@ -4,6 +4,12 @@ import { log } from "../utils/Log.js";
  * Creates a new Canvas for all sprites in the sheet.
  */
 function init(manifest) {
+
+	if (Object.keys(manifest.spritesheets).length === 0) {
+		log("No spritesheets defined.", "GFX.Spritesheets");
+		return;
+	}
+
 	log("Processing spritesheets ...", "GFX.Spritesheets");
 
 	// all sheets

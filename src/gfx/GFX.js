@@ -15,18 +15,12 @@ var _aCtx = [];
 function setupCanvases(containerDOM) {
 	var canvasDOM, ctx;
 
-	log("Initializing Canvases ...", "GFX");
-
-	// initial first 8 layers
-	for (var i = 0; i < 8; i++) {
+	for (var i = 0; i < manifest.layers; i++) {
 		// create canvas & context
 		canvasDOM = document.createElement("canvas");
 		_aCanvases.push(canvasDOM);
 		canvasDOM.className = "jmp_canvas";
-		Object.assign(canvasDOM.style, {
-			background: manifest.clearColor,
-			cursor: manifest.hideCursor ? "none" : ""
-		});
+		canvasDOM.style.cursor = manifest.hideCursor ? "none" : "";
 
 		ctx = canvasDOM.getContext("2d");
 		ctx.imageSmoothingEnabled = false;
@@ -202,15 +196,6 @@ let initialized = false;
 let manifest = null;
 let containerDOM = null;
 
-const DEFAULTS = {
-	w: 184,
-	h: 136,
-	scale: 2,
-	fps: 60,
-	hideCursor: false,
-	clearColor: "#000000"
-};
-
 function init(containerID, mani) {
 
 	if (initialized) {
@@ -218,7 +203,7 @@ function init(containerID, mani) {
 		return;
 	}
 
-	manifest = Object.assign(DEFAULTS, mani);
+	manifest = mani;
 
 	// check container dom
 	containerDOM = document.getElementById(containerID);
