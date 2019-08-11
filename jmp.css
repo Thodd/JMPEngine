@@ -1,0 +1,10 @@
+.jmp_canvas {
+	position: absolute;
+
+	/*border: 1px solid #FFFFFF;
+	border-radius: 3px;*/
+
+	image-rendering: pixelated;
+	image-rendering: -webkit-crisp-edges;
+	image-rendering: -moz-crisp-edges;
+}

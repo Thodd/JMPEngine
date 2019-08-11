@@ -1,0 +1,40 @@
+{
+	"title": "Zeldalike",
+
+	"w": 200,
+	"h": 150,
+	"scale": 3,
+	"fps": 60,
+
+	"fonts": {
+		"font0": {
+			"url": "./img/font_0.png",
+			"w": 7,
+			"h": 8
+		}
+	},
+
+	"spritesheets": {
+		"player": {
+			"url": "./img/player.png",
+			"w": 24,
+			"h": 24
+		},
+		"npc": {
+			"url": "./img/npc.png",
+			"w": 24,
+			"h": 24
+		},
+		"tileset": {
+			"url": "./img/tileset.png",
+			"w": 10,
+			"h": 10,
+			"infos": {
+				"0": {"block": true},
+				"1": {"block": false}
+			}
+		}
+	},
+
+	"sounds": {}
+}
