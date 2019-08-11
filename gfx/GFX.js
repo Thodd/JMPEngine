@@ -1,4 +1,7 @@
-import { log, error, fail } from "../core/Utils.js";
+import { log, warn, error, fail } from "../utils/Log.js";
+
+import Fonts from "./Fonts.js";
+import Spritesheets from "./Spritesheets.js";
 
 var _2PI = 2 * Math.PI;
 
@@ -6,145 +9,13 @@ var _2PI = 2 * Math.PI;
 var _aCanvases = [];
 var _aCtx = [];
 
-// font
-var _sChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@! .:,;";
-var _oCurrentFont = null;
-
-/**
- * Creates a new Canvas for all sprites in the sheet.
- */
-function processSpritesheets() {
-	log("processing spritesheets...", "[GFX]");
-
-	// all sheets
-	for (var s in manifest.spritesheets) {
-
-		// single sheet
-		var oSheet = manifest.spritesheets[s];
-		oSheet.sprites = []; // list of all sprites in the sheet
-		var oRawSheet = oSheet.raw;
-		var _iVerticalNoSprites = oRawSheet.height / oSheet.w;
-		var _iHorizontalNoSprites = oRawSheet.width / oSheet.h;
-		for (var y = 0; y < _iVerticalNoSprites; y++) {
-			for (var x = 0; x < _iHorizontalNoSprites; x++) {
-				var oSpriteCanvas = document.createElement("canvas");
-				oSpriteCanvas.width = oSheet.w;
-				oSpriteCanvas.height = oSheet.h;
-				var ctx = oSpriteCanvas.getContext("2d");
-				// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-				ctx.drawImage(oRawSheet, x * oSheet.w, y * oSheet.h, oSheet.w, oSheet.h, 0, 0, oSheet.w, oSheet.h);
-				oSheet.sprites.push(oSpriteCanvas);
-			}
-		}
-		log("   done: sprites_" + s, "[GFX]");
-
-	}
-	// clean up
-	log("all spritesheets processed", "[GFX]");
-}
-
-/**
- * Creates the Font tileset
- */
-function processFonts() {
-	log("processing fonts...", "[GFX]");
-
-	for (var s in manifest.fonts) {
-		var oFont = manifest.fonts[s];
-		oFont.chars = {};
-
-		var iCharID = 0;
-		for (var y = 0; y < 4; y++) {
-			for (var x = 0; x < 26; x++) {
-				var oCharCanvas = document.createElement("canvas");
-				oCharCanvas.width = oFont.w;
-				oCharCanvas.height = oFont.h;
-				var ctx = oCharCanvas.getContext("2d");
-				ctx.drawImage(oFont.raw, x * oFont.w, y * oFont.h, oFont.w, oFont.h, 0, 0, oFont.w, oFont.h);
-				// map for the char colors
-				// IMPORTANT: the font file has a couple of empty spaces for additions in the future
-				// these empty spaces will be written to the "undefined" slot of the oFont.chars map
-				oFont.chars[_sChars[iCharID]] = {
-					default: oCharCanvas
-				};
-				iCharID++;
-			}
-		}
-	}
-	log("all fonts processed", "[GFX]");
-}
-
-/**
- * Gets the given char in the wanted color.
- * The colored char canvas is cached.
- */
-function _getChar(oFont, c, sColor) {
-	var oChar = oFont.chars[c];
-	if (!oChar[sColor]) {
-		oChar[sColor] = _colorizeCanvas(oChar.default, sColor);
-	}
-	return oChar[sColor];
-}
-
-/**
- * Parses a color string. Either hex or rgba.
- */
-var _parseColorString = function (sColor) {
-	if (sColor[0] === "#") {
-		return _parseHexColorToRGB(sColor);
-	} else {
-		error("unknown color coding: '" + sColor + "'");
-	}
-};
-
-/**
- * Parses a hex color value (e.g. #FF0000) to a javascript object containing r/g/b/a values from 0 to 255.
- */
-var _parseHexColorToRGB = function (sHex) {
-	sHex = sHex.substring(1, sHex.length);
-	return {
-		r: parseInt(sHex[0] + sHex[1], 16),
-		g: parseInt(sHex[2] + sHex[3], 16),
-		b: parseInt(sHex[4] + sHex[5], 16)
-	};
-};
-
-/**
- * Colors all white pixels in the given src canvas with the given color value.
- * @public
- */
-var _colorizeCanvas = function (oSrcCanvas, sColor) {
-	sColor = sColor || gfx.pal[0];
-
-	var oRGB = _parseColorString(sColor);
-	// create target canvas
-	var oTarget = document.createElement("canvas");
-	oTarget.width = oSrcCanvas.width;
-	oTarget.height = oSrcCanvas.height;
-
-	// get the raw data of the src
-	var oSrcData = oSrcCanvas.getContext("2d").getImageData(0, 0, oSrcCanvas.width, oSrcCanvas.height);
-	var oSrcRaw = oSrcData.data;
-
-	for (var i = 0, iPixelCount = oSrcRaw.length; i < iPixelCount; i += 4) {
-		// everything else is colored
-		oSrcRaw[i  ] = oRGB.r;
-		oSrcRaw[i+1] = oRGB.g;
-		oSrcRaw[i+2] = oRGB.b;
-		oSrcRaw[i+3] = oSrcRaw[i+3]; // alpha is not touched
-	}
-
-	// write the tinted src data to the target canvas
-	oTarget.getContext("2d").putImageData(oSrcData, 0, 0);
-
-	return oTarget;
-};
-
 /**
  * Creates the rendering surface
  */
 function setupCanvases(containerDOM) {
 	var canvasDOM, ctx;
+
+	log("Initializing Canvases ...", "GFX");
 
 	// initial first 8 layers
 	for (var i = 0; i < 8; i++) {
@@ -169,16 +40,37 @@ function setupCanvases(containerDOM) {
 
 		containerDOM.appendChild(canvasDOM);
 	}
+
+	log("Canvases created.", "GFX");
 }
 
-// hack to make rendering less blurred
-function n(x) {
-	return x + 0.5;
-}
+// the public camera interface
+let _camX = 0;
+let _camY = 0;
+const cam = {
+	set x (iXValue) {
+		_camX = iXValue * -1;
+	},
+	get x() {
+		return -1 * _camX;
+	},
+	set y (iYValue) {
+		_camY = iYValue * -1;
+	},
+	get y() {
+		return -1 * _camY;
+	}
+};
 
 /**
  * GFX Module API
  */
+
+// to make geometric rendering less blurred
+function n(x) {
+	return x + 0.5;
+}
+
 // for now the pico8 palette
 const pal = [
 	// black, dark blue, dark purple, dark-green
@@ -195,82 +87,82 @@ function ctx(i) {
 	return _aCtx[i || 0];
 }
 
-function clear(i, sColor) {
-	if (sColor) {
-		_aCanvases[i || 0].style.background = sColor;
+function clear(i, color) {
+	if (color) {
+		_aCanvases[i || 0].style.background = color;
 	}
-	// gfx.clear()  -  clear ALL inside viewport
-	_aCtx[i || 0].clearRect(cam.x, cam.y, gfx.w, gfx.h);
+	// clear everything inside viewport
+	_aCtx[i || 0].clearRect(cam.x, cam.y, manifest.w, manifest.h);
 }
 
-function px(x, y, sColor, iLayer) {
+function px(x, y, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
-	oCtx.fillStyle = sColor || oCtx.fillStyle;
+	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fillRect(x, y, 1, 1);
 }
 
-function rect(x, y, w, h, sColor, iLayer) {
+function rect(x, y, w, h, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.beginPath();
-	oCtx.strokeStyle = sColor || oCtx.strokeStyle;
+	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.strokeRect(n(x), n(y), w, h);
 	oCtx.stroke();
 	oCtx.closePath();
 }
 
-function rectf(x, y, w, h, sColor, iLayer) {
+function rectf(x, y, w, h, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
-	oCtx.fillStyle = sColor || oCtx.fillStyle;
+	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fillRect(x, y, w, h);
 }
 
-function circ(x, y, r, sColor, iLayer) {
+function circ(x, y, r, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.beginPath();
 	oCtx.arc(x, y, r, 0, _2PI, false);
 	oCtx.closePath();
-	oCtx.strokeStyle = sColor || oCtx.strokeStyle;
+	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.stroke();
 }
 
-function circf(x, y, r, sColor, iLayer) {
+function circf(x, y, r, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.beginPath();
 	oCtx.arc(x, y, r, 0, _2PI, false);
 	oCtx.closePath();
-	oCtx.fillStyle = sColor || oCtx.fillStyle;
+	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fill();
 }
 
-function tri(x0, y0, x1, y1, x2, y2, sColor, iLayer) {
+function tri(x0, y0, x1, y1, x2, y2, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.beginPath();
 	oCtx.moveTo(n(x0), n(y0));
 	oCtx.lineTo(n(x1), n(y1));
 	oCtx.lineTo(n(x2), n(y2));
 	oCtx.closePath();
-	oCtx.strokeStyle = sColor || oCtx.strokeStyle;
+	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.stroke();
 }
 
-function trif(x0, y0, x1, y1, x2, y2, sColor, iLayer) {
+function trif(x0, y0, x1, y1, x2, y2, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.beginPath();
 	oCtx.moveTo(x0, y0);
 	oCtx.lineTo(x1, y1);
 	oCtx.lineTo(x2, y2);
 	oCtx.closePath();
-	oCtx.fillStyle = sColor || oCtx.fillStyle;
+	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fill();
 }
 
-function line(x0, y0, x1, y1, sColor, iLayer) {
+function line(x0, y0, x1, y1, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.beginPath();
 	oCtx.moveTo(n(x0), n(y0));
 	oCtx.lineTo(n(x1), n(y1));
 	oCtx.closePath();
-	oCtx.strokeStyle = sColor || oCtx.strokeStyle;
+	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.stroke();
 }
 
@@ -291,21 +183,22 @@ function map(id, x, y, iLayer) {
 
 // mapp = map part
 // renders only a part of the map with the given source rectangle (sx, sy, sw, sh)
-function mapp(i, x, y, sx, sy, sw, sh, iLayer) {
+//function mapp(i, x, y, sx, sy, sw, sh, iLayer) {
 	// TODO
-}
+//}
 
-function text(font, x, y, sText, iLayer, sColor) {
+function text(font, x, y, sText, iLayer, color) {
 	var oFont = manifest.fonts[font];
 	var oCtx = _aCtx[iLayer || 0];
 	var iOffsetX = 0;
 	for (var i in sText) {
 		var c = sText[i];
-		oCtx.drawImage(_getChar(oFont, c, sColor), x + iOffsetX * oFont.w, y);
+		oCtx.drawImage(Fonts.getChar(oFont, c, color), x + iOffsetX * oFont.w, y);
 		iOffsetX++;
 	}
 }
 
+let initialized = false;
 let manifest = null;
 let containerDOM = null;
 
@@ -319,6 +212,12 @@ const DEFAULTS = {
 };
 
 function init(containerID, mani) {
+
+	if (initialized) {
+		warn("already initialized!", "GFX");
+		return;
+	}
+
 	manifest = Object.assign(DEFAULTS, mani);
 
 	// check container dom
@@ -329,14 +228,32 @@ function init(containerID, mani) {
 
 	setupCanvases(containerDOM);
 
-	//processSpritesheets();
+	Spritesheets.init(manifest);
 
-	//processFonts();
+	Fonts.init(manifest);
+
+	initialized = true;
 }
 
 /********************************* private *********************************/
 export default {
+	// low-level API
+	cam,
 	pal,
+	ctx,
+	clear,
+	px,
+	rect,
+	rectf,
+	circ,
+	circf,
+	tri,
+	trif,
+	line,
+	spr,
+	map,
+	//mapp,
+	text,
 
 	// width and height
 	get w() {

@@ -1,9 +1,12 @@
-import gfx from "../../gfx/GFX.js";
-import { log, warn, domReady, loadJSON, fail } from "./Utils.js";
+import AssetLoader from "./AssetLoader.js";
+import GFX from "../../gfx/GFX.js";
+import domReady from "../utils/domReady.js";
+import loadJSON from "../utils/loadJSON.js";
+import { log, warn, fail } from "../utils/Log.js";
 
 let initialized = false;
 
-let _manifest = null;
+let _manifestObject = null;
 
 const gameloop = () => {
 	window.requestAnimationFrame(gameloop);
@@ -20,17 +23,21 @@ const Engine = {
 				log("Starting Engine. Waiting for DOM ...", "Engine");
 				await domReady();
 
-				// manifest url is given
+				// retrieve manifest
 				if (typeof manifest === "string") {
 					log(`Loading Manifest from '${manifest}' ...`, "Engine");
-					_manifest = await loadJSON(manifest);
+					_manifestObject = await loadJSON(manifest);
 				} else if (manifest && typeof manifest === "object") {
-					_manifest = JSON.parse(JSON.stringify(manifest));
+					log("Using manifest from static object. Cloning manifest ...", "Engine");
+					_manifestObject = JSON.parse(JSON.stringify(manifest));
 				} else {
 					fail(`Manifest ${manifest} is invalid! Only string and object values are supported.`, "Engine");
 				}
 
-				gfx.init(placeAt, _manifest);
+				await AssetLoader.load(_manifestObject);
+
+				// initialize graphics module
+				GFX.init(placeAt, _manifestObject);
 
 				// kickstart gameloop
 				gameloop();

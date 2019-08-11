@@ -1,4 +1,4 @@
-import Engine from "../../core/Engine.js";
+import Engine from "../core/Engine.js";
 
 (async function() {
 	await Engine.start({

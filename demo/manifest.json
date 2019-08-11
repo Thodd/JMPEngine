@@ -1,10 +1,12 @@
 {
 	"title": "Zeldalike",
 
-	"w": 200,
-	"h": 150,
-	"scale": 3,
+	"w": 184,
+	"h": 136,
+	"scale": 2,
 	"fps": 60,
+	"hideCursor": false,
+	"clearColor": "#222222",
 
 	"fonts": {
 		"font0": {
