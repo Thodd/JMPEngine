@@ -34,12 +34,18 @@ function randomFloat(a, b) {
 	return random() * (b - a) + a;
 }
 
-const API = {
+export {
 	// numbers
 	seed,
 	random,
 	randomInteger,
 	randomFloat
-};
+}
 
-export default API;
+export default {
+	// numbers
+	seed,
+	random,
+	randomInteger,
+	randomFloat
+}

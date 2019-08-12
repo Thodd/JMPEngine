@@ -25,21 +25,34 @@ const DEFAULTS_FOR_MANIFEST = {
 };
 
 const gameloop = () => {
-	if (Engine.world) {
-		Engine.world.update();
-		Engine.world.render();
+	if (Engine.screen) {
+		Engine.screen.update();
+		Engine.screen.render();
 	}
 	window.requestAnimationFrame(gameloop);
 };
 
 const Engine = {
 
-	world: null,
+	screen: null,
 
+	/**
+	 * Returns the passed time in seconds since
+	 * the start of the Engine.
+	 */
 	now: () => {
 		return (Date.now() - startTime) / 1000;
 	},
 
+	/**
+	 * Starts the Engine.
+	 * @param {object} config
+	 * @param {string} config.placeAt the ID of the DOM-Element in which the Engine should render
+	 * @param {string|object} config.manifest the manifest, which will be used for starting the Engine.
+	 *                                        Either a URL pointing to a json file, or an object with
+	 *                                        the static manifest.
+	 * @returns {Promise} resolves once the Engine is fully started and Game code can be executed.
+	 */
 	async start({ placeAt, manifest }) {
 
 		if (!initialized) {
@@ -64,6 +77,7 @@ const Engine = {
 				// assign good default values for the manifest, no matter from what source we got it
 				_manifestObject = Object.assign(DEFAULTS_FOR_MANIFEST, _manifestObject);
 
+				// the AssetLoader will enhance the _manifestObject with the loaded resources
 				await AssetLoader.load(_manifestObject);
 
 				// initialize graphics module
@@ -71,12 +85,12 @@ const Engine = {
 
 				startTime = Date.now();
 
-				// kickstart gameloop
-				gameloop();
-
 				initialized = true;
 
 				log("Started.", "Engine");
+
+				// kickstart gameloop
+				gameloop();
 			});
 		} else {
 			warn("Already initialized!", "Engine");

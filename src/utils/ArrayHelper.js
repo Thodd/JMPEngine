@@ -1,4 +1,4 @@
-import {randomInteger, random} from "./RNG.js";
+import { randomInteger, random } from "./RNG.js";
 
 function choose(array, a, b) {
 	a = a || 0;
@@ -43,6 +43,13 @@ function remove(e, a) {
 function contains(e, a) {
 	return a.indexOf(e) >= 0;
 }
+
+export {
+	choose,
+	shuffle,
+	remove,
+	contains
+};
 
 export default {
 	choose,
