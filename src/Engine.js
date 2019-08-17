@@ -80,7 +80,6 @@ const Engine = {
 				// the AssetLoader will enhance the _manifestObject with the loaded resources
 				await AssetLoader.load(_manifestObject);
 
-				// initialize graphics module
 				GFX.init(placeAt, _manifestObject);
 
 				startTime = Date.now();

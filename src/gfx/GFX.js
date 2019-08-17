@@ -1,7 +1,7 @@
 import { log, warn, error, fail } from "../utils/Log.js";
-
 import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
+import Grid from "./Grid.js";
 
 var _2PI = 2 * Math.PI;
 
@@ -13,26 +13,39 @@ var _aCtx = [];
  * Creates the rendering surface
  */
 function setupCanvases(containerDOM) {
-	var canvasDOM, ctx;
+	let canvasDOM, ctx;
+
+	let canvas_scaled_w = manifest.scale * manifest.w;
+	let canvas_scaled_h = manifest.scale * manifest.h;
+
+	// wrap layers in a div
+	let wrapperDiv = document.createElement("div");
+	wrapperDiv.classList.add("jmpWrapper");
+	wrapperDiv.style.width = canvas_scaled_w;
+	wrapperDiv.style.height = canvas_scaled_h;
+
+	containerDOM.appendChild(wrapperDiv);
 
 	for (var i = 0; i < manifest.layers; i++) {
 		// create canvas & context
 		canvasDOM = document.createElement("canvas");
 		_aCanvases.push(canvasDOM);
-		canvasDOM.className = "jmp_canvas";
+		canvasDOM.classList.add("jmpCanvas");
 		canvasDOM.style.cursor = manifest.hideCursor ? "none" : "";
 
 		ctx = canvasDOM.getContext("2d");
 		ctx.imageSmoothingEnabled = false;
 		_aCtx.push(ctx);
 
+		// the style w/h are scaled
+		canvasDOM.style.width = canvas_scaled_w;
+		canvasDOM.style.height = canvas_scaled_h;
+
+		// the canvas itself has a fixed width
 		canvasDOM.width = manifest.w;
 		canvasDOM.height = manifest.h;
 
-		canvasDOM.style.width = manifest.scale * manifest.w;
-		canvasDOM.style.height = manifest.scale * manifest.h;
-
-		containerDOM.appendChild(canvasDOM);
+		wrapperDiv.appendChild(canvasDOM);
 	}
 
 	log("Canvases created.", "GFX");
@@ -166,13 +179,13 @@ function spr(sheet, i, x, y, iLayer) {
 	oCtx.drawImage(oSheet.sprites[i || 0], x, y);
 }
 
-function map(id, x, y, iLayer) {
+function grid(id, x, y, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
-	var oMap = manifest.maps[id];
-	if (!oMap) {
-		fail("Map '" + id + "' does not exist!");
+	var grid = manifest.maps[id];
+	if (!grid) {
+		fail(`Grid '"${id}' does not exist!`);
 	}
-	oCtx.drawImage(oMap.canvas, x, y);
+	oCtx.drawImage(grid.canvas, x, y);
 }
 
 // mapp = map part
@@ -211,11 +224,17 @@ function init(containerID, mani) {
 		fail("Container DOM ID is not valid!", "GFX");
 	}
 
+	log("Initializing GFX module ... ", "GFX");
+
 	setupCanvases(containerDOM);
+
+	log("Initializing submodules ...", "GFX");
 
 	Spritesheets.init(manifest);
 
 	Fonts.init(manifest);
+
+	Grid.init(manifest);
 
 	initialized = true;
 }
@@ -236,7 +255,7 @@ export default {
 	trif,
 	line,
 	spr,
-	map,
+	grid,
 	//mapp,
 	text,
 

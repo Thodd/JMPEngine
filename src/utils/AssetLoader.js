@@ -7,7 +7,7 @@ function load(manifest) {
 		var fnGetCallback = function (oResource, sType) {
 			return function() {
 				iResourcesToLoad--;
-				log("Loaded: " + oResource.url + " (" + sType + ")", "AssetLoader");
+				log("  > loaded: " + oResource.url + " (" + sType + ")", "AssetLoader");
 				if (iResourcesToLoad == 0) {
 					log("All sprites & fonts loaded.", "AssetLoader");
 					resolve(manifest);
@@ -40,7 +40,7 @@ function load(manifest) {
 			return resolve();
 		}
 
-		log("Loading sprites...", "AssetLoader");
+		log("Preloading assets ...", "AssetLoader");
 
 		fnLoadResources("spritesheets");
 

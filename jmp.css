@@ -1,4 +1,4 @@
-.jmp_canvas {
+.jmpCanvas {
 	position: absolute;
 
 	/*border: 1px solid #FFFFFF;
@@ -7,4 +7,8 @@
 	image-rendering: pixelated;
 	image-rendering: -webkit-crisp-edges;
 	image-rendering: -moz-crisp-edges;
+}
+
+.jmpWrapper {
+	border: 1px solid #ffffff;
 }

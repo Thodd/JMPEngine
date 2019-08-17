@@ -1,4 +1,5 @@
 import { log, error } from "../utils/Log.js";
+import GFX from "./GFX.js";
 
 // supported characters
 var _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@! .:,;";
@@ -8,12 +9,12 @@ var _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@! .
  */
 function init(manifest) {
 
+	log("Processing fonts ...", "GFX.Fonts");
+
 	if (Object.keys(manifest.fonts).length === 0) {
 		log("No fonts defined.", "GFX.Fonts");
 		return;
 	}
-
-	log("Processing fonts ...", "GFX.Fonts");
 
 	for (var s in manifest.fonts) {
 		var oFont = manifest.fonts[s];
@@ -36,6 +37,7 @@ function init(manifest) {
 				iCharID++;
 			}
 		}
+		log(`  > done: ${s}`, "GFX.Fonts");
 	}
 
 	log("All fonts processed.", "GFX.Fonts");

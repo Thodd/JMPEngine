@@ -32,7 +32,7 @@ function init(manifest) {
 				oSheet.sprites.push(oSpriteCanvas);
 			}
 		}
-		log(`done: ${"sprites_" + s}`, "GFX.Spritesheets");
+		log(`  > done: ${"sprites_" + s}`, "GFX.Spritesheets");
 
 	}
 	// clean up

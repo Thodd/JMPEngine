@@ -13,7 +13,7 @@ Engine.start({
 
 	Engine.screen.render = () => {
 		/**
-		 * Demo made by Sean S. LeBlanc
+		 * Demo made by Sean S. LeBlanc#
 		 * Changed the colors.
 		 *
 		 * Ported from this #tweetcart:

@@ -6,6 +6,7 @@ import GFX from "../src/gfx/GFX.js";
 import Keyboard from "../src/input/Keyboard.js";
 import Keys from "../src/input/Keys.js";
 import FrameCounter from "../src/utils/FrameCounter.js";
+import Tilemap from "../src/game/Tilemap.js";
 
 Engine.start({
 	placeAt: "content",
@@ -15,6 +16,9 @@ Engine.start({
 
 	Engine.screen.clearLayers = [0, 1, 2];
 
+	/**
+	 * Simple Entity with input handling
+	 */
 	var e = new Entity();
 	e.sprite = {
 		sheet: "tileset",
@@ -22,7 +26,7 @@ Engine.start({
 		offsetX: 0,
 		offsetY: 0
 	};
-	e.layer = 1;
+	e.layer = 2;
 
 	e.added = function() {
 		log("added");
@@ -41,15 +45,29 @@ Engine.start({
 		if (Keyboard.pressed(Keys.SPACE)) Engine.screen.remove(this);
 	};
 
-	/*map.create({
-		id: "overworld",
+	Engine.screen.add(e);
+
+	/**
+	 * Tilemap demo
+	 */
+	let t = new Tilemap({
 		sheet: "tileset",
 		w: 50,
 		h: 50
 	});
+	t.x = 0;
+	t.y = 0;
+	t.layer = 1;
 
-	map.set("overworld", 1, 1, 35);*/
+	t.set(1, 1, 32);
+	t.set(6, 7, 35);
+	t.set(12, 4, 39);
 
+	Engine.screen.add(t);
+
+	/**
+	 * Low-Level Text Rendering Demo
+	 */
 	var z = new Entity();
 	z.iCol = 0;
 	z.iCount = 0;
@@ -57,9 +75,7 @@ Engine.start({
 	z.msg = " . JMP Rendering Engine . ";
 	var fc = new FrameCounter(3);
 	z.render = function() {
-		//GFX.map("overworld", 0, 0, 0);
-
-		GFX.clear(2);
+		GFX.clear(0, "#333333");
 		for (var i = 0; i < this.msg.length; i++) {
 			var sChar = this.msg[i];
 			GFX.text("font0", i * 7, 100 + Math.cos(i/3 + this.iCount) * Math.max(0, 30 - this.iCount), sChar, 2, GFX.pal[(this.iCol + i) % 15]);
@@ -73,5 +89,4 @@ Engine.start({
 	};
 	Engine.screen.add(z);
 
-	Engine.screen.add(e);
 });
