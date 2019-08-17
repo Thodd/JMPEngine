@@ -85,23 +85,6 @@ function _render(id, x, y, v) {
 	}
 }
 
-/**
- * Renders all initial tiles to the canvas of the map.
- * Only called during initialization.
- */
-/*function _initMap(iMapNumber, oCfg) {
-	var oMap = new Map();
-	_aMaps[iMapNumber] = oMap;
-
-	// parse the tile data
-	// every tile with no data will be empty
-	for (var i = 0; i < oCfg.data.length; i++) {
-		var aTileData = oCfg.data[i].split(",");
-		var iTileNumber = parseInt(aTileData[2], 10);
-		_set(iMapNumber, parseInt(aTileData[0], 10), parseInt(aTileData[1], 10), iTileNumber);
-	}
-}*/
-
 let initialized = false;
 
 function init(mani) {
