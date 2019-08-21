@@ -10,6 +10,36 @@ var _aCanvases = [];
 var _aCtx = [];
 
 /**
+ * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
+ */
+function setupCSS() {
+    const head = document.getElementsByTagName('head')[0];
+
+	const style = document.createElement('style');
+	style.type = 'text/css';
+
+	const css = `
+		.jmpCanvas {
+			position: absolute;
+
+			image-rendering: pixelated;
+			image-rendering: -webkit-crisp-edges;
+			image-rendering: -moz-crisp-edges;
+		}
+
+		.jmpWrapper {
+			border: 1px solid #ffffff;
+		}
+	`;
+
+	style.appendChild(document.createTextNode(css));
+
+	head.appendChild(style);
+
+	log("CSS created.", "GFX");
+}
+
+/**
  * Creates the rendering surface
  */
 function setupCanvases(containerDOM) {
@@ -225,6 +255,8 @@ function init(containerID, mani) {
 	}
 
 	log("Initializing GFX module ... ", "GFX");
+
+	setupCSS();
 
 	setupCanvases(containerDOM);
 

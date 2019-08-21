@@ -1,12 +1,12 @@
-import Engine from "../src/Engine.js";
-import Screen from "../src/game/Screen.js";
-import Entity from "../src/game/Entity.js";
-import { log } from "../src/utils/Log.js";
-import GFX from "../src/gfx/GFX.js";
-import Keyboard from "../src/input/Keyboard.js";
-import Keys from "../src/input/Keys.js";
-import FrameCounter from "../src/utils/FrameCounter.js";
-import Tilemap from "../src/game/Tilemap.js";
+import Engine from "../../../src/Engine.js";
+import Screen from "../../../src/game/Screen.js";
+import Entity from "../../../src/game/Entity.js";
+import { log } from "../../../src/utils/Log.js";
+import GFX from "../../../src/gfx/GFX.js";
+import Keyboard from "../../../src/input/Keyboard.js";
+import Keys from "../../../src/input/Keys.js";
+import FrameCounter from "../../../src/utils/FrameCounter.js";
+import Tilemap from "../../../src/game/Tilemap.js";
 
 Engine.start({
 	placeAt: "content",
