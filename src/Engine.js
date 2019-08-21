@@ -3,6 +3,7 @@ import GFX from "./gfx/GFX.js";
 import domReady from "./utils/domReady.js";
 import loadJSON from "./utils/loadJSON.js";
 import { log, warn, fail } from "./utils/Log.js";
+import Keyboard from "./input/Keyboard.js";
 
 let initialized = false;
 let startTime = 0;
@@ -28,6 +29,7 @@ const gameloop = () => {
 	if (Engine.screen) {
 		Engine.screen.update();
 		Engine.screen.render();
+		Keyboard._reset();
 	}
 	window.requestAnimationFrame(gameloop);
 };
