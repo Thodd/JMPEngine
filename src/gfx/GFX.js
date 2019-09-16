@@ -28,7 +28,10 @@ function setupCSS() {
 		}
 
 		.jmpWrapper {
-			border: 1px solid #ffffff;
+			/*border-top: 2px solid #000000;
+			border-left: 2px solid #000000;
+			border-right: 2px solid #ffffff;
+			border-bottom: 2px solid #ffffff;*/
 		}
 	`;
 

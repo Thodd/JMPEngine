@@ -1,4 +1,5 @@
 import { log } from "../utils/Log.js";
+import Manifest from "../Manifest.js";
 
 
 function load(manifest) {
@@ -23,6 +24,9 @@ function load(manifest) {
 				var oRawImg = new Image();
 
 				oResource.raw = oRawImg;
+
+				// resolve resource urls
+				oResource.url = Manifest.resolve(oResource.url);
 
 				oRawImg.src = oResource.url;
 				oRawImg.onload = fnGetCallback(oResource, sType);

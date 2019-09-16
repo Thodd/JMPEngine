@@ -1,6 +1,8 @@
 {
 	"title": "shmup",
 
+	"main": "./src/shmup.js",
+
 	"w": 120,
 	"h": 160,
 	"scale": 3,
