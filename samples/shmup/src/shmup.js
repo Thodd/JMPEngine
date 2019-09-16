@@ -64,6 +64,10 @@ Engine.screen.add(t);
 /**
  * Low-Level Text Rendering Demo
  */
+
+// clear layer 0 for a dark background color
+GFX.clear(0, "#333333");
+
 var z = new Entity();
 z.iCol = 0;
 z.iCount = 0;
@@ -71,7 +75,6 @@ z.iStep = 0.1;
 z.msg = " . JMP Rendering Engine . ";
 var fc = new FrameCounter(3);
 z.render = function() {
-	GFX.clear(0, "#333333");
 	for (var i = 0; i < this.msg.length; i++) {
 		var sChar = this.msg[i];
 		GFX.text("font0", i * 7, 100 + Math.cos(i/3 + this.iCount) * Math.max(0, 30 - this.iCount), sChar, 2, GFX.pal[(this.iCol + i) % 15]);
@@ -81,6 +84,5 @@ z.render = function() {
 	if (fc.isReady()) {
 		this.iCol++;
 	}
-
 };
 Engine.screen.add(z);
