@@ -16,9 +16,10 @@
     "canvas",
     "2d"
   ],
-  "author": "Thorsten 'thodd' Hochreuter",
+  "author": "Thorsten 'Thodd' Hochreuter",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^6.1.0"
+    "eslint": "^6.1.0",
+    "serve": "^11.2.0"
   }
 }
