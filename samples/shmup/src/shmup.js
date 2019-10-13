@@ -57,7 +57,7 @@ t.layer = 1;
 
 t.set(1, 1, 32);
 t.set(6, 7, 35);
-t.set(12, 4, 39);
+t.set(6, 4, 33);
 
 Engine.screen.add(t);
 

@@ -1,8 +1,8 @@
-import Engine from "../../src/Engine.js";
-import Screen from "../../src/game/Screen.js";
-import GFX from "../../src/gfx/GFX.js";
-import ArrayHelper from "../../src/utils/ArrayHelper.js";
-import { random } from "../../src/utils/RNG.js";
+import Engine from "../../../src/Engine.js";
+import Screen from "../../../src/game/Screen.js";
+import GFX from "../../../src/gfx/GFX.js";
+import ArrayHelper from "../../../src/utils/ArrayHelper.js";
+import { random } from "../../../src/utils/RNG.js";
 
 Engine.screen = new Screen();
 

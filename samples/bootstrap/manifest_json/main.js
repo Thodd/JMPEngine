@@ -1,4 +1,4 @@
-import Engine from "../../src/Engine.js";
+import Engine from "../../../src/Engine.js";
 
 Engine.start({
 	placeAt: "content",
