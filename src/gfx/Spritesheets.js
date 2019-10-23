@@ -18,6 +18,7 @@ function init(manifest) {
 		// single sheet
 		var oSheet = manifest.spritesheets[s];
 		oSheet.sprites = []; // list of all sprites in the sheet
+		oSheet._colorCache = {}; // initially an empty color cache
 		var oRawSheet = oSheet.raw;
 		var _iVerticalNoSprites = oRawSheet.height / oSheet.w;
 		var _iHorizontalNoSprites = oRawSheet.width / oSheet.h;

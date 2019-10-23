@@ -4,9 +4,9 @@
  */
 function parseColorString(sColor) {
 	if (sColor[0] === "#") {
-		return this.parseHexColorToRGB(sColor);
+		return parseHexColorToRGB(sColor);
 	} else if (sColor.substring(0, 4) === "rgba") {
-		return this.parseRGBA(sColor);
+		return parseRGBA(sColor);
 	} else {
 		// unknown color coding (?)
 	}

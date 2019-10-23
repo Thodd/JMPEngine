@@ -18,9 +18,10 @@ Engine.screen.clearLayers = [0, 1, 2];
 var e = new Entity();
 e.sprite = {
 	sheet: "player",
-	id: 0,
+	id: 10,
 	offsetX: 0,
-	offsetY: 0
+	offsetY: 0,
+	color: "#FF8500"
 };
 e.layer = 2;
 
@@ -66,18 +67,18 @@ Engine.screen.add(t);
  */
 
 // clear layer 0 for a dark background color
-GFX.clear(0, "#333333");
+GFX.clear(0, "#111111");
 
 var z = new Entity();
 z.iCol = 0;
 z.iCount = 0;
 z.iStep = 0.1;
-z.msg = " . JMP Rendering Engine . ";
+z.msg = ".JMP Rendering Engine.";
 var fc = new FrameCounter(3);
 z.render = function() {
 	for (var i = 0; i < this.msg.length; i++) {
 		var sChar = this.msg[i];
-		GFX.text("font0", i * 7, 100 + Math.cos(i/3 + this.iCount) * Math.max(0, 30 - this.iCount), sChar, 2, GFX.pal[(this.iCol + i) % 15]);
+		GFX.text("font0", 3 + (i * 7), 80 + Math.cos(i/3 + this.iCount) * Math.max(0, 30 - this.iCount), sChar, 2, GFX.pal[(this.iCol + i) % 15]);
 	}
 	this.iCount += this.iStep;
 

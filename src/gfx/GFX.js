@@ -2,6 +2,7 @@ import { log, warn, error, fail } from "../utils/Log.js";
 import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
 import Grid from "./Grid.js";
+import ColorTools from "./ColorTools.js";
 
 var _2PI = 2 * Math.PI;
 
@@ -106,6 +107,46 @@ const cam = {
  * GFX Module API
  */
 
+/**
+ * Retrieves the (colorized) Sprite-Canvas from a spritesheet.
+ * @param {string} sheet the name of the spritesheet
+ * @param {int} id the id of the sprite inside the given spritesheet
+ * @param {string} sColor a hex color string, e.g. #FF0085
+ */
+function _getCanvasFromSheet(sheet, id, sColor) {
+	var oSheet = manifest.spritesheets[sheet];
+	if (!oSheet) {
+		fail(`Spritesheet '${sheet}' does not exist!`, "GFX");
+	}
+
+	var oSprSrcCanvas = oSheet.sprites[id || 0]; // default version is not colorized
+	if (!oSprSrcCanvas) {
+		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheet}'!`, "GFX");
+	}
+
+	if (sColor) {
+		// make sure we have a color cache per spritesheet
+		var mColorCache = oSheet._colorCache[sColor];
+		if (!mColorCache) {
+			mColorCache = oSheet._colorCache[sColor] = {};
+		}
+
+		// check cache for an already colorized canvas
+		var oColorizedCanvas = mColorCache[id];
+		if (oColorizedCanvas) {
+			return oColorizedCanvas;
+		} else {
+			// colorize canvas
+			oSprSrcCanvas = ColorTools.colorizeCanvas(oSprSrcCanvas, sColor);
+			// save it in cache
+			mColorCache[id] = oSprSrcCanvas;
+		}
+	}
+
+	// if no color was used the default canvas is returned
+	return oSprSrcCanvas;
+}
+
 // to make geometric rendering less blurred
 function n(x) {
 	return x + 0.5;
@@ -207,29 +248,14 @@ function line(x0, y0, x1, y1, color, iLayer) {
 }
 
 function spr(sheet, id, x, y, iLayer, sColor) {
-	var oSheet = manifest.spritesheets[sheet];
 	var oCtx = _aCtx[iLayer || 0];
-	var oSprCanvas = oSheet.sprites[id || 0];
-
-	// TODO: look-up color cache
-
-	if (!oSprCanvas) {
-		fail(`Sprite ID ${id} does not exist in Spritesheet ${sheet}`, "GFX");
-	}
-
+	var oSprCanvas = _getCanvasFromSheet(sheet, id, sColor);
 	oCtx.drawImage(oSprCanvas, x || 0, y || 0);
 }
 
 function spr_ext(sheet, id, x, y, w, h, iLayer, sColor) {
-	var oSheet = manifest.spritesheets[sheet];
 	var oCtx = _aCtx[iLayer || 0];
-	var oSprCanvas = oSheet.sprites[id || 0];
-
-	if (!oSprCanvas) {
-		fail(`Sprite ID ${id} does not exist in Spritesheet ${sheet}`, "GFX");
-	}
-
-	// TODO: look-up color cache
+	var oSprCanvas = _getCanvasFromSheet(sheet, id, sColor);
 
 	oCtx.drawImage(
 		oSprCanvas,
