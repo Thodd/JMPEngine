@@ -1,4 +1,5 @@
 import { log, warn, fail } from "../utils/Log.js";
+import Spritesheets from "./Spritesheets.js";
 
 let _mManifest = null;
 
@@ -58,19 +59,22 @@ function _get(id, x, y) {
 /**
  * Sets a given tile onto the Grid.
  */
-function _set(id, x, y, v) {
+function _set(id, x, y, v, color) {
 	// make sure the Grid exists & the x/y coordinates are writable
 	_get(id, x, y);
 
+	// write value to grid data
 	var grid = _mManifest.maps[id];
 	grid.data[x][y] = v;
-	_render(id, x, y, v);
+
+	_render(id, x, y, v, color);
 }
 
 /**
  * Renders the given tile to the Grid's canvas.
+ * Color information is respected here, even though the tile still only has the "value" set.
  */
-function _render(id, x, y, v) {
+function _render(id, x, y, v, color) {
 	var grid = _mManifest.maps[id];
 	if (!grid) {
 		fail(`Grid '${id}' does not exists!`, "GFX.Grid");
@@ -79,9 +83,12 @@ function _render(id, x, y, v) {
 	// always clear the tile first, so we don't get issues with transparent tiles
 	grid.ctx.clearRect(x * grid.sheet.w, y * grid.sheet.h, grid.sheet.w, grid.sheet.h);
 
-	// -1 means we don't have a tile
+	// everything except -1 means we have a tile
+	// -1 means the tile is only cleared
 	if (v != -1) {
-		grid.ctx.drawImage(grid.sheet.sprites[v], x * grid.sheet.w, y * grid.sheet.h);
+		var oTileCanvas = Spritesheets.getCanvasFromSheet(grid.sheet.name, v, color);
+
+		grid.ctx.drawImage(oTileCanvas, x * grid.sheet.w, y * grid.sheet.h);
 	}
 }
 
@@ -124,8 +131,8 @@ export default {
 	/**
 	 * Sets the tile at (x, y).
 	 */
-	set: function(id, x, y, v) {
-		_set(id, x, y, v);
+	set: function(id, x, y, v, color) {
+		_set(id, x, y, v, color);
 		return v;
 	},
 

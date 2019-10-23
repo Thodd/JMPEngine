@@ -51,13 +51,21 @@ class Tilemap extends Entity {
 	}
 
 	/**
-	 * Sets the tile at (x,y) to the given tileID.
+	 * Sets the tile at (x,y) to the given id.
 	 * @param {number} x The y coordinate which should be set
 	 * @param {number} y The y coordinate which should be set
-	 * @param {number} [tileID] The tile ID which should be set to (x,y); If none is given, the tile is cleared (tileID = -1).
+	 * @param {number} [id] The tile ID which should be set to (x,y); If none is given, the tile is cleared (tileID = -1).
 	 */
-	set(x, y, tileID=-1) {
-		Grid.set(this._name, x, y, tileID);
+	set(x, y, id=-1, color) {
+		let tile = this.get(x, y);
+		tile.set(id, color);
+	}
+
+	/**
+	 * Rerenders the given tile.
+	 */
+	_rerenderTile(t) {
+		Grid.set(this._name, t.x, t.y, t.id, t.color);
 	}
 
 	render() {

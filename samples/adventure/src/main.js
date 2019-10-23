@@ -21,7 +21,7 @@ e.sprite = {
 	id: 10,
 	offsetX: 0,
 	offsetY: 0,
-	color: "#FF8500"
+	color: "#FF0000"
 };
 e.layer = 2;
 
@@ -56,8 +56,8 @@ t.x = 0;
 t.y = 0;
 t.layer = 1;
 
-t.set(1, 1, 32);
-t.set(6, 7, 35);
+t.set(1, 1, 32, "#FF0022");
+t.get(6, 7).set(35, "#0000FF");
 t.set(6, 4, 33);
 
 Engine.screen.add(t);
@@ -67,7 +67,7 @@ Engine.screen.add(t);
  */
 
 // clear layer 0 for a dark background color
-GFX.clear(0, "#111111");
+GFX.clear(0, "#222222");
 
 var z = new Entity();
 z.iCol = 0;
