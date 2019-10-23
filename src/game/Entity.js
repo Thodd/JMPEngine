@@ -117,7 +117,8 @@ class Entity {
 		if (this.sprite != null) {
 			var dx = this.x + (this.sprite.offsetX || 0);
 			var dy = this.y + (this.sprite.offsetY || 0);
-			GFX.spr(this.sprite.sheet, this.sprite.id, dx, dy, this.layer);
+			// sheet, id, layer, x, y, w, h, color
+			GFX.spr_ext(this.sprite.sheet, this.sprite.id, dx, dy, this.sprite.w, this.sprite.h, this.layer, this.sprite.color);
 		}
 	}
 }

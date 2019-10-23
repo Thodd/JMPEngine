@@ -206,10 +206,44 @@ function line(x0, y0, x1, y1, color, iLayer) {
 	oCtx.stroke();
 }
 
-function spr(sheet, i, x, y, iLayer) {
+function spr(sheet, id, x, y, iLayer, sColor) {
 	var oSheet = manifest.spritesheets[sheet];
 	var oCtx = _aCtx[iLayer || 0];
-	oCtx.drawImage(oSheet.sprites[i || 0], x, y);
+	var oSprCanvas = oSheet.sprites[id || 0];
+
+	// TODO: look-up color cache
+
+	if (!oSprCanvas) {
+		fail(`Sprite ID ${id} does not exist in Spritesheet ${sheet}`, "GFX");
+	}
+
+	oCtx.drawImage(oSprCanvas, x || 0, y || 0);
+}
+
+function spr_ext(sheet, id, x, y, w, h, iLayer, sColor) {
+	var oSheet = manifest.spritesheets[sheet];
+	var oCtx = _aCtx[iLayer || 0];
+	var oSprCanvas = oSheet.sprites[id || 0];
+
+	if (!oSprCanvas) {
+		fail(`Sprite ID ${id} does not exist in Spritesheet ${sheet}`, "GFX");
+	}
+
+	// TODO: look-up color cache
+
+	oCtx.drawImage(
+		oSprCanvas,
+		// take the whole src sprite canvas as a base
+		0, // sx
+		0, // sy
+		oSprCanvas.width, // sw
+		oSprCanvas.height, // sh
+		// stretch it if w/h is given
+		x || 0,
+		y || 0,
+		w || oSprCanvas.width, // default to canvas width
+		h || oSprCanvas.height, // default to canvas height
+	);
 }
 
 function grid(id, x, y, iLayer) {
@@ -290,6 +324,7 @@ export default {
 	trif,
 	line,
 	spr,
+	spr_ext,
 	grid,
 	//mapp,
 	text,

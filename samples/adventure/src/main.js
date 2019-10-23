@@ -17,7 +17,7 @@ Engine.screen.clearLayers = [0, 1, 2];
  */
 var e = new Entity();
 e.sprite = {
-	sheet: "tileset",
+	sheet: "player",
 	id: 0,
 	offsetX: 0,
 	offsetY: 0

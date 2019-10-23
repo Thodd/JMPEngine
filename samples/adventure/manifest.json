@@ -1,10 +1,10 @@
 {
 	"title": "shmup",
 
-	"main": "./src/shmup.js",
+	"main": "./src/main.js",
 
-	"w": 120,
-	"h": 160,
+	"w": 160,
+	"h": 120,
 	"scale": 3,
 	"fps": 60,
 	"hideCursor": false,
