@@ -19,7 +19,7 @@ var e = new Entity();
 
 e.setSprite({
 	sheet: "player",
-	color: "#FF0000",
+	color: "#FF8500",
 
 	animations: {
 		default: "walk_down",
@@ -34,11 +34,11 @@ e.setSprite({
 
 		// TODO:
 		"walk_up": {
-			frames: [13, 14, 13, 15],
+			frames: [20, 21, 20, 22],
 			delay: 7
 		},
 		"idle_up": {
-			frames: [0]
+			frames: [20]
 		},
 
 		"walk_left": {
@@ -69,11 +69,41 @@ e.removed = function() {
 	Engine.screen.add(e);
 };
 
+let inputDelay = new FrameCounter(3);
+
 e.update = function() {
-	if (Keyboard.down(Keys.LEFT)) this.x-=1;
-	if (Keyboard.down(Keys.RIGHT)) this.x+=1;
-	if (Keyboard.down(Keys.UP)) this.y-=1;
-	if (Keyboard.down(Keys.DOWN)) this.y+=1;
+	// delay the input a bit
+	if (inputDelay.isReady()) {
+		return;
+	}
+
+	let xDif = 0;
+	let yDif = 0;
+
+	if (Keyboard.down(Keys.LEFT)) {
+		xDif = -1;
+		this._lastDir = "left";
+	} else if (Keyboard.down(Keys.RIGHT)) {
+		xDif = +1;
+		this._lastDir = "right";
+	}
+
+	if (Keyboard.down(Keys.UP)) {
+		yDif = -1;
+		this._lastDir = "up";
+	} else if (Keyboard.down(Keys.DOWN)) {
+		yDif = +1;
+		this._lastDir = "down";
+	}
+
+	if (yDif != 0 || xDif != 0) {
+		this.x += xDif;
+		this.y += yDif;
+		this.playAnimation({name: `walk_${this._lastDir}`});
+	} else {
+		this.playAnimation({name: `idle_${this._lastDir}`});
+	}
+
 	if (Keyboard.pressed(Keys.SPACE)) Engine.screen.remove(this);
 };
 
