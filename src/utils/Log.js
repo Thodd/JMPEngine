@@ -1,4 +1,3 @@
-
 function dump(method, s, prefix) {
 	if (prefix) {
 		s = `[${prefix}] ${s}`;

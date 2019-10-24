@@ -16,13 +16,48 @@ Engine.screen.clearLayers = [0, 1, 2];
  * Simple Entity with input handling
  */
 var e = new Entity();
-e.sprite = {
+
+e.setSprite({
 	sheet: "player",
-	id: 10,
-	offsetX: 0,
-	offsetY: 0,
-	color: "#FF0000"
-};
+	color: "#FF0000",
+
+	animations: {
+		default: "walk_down",
+
+		"walk_down": {
+			frames: [0, 1, 0, 2],
+			delay: 7
+		},
+		"idle_down": {
+			frames: [0]
+		},
+
+		// TODO:
+		"walk_up": {
+			frames: [13, 14, 13, 15],
+			delay: 7
+		},
+		"idle_up": {
+			frames: [0]
+		},
+
+		"walk_left": {
+			frames: [13, 14, 13, 15],
+			delay: 7
+		},
+		"idle_left": {
+			frames: [13]
+		},
+
+		"walk_right": {
+			frames: [10, 11, 10, 12],
+			delay: 7
+		},
+		"idle_right": {
+			frames: [10]
+		},
+	}
+});
 e.layer = 2;
 
 e.added = function() {

@@ -85,7 +85,9 @@ const Engine = {
 
 		return initialized;
 	}
-
 }
 
 export default Engine;
+
+// debugging shortcut
+window.Engine = Engine;

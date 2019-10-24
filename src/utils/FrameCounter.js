@@ -13,6 +13,10 @@ class FrameCounter {
 			return false;
 		}
 	}
+
+	reset() {
+		this._frames = 0;
+	}
 }
 
 export default FrameCounter;

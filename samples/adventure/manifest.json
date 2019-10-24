@@ -24,11 +24,6 @@
 			"w": 24,
 			"h": 24
 		},
-		"npc": {
-			"url": "./img/npc.png",
-			"w": 24,
-			"h": 24
-		},
 		"tileset": {
 			"url": "./img/tileset.png",
 			"w": 10,
