@@ -1,0 +1,20 @@
+{
+	"title": "fonts",
+
+	"main": "./main.js",
+
+	"w": 160,
+	"h": 70,
+	"scale": 2,
+	"fps": 60,
+	"hideCursor": false,
+	"clearColor": "#222222",
+
+	"fonts": {
+		"font0": {
+			"url": "./img/font_0.png",
+			"w": 7,
+			"h": 8
+		}
+	}
+}

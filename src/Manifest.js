@@ -4,7 +4,7 @@ import loadJSON from "./utils/loadJSON.js";
 /**
  * Defaults for the Screen.
  */
-const DEFAULTS_FOR_MANIFEST = {
+const DEFAULTS = {
 	w: 184,
 	h: 136,
 	scale: 2,
@@ -50,7 +50,7 @@ async function init(manifest) {
 			}
 
 			// assign good default values for the manifest, no matter from what source we got it
-			_manifestObject = Object.assign(DEFAULTS_FOR_MANIFEST, _manifestObject);
+			_manifestObject = Object.assign(DEFAULTS, _manifestObject);
 
 			return _manifestObject;
 		});
@@ -71,6 +71,7 @@ function resolve(url) {
 }
 
 export default {
+	DEFAULTS,
 	init,
 	resolve
 };

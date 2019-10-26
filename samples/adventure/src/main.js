@@ -2,15 +2,18 @@ import Engine from "../../../src/Engine.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import { log } from "../../../src/utils/Log.js";
-import GFX from "../../../src/gfx/GFX.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import Tilemap from "../../../src/game/Tilemap.js";
+import GFX from "../../../src/gfx/GFX.js";
 
 Engine.screen = new Screen();
 
-Engine.screen.clearLayers = [0, 1, 2];
+Engine.screen.clearLayer(0, "#333333");
+Engine.screen.clearLayer(1, "transparent");
+Engine.screen.clearLayer(2, "transparent");
+Engine.screen.clearLayer(3, "transparent");
 
 /**
  * Simple Entity with input handling
@@ -58,7 +61,10 @@ e.setSprite({
 		},
 	}
 });
+
 e.layer = 2;
+
+e.inputDelay = new FrameCounter(3);
 
 e.added = function() {
 	log("added");
@@ -69,11 +75,9 @@ e.removed = function() {
 	Engine.screen.add(e);
 };
 
-let inputDelay = new FrameCounter(3);
-
 e.update = function() {
 	// delay the input a bit
-	if (inputDelay.isReady()) {
+	if (this.inputDelay.isReady()) {
 		return;
 	}
 
@@ -127,28 +131,9 @@ t.set(6, 4, 33);
 
 Engine.screen.add(t);
 
-/**
- * Low-Level Text Rendering Demo
- */
 
-// clear layer 0 for a dark background color
-GFX.clear(0, "#222222");
-
-var z = new Entity();
-z.iCol = 0;
-z.iCount = 0;
-z.iStep = 0.1;
-z.msg = ".JMP Rendering Engine.";
-var fc = new FrameCounter(3);
-z.render = function() {
-	for (var i = 0; i < this.msg.length; i++) {
-		var sChar = this.msg[i];
-		GFX.text("font0", 3 + (i * 7), 80 + Math.cos(i/3 + this.iCount) * Math.max(0, 30 - this.iCount), sChar, 2, GFX.pal[(this.iCol + i) % 15]);
-	}
-	this.iCount += this.iStep;
-
-	if (fc.isReady()) {
-		this.iCol++;
-	}
+let text = new Entity();
+text.render = () => {
+	GFX.text("font0", 0, 110, "JMP Engine Demo", 3, "#FFFFFF");
 };
-Engine.screen.add(z);
+Engine.screen.add(text);

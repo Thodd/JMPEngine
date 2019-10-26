@@ -9,11 +9,22 @@ class Screen {
 		this._toBeAdded = [];
 		this._toBeRemoved = [];
 
-		this.clearLayers = [];
+		this._clearLayers = Object.create(null);
 	}
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
+	}
+
+	/**
+	 * Defines which layers should be cleared on every frame before rendering.
+	 * @example
+	 * Engine.screen.clearLayer(0, "#111111");
+	 * @param {int} layer the layer which should be cleared during rendering
+	 * @param {string} color a CSS color string, e.g. "transparent", "#FF0085"
+	 */
+	clearLayer(layer, color) {
+		this._clearLayers[layer] = {i: layer, color: color};
 	}
 
 	/**
@@ -100,8 +111,9 @@ class Screen {
 
 	render() {
 		// clear layers
-		for (var i = 0; i < this.clearLayers.length; i++) {
-			GFX.clear(this.clearLayers[i]);
+		for (let s in this._clearLayers) {
+			let layer = this._clearLayers[s];
+			GFX.clear(layer.i, layer.color);
 		}
 
 		// render entities
