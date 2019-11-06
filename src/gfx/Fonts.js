@@ -1,8 +1,7 @@
 import { log, error } from "../utils/Log.js";
-import GFX from "./GFX.js";
 
-// supported characters
-var _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@! .:,;";
+// supported characters (ASCII order)
+var _chars = ` !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_\`abcdefghijklmnopqrstuvwxyz{|}`;
 
 /**
  * Creates the Font tileset
@@ -20,22 +19,18 @@ function init(manifest) {
 		var oFont = manifest.fonts[s];
 		oFont.chars = {};
 
-		var iCharID = 0;
-		for (var y = 0; y < 4; y++) {
-			for (var x = 0; x < 26; x++) {
-				var oCharCanvas = document.createElement("canvas");
-				oCharCanvas.width = oFont.w;
-				oCharCanvas.height = oFont.h;
-				var ctx = oCharCanvas.getContext("2d");
-				ctx.drawImage(oFont.raw, x * oFont.w, y * oFont.h, oFont.w, oFont.h, 0, 0, oFont.w, oFont.h);
-				// map for the char colors
-				// IMPORTANT: the font file has a couple of empty spaces for additions in the future
-				// these empty spaces will be written to the "undefined" slot of the oFont.chars map
-				oFont.chars[_chars[iCharID]] = {
-					default: oCharCanvas
-				};
-				iCharID++;
-			}
+		for (var x = 0; x < _chars.length; x++) {
+			var oCharCanvas = document.createElement("canvas");
+			oCharCanvas.width = oFont.w;
+			oCharCanvas.height = oFont.h;
+			var ctx = oCharCanvas.getContext("2d");
+			ctx.drawImage(oFont.raw, x * oFont.w, 0, oFont.w, oFont.h, 0, 0, oFont.w, oFont.h);
+			// map for the char colors
+			// IMPORTANT: the font file has a couple of empty spaces for additions in the future
+			// these empty spaces will be written to the "undefined" slot of the oFont.chars map
+			oFont.chars[_chars[x]] = {
+				default: oCharCanvas
+			};
 		}
 		log(`  > done: ${s}`, "GFX.Fonts");
 	}
@@ -49,10 +44,16 @@ function init(manifest) {
  */
 function getChar(oFont, c, color) {
 	var oChar = oFont.chars[c];
-	if (!oChar[color]) {
-		oChar[color] = colorizeCanvas(oChar.default, color);
+	if (color) {
+		if (!oChar[color]) {
+			oChar[color] = colorizeCanvas(oChar.default, color);
+		}
+		return oChar[color];
+	} else {
+		// no color tinting given, then we return the default
+		// typically used for already colored fonts
+		return oChar.default;
 	}
-	return oChar[color];
 }
 
 /**

@@ -134,7 +134,7 @@ Engine.screen.add(t);
 
 let text = new Entity();
 text.render = () => {
-	GFX.text("font0", 1, 111, "JMP Adventure", 3, "#000000");
-	GFX.text("font0", 0, 110, "JMP Adventure", 3, "#FFFFFF");
+	GFX.text("font0", 1, 111, "JMP Platformer", 3, "#000000");
+	GFX.text("font0", 0, 110, "JMP Platformer", 3, "#FFFFFF");
 };
 Engine.screen.add(text);
