@@ -16,7 +16,7 @@ let animatedText = new Entity();
 animatedText.col = 0;
 animatedText.count = 0;
 animatedText.step = 0.1;
-animatedText.msg = ".JMP Rendering Engine.";
+animatedText.msg = ">JMP Text Render Demo<";
 
 // we delay the color changing for 4 frames,
 // otherwise the rainbow effect is too fast to appreciate ;)
@@ -69,3 +69,24 @@ multilineText.render = function() {
 };
 
 Engine.screen.add(multilineText);
+
+
+/**
+ * Custom ASCII Bitmap Font Demo
+ */
+let customFont = new Entity();
+let customMsg = `
+This is a sample of a
+custom font.
+It's a variation of
+the built-in 'font0'.
+A custom font must be
+monospaced and in
+ASCII order.
+`;
+customFont.render = function() {
+	GFX.textm("font0", 6, 161, customMsg, 1, "#000000");
+	GFX.textm("font0", 5, 160, customMsg, 1);
+};
+
+Engine.screen.add(customFont);

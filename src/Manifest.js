@@ -1,5 +1,6 @@
 import { log, warn, fail } from "./utils/Log.js";
 import loadJSON from "./utils/loadJSON.js";
+import Fonts from "./gfx/Fonts.js";
 
 /**
  * Defaults for the Screen.
@@ -48,8 +49,7 @@ async function init(manifest) {
 				fail(`Manifest ${manifest} is invalid! Only string and object values are supported.`, "Manifest");
 			}
 
-			// assign good default values for the manifest, no matter from what source we got it
-			_manifestObject = Object.assign(DEFAULTS, _manifestObject);
+			assignDefaults();
 
 			return _manifestObject;
 		});
@@ -59,6 +59,19 @@ async function init(manifest) {
 	}
 
 	return initialized;
+}
+
+function assignDefaults() {
+	// assign good default values for the manifest,
+	// no matter from what source we got it
+	_manifestObject = Object.assign(DEFAULTS, _manifestObject);
+
+	// at least define the default font 'font0'
+	_manifestObject.fonts["font0"] = {
+		"url": Fonts.DEFAULT_JMP_FONT,
+		"w": 7,
+		"h": 8
+	};
 }
 
 /**

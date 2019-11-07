@@ -5,16 +5,12 @@
 
 	"layers": 2,
 	"w": 160,
-	"h": 160,
+	"h": 240,
 	"scale": 2,
 	"fps": 60,
 	"hideCursor": false,
 
 	"fonts": {
-		"font0": {
-			"url": "./img/font_0.png",
-			"w": 7,
-			"h": 8
-		}
+
 	}
 }

@@ -9,13 +9,7 @@
 	"fps": 60,
 	"hideCursor": false,
 
-	"fonts": {
-		"font0": {
-			"url": "./img/font_0.png",
-			"w": 7,
-			"h": 8
-		}
-	},
+	"fonts": {},
 
 	"spritesheets": {
 		"player": {
