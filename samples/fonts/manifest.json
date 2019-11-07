@@ -3,12 +3,12 @@
 
 	"main": "./main.js",
 
+	"layers": 2,
 	"w": 160,
-	"h": 70,
+	"h": 160,
 	"scale": 2,
 	"fps": 60,
 	"hideCursor": false,
-	"clearColor": "#222222",
 
 	"fonts": {
 		"font0": {

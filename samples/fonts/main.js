@@ -4,32 +4,68 @@ import Entity from "../../../src/game/Entity.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
+// First things first: create a new screen
+Engine.screen = new Screen();
 
 /**
  * Low-Level Text Rendering Demo
  */
-Engine.screen = new Screen();
 
-var z = new Entity();
-z.iCol = 0;
-z.iCount = 0;
-z.iStep = 0.1;
-z.msg = ".JMP Rendering Engine.";
+// create a new Entity which will use the low-level text API to render an animated colored text
+let animatedText = new Entity();
+animatedText.col = 0;
+animatedText.count = 0;
+animatedText.step = 0.1;
+animatedText.msg = ".JMP Rendering Engine.";
 
-var fc = new FrameCounter(3);
+// we delay the color changing for 4 frames,
+// otherwise the rainbow effect is too fast to appreciate ;)
+// 60 color changes per second is pretty fast for the human eye...
+let animationDelay = new FrameCounter(4);
 
-z.render = function() {
+// We define a custom render function on the Entity
+// so we can use the low-level GFX API to render a pixel-perfect
+// colored and animated Text
+animatedText.render = function() {
 	// clear layer 0 for a dark background color
-	GFX.clear(0, "#111111");
+	GFX.clear(0, "#333333");
 
-	for (var i = 0; i < this.msg.length; i++) {
-		var sChar = this.msg[i];
-		GFX.text("font0", 3 + (i * 7), 30 + Math.cos(i/3 + this.iCount) * Math.max(0, 30 - this.iCount), sChar, 0, GFX.pal[(this.iCol + i) % 15]);
+	for (let i = 0; i < this.msg.length; i++) {
+		let char = this.msg[i];
+
+		// black shadow ("#000000")
+		GFX.text("font0", 2 + (i * 7), 29 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, "#000000");
+
+		// colored text using predefined color palette
+		GFX.text("font0", 3 + (i * 7), 30 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, GFX.pal[(this.col + i) % 15]);
 	}
-	this.iCount += this.iStep;
+	this.count += this.step;
 
-	if (fc.isReady()) {
-		this.iCol++;
+	if (animationDelay.isReady()) {
+		this.col++;
 	}
 };
-Engine.screen.add(z);
+Engine.screen.add(animatedText);
+
+
+/**
+ * Multi-line Text Rendering Demo
+ */
+let multilineMessage = `This is a Demo for
+multi-line Strings.
+You can render these
+Strings with the
+following GFX-API:
+
+  'GFX.textm(...)'
+`;
+
+let multilineText = new Entity();
+
+multilineText.render = function() {
+	GFX.clear(1);
+	GFX.textm("font0", 11, 81, multilineMessage, 1, "#000000"); // displaced rendering as a "shadow" effect
+	GFX.textm("font0", 10, 80, multilineMessage, 1, "#FF0085");
+};
+
+Engine.screen.add(multilineText);

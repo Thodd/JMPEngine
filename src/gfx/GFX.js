@@ -246,6 +246,9 @@ function grid(id, x, y, iLayer) {
 	// TODO
 //}
 
+/**
+ * Renders a single line of text.
+ */
 function text(font, x, y, sText, iLayer, color) {
 	var oFont = manifest.fonts[font];
 	var oCtx = _aCtx[iLayer || 0];
@@ -254,6 +257,22 @@ function text(font, x, y, sText, iLayer, color) {
 		var c = sText[i];
 		oCtx.drawImage(Fonts.getChar(oFont, c, color), x + iOffsetX * oFont.w, y);
 		iOffsetX++;
+	}
+}
+
+/**
+ * Renders multiline texts.
+ */
+function textm(font, x, y, sText, iLayer, color) {
+	var oFont = manifest.fonts[font];
+
+	// check for linebreak style
+	var sLineDelimiter = sText.indexOf("\n\r") >= 0 ? "\n\r" : "\n";
+	var aLines = sText.split(sLineDelimiter);
+
+	for (var i = 0; i < aLines.length; i++) {
+		var sLine = aLines[i];
+		text(font, x, y + (i * oFont.h), sLine, iLayer, color);
 	}
 }
 
@@ -319,6 +338,7 @@ export default {
 	grid,
 	//mapp,
 	text,
+	textm,
 
 	// width and height
 	get w() {
