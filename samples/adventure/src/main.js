@@ -67,7 +67,7 @@ e.layer = 2;
 e.inputDelay = new FrameCounter(3);
 
 e.added = function() {
-	log("added");
+	log("Entity was added to the Screen!");
 };
 
 e.removed = function() {

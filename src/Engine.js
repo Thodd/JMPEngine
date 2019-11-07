@@ -10,11 +10,13 @@ let startTime = 0;
 
 let _manifestObject = null;
 
+let _resetKeyboard = null;
+
 const gameloop = () => {
 	if (Engine.screen) {
 		Engine.screen.update();
 		Engine.screen.render();
-		Keyboard._reset();
+		_resetKeyboard();
 	}
 	window.requestAnimationFrame(gameloop);
 };
@@ -62,6 +64,8 @@ const Engine = {
 				await AssetLoader.load(_manifestObject);
 
 				GFX.init(placeAt, _manifestObject);
+
+				_resetKeyboard = Keyboard.init();
 
 				startTime = Date.now();
 

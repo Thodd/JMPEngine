@@ -1,22 +1,12 @@
+import { log, warn } from "../utils/Log.js";
+
 let aKeyDownList = [];
 let aPressedList = [];
 let iPressedCount = 0;
 let aSymbolicNames = [];
 
-function fnFixEvents(oEvent, fnHandler) {
-	if (typeof (oEvent) === "undefined") {
-		oEvent = window.event || "";
-	}
-	oEvent = oEvent || (window.event || "");
-	fnHandler(oEvent);
-}
-
 //Keeps track of downed keys
 function fnKeyDownHandler(evt) {
-	if ([37, 38, 39, 40].indexOf(evt.keyCode) != -1) {
-		evt.preventDefault();
-	}
-
 	if (!aKeyDownList[evt.keyCode]) {
 		aKeyDownList[evt.keyCode] = true;
 		aPressedList[iPressedCount++] = evt.keyCode;
@@ -30,14 +20,28 @@ function fnKeyUpHandler(evt) {
 	}
 }
 
-// adding the actual event listeners to the window object
-window.addEventListener("keydown", function (e) {
-	fnFixEvents(e, fnKeyDownHandler);
-});
-window.addEventListener("keyup", function (e) {
-	e.preventDefault();
-	fnFixEvents(e, fnKeyUpHandler);
-});
+let initialized = false;
+
+function init() {
+	if (initialized) {
+		warn("already initialized!", "GFX");
+		return;
+	}
+
+	// adding the actual event listeners to the window object
+	window.addEventListener("keydown", function (e) {
+		fnKeyDownHandler(e);
+	}, true);
+	window.addEventListener("keyup", function (e) {
+		//e.preventDefault();
+		fnKeyUpHandler(e);
+	}, true);
+
+	log("module initialized.", "Keyboard");
+
+	return _reset;
+}
+
 
 //Define symbolic names (strings) as placeholders for Key-Values
 function define(symbols) {
@@ -156,9 +160,9 @@ function _pollgamepads() {
 }
 */
 export default {
+	init,
 	define,
 	down,
 	pressed,
-	wasPressedOrIsDown,
-	_reset
+	wasPressedOrIsDown
 };

@@ -69,8 +69,17 @@ function resolve(url) {
 	return new URL(url, _baseURL);
 }
 
+/**
+ * Returns the loaded and parsed manifest.json.
+ * Or the statically defined manifest object.
+ */
+function get() {
+	return _manifestObject;
+}
+
 export default {
 	DEFAULTS,
 	init,
-	resolve
+	resolve,
+	get
 };

@@ -105,7 +105,7 @@ function init(mani) {
 		return;
 	}
 
-	log("Grid module initialized.", "GFX.Grid");
+	log("module initialized.", "GFX.Grid");
 
 	initialized = true;
 }

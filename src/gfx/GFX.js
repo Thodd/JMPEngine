@@ -318,7 +318,7 @@ function init(containerID, mani) {
 	initialized = true;
 }
 
-/********************************* private *********************************/
+/********************************* public API *********************************/
 export default {
 	// low-level API
 	cam,
@@ -354,5 +354,14 @@ export default {
 		error("Screen width can only be set from manifest!", "GFX");
 	},
 
-	init
+	init,
+
+	/**
+	 * Retrieve the low-level DOM canvases.
+	 * Beware: Tinkering with these objects is for advanced users only!
+	 * @return {Canvas[]}
+	 */
+	get canvases() {
+		return _aCanvases;
+	}
 };
