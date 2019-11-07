@@ -3,18 +3,18 @@ import Engine from "./Engine.js";
 
 domReady().then(() => {
 	// find manifest bootstrap URL
-	let bootstrapDOM = document.querySelectorAll("div[data-jmp-manifest]")[0];
+	let bootstrapScriptElement = document.querySelectorAll("script[data-jmp-manifest]")[0];
 
-	if (bootstrapDOM) {
+	if (bootstrapScriptElement) {
+		let containerID = bootstrapScriptElement.dataset.jmpContainer;
 
-		// generate ID if necessary
-		bootstrapDOM.id = bootstrapDOM.id || "__jmp__main";
+		let containerDOM = document.getElementById(containerID);
 
 		// start engine from manifest url
-		let manifestURL = bootstrapDOM.dataset.jmpManifest;
+		let manifestURL = bootstrapScriptElement.dataset.jmpManifest;
 
 		Engine.start({
-			placeAt: bootstrapDOM.id,
+			placeAt: containerDOM,
 			manifest: manifestURL
 		});
 	}

@@ -271,7 +271,13 @@ function init(containerID, mani) {
 	manifest = mani;
 
 	// check container dom
-	containerDOM = document.getElementById(containerID);
+	if (typeof containerID == "string") {
+		containerDOM = document.getElementById(containerID);
+	} else if (typeof containerID == "object") {
+		// assume we have a dom node already
+		containerDOM = containerID;
+	}
+
 	if (!containerDOM) {
 		fail("Container DOM ID is not valid!", "GFX");
 	}
