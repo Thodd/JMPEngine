@@ -9,11 +9,8 @@ import Tilemap from "../../../src/game/Tilemap.js";
 import GFX from "../../../src/gfx/GFX.js";
 
 Engine.screen = new Screen();
-
-Engine.screen.clearLayer(0, "#333333");
-Engine.screen.clearLayer(1, "transparent");
-Engine.screen.clearLayer(2, "transparent");
-Engine.screen.clearLayer(3, "transparent");
+Engine.screen.layers(0).clearColor = "#333333";
+Engine.screen.layers(3).fixedCam = true;
 
 /**
  * Simple Entity with input handling
@@ -75,6 +72,9 @@ e.removed = function() {
 	Engine.screen.add(e);
 };
 
+e.x = 70;
+e.y = 50;
+
 e.update = function() {
 	// delay the input a bit
 	if (this.inputDelay.isReady()) {
@@ -100,13 +100,16 @@ e.update = function() {
 		this._lastDir = "down";
 	}
 
-	if (yDif != 0 || xDif != 0) {
+	if (xDif != 0 || yDif != 0) {
 		this.x += xDif;
 		this.y += yDif;
 		this.playAnimation({name: `walk_${this._lastDir}`});
 	} else {
 		this.playAnimation({name: `idle_${this._lastDir}`});
 	}
+
+	Engine.screen.cam.x = this.x - 70;
+	Engine.screen.cam.y = this.y - 50;
 
 	if (Keyboard.pressed(Keys.SPACE)) Engine.screen.remove(this);
 };
@@ -124,6 +127,16 @@ let t = new Tilemap({
 t.x = 0;
 t.y = 0;
 t.layer = 1;
+
+for (let x = 0; x < 16; x++) {
+	t.set(x, 0, 32, "#FF0022");
+	t.set(x, 11, 32, "#FF0022");
+}
+
+for (let y = 0; y < 12; y++) {
+	t.set(0, y, 32, "#FF0022");
+	t.set(15, y, 32, "#FF0022");
+}
 
 t.set(1, 1, 32, "#FF0022");
 t.get(6, 7).set(35, "#0000FF");

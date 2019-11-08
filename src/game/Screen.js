@@ -2,6 +2,30 @@ import ArrayHelper from "../utils/ArrayHelper.js";
 import GFX from "../gfx/GFX.js";
 import { error } from "../utils/Log.js";
 
+/**
+ * Layer class
+ * @public
+ */
+class Layer {
+	constructor(i) {
+		this.i = i;
+		/**
+		 * The color which will be used to clear the layer before rendering
+		 * any entities.
+		 */
+		this.clearColor = "transparent";
+		/**
+		 * Marks if the camera should be fixed for this layer.
+		 * Useful for UI elements.
+		 */
+		this.fixedCam = false
+	}
+}
+
+/**
+ * Screen class
+ * @public
+ */
 class Screen {
 	constructor() {
 		this._ID = Screen.INSTANCE_COUNT++;
@@ -9,7 +33,35 @@ class Screen {
 		this._toBeAdded = [];
 		this._toBeRemoved = [];
 
-		this._clearLayers = Object.create(null);
+		// create layers
+		this._layers = [];
+		for (let i = 0; i < GFX.canvases.length; i++) {
+			this._layers.push(new Layer(i));
+		}
+
+		// the public camera interface
+		let _camX = 0;
+		let _camY = 0;
+
+		/**
+		 * The camera of the screen.
+		 * Change the x/y coordinates to move the camera around.
+		 * During rendering this will be respected for correctly shifting entities around.
+		 */
+		this.cam = {
+			set x (iXValue) {
+				_camX = iXValue * -1;
+			},
+			get x() {
+				return -1 * _camX;
+			},
+			set y (iYValue) {
+				_camY = iYValue * -1;
+			},
+			get y() {
+				return -1 * _camY;
+			}
+		};
 	}
 
 	toString() {
@@ -17,14 +69,16 @@ class Screen {
 	}
 
 	/**
-	 * Defines which layers should be cleared on every frame before rendering.
-	 * @example
-	 * Engine.screen.clearLayer(0, "#111111");
-	 * @param {int} layer the layer which should be cleared during rendering
-	 * @param {string} color a CSS color string, e.g. "transparent", "#FF0085"
+	 * Returns the layer with the given position.
+	 * If no position is given, an array with all layers are returned.
+	 * @param {int|undefined} i The layer position
+	 * @returns {Layer} the chosen layer
 	 */
-	clearLayer(layer, color) {
-		this._clearLayers[layer] = {i: layer, color: color};
+	layers(i) {
+		if (i == null) {
+			return this._layers;
+		}
+		return this._layers[i];
 	}
 
 	/**
@@ -110,10 +164,16 @@ class Screen {
 	}
 
 	render() {
-		// clear layers
-		for (let s in this._clearLayers) {
-			let layer = this._clearLayers[s];
-			GFX.clear(layer.i, layer.color);
+		// 1. move (translate) camera and
+		// 2. clear layers
+		for (let i = 0; i < this._layers.length; i++) {
+			let layer = this._layers[i];
+			//GFX.save(i);
+			// translate camera
+			if (!layer.fixedCam) {
+				GFX.trans(i, -this.cam.x, -this.cam.y);
+			}
+			GFX.clear_rect(i, layer.clearColor, this.cam.x, this.cam.y);
 		}
 
 		// render entities
@@ -122,6 +182,15 @@ class Screen {
 				e.render();
 			}
 		});
+
+		// move camera back after entity rendering
+		for (let i in this._layers) {
+			//GFX.restore(i);
+			let layer = this._layers[i];
+			if (!layer.fixedCam) {
+				GFX.trans(i, +this.cam.x, +this.cam.y);
+			}
+		}
 	}
 }
 

@@ -6,7 +6,7 @@ import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 // First things first: create a new screen
 Engine.screen = new Screen();
-
+Engine.screen.layers(0).clearColor = "#333333"
 /**
  * Low-Level Text Rendering Demo
  */
@@ -27,9 +27,6 @@ let animationDelay = new FrameCounter(4);
 // so we can use the low-level GFX API to render a pixel-perfect
 // colored and animated Text
 animatedText.render = function() {
-	// clear layer 0 for a dark background color
-	GFX.clear(0, "#333333");
-
 	for (let i = 0; i < this.msg.length; i++) {
 		let char = this.msg[i];
 
@@ -63,7 +60,6 @@ following GFX-API:
 let multilineText = new Entity();
 
 multilineText.render = function() {
-	GFX.clear(1);
 	GFX.textm("font0", 11, 81, multilineMessage, 1, "#000000"); // displaced rendering as a "shadow" effect
 	GFX.textm("font0", 10, 80, multilineMessage, 1, "#FF0085");
 };

@@ -84,32 +84,12 @@ function setupCanvases(containerDOM) {
 	log("Canvases created.", "GFX");
 }
 
-// the public camera interface
-let _camX = 0;
-let _camY = 0;
-const cam = {
-	set x (iXValue) {
-		_camX = iXValue * -1;
-	},
-	get x() {
-		return -1 * _camX;
-	},
-	set y (iYValue) {
-		_camY = iYValue * -1;
-	},
-	get y() {
-		return -1 * _camY;
-	}
-};
-
 /**
  * GFX Module API
  */
 
 // to make geometric rendering less blurred
-function n(x) {
-	return x + 0.5;
-}
+const n = Math.floor;
 
 // for now the pico8 palette
 const pal = [
@@ -123,7 +103,14 @@ const pal = [
 	"#29ADFF", "#83769C", "#FF77A8", "#FFCCAA"
 ];
 
+/**
+ * Retrieve the low-level rendering contexts for the DOM canvases.
+ * Beware: Tinkering with these objects is for advanced users only!
+ */
 function ctx(i) {
+	if (i == null) {
+		return _aCtx;
+	}
 	return _aCtx[i || 0];
 }
 
@@ -131,8 +118,45 @@ function clear(i, color) {
 	if (color) {
 		_aCanvases[i || 0].style.background = color;
 	}
-	// clear everything inside viewport
-	_aCtx[i || 0].clearRect(cam.x, cam.y, manifest.w, manifest.h);
+	_aCtx[i || 0].clearRect(0, 0, manifest.w, manifest.h);
+}
+
+function clear_rect(i, color, x, y, w, h) {
+	if (color) {
+		_aCanvases[i || 0].style.background = color;
+	}
+
+	// clear everything inside the given rectangle
+	// for w/h we default to the screen-size
+	_aCtx[i || 0].clearRect(x, y, w || manifest.w, h || manifest.h);
+}
+
+function trans(i, x, y) {
+	_aCtx[i || 0].translate(x, y);
+}
+
+function save(i) {
+	// save all
+	if (i == null) {
+		for (let c in _aCtx) {
+			_aCtx[c].save();
+		}
+	} else {
+		// save single ctx
+		_aCtx[i || 0].save();
+	}
+}
+
+function restore(i) {
+	// restore all
+	if (i == null) {
+		for (let c in _aCtx) {
+			_aCtx[c].restore();
+		}
+	} else {
+		// restore single ctx
+		_aCtx[i || 0].restore();
+	}
 }
 
 function px(x, y, color, iLayer) {
@@ -319,12 +343,16 @@ function init(containerID, mani) {
 }
 
 /********************************* public API *********************************/
-export default {
-	// low-level API
-	cam,
-	pal,
+const GFX_API = {
+	// dom based API
 	ctx,
 	clear,
+	clear_rect,
+	trans,
+	save,
+	restore,
+	// render API
+	pal,
 	px,
 	rect,
 	rectf,
@@ -365,3 +393,7 @@ export default {
 		return _aCanvases;
 	}
 };
+export default GFX_API;
+
+// debugging shortcut
+window.GFX = GFX_API;
