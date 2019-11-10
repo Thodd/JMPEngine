@@ -1,21 +1,26 @@
 <html>
 	<head>
 		<title>jmp</title>
-		<style>
-			body {
-				background: #7e919f;
-				margin: 20;
-				padding: 0;
-			}
-		</style>
+		<link href="../../demo.css" rel="stylesheet"></link>
 
 		<script src="./main.js" type="module"></script>
 
 	</head>
-	<body class="main">
-		<div class="jmpPanel">
-			<p>The Engine is started with a manifest defined in a separate JSON file.</p>
+	<body>
+		<div>
+			<div class="jmpDemoPanelOuter">
+				<div class="jmpDemoPanelInner jmpDemoText">
+					<p>The Engine is started with a manifest defined in a separate JSON file.</p>
+				</div>
+			</div>
 		</div>
-		<div class="jmpPanel" id="content"></div>
+
+		<div>
+			<div class="jmpDemoPanelOuter">
+				<div class="jmpDemoPanelInner">
+					<div id="content"></div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

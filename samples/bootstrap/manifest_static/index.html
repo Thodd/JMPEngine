@@ -1,22 +1,27 @@
 <html>
 	<head>
 		<title>jmp</title>
-		<style>
-			body {
-				background: #7e919f;
-				margin: 20;
-				padding: 0;
-			}
-		</style>
+		<link href="../../demo.css" rel="stylesheet"></link>
 
 		<script src="./main.js" type="module"></script>
 
 	</head>
-	<body class="main">
-		<div class="jmpPanel">
-			<p>The Engine is started with a static manifest.</p>
-			<p>The manifest definition is given as a good old JavaScript object.</p>
+	<body>
+		<div>
+			<div class="jmpDemoPanelOuter">
+				<div class="jmpDemoPanelInner jmpDemoText">
+					<p>The Engine is started with a static manifest.</p>
+					<p>The manifest definition is given as a good old JavaScript object.</p>
+				</div>
+			</div>
 		</div>
-		<div class="jmpPanel" id="content"></div>
+
+		<div>
+			<div class="jmpDemoPanelOuter">
+				<div class="jmpDemoPanelInner">
+					<div id="content"></div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

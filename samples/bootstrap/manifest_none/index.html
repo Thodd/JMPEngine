@@ -1,22 +1,27 @@
 <html>
 	<head>
 		<title>jmp</title>
-		<style>
-			body {
-				background: #7e919f;
-				margin: 20;
-				padding: 0;
-			}
-		</style>
+		<link href="../../demo.css" rel="stylesheet"></link>
 
 		<script src="./Low_Level_GFX_Sample.js" type="module"></script>
 
 	</head>
-	<body class="main">
-		<div class="jmpPanel">
-			<p>The Engine is started with a manifest.</p>
-			<p>Only a DOM container ID is given.</p>
+	<body>
+		<div>
+			<div class="jmpDemoPanelOuter">
+				<div class="jmpDemoPanelInner jmpDemoText">
+					<p>The Engine is started with a manifest.</p>
+					<p>Only a DOM container ID is given.</p>
+				</div>
+			</div>
 		</div>
-		<div class="jmpPanel" id="content"></div>
+
+		<div>
+			<div class="jmpDemoPanelOuter">
+				<div class="jmpDemoPanelInner">
+					<div id="content"></div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

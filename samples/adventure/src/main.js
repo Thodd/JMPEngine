@@ -17,6 +17,12 @@ Engine.screen.layers(3).fixedCam = true;
  */
 var e = new Entity();
 
+e.x = 70;
+e.y = 50;
+e.layer = 2;
+
+e.inputDelay = new FrameCounter(3);
+
 e.setSprite({
 	sheet: "player",
 	color: "#FF8500",
@@ -59,10 +65,6 @@ e.setSprite({
 	}
 });
 
-e.layer = 2;
-
-e.inputDelay = new FrameCounter(3);
-
 e.added = function() {
 	log("Entity was added to the Screen!");
 };
@@ -71,9 +73,6 @@ e.removed = function() {
 	log("removed");
 	Engine.screen.add(e);
 };
-
-e.x = 70;
-e.y = 50;
 
 e.update = function() {
 	// delay the input a bit
