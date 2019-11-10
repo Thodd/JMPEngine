@@ -1,0 +1,37 @@
+{
+	"title": "Adventure",
+
+	"main": "./src/main.js",
+
+	"w": 128,
+	"h": 96,
+	"scale": 3,
+	"fps": 60,
+	"hideCursor": false,
+
+	"fonts": {},
+
+	"spritesheets": {
+		"background": {
+			"url": "./img/Background.png"
+		},
+
+		"player": {
+			"url": "./img/HoneyBunny.png",
+			"w": 10,
+			"h": 10
+		},
+
+		"tileset": {
+			"url": "./img/Tileset.png",
+			"w": 8,
+			"h": 8,
+			"infos": {
+				"0": {"block": true},
+				"1": {"block": false}
+			}
+		}
+	},
+
+	"sounds": {}
+}

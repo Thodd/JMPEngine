@@ -27,17 +27,31 @@ function init(manifest) {
 		oSheet._colorCache = {}; // initially an empty color cache
 
 		var oRawSheet = oSheet.raw;
-		var _iVerticalNoSprites = oRawSheet.height / oSheet.w;
-		var _iHorizontalNoSprites = oRawSheet.width / oSheet.h;
+		// defaults to the full raw image size
+		var iSpriteWidth = oSheet.w || oRawSheet.width;
+		var iSpriteHeight = oSheet.h || oRawSheet.height;
+
+		var _iVerticalNoSprites = oRawSheet.height / iSpriteWidth;
+		var _iHorizontalNoSprites = oRawSheet.width / iSpriteHeight;
 
 		for (var y = 0; y < _iVerticalNoSprites; y++) {
 			for (var x = 0; x < _iHorizontalNoSprites; x++) {
 				var oSpriteCanvas = document.createElement("canvas");
-				oSpriteCanvas.width = oSheet.w;
-				oSpriteCanvas.height = oSheet.h;
+				oSpriteCanvas.width = iSpriteWidth;
+				oSpriteCanvas.height = iSpriteHeight;
 				var ctx = oSpriteCanvas.getContext("2d");
 				// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-				ctx.drawImage(oRawSheet, x * oSheet.w, y * oSheet.h, oSheet.w, oSheet.h, 0, 0, oSheet.w, oSheet.h);
+				ctx.drawImage(
+					oRawSheet,
+					x * iSpriteWidth,
+					y * iSpriteHeight,
+					iSpriteWidth,
+					iSpriteHeight,
+					0,
+					0,
+					iSpriteWidth,
+					iSpriteHeight
+				);
 				oSheet.sprites.push(oSpriteCanvas);
 			}
 		}
