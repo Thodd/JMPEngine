@@ -29,6 +29,10 @@ class EntityTypeStore {
 			});
 		}
 	}
+
+	getEntitySet(type) {
+		return this._typeMap.get(type);
+	}
 }
 
 export default EntityTypeStore;

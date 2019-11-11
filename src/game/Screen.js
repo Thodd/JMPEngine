@@ -1,5 +1,6 @@
 import ArrayHelper from "../utils/ArrayHelper.js";
 import GFX from "../gfx/GFX.js";
+import Collision from "./Collision.js";
 import EntityTypeStore from "./EntityTypeStore.js";
 import { error } from "../utils/Log.js";
 
@@ -89,13 +90,14 @@ class Screen {
 	 * Screen at the end of the current frame.
 	 */
 	add(e) {
+		// check if already scheduled for removal
 		var isScheduled = ArrayHelper.contains(e, this._toBeAdded);
-		if (!e._screen && !isScheduled && !e._isDestroyed) {
-			// check if scheduled for removal
-			ArrayHelper.remove(e, this._toBeRemoved);
 
-			// finally schedule for adding at the end of the frame
+		if (!e._screen && !isScheduled && !e._isDestroyed) {
+			ArrayHelper.remove(e, this._toBeRemoved);
 			this._toBeAdded.push(e);
+
+			this._entityTypeStore.add(e);
 		} else {
 			// error cases
 			if (e._screen) {
@@ -113,12 +115,14 @@ class Screen {
 	 * Screen at the end of the current frame.
 	 */
 	remove(e) {
+		// check if already scheduled for adding
 		var isScheduled = ArrayHelper.contains(e, this._toBeRemoved);
-		if (e._screen == this && !isScheduled) {
-			// check if scheduled for adding
-			ArrayHelper.remove(e, this._toBeAdded);
 
+		if (e._screen == this && !isScheduled) {
+			ArrayHelper.remove(e, this._toBeAdded);
 			this._toBeRemoved.push(e);
+
+			this._entityTypeStore.remove(e);
 		} else {
 			if (e._screen != this) {
 				error(`Entity already added to ${e._screen}!`);
@@ -137,6 +141,40 @@ class Screen {
 	_updateTypes(e) {
 		this._entityTypeStore.remove(e);
 		this._entityTypeStore.add(e);
+	}
+
+	/**
+	 * Checks if the given Entity collides with any other Entity of the given types.
+	 * @param {Entity} e
+	 * @param {string[]} types
+	 * @param {boolean} returnAll
+	 * @param {Number} x
+	 * @param {Number} y
+	 */
+	_collidesWithType(e, types, returnAll, x, y) {
+		let result = [];
+
+		// iterate all types that need to be checked
+		for (let i = 0; i < types.length; i++) {
+			let t = types[i];
+			let entitySet = this._entityTypeStore.getEntitySet(t);
+
+			// if we have an entity set for the given type we iterate it too
+			if (entitySet) {
+				let entries = [...entitySet];
+				for (let j = 0; j < entries.length; j++) {
+					let e2 = entries[j];
+					if (Collision.checkAtPosition(e, e2, x, y)) {
+						if (returnAll) {
+							result.push(e2);
+						} else {
+							return e2;
+						}
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	// Lifecycle hook, called once the Screen begins
@@ -160,9 +198,6 @@ class Screen {
 			var ea = this._toBeAdded[i];
 			this._entities.push(ea);
 			ea._screen = this;
-
-			this._entityTypeStore.add(ea);
-
 			ea.added();
 		}
 		this._toBeAdded = [];
@@ -173,9 +208,6 @@ class Screen {
 			var er = this._toBeRemoved[j];
 			ArrayHelper.remove(er, this._entities);
 			er._screen = null;
-
-			this._entityTypeStore.remove(ea);
-
 			er.removed();
 		}
 		this._toBeRemoved = [];

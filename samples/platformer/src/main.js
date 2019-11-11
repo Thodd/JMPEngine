@@ -7,10 +7,13 @@ import Keys from "../../../src/input/Keys.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import GFX from "../../../src/gfx/GFX.js";
+import RNG from "../../../src/utils/RNG.js";
 
 Engine.screen = new Screen();
 Engine.screen.layers(0).fixedCam = true;
 Engine.screen.layers(3).fixedCam = true;
+
+Entity.RENDER_HITBOXES = true;
 
 /**
  * Simple Entity with input handling
@@ -20,6 +23,12 @@ e.setTypes(["player"]);
 e.x = 70;
 e.y = 78;
 e.layer = 2;
+
+e.hitbox.y = 2;
+e.hitbox.w = 8;
+e.hitbox.h = 8;
+
+window.player = e;
 
 e.inputDelay = new FrameCounter(3);
 
@@ -64,6 +73,7 @@ e.setSprite({
 		}
 	}
 });
+
 e._dirs = {
 	horizontal: "right",
 	vertical: ""
@@ -85,7 +95,6 @@ e.update = function() {
 	}
 
 	let xDif = 0;
-	let yDif = 0;
 
 	if (Keyboard.down(Keys.LEFT)) {
 		xDif = -1;
@@ -120,6 +129,23 @@ e.update = function() {
 };
 
 Engine.screen.add(e);
+
+
+for (let i = 0; i < 10; i++) {
+	let e = new Entity();
+	e.hitbox.w = 8;
+	e.hitbox.h = 8;
+	e.setTypes(["box"]);
+	e.layer = 4;
+	e.x = RNG.randomInteger(0, 120);
+	e.y = RNG.randomInteger(0, 88);
+	e.setSprite({
+		sheet:"tileset",
+		id: 9
+	});
+	Engine.screen.add(e);
+}
+
 
 /**
  * Tilemap demo

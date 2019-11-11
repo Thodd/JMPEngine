@@ -26,8 +26,8 @@ class Entity {
 		this.hitbox = {
 			x: 0,
 			y: 0,
-			w: 16,
-			h: 16
+			w: 0,
+			h: 0
 		};
 
 		/**
@@ -112,13 +112,15 @@ class Entity {
 	 * This kind of collision might become more expensive, the more entities of
 	 * the given type exist.
 	 *
-	 * @param {string[]} types a list of constructor functions
+	 * @param {string[]} types a list of all types which should be checked for collision
 	 * @param {boolean} [returnAll] if set to true, all colliding entities are returned,
 	 *      if set to false only the first one is returned.
 	 *      Default is false.
 	 * @param {Number} [x]
 	 * @param {Number} [y]
-	 * @returns {Entity|undefined} either the first found colliding Entity, or undefined if no collision was detected
+	 * @returns {Entity|Entity[]|undefined} either: the first found colliding Entity,
+	 *      or if returnAll is set to true: an array of all colliding Entities,
+	 *      or if no collision was detected: undefined.
 	 */
 	collidesWithTypes(types, returnAll=false, x, y) {
 		if (this._screen) {
@@ -242,9 +244,18 @@ class Entity {
 			// width and height are undefined, because we want the default value from the actual sprite
 			GFX.spr_ext(sheet, id, dx, dy, undefined, undefined, this.layer, color);
 		}
+
+		if (Entity.RENDER_HITBOXES) {
+			GFX.px(this.x + this.hitbox.x, this.y + this.hitbox.y, "#FF0085", this.layer); // top left
+			GFX.px(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, "#FF0085", this.layer); // top right
+			GFX.px(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, "#FF0085", this.layer); // bottom left
+			GFX.px(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, "#FF0085", this.layer); // bottom right
+		}
 	}
 
 }
+
+Entity.RENDER_HITBOXES = false;
 
 Entity.INSTANCE_COUNT = 0;
 
