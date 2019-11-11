@@ -16,36 +16,58 @@ Engine.screen.layers(3).fixedCam = true;
  * Simple Entity with input handling
  */
 var e = new Entity();
-
+e.setTypes(["player"]);
 e.x = 70;
 e.y = 78;
 e.layer = 2;
 
 e.inputDelay = new FrameCounter(3);
 
+let defaultDelay = 5;
+
 e.setSprite({
 	sheet: "player",
 
 	animations: {
-		default: "walk_right",
+		default: "idle_right",
 
 		"walk_right": {
-			frames: [0, 1],
-			delay: 5
+			frames: [2, 3],
+			delay: defaultDelay
 		},
 		"idle_right": {
-			frames: [0]
+			frames: [2]
 		},
 
 		"walk_left": {
-			frames: [10, 11],
-			delay: 5
+			frames: [12, 13],
+			delay: defaultDelay
 		},
 		"idle_left": {
-			frames: [10]
+			frames: [12]
+		},
+
+		"idle_rightup": {
+			frames: [4]
+		},
+		"walk_rightup": {
+			frames: [4, 5],
+			delay: defaultDelay
+		},
+
+		"idle_leftup": {
+			frames: [14]
+		},
+		"walk_leftup": {
+			frames: [14, 15],
+			delay: defaultDelay
 		}
 	}
 });
+e._dirs = {
+	horizontal: "right",
+	vertical: ""
+};
 
 e.added = function() {
 	log("Entity was added to the Screen!");
@@ -67,24 +89,29 @@ e.update = function() {
 
 	if (Keyboard.down(Keys.LEFT)) {
 		xDif = -1;
-		this._lastDir = "left";
+		this._dirs.horizontal = "left";
 	} else if (Keyboard.down(Keys.RIGHT)) {
 		xDif = +1;
-		this._lastDir = "right";
+		this._dirs.horizontal = "right";
 	}
 
 	if (Keyboard.down(Keys.UP)) {
-
+		this._dirs.vertical = "up";
 	} else if (Keyboard.down(Keys.DOWN)) {
-
+		// nothing
+		// this._dirs.vertical = "down";
+	} else {
+		// not looking up or down
+		this._dirs.vertical = "";
 	}
 
+	let animType = "idle";
 	if (xDif != 0) {
 		this.x += xDif;
-		this.playAnimation({name: `walk_${this._lastDir}`});
-	} else {
-		this.playAnimation({name: `idle_${this._lastDir}`});
+		animType = "walk"
 	}
+
+	this.playAnimation({name: `${animType}_${this._dirs.horizontal}${this._dirs.vertical}`});
 
 	Engine.screen.cam.x = this.x - 70;
 	Engine.screen.cam.y = this.y - 78;
@@ -124,7 +151,7 @@ Engine.screen.add(bg);
 
 let text = new Entity();
 text.render = () => {
+	GFX.text("font0", 2, 2, "Platformer Demo", 3, "#000000");
 	GFX.text("font0", 1, 1, "Platformer Demo", 3, "#FFFFFF");
-	GFX.text("font0", 0, 0, "Platformer Demo", 3, "#000000");
 };
 Engine.screen.add(text);

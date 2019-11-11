@@ -1,6 +1,7 @@
 import GFX from "../gfx/GFX.js";
-import { error } from "../utils/Log.js";
+import { warn, error, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
+import Collision from "./Collision.js";
 
 /**
  * Entity Constructor
@@ -28,10 +29,35 @@ class Entity {
 			w: 16,
 			h: 16
 		};
+
+		/**
+		 * The collision type.
+		 * Once the Entity is added to a Screen, the Screen
+		 * takes care of tracking all Entities and their types.
+		 *
+		 * Default is null, so we have no collision.
+		 */
+		this._types = null;
 	}
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
+	}
+
+	setTypes(a) {
+		if (!Array.isArray(a)) {
+			fail("${this}: setType() only accepts an array of types strings!");
+		}
+
+		this._types = a;
+
+		if (this._screen) {
+			this._screen._updateTypes(this);
+		}
+	}
+
+	getTypes() {
+		return this._types;
 	}
 
 	/**
@@ -63,6 +89,44 @@ class Entity {
 	 * Perform game logic here.
 	 */
 	update() {}
+
+	/**
+	 * Returns if this Entity instance collides with the Entity e
+	 * when this instance is placed at an optional position (x/y).
+	 *
+	 * @param {Entity} e
+	 * @param {Number} [x]
+	 * @param {Number} [y]
+	 * @returns {boolean} wether a collision is detected or not
+	 */
+	collidesWith(e, x, y) {
+		return Collision.checkAtPosition(this, e, x || this.x, y || this.y);
+	}
+
+	/**
+	 * Checks if this Entity instance collides with any other Entities of the given
+	 * type list inside its current screen.
+	 * All Entities inside the current screen will be checked for a collision.
+	 *
+	 * <b>Beware:</b>
+	 * This kind of collision might become more expensive, the more entities of
+	 * the given type exist.
+	 *
+	 * @param {string[]} types a list of constructor functions
+	 * @param {boolean} [returnAll] if set to true, all colliding entities are returned,
+	 *      if set to false only the first one is returned.
+	 *      Default is false.
+	 * @param {Number} [x]
+	 * @param {Number} [y]
+	 * @returns {Entity|undefined} either the first found colliding Entity, or undefined if no collision was detected
+	 */
+	collidesWithTypes(types, returnAll=false, x, y) {
+		if (this._screen) {
+			return this._screen._collidesWithType(this, types, returnAll, x || this.x, y || this.y);
+		} else {
+			warn("No collision check performed. The entity is not added to a Screen.");
+		}
+	}
 
 	/**
 	 * Sets a new sprite definition, including animations.

@@ -1,5 +1,6 @@
 import ArrayHelper from "../utils/ArrayHelper.js";
 import GFX from "../gfx/GFX.js";
+import EntityTypeStore from "./EntityTypeStore.js";
 import { error } from "../utils/Log.js";
 
 /**
@@ -62,6 +63,8 @@ class Screen {
 				return -1 * _camY;
 			}
 		};
+
+		this._entityTypeStore = new EntityTypeStore();
 	}
 
 	toString() {
@@ -127,6 +130,15 @@ class Screen {
 		}
 	}
 
+	/**
+	 * Updates the given Entitys collision types in the EntityTypeStore.
+	 * @param {Entity} e
+	 */
+	_updateTypes(e) {
+		this._entityTypeStore.remove(e);
+		this._entityTypeStore.add(e);
+	}
+
 	// Lifecycle hook, called once the Screen begins
 	begin() {}
 
@@ -148,6 +160,9 @@ class Screen {
 			var ea = this._toBeAdded[i];
 			this._entities.push(ea);
 			ea._screen = this;
+
+			this._entityTypeStore.add(ea);
+
 			ea.added();
 		}
 		this._toBeAdded = [];
@@ -158,6 +173,9 @@ class Screen {
 			var er = this._toBeRemoved[j];
 			ArrayHelper.remove(er, this._entities);
 			er._screen = null;
+
+			this._entityTypeStore.remove(ea);
+
 			er.removed();
 		}
 		this._toBeRemoved = [];
