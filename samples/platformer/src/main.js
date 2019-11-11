@@ -13,7 +13,7 @@ Engine.screen = new Screen();
 Engine.screen.layers(0).fixedCam = true;
 Engine.screen.layers(3).fixedCam = true;
 
-Entity.RENDER_HITBOXES = true;
+Entity.RENDER_HITBOXES = "#FF0085";
 
 /**
  * Simple Entity with input handling
