@@ -10,8 +10,17 @@ class Tile {
 		this.x = x;
 		this.y = y;
 		this.id = -1;
+		/**
+		 * Whether the tile takes part in a collision detection on the tilemap.
+		 * Default is false.
+		 */
+		this.isBlocking = false;
 
-		// by default the tile is not colored
+		/**
+		 * The tint-color of the tile.
+		 * Value is a CSS string e.g. "#FF0085"
+		 * By default the tile is not colored.
+		 */
 		this.color = undefined;
 	}
 

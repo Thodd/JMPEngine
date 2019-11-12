@@ -3,12 +3,14 @@ import { warn, error, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
 
+let INSTANCE_COUNT = 0;
+
 /**
  * Entity Constructor
  */
 class Entity {
 	constructor() {
-		this._ID = Entity.INSTANCE_COUNT++;
+		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;
 
@@ -256,7 +258,5 @@ class Entity {
 }
 
 Entity.RENDER_HITBOXES = false;
-
-Entity.INSTANCE_COUNT = 0;
 
 export default Entity;

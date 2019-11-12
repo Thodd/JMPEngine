@@ -3,6 +3,7 @@ import Grid from "../gfx/Grid.js";
 import { fail } from "../utils/Log.js";
 import Tile from "./Tile.js";
 import GFX from "../gfx/GFX.js";
+import Spritesheets from "../gfx/Spritesheets.js";
 
 let TILEMAP_COUNT = 0;
 
@@ -19,23 +20,27 @@ class Tilemap extends Entity {
 		this._name = `tilemap_${TILEMAP_COUNT}`;
 		TILEMAP_COUNT++;
 
+		this._isTilemap = true;
+
 		// dimensions
-		this.w = w;
-		this.h = h;
+		this._w = w;
+		this._h = h;
+		this._tileWidth = Spritesheets.getSheet(sheet).w;
+		this._tileHeight = Spritesheets.getSheet(sheet).h;
 
 		// register map on low-level API
 		Grid.create({
 			id: this._name,
 			sheet: sheet,
-			w: this.w,
-			h: this.h
+			w: this._w,
+			h: this._h
 		});
 
 		// create tile instances
 		this._field = [];
-		for (let x = 0; x < this.w; x++) {
+		for (let x = 0; x < this._w; x++) {
 			this._field[x] = [];
-			for (let y = 0; y < this.h; y++) {
+			for (let y = 0; y < this._h; y++) {
 				this._field[x][y] = new tileClass(this, x, y);
 			}
 		}

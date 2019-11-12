@@ -78,7 +78,7 @@ class Screen {
 	 * @param {int|undefined} i The layer position
 	 * @returns {Layer} the chosen layer
 	 */
-	layers(i) {
+	getLayers(i) {
 		if (i == null) {
 			return this._layers;
 		}

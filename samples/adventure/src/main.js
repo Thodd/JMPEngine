@@ -9,8 +9,8 @@ import Tilemap from "../../../src/game/Tilemap.js";
 import GFX from "../../../src/gfx/GFX.js";
 
 Engine.screen = new Screen();
-Engine.screen.layers(0).clearColor = "#333333";
-Engine.screen.layers(3).fixedCam = true;
+Engine.screen.getLayers(0).clearColor = "#333333";
+Engine.screen.getLayers(3).fixedCam = true;
 
 /**
  * Simple Entity with input handling

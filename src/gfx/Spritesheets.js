@@ -63,6 +63,14 @@ function init(manifest) {
 }
 
 /**
+ * Returns the sheet definition in the manifest.
+ * @param {string} sSheet
+ */
+function getSheet(sSheet) {
+	return _manifest.spritesheets[sSheet];
+}
+
+/**
  * Retrieves the (colorized) Sprite-Canvas from a spritesheet.
  * @param {string} sheet the name of the spritesheet
  * @param {int} id the id of the sprite inside the given spritesheet
@@ -104,5 +112,6 @@ function getCanvasFromSheet(sheet, id, sColor) {
 
 export default {
 	init,
-	getCanvasFromSheet
+	getCanvasFromSheet,
+	getSheet
 };

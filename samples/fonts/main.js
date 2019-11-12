@@ -6,7 +6,7 @@ import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 // First things first: create a new screen
 Engine.screen = new Screen();
-Engine.screen.layers(0).clearColor = "#333333"
+Engine.screen.getLayers(0).clearColor = "#333333"
 /**
  * Low-Level Text Rendering Demo
  */
