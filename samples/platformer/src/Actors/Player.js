@@ -18,9 +18,9 @@ class Player extends Actor {
 		// collision types & hitbox
 		this.setTypes(["player"]);
 		this.hitbox = {
-			x: 0,
+			x: 2,
 			y: 2,
-			w: 8,
+			w: 6,
 			h: 8
 		};
 
@@ -100,6 +100,11 @@ class Player extends Actor {
 			return;
 		}
 
+		// gravity
+		if (this.collidesWithTypes(["tiles"], true, this.x, this.y+1).length == 0) {
+			this.y += 1;
+		}
+
 		let xDif = 0;
 
 		if (Keyboard.down(Keys.LEFT)) {
@@ -122,8 +127,10 @@ class Player extends Actor {
 
 		let animType = "idle";
 		if (xDif != 0) {
-			this.x += xDif;
-			animType = "walk"
+			if (this.collidesWithTypes(["tiles"], true, this.x + xDif, this.y).length == 0) {
+				this.x += xDif;
+				animType = "walk"
+			}
 		}
 
 		this.playAnimation({name: `${animType}_${this._dirs.horizontal}${this._dirs.vertical}`});

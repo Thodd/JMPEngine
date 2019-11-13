@@ -52,7 +52,12 @@ class Tilemap extends Entity {
 	 * @param {number} y the y coordinate of the tile to get
 	 */
 	get(x, y) {
-		return this._field[x][y];
+		let col = this._field[x];
+		if (col) {
+			return col[y];
+		}
+		// no tile available at (x, y)
+		return undefined;
 	}
 
 	/**

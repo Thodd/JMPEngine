@@ -12,16 +12,24 @@ function checkTilemapCollision(e1, e2, x, y) {
 	// because otherwise the width/height of the hitbox would (correctly) end up in a different Tile
 	// for the grid collision the width/height of the hitbox is counted in pixels, the offset of the
 	// hit box being the first pixel to count (basically starting from 0)
-	var iLeft = x + e.hitbox.x;
-	var iRight = x + e.hitbox.x + e.hitbox.w - 1;
-	var iTop = y + e.hitbox.y;
-	var iBottom = y + e.hitbox.y + e.hitbox.h - 1;
+	let iLeft = x + e.hitbox.x;
+	let iRight = x + e.hitbox.x + e.hitbox.w - 1;
+	let iTop = y + e.hitbox.y;
+	let iBottom = y + e.hitbox.y + e.hitbox.h - 1;
 
-	var bCollideX = t.get(Math.floor(iRight / w), Math.floor(iTop / h)).isBlocking ||
-					t.get(Math.floor(iLeft / w), Math.floor(iTop / h)).isBlocking;
+	let dummyTile = {isBlocking: false};
 
-	var bCollideY = t.get(Math.floor(iRight / w), Math.floor(iBottom / h)).isBlocking ||
-					t.get(Math.floor(iLeft / w), Math.floor(iBottom / h)).isBlocking;
+	let tileTopRight = t.get(Math.floor(iRight / w), Math.floor(iTop / h)) || dummyTile;
+	let tileTopLeft = t.get(Math.floor(iLeft / w), Math.floor(iTop / h)) || dummyTile;
+
+	let bCollideX = tileTopRight.isBlocking ||
+					tileTopLeft.isBlocking;
+
+	let tileBottomRight = t.get(Math.floor(iRight / w), Math.floor(iBottom / h)) || dummyTile;
+	let tileBottomLeft = t.get(Math.floor(iLeft / w), Math.floor(iBottom / h)) || dummyTile;
+
+	let bCollideY = tileBottomRight.isBlocking ||
+					tileBottomLeft.isBlocking;
 
 	return bCollideX || bCollideY;
 
@@ -53,12 +61,12 @@ export default {
 		}
 
 		// entity1 is placed at (x, y), it is the entity performing the check
-		var iX1 = x + e1.hitbox.x;
-		var iY1 = y + e1.hitbox.y;
+		let iX1 = x + e1.hitbox.x;
+		let iY1 = y + e1.hitbox.y;
 
 		// entity2 is not offsetted, but still the hitbox offset is regarded
-		var iX2 = e2.x + e2.hitbox.x;
-		var iY2 = e2.y + e2.hitbox.y;
+		let iX2 = e2.x + e2.hitbox.x;
+		let iY2 = e2.y + e2.hitbox.y;
 
 		if (iX1 < iX2 + e2.hitbox.w &&
 			iX1 + e1.hitbox.w > iX2 &&
