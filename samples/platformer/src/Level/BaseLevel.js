@@ -37,8 +37,21 @@ class BaseLevel extends Screen {
 		}
 		this.add(t);
 
+		// tower
+		let tile = t.get(10, 10);
+		tile.set(11);
+		tile.isBlocking = true;
+
+		tile = t.get(10, 9);
+		tile.set(11);
+		tile.isBlocking = true;
+
+		tile = t.get(10, 8);
+		tile.set(11);
+		tile.isBlocking = true;
+
 		// demo entities
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 1; i++) {
 			let e = new Entity();
 			e.hitbox.w = 8;
 			e.hitbox.h = 8;

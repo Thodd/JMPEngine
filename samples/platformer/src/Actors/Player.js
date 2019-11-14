@@ -34,6 +34,12 @@ class Player extends Actor {
 		// gfx
 		this._setupGraphics();
 
+		// gameplay values
+		this._boost = 2;
+		this._dy = 0;
+		this._maxDy = 3;
+		this._gravity = 0.3;
+
 		// debug
 		window.player = this;
 	}
@@ -95,14 +101,48 @@ class Player extends Actor {
 	}
 
 	update() {
-		// delay the input a bit
-		if (this._inputDelay.isReady()) {
-			return;
+
+		// apply gravity
+		// roughly copied from this tutorial: https://nerdyteachers.com/Explain/Platformer/
+
+		// check what is below the player
+		let floorCollision = this.collidesWithTypes(["tiles"], true, this.x, this.y + 1);
+
+		if (floorCollision.length == 0) {
+			this._dy += this._gravity;
+			this.y += this._dy;
+			this.y = Math.round(this.y);
 		}
 
-		// gravity
-		if (this.collidesWithTypes(["tiles"], true, this.x, this.y+1).length == 0) {
-			this.y += 1;
+		// clamp
+		if (this._dy > 0) {
+			this._isFalling = true;
+			if (floorCollision.length > 0) {
+				this._isJumping = false;
+				this._dy = 0;
+				// move out of stuck tile
+				this.y -= ((this.y+this.hitbox.y+this.hitbox.h+1)%8)-1;
+			}
+		}
+
+		if (Keyboard.down(Keys.S) && !this._isFalling && this._isJumping && this._dy > -this._maxDy) {
+			this._dy -= 0.5;
+		} else {
+			this._isFalling = true;
+		}
+
+		// jump only when we stand on a floor
+		if (Keyboard.pressed(Keys.S) && floorCollision.length > 0) {
+			this._isJumping = true;
+			this._isFalling = false;
+			this._dy -= this._boost
+			this.y--;
+		}
+
+
+		// delay the input a bit
+		if (this._inputDelay.isReady()) {
+			//return;
 		}
 
 		let xDif = 0;
@@ -136,11 +176,7 @@ class Player extends Actor {
 		this.playAnimation({name: `${animType}_${this._dirs.horizontal}${this._dirs.vertical}`});
 
 		Engine.screen.cam.x = this.x - 70;
-		Engine.screen.cam.y = this.y - 78;
-
-		if (Keyboard.pressed(Keys.SPACE)) {
-			Engine.screen.remove(this);
-		}
+		//Engine.screen.cam.y = this.y - 78;
 	}
 
 }
