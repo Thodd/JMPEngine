@@ -101,26 +101,26 @@ class Player extends Actor {
 	}
 
 	update() {
-
-		// apply gravity
-		// roughly copied from this tutorial: https://nerdyteachers.com/Explain/Platformer/
-
 		// check what is below the player
 		let floorCollision = this.collidesWithTypes(["tiles"], true, this.x, this.y + 1);
 
+		// for simplicity we only apply y-movement (jumping AND falling)
+		// when there is at least 1px of space under the player
 		if (floorCollision.length == 0) {
 			this._dy += this._gravity;
 			this.y += this._dy;
 			this.y = Math.round(this.y);
 		}
 
-		// clamp
+		// handle falling
 		if (this._dy > 0) {
 			this._isFalling = true;
+			this._isJumping = false;
+			// recheck collision during falling
+			let floorCollision = this.collidesWithTypes(["tiles"], true, this.x, this.y + 1);
 			if (floorCollision.length > 0) {
-				this._isJumping = false;
 				this._dy = 0;
-				// move out of stuck tile
+				// move out of stuck tile, see: https://nerdyteachers.com/Explain/Platformer/
 				this.y -= ((this.y+this.hitbox.y+this.hitbox.h+1)%8)-1;
 			}
 		}
@@ -128,6 +128,7 @@ class Player extends Actor {
 		if (Keyboard.down(Keys.S) && !this._isFalling && this._isJumping && this._dy > -this._maxDy) {
 			this._dy -= 0.5;
 		} else {
+			// if the max y-delta is reached, we directly enter falling-state
 			this._isFalling = true;
 		}
 
