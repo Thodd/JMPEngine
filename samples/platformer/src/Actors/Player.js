@@ -110,16 +110,18 @@ class Player extends Actor {
 			this._dy += this._gravity;
 			this.y += this._dy;
 			this.y = Math.round(this.y);
+		} else {
+			// collision with floor: vertical movement is always stopped
+			this._dy = 0;
 		}
 
 		// handle falling
 		if (this._dy > 0) {
 			this._isFalling = true;
 			this._isJumping = false;
-			// recheck collision during falling
+			// recheck collision during falling because of changed y value, when gravity was applied
 			let floorCollision = this.collidesWithTypes(["tiles"], true, this.x, this.y + 1);
 			if (floorCollision.length > 0) {
-				this._dy = 0;
 				// move out of stuck tile, see: https://nerdyteachers.com/Explain/Platformer/
 				this.y -= ((this.y+this.hitbox.y+this.hitbox.h+1)%8)-1;
 			}
