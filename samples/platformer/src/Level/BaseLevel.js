@@ -3,6 +3,7 @@ import Entity from "../../../../src/game/Entity.js";
 import Tilemap from "../../../../src/game/Tilemap.js";
 import GFX from "../../../../src/gfx/GFX.js";
 import RNG from "../../../../src/utils/RNG.js";
+import Player from "../Actors/Player.js";
 
 class BaseLevel extends Screen {
 	constructor() {
@@ -37,7 +38,7 @@ class BaseLevel extends Screen {
 		}
 		this.add(t);
 
-		// tower
+		// block tower
 		let tile = t.get(10, 10);
 		tile.set(11);
 		tile.isBlocking = true;
@@ -66,7 +67,13 @@ class BaseLevel extends Screen {
 			this.add(e);
 		}
 
-		// text
+		// create player
+		let player = new Player(80, 40);
+		player.layer = 2;
+		this.add(player);
+		window.player = player; // only used for debugging (do NOT do this in a real game ;))
+
+		// text demo
 		let text = new Entity();
 		text.render = () => {
 			GFX.text("font0", 2, 2, "Platformer Demo", 3, "#000000");

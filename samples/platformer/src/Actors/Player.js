@@ -10,11 +10,6 @@ class Player extends Actor {
 	constructor(x, y) {
 		super(x, y);
 
-		// initial values
-		this.x = 70;
-		this.y = 78;
-		this.layer = 2;
-
 		// collision types & hitbox
 		this.setTypes(["player"]);
 		this.hitbox = {
@@ -35,9 +30,8 @@ class Player extends Actor {
 		this._setupGraphics();
 
 		// gameplay values
-		this._boost = 2;
-		this._dy = 0;
-		this._maxDy = 3;
+		this.hsp = 0;
+		this.vsp = 0;
 		this._gravity = 0.3;
 
 		// debug
@@ -101,55 +95,8 @@ class Player extends Actor {
 	}
 
 	update() {
-		// check what is below the player
-		let floorCollision = this.collidesWithTypes(["tiles"], true, this.x, this.y + 1);
-
-		// for simplicity we only apply y-movement (jumping AND falling)
-		// when there is at least 1px of space under the player
-		if (floorCollision.length == 0) {
-			this._dy += this._gravity;
-			this.y += this._dy;
-			this.y = Math.round(this.y);
-		} else {
-			// collision with floor: vertical movement is always stopped
-			this._dy = 0;
-		}
-
-		// handle falling
-		if (this._dy > 0) {
-			this._isFalling = true;
-			this._isJumping = false;
-			// recheck collision during falling because of changed y value, when gravity was applied
-			let floorCollision = this.collidesWithTypes(["tiles"], true, this.x, this.y + 1);
-			if (floorCollision.length > 0) {
-				// move out of stuck tile, see: https://nerdyteachers.com/Explain/Platformer/
-				this.y -= ((this.y+this.hitbox.y+this.hitbox.h+1)%8)-1;
-			}
-		}
-
-		if (Keyboard.down(Keys.S) && !this._isFalling && this._isJumping && this._dy > -this._maxDy) {
-			this._dy -= 0.5;
-		} else {
-			// if the max y-delta is reached, we directly enter falling-state
-			this._isFalling = true;
-		}
-
-		// jump only when we stand on a floor
-		if (Keyboard.pressed(Keys.S) && floorCollision.length > 0) {
-			this._isJumping = true;
-			this._isFalling = false;
-			this._dy -= this._boost
-			this.y--;
-		}
-
-
-		// delay the input a bit
-		if (this._inputDelay.isReady()) {
-			//return;
-		}
-
+		// check for the horizontal movement direction
 		let xDif = 0;
-
 		if (Keyboard.down(Keys.LEFT)) {
 			xDif = -1;
 			this._dirs.horizontal = "left";
@@ -158,6 +105,7 @@ class Player extends Actor {
 			this._dirs.horizontal = "right";
 		}
 
+		// check if the player is looking up for shooting
 		if (Keyboard.down(Keys.UP)) {
 			this._dirs.vertical = "up";
 		} else if (Keyboard.down(Keys.DOWN)) {
@@ -168,16 +116,44 @@ class Player extends Actor {
 			this._dirs.vertical = "";
 		}
 
-		let animType = "idle";
-		if (xDif != 0) {
-			if (this.collidesWithTypes(["tiles"], true, this.x + xDif, this.y).length == 0) {
-				this.x += xDif;
-				animType = "walk"
-			}
+		// calculate horizontal speed
+		this.hsp = xDif * 1;
+
+		// vertical speed is based on the gravity value
+		this.vsp = this.vsp + this._gravity;
+
+		if (this.collidesWithTypes(["tiles"], false, this.x, this.y + 1) && Keyboard.pressed(Keys.S)) {
+			this.vsp = -4;
 		}
 
+		// we only use the walk animations if we have a horizontal movement
+		let animType = "idle";
+		if (this.hsp != 0) {
+			animType = "walk"
+		}
+
+		// horizontal collision checks
+		if (this.collidesWithTypes(["tiles"], true, this.x + this.hsp, this.y).length > 0) {
+			while(this.collidesWithTypes(["tiles"], true, this.x + Math.sign(this.hsp), this.y).length == 0) {
+				this.x = this.x + Math.sign(this.hsp);
+			}
+			this.hsp = 0;
+		}
+		this.x += this.hsp;
+
+		// vertical collision checks
+		if (this.collidesWithTypes(["tiles"], true, this.x, this.y + this.vsp).length > 0) {
+			while(this.collidesWithTypes(["tiles"], true, this.x, this.y + Math.sign(this.vsp)).length == 0) {
+				this.y = this.y + Math.sign(this.vsp);
+			}
+			this.vsp = 0;
+		}
+		this.y += Math.floor(this.vsp); // floor the vsp so we don't end up on sub-pixels
+
+		// play whatever animation
 		this.playAnimation({name: `${animType}_${this._dirs.horizontal}${this._dirs.vertical}`});
 
+		// move camera with player
 		Engine.screen.cam.x = this.x - 70;
 		//Engine.screen.cam.y = this.y - 78;
 	}

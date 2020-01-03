@@ -174,7 +174,12 @@ class Screen {
 				}
 			}
 		}
-		return result;
+
+		if (returnAll) {
+			return result; // result array
+		} else {
+			return undefined; // no collision found
+		}
 	}
 
 	// Lifecycle hook, called once the Screen begins
