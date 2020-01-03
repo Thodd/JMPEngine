@@ -32,7 +32,7 @@ class Player extends Actor {
 		// gameplay values
 		this.hsp = 0;
 		this.vsp = 0;
-		this._gravity = 0.3;
+		this._gravity = 0.2;
 
 		// debug
 		window.player = this;
@@ -123,7 +123,7 @@ class Player extends Actor {
 		this.vsp = this.vsp + this._gravity;
 
 		if (this.collidesWithTypes(["tiles"], false, this.x, this.y + 1) && Keyboard.pressed(Keys.S)) {
-			this.vsp = -4;
+			this.vsp = -3;
 		}
 
 		// we only use the walk animations if we have a horizontal movement
