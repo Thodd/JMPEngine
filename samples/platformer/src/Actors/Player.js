@@ -30,6 +30,7 @@ class Player extends Actor {
 		this._setupGraphics();
 
 		// gameplay values
+		this._useVariableJump = true;
 		this._hsp = 0;
 		this._vsp = 0;
 		this._gravity = 0.2;
@@ -125,6 +126,11 @@ class Player extends Actor {
 	}
 
 	update() {
+		/**
+		 * Part of the platformer sample implementation is based on Shaun Spalding's tutorial:
+		 * https://www.youtube.com/watch?v=izNXbMdu348
+		 */
+
 		// check for the horizontal movement direction
 		let xDif = 0;
 		if (Keyboard.down(Keys.LEFT)) {
@@ -146,15 +152,36 @@ class Player extends Actor {
 		// calculate horizontal speed
 		this._hsp = xDif * 1;
 
-		// vertical speed is based on the gravity value
+		// vertical speed is based on the gravity
+		// gravity is constantly applied; so once the player steps of a tile, the gravity is also triggered
 		this._vsp = this._vsp + this._gravity;
 
+		// check if the player is standing on a tile and the jump button was pressed
 		if (this.collidesWithTypes(["tiles"], false, this.x, this.y + 1) && Keyboard.pressed(Keys.S)) {
-			this._vsp = -4;
+			if (this._useVariableJump) {
+				this._vsp = -1; // minimum jump-boost
+				this._boosting = true;
+			} else {
+				this._vsp = -4;
+			}
+		}
+
+		// variable jump height
+		if (this._useVariableJump) {
+			if (this._boosting && Keyboard.wasPressedOrIsDown(Keys.S)) {
+				this._vsp -= 0.5;
+				if (this._vsp <= -3.5) {
+					this._boosting = false;
+				}
+			} else {
+				this._boosting = false;
+			}
 		}
 
 		// horizontal collision checks
+		// if the player would collide with a tile on his next movement we snap the player to the tile
 		if (this.collidesWithTypes(["tiles"], true, this.x + this._hsp, this.y).length > 0) {
+			// as long as we can move the player closer to the colliding wall we move the entity step by step
 			while(this.collidesWithTypes(["tiles"], true, this.x + Math.sign(this._hsp), this.y).length == 0) {
 				this.x = this.x + Math.sign(this._hsp);
 			}
@@ -162,7 +189,8 @@ class Player extends Actor {
 		}
 		this.x += this._hsp;
 
-		// vertical collision checks
+		// vertical collision checks: jumping & falling
+		// same as with horizontal collision
 		// we "ceil" the vsp value, so we don't try to check for sub-pixels, since the gravity is between 0 and 1
 		if (this.collidesWithTypes(["tiles"], true, this.x, this.y + Math.ceil(this._vsp)).length > 0) {
 			while(this.collidesWithTypes(["tiles"], true, this.x, this.y + Math.sign(this._vsp)).length == 0) {
