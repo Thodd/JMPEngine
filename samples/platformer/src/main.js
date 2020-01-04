@@ -3,7 +3,7 @@ import Entity from "../../../src/game/Entity.js";
 
 import BaseLevel from "./Level/BaseLevel.js";
 
-Entity.RENDER_HITBOXES = "#FF0085";
+//Entity.RENDER_HITBOXES = "#FF0085";
 
 // base level
 Engine.screen = new BaseLevel();
