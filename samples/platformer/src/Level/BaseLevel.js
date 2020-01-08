@@ -3,14 +3,15 @@ import Entity from "../../../../src/game/Entity.js";
 import Tilemap from "../../../../src/game/Tilemap.js";
 import GFX from "../../../../src/gfx/GFX.js";
 import RNG from "../../../../src/utils/RNG.js";
+import ArrayHelper from "../../../../src/utils/ArrayHelper.js";
 import Player from "../Actors/Player.js";
 
 class BaseLevel extends Screen {
 	constructor() {
 		super();
 
-		this.getLayers(0).fixedCam = true;
-		this.getLayers(3).fixedCam = true;
+		this.getLayers(0).fixedCam = true; // BG
+		this.getLayers(3).fixedCam = true; // Text, e.g. HUD
 
 		// background
 		let bg = new Entity();
@@ -34,7 +35,7 @@ class BaseLevel extends Screen {
 		for (let x = 0; x < 16; x++) {
 			let tile = t.get(x, 11);
 			tile.isBlocking = true;
-			tile.set(11);
+			tile.set(ArrayHelper.choose([11, 12, 13, 14, 15]));
 		}
 		this.add(t);
 
@@ -44,7 +45,7 @@ class BaseLevel extends Screen {
 		tile.isBlocking = true;
 
 		tile = t.get(10, 9);
-		tile.set(11);
+		tile.set(ArrayHelper.choose([11, 12, 13, 14, 15]));
 		tile.isBlocking = true;
 
 		tile = t.get(10, 8);

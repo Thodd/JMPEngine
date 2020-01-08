@@ -9,7 +9,7 @@ let INSTANCE_COUNT = 0;
  * Entity Constructor
  */
 class Entity {
-	constructor() {
+	constructor(x=0, y=0) {
 		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;
@@ -20,8 +20,8 @@ class Entity {
 
 		// gfx
 		this._spriteConfig = null;
-		this.x = 0;
-		this.y = 0;
+		this.x = x;
+		this.y = y;
 		this.layer = 0;
 
 		// collision

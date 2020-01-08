@@ -2,9 +2,7 @@ import Entity from "../../../../src/game/Entity";
 
 class BaseActor extends Entity {
 	constructor(x, y) {
-		super();
-		this.x = x;
-		this.y = y;
+		super(x, y);
 	}
 }
 
