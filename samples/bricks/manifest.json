@@ -1,0 +1,28 @@
+{
+	"title": "Bricks",
+
+	"main": "./src/main.js",
+
+	"w": 256,
+	"h": 192,
+	"scale": 1.5,
+	"fps": 60,
+	"hideCursor": false,
+
+	"fonts": {},
+
+	"spritesheets": {
+		"UI": {
+			"url": "./img/UI.png",
+			"w": 256,
+			"h": 192
+		},
+		"bricks": {
+			"url": "./img/Bricks.png",
+			"w": 8,
+			"h": 8
+		}
+	},
+
+	"sounds": {}
+}
