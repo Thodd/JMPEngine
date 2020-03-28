@@ -26,9 +26,14 @@ class GameScreen extends Screen {
 
 		Well.init(this);
 
-		let p = new Piece(0, 0, Piece.getRandomPieceType());
-
+		// create a new piece and implicitly add it as the "currentPiece" to the Well
+		let p = new Piece(Piece.getRandomPieceType());
 		Well.addPiece(p);
+
+		// setInterval(() => {
+		// 	let p = Well.getCurrentPiece();
+		// 	Well.movePiece(p, 0, 1);
+		// }, 500)
 	}
 }
 

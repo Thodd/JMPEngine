@@ -3,13 +3,14 @@ import Well from "./Well.js";
 import Spritesheets from "../../../src/gfx/Spritesheets.js";
 
 class Brick extends Entity {
-	constructor(piece, x, y, color) {
+	constructor(piece, color) {
 		// initial position of the entity is irrelevant
 		// we update the render coordinates later
 		super(0, 0);
 
-		this.well_x = x;
-		this.well_y = y;
+		// the bricks are positioned relative to the piece
+		this.x_rel = 0;
+		this.y_rel = 0;
 
 		this.piece = piece;
 
@@ -24,8 +25,8 @@ class Brick extends Entity {
 	updateVisualPosition() {
 		// calculate the screen position of the brick, based on the individual well position (x, y)
 		let sheet = Spritesheets.getSheet("bricks");
-		this.x = (Well.ORIGIN_X + this.piece.well_x + this.well_x) * sheet.w;
-		this.y = (Well.ORIGIN_Y + this.piece.well_y + this.well_y) * sheet.h;
+		this.x = (Well.ORIGIN_X + this.piece.well_x + this.x_rel) * sheet.w;
+		this.y = (Well.ORIGIN_Y + this.piece.well_y + this.y_rel) * sheet.h;
 	}
 }
 
