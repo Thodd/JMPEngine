@@ -8,6 +8,8 @@ class Brick extends Entity {
 		// we update the render coordinates later
 		super(0, 0);
 
+		this.layer = 1;
+
 		// the bricks are positioned relative to the piece
 		this.x_rel = 0;
 		this.y_rel = 0;

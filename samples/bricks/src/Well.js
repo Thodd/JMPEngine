@@ -33,10 +33,25 @@ const Well = {
 	},
 
 	rotatePiece(p, dir) {
-		let collision = this.pieceCanBeMovedTo(p, 0, 0, p.getBrickRotationCoordinates(dir));
-		// no collision found, rotate piece and update field
+		let newBricksRelCoords = p.getBrickRotationCoordinates(dir);
+		let collision = this.pieceCanBeMovedTo(p, 0, 0, newBricksRelCoords);
+
+		// no collision found at the intended rotation position
 		if (!collision) {
 			this._updatePiece(p, p.rotate.bind(p, dir));
+		} else {
+			// simple rotation doesn't work, so try a wall- or floorkick
+
+
+			// TODO: check if piece is bordering on the wall
+			// --> any one of the newBricksRelCoords is < 0 OR any one of newBricksRelCoords > Well.width
+
+
+			// floor kick
+			collision = this.pieceCanBeMovedTo(p, 0, -1, newBricksRelCoords);
+			if (!collision) {
+				this._updatePiece(p, p.rotate.bind(p, dir, 0, -1));
+			}
 		}
 	},
 

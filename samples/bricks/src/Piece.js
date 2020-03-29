@@ -6,8 +6,8 @@ class Piece {
 		this.type = type;
 		this.bricks = [];
 
-		this.well_x = type.origin.x;
-		this.well_y = type.origin.y;
+		this.well_x = 0;
+		this.well_y = 0;
 
 		this.rotationIndex = 0;
 
@@ -17,15 +17,21 @@ class Piece {
 		this.bricks.push(new Brick(this, this.type.color));
 		this.bricks.push(new Brick(this, this.type.color));
 
-		// ...we update the position now based on the rotation
-		this.updateBricks();
-
+		// ...we update the actual position now based on the rotation
+		this._updateBricks(type.origin.x, type.origin.y);
 	}
 
-	rotate(dir) {
-		// update rotation index so we get the correct relative brick coordinates during updateBricks
-		this.rotationIndex = this._getNextRotationIndex(dir);
-		this.updateBricks();
+	rotate(dir, xDif=0, yDif=0) {
+		this._updateBricks(xDif, yDif, dir);
+	}
+
+	move(xDif=0, yDif=0) {
+		this._updateBricks(xDif, yDif);
+	}
+
+	getBrickRotationCoordinates(dir) {
+		let index = this._getNextRotationIndex(dir);
+		return this.type.rotation[index];
 	}
 
 	_getNextRotationIndex(dir) {
@@ -44,12 +50,14 @@ class Piece {
 		return index;
 	}
 
-	getBrickRotationCoordinates(dir) {
-		let index = this._getNextRotationIndex(dir);
-		return this.type.rotation[index];
-	}
+	_updateBricks(xDif, yDif, dir) {
+		// update x/y position
+		this.well_x += xDif;
+		this.well_y += yDif;
 
-	updateBricks() {
+		// update rotation index so we get the correct relative brick coordinates during updateBricks
+		this.rotationIndex = this._getNextRotationIndex(dir);
+
 		// change position of the single bricks in the well
 		this.getBrickRotationCoordinates().forEach((r, i) => {
 			this.bricks[i].x_rel = r.x;
@@ -57,17 +65,6 @@ class Piece {
 		});
 
 		// trigger visual update
-		for (let b of this.bricks) {
-			b.updateVisualPosition();
-		}
-	}
-
-	move(xDif, yDif) {
-		// update own position
-		this.well_x += xDif;
-		this.well_y += yDif;
-
-		// trigger visual positioning of bricks relative to the piece
 		for (let b of this.bricks) {
 			b.updateVisualPosition();
 		}
