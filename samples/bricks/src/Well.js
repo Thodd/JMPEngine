@@ -1,4 +1,4 @@
-import { error } from "../../../src/utils/Log.js";
+import { log } from "../../../src/utils/Log.js";
 
 let currScreen;
 let field = [];
@@ -42,12 +42,28 @@ const Well = {
 		} else {
 			// simple rotation doesn't work, so try a wall- or floorkick
 
+			// wallkicks
+			if (p.well_x == 0) { // piece sits on left wall
+				log("bitw_l");
+				// try to move the piece one tile to the right
+				collision = this.pieceCanBeMovedTo(p, 1, 0, newBricksRelCoords);
+				if (!collision) {
+					this._updatePiece(p, p.rotate.bind(p, dir, 1, 0));
+					return;
+				}
+			} else {
+				if (p.well_x == Well.WIDTH - 1) { // piece sits on right wall
+					log("bitw_r");
+					// try to move the piece one tile to the right
+					collision = this.pieceCanBeMovedTo(p, -1, 0, newBricksRelCoords);
+					if (!collision) {
+						this._updatePiece(p, p.rotate.bind(p, dir, -1, 0));
+						return;
+					}
+				}
+			}
 
-			// TODO: check if piece is bordering on the wall
-			// --> any one of the newBricksRelCoords is < 0 OR any one of newBricksRelCoords > Well.width
-
-
-			// floor kick
+			// floorkick if wallkick didn't work
 			collision = this.pieceCanBeMovedTo(p, 0, -1, newBricksRelCoords);
 			if (!collision) {
 				this._updatePiece(p, p.rotate.bind(p, dir, 0, -1));
@@ -119,7 +135,7 @@ const Well = {
 			}
 		} catch(e) {
 			collision = true;
-			error(`moving piece not possible, bricks are out of bounds: (${p.well_x}, ${p.well_y})`);
+			// log(`moving piece not possible, bricks are out of bounds: (${p.well_x}, ${p.well_y})`, "Well");
 		}
 
 		return collision;
