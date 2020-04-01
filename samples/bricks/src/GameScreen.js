@@ -5,11 +5,10 @@ import Entity from "../../../src/game/Entity.js";
 import Well from "./Well.js";
 import RNG from "../../../src/utils/RNG.js";
 import GFX from "../../../src/gfx/GFX.js";
-
-/**
- * w: 10
- * h: 20
- */
+import FrameCounter from "../../../src/utils/FrameCounter.js";
+import { error } from "../../../src/utils/Log.js";
+import Keyboard from "../../../src/input/Keyboard.js";
+import Keys from "../../../src/input/Keys.js";
 
 class GameScreen extends Screen {
 	constructor() {
@@ -24,24 +23,75 @@ class GameScreen extends Screen {
 		});
 		this.add(bg);
 
+		this.inputDelay = new FrameCounter(3);
+
+		this.dropCounter = new FrameCounter(90);
+
 		Well.init(this);
 
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
 		let p = new Piece(Piece.getRandomPieceType());
 		Well.addPiece(p);
-		Well.movePiece(p, 0, 10);
+	}
 
-		p = new Piece(Piece.getRandomPieceType());
-		Well.addPiece(p);
-		Well.movePiece(p, 3, 10);
+	update() {
+		super.update();
+		let moved = false;
 
-		p = new Piece(Piece.getRandomPieceType());
-		Well.addPiece(p);
+		if (Keyboard.pressed(Keys.LEFT)) {
+			Well.movePiece(Well.getCurrentPiece(), -1, 0);
+			moved = true;
+		} else if (Keyboard.pressed(Keys.RIGHT)) {
+			Well.movePiece(Well.getCurrentPiece(), 1, 0);
+			moved = true;
+		} else if (Keyboard.pressed(Keys.DOWN)) {
+			this.dropPiece();
+			moved = true;
+		}
 
-		// setInterval(() => {
-		// 	let p = Well.getCurrentPiece();
-		// 	Well.movePiece(p, 0, 1);
-		// }, 500)
+		// move piece if not already done via single button press
+		if (!moved) {
+			// with a delay so it's not to fast for the player
+			if (this.inputDelay.isReady()) {
+				if (Keyboard.down(Keys.LEFT)) {
+					Well.movePiece(Well.getCurrentPiece(), -1, 0);
+				} else if (Keyboard.down(Keys.RIGHT)) {
+					Well.movePiece(Well.getCurrentPiece(), 1, 0);
+				} else if (Keyboard.down(Keys.DOWN)) {
+					this.dropPiece()
+				}
+			}
+		} else {
+			// If a piece was moved through a button-press we reset the delay.
+			// This is done
+			this.inputDelay.reset();
+		}
+
+		// rotate piece
+		// no delay, as these are presses
+		if (Keyboard.pressed(Keys.S)) {
+			Well.rotatePiece(Well.getCurrentPiece(), Piece.DIRECTIONS.LEFT);
+		} else if (Keyboard.pressed(Keys.D)) {
+			Well.rotatePiece(Well.getCurrentPiece(), Piece.DIRECTIONS.RIGHT);
+		}
+
+		// drop piece
+		if (this.dropCounter.isReady()) {
+			// move the current piece down one row
+			this.dropPiece();
+		}
+	}
+
+	dropPiece() {
+		// if a collision was detected -> we lock the piece and create a new one
+		let locked = Well.movePiece(Well.getCurrentPiece(), 0, 1);
+		if (locked) {
+			let gameOver = Well.addPiece(new Piece(Piece.getRandomPieceType()));
+			if (gameOver) {
+				error("GAME OVER", "GameScreen");
+			}
+		}
+		return locked;
 	}
 
 	render() {

@@ -1,3 +1,4 @@
+import { contains, remove } from "../utils/ArrayHelper.js";
 import { log, warn } from "../utils/Log.js";
 
 let aKeyDownList = [];
@@ -5,12 +6,28 @@ let aPressedList = [];
 let iPressedCount = 0;
 let aSymbolicNames = [];
 
+let mEventHandlers = {
+	"all": []
+};
+
 //Keeps track of downed keys
 function fnKeyDownHandler(evt) {
 	if (!aKeyDownList[evt.keyCode]) {
 		aKeyDownList[evt.keyCode] = true;
 		aPressedList[iPressedCount++] = evt.keyCode;
 	}
+
+	// registered handlers on specific keys
+	if (mEventHandlers[evt.keyCode]) {
+		mEventHandlers[evt.keyCode].forEach(function(fn) {
+			fn();
+		});
+	}
+
+	// handlers on "all" keys
+	mEventHandlers["all"].forEach(function(fn) {
+		fn();
+	});
 }
 
 //keeps track of upped keys
@@ -42,6 +59,45 @@ function init() {
 	return _reset;
 }
 
+/**
+ * Register to a browser keydown event.
+ * The handlers are directly called once a browser event occurs.
+ * However you can call the Keyboard polling functions to check the state of all pressed/down keys.
+ *
+ * @param {*} key
+ * @param {*} handler
+ */
+function register(key, handler) {
+	// no key given -> register to a general keydown event
+	if (typeof key === "function" && !handler) {
+		handler = key;
+		key = "all";
+	}
+
+	mEventHandlers[key] = mEventHandlers[key] || [];
+	if (!contains(handler, mEventHandlers[key])) {
+		mEventHandlers[key].push(handler);
+	}
+}
+
+/**
+ * Deregisters a previously registered Keyboard event handler.
+ *
+ * @param {*} key
+ * @param {*} handler
+ */
+function deregister(key, handler) {
+	// no key given -> deregister to a general keydown event
+	if (typeof key === "function") {
+		handler = key;
+		key = "all";
+	}
+
+	let list = mEventHandlers[key];
+	if (list) {
+		remove(handler, mEventHandlers[key]);
+	}
+}
 
 //Define symbolic names (strings) as placeholders for Key-Values
 function define(symbols) {
@@ -56,24 +112,23 @@ function define(symbols) {
 	}
 }
 
-//Check if a given Key (symbolic string or number) is down
-function down(key) {
+function resolveKey(key) {
 	var t = typeof (key);
 	if (t === "string") {
-		return (aKeyDownList[aSymbolicNames[key]]);
+		return aSymbolicNames[key];
 	} else if (t === "number") {
-		return aKeyDownList[key];
+		return key;
 	}
+}
+
+//Check if a given Key (symbolic string or number) is down
+function down(key) {
+	return aKeyDownList[resolveKey(key)];
 }
 
 //check if the given key was pressed in the last frame
 function pressed(key) {
-	var t = typeof (key);
-	if (t === "string") {
-		return (aPressedList.indexOf(aSymbolicNames[key]) >= 0);
-	} else if (t === "number") {
-		return (aPressedList.indexOf(key) >= 0);
-	}
+	return (aPressedList.indexOf(resolveKey(key)) >= 0);
 }
 
 // checks if the key was either pressed or is down
@@ -164,5 +219,7 @@ export default {
 	define,
 	down,
 	pressed,
-	wasPressedOrIsDown
+	wasPressedOrIsDown,
+	register,
+	deregister
 };

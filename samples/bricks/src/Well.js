@@ -17,8 +17,16 @@ const Well = {
 	},
 
 	addPiece(p, isCurrentPiece=true) {
+		let overlap = false;
+
 		// mark bricks of the piece in well
 		for (let b of p.bricks) {
+			// if the field coordinates are already marked with a brick we know that the player has reached a game-over
+			let pos = field[p.well_x + b.x_rel][p.well_y + b.y_rel];
+			if (pos) {
+				overlap = true;
+			}
+			// update the coordinates anyway
 			field[p.well_x + b.x_rel][p.well_y + b.y_rel] = b;
 		}
 
@@ -30,6 +38,8 @@ const Well = {
 		if (isCurrentPiece) {
 			currentPiece = p;
 		}
+
+		return overlap;
 	},
 
 	rotatePiece(p, dir) {
@@ -49,7 +59,6 @@ const Well = {
 				collision = this.pieceCanBeMovedTo(p, 1, 0, newBricksRelCoords);
 				if (!collision) {
 					this._updatePiece(p, p.rotate.bind(p, dir, 1, 0));
-					return;
 				}
 			} else {
 				if (p.well_x == Well.WIDTH - 1) { // piece sits on right wall
@@ -58,17 +67,18 @@ const Well = {
 					collision = this.pieceCanBeMovedTo(p, -1, 0, newBricksRelCoords);
 					if (!collision) {
 						this._updatePiece(p, p.rotate.bind(p, dir, -1, 0));
-						return;
+					}
+				} else {
+					// floorkick if wallkick didn't work
+					collision = this.pieceCanBeMovedTo(p, 0, -1, newBricksRelCoords);
+					if (!collision) {
+						this._updatePiece(p, p.rotate.bind(p, dir, 0, -1));
 					}
 				}
 			}
 
-			// floorkick if wallkick didn't work
-			collision = this.pieceCanBeMovedTo(p, 0, -1, newBricksRelCoords);
-			if (!collision) {
-				this._updatePiece(p, p.rotate.bind(p, dir, 0, -1));
-			}
 		}
+		return collision;
 	},
 
 	movePiece(p, xDif, yDif) {
@@ -77,6 +87,7 @@ const Well = {
 		if (!collision) {
 			this._updatePiece(p, p.move.bind(p, xDif, yDif));
 		}
+		return collision;
 	},
 
 	/**
