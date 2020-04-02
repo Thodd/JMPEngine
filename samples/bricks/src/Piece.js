@@ -76,7 +76,9 @@ Piece.DIRECTIONS = {
 	RIGHT: "right"
 };
 
-Piece.L = {
+Piece.TYPES = {};
+
+Piece.TYPES.L = {
 	name: "L",
 	color: Brick.COLORS.PINK,
 	origin: {x: 5, y: 1},
@@ -87,7 +89,7 @@ Piece.L = {
 		[{x:  0, y: -1}, {x:  0, y:  0}, {x:  0, y: +1}, {x: +1, y: +1}]
 	]
 };
-Piece.J = {
+Piece.TYPES.J = {
 	name: "J",
 	color: Brick.COLORS.RED,
 	origin: {x: 5, y: 1},
@@ -98,7 +100,7 @@ Piece.J = {
 		[{x:  0, y: -1}, {x: +1, y: -1}, {x:  0, y:  0}, {x:  0, y: +1}]
 	]
 };
-Piece.Z = {
+Piece.TYPES.Z = {
 	name: "Z",
 	color: Brick.COLORS.GREEN,
 	origin: {x: 5, y: 1},
@@ -107,7 +109,7 @@ Piece.Z = {
 		[{x: +1, y: -1}, {x:  0, y:  0}, {x: +1, y:  0}, {x:  0, y: +1}]
 	]
 };
-Piece.S = {
+Piece.TYPES.S = {
 	name: "S",
 	color: Brick.COLORS.BLUE,
 	origin: {x: 5, y: 1},
@@ -116,7 +118,7 @@ Piece.S = {
 		[{x:  0, y: -1}, {x:  0, y:  0}, {x: +1, y:  0}, {x: +1, y: +1}]
 	]
 };
-Piece.I = {
+Piece.TYPES.I = {
 	name: "I",
 	color: Brick.COLORS.PETROL,
 	origin: {x: 5, y: 1},
@@ -125,7 +127,7 @@ Piece.I = {
 		[{x:  0, y: -1}, {x:  0, y:  0}, {x:  0, y: +1}, {x:  0, y: +2}]
 	]
 };
-Piece.T = {
+Piece.TYPES.T = {
 	name: "T",
 	color: Brick.COLORS.YELLOW,
 	origin: {x: 5, y: 1},
@@ -136,7 +138,7 @@ Piece.T = {
 		[{x:  0, y: -1}, {x: -1, y:  0}, {x:  0, y:  0}, {x:  0, y: +1}]
 	]
 };
-Piece.O = {
+Piece.TYPES.O = {
 	name: "O",
 	color: Brick.COLORS.GRAY,
 	origin: {x: 4, y: 1},
@@ -145,7 +147,7 @@ Piece.O = {
 	]
 };
 
-const allPieces = [Piece.L, Piece.J, Piece.Z, Piece.S, Piece.I, Piece.T, Piece.O];
+const allPieces = [Piece.TYPES.L, Piece.TYPES.J, Piece.TYPES.Z, Piece.TYPES.S, Piece.TYPES.I, Piece.TYPES.T, Piece.TYPES.O];
 
 Piece.getRandomPieceType = () => {
 	return ArrayHelper.choose(allPieces);

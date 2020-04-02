@@ -9,6 +9,7 @@ import FrameCounter from "../../../src/utils/FrameCounter.js";
 import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
+import PieceBag from "./PieceBag.js";
 
 class GameScreen extends Screen {
 	constructor() {
@@ -29,8 +30,9 @@ class GameScreen extends Screen {
 
 		Well.init(this);
 
+		this.pieceBag = new PieceBag();
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
-		let p = new Piece(Piece.getRandomPieceType());
+		let p = new Piece(this.pieceBag.next());
 		Well.addPiece(p);
 	}
 

@@ -1,4 +1,5 @@
 import GFX from "../gfx/GFX.js";
+import Spritesheets from "../gfx/Spritesheets.js";
 import { warn, error, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
@@ -22,6 +23,14 @@ class Entity {
 		this._spriteConfig = null;
 		this.x = x;
 		this.y = y;
+		// scale: (x,y) are the origin coordinates, w & h are the scaling factors for width and height
+		this.scale = {
+			x: 0,
+			y: 0,
+			w: 1,
+			h: 1
+		};
+
 		this.layer = 0;
 
 		// collision
@@ -137,7 +146,7 @@ class Entity {
 	 * @param {object} config
 	 */
 	setSprite(config) {
-		this._spriteConfig = Object.assign(config);
+		this._spriteConfig = Object.assign({}, config);
 
 		// check if the new sprite def has animations
 		// if not we asume a valid single sprite definition
@@ -227,7 +236,7 @@ class Entity {
 		// only try to render if we have either an animation or a default sprite config
 		if (this._currentAnimation || this._spriteConfig) {
 
-			// three possibile render value locations with the following priority
+			// three possible render value locations with the following priority
 			// 1. Animation, 2. Default Sprite, 3. None (empty object)
 			let anim = this._currentAnimation || {};
 			let defaultSprite = this._spriteConfig || {};
@@ -239,12 +248,15 @@ class Entity {
 			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
 			let color = anim.color || defaultSprite.color;
 
-			var dx = this.x + (offsetX || 0);
-			var dy = this.y + (offsetY || 0);
+			var sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id);
+			let dx = this.x + (offsetX || 0) - this.scale.x;
+			let dy = this.y + (offsetY || 0) - this.scale.y;
+			let dw = sprCanvas.width * this.scale.w;
+			let dh = sprCanvas.height * this.scale.h;
 
 			// sheet, id, layer, x, y, w, h, color
 			// width and height are undefined, because we want the default value from the actual sprite
-			GFX.spr_ext(sheet, id, dx, dy, undefined, undefined, this.layer, color);
+			GFX.spr_ext(sheet, id, dx, dy, dw, dh, this.layer, color);
 		}
 
 		if (Entity.RENDER_HITBOXES) {
