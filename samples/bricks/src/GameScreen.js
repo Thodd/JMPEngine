@@ -26,7 +26,7 @@ class GameScreen extends Screen {
 
 		this.inputDelay = new FrameCounter(3);
 
-		this.dropCounter = new FrameCounter(90);
+		this.dropTimer = new FrameCounter(90);
 
 		Well.init(this);
 
@@ -40,6 +40,7 @@ class GameScreen extends Screen {
 		super.update();
 		let moved = false;
 
+		// button presses
 		if (Keyboard.pressed(Keys.LEFT)) {
 			Well.movePiece(Well.getCurrentPiece(), -1, 0);
 			moved = true;
@@ -60,12 +61,15 @@ class GameScreen extends Screen {
 				} else if (Keyboard.down(Keys.RIGHT)) {
 					Well.movePiece(Well.getCurrentPiece(), 1, 0);
 				} else if (Keyboard.down(Keys.DOWN)) {
+					// if the piece was dropped
+					this.dropTimer.reset();
 					this.dropPiece()
 				}
 			}
 		} else {
 			// If a piece was moved through a button-press we reset the delay.
-			// This is done
+			// This is done to allow for single pressed buttons to be handled,
+			// before the "hold-down" state is checked again
 			this.inputDelay.reset();
 		}
 
@@ -78,7 +82,7 @@ class GameScreen extends Screen {
 		}
 
 		// drop piece
-		if (this.dropCounter.isReady()) {
+		if (this.dropTimer.isReady()) {
 			// move the current piece down one row
 			this.dropPiece();
 		}
@@ -93,6 +97,9 @@ class GameScreen extends Screen {
 				error("GAME OVER", "GameScreen");
 			}
 		}
+		// if the piece was dropped we reset the dropCounter
+		// this is done so we don't drop twice in a frame: once by the player and once by the timer
+		this.dropTimer.reset();
 		return locked;
 	}
 
