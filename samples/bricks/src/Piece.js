@@ -1,9 +1,15 @@
 import Brick from "./Brick.js";
-import ArrayHelper from "../../../src/utils/ArrayHelper.js";
+import Well from "./Well.js";
 
 class Piece {
-	constructor(type) {
+	/**
+	 * Piece constructor.
+	 * @param {Piece.TYPES} type The type of the brick, e.g. "L"
+	 * @param {boolean} visualOnly whether the Piece is only for visualization and not gameplay, e.g. for the NEXT section
+	 */
+	constructor(type, visualOnly = false) {
 		this.type = type;
+		this.visualOnly = visualOnly;
 		this.bricks = [];
 
 		this.well_x = 0;
@@ -11,11 +17,15 @@ class Piece {
 
 		this.rotationIndex = 0;
 
+		// if the piece is only used for visualization, the renderOrigin of the bricks is 0,0
+		// otherwise the bricks will be rendered relative to the Well's origin.
+		let brickRenderOrigin = visualOnly ? {x: 0, y: 0} : {x: Well.ORIGIN_X, y: Well.ORIGIN_Y};
+
 		// create bricks...
-		this.bricks.push(new Brick(this, this.type.color));
-		this.bricks.push(new Brick(this, this.type.color));
-		this.bricks.push(new Brick(this, this.type.color));
-		this.bricks.push(new Brick(this, this.type.color));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
 
 		// ...we update the actual position now based on the rotation
 		this._updateBricks(type.origin.x, type.origin.y);
@@ -145,12 +155,6 @@ Piece.TYPES.O = {
 	rotation: [
 		[{x:  0, y:  0}, {x: +1, y:  0}, {x:  0, y: +1}, {x: +1, y: +1}] // initial
 	]
-};
-
-const allPieces = [Piece.TYPES.L, Piece.TYPES.J, Piece.TYPES.Z, Piece.TYPES.S, Piece.TYPES.I, Piece.TYPES.T, Piece.TYPES.O];
-
-Piece.getRandomPieceType = () => {
-	return ArrayHelper.choose(allPieces);
 };
 
 export default Piece;

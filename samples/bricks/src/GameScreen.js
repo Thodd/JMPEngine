@@ -6,7 +6,7 @@ import Well from "./Well.js";
 import RNG from "../../../src/utils/RNG.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import { error } from "../../../src/utils/Log.js";
+import { warn, error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import PieceBag from "./PieceBag.js";
@@ -30,41 +30,53 @@ class GameScreen extends Screen {
 
 		Well.init(this);
 
-		this.pieceBag = new PieceBag();
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
-		let p = new Piece(this.pieceBag.next());
+		let p = PieceBag.next();
 		Well.addPiece(p);
 	}
 
-	update() {
-		super.update();
+	/**
+	 * Handles Piece movements.
+	 * @param {string} inputCheck name of the input check function.
+	 */
+	handlePieceMovementInput(inputCheckFunction) {
 		let moved = false;
 
-		// button presses
-		if (Keyboard.pressed(Keys.LEFT)) {
+		// only left, right and down are checked
+		// up-key is for hard-drops and those can only occur on a button press once each frame
+		if (Keyboard[inputCheckFunction](Keys.LEFT)) {
 			Well.movePiece(Well.getCurrentPiece(), -1, 0);
 			moved = true;
-		} else if (Keyboard.pressed(Keys.RIGHT)) {
+		} else if (Keyboard[inputCheckFunction](Keys.RIGHT)) {
 			Well.movePiece(Well.getCurrentPiece(), 1, 0);
 			moved = true;
-		} else if (Keyboard.pressed(Keys.DOWN)) {
+		} else if (Keyboard[inputCheckFunction](Keys.DOWN)) {
 			this.dropPiece();
 			moved = true;
 		}
 
-		// move piece if not already done via single button press
+		return moved;
+	}
+
+	/**
+	 * Update loop, called every frame.
+	 */
+	update() {
+		super.update();
+
+		// handle key-presses
+		let moved = this.handlePieceMovementInput("pressed");
+		if (Keyboard.pressed(Keys.UP)) {
+			this.hardDrop();
+			moved = true;
+		}
+
+		// move piece while key is down
+		// but not if it was already moved via single button press in this frame
 		if (!moved) {
 			// with a delay so it's not to fast for the player
 			if (this.inputDelay.isReady()) {
-				if (Keyboard.down(Keys.LEFT)) {
-					Well.movePiece(Well.getCurrentPiece(), -1, 0);
-				} else if (Keyboard.down(Keys.RIGHT)) {
-					Well.movePiece(Well.getCurrentPiece(), 1, 0);
-				} else if (Keyboard.down(Keys.DOWN)) {
-					// if the piece was dropped
-					this.dropTimer.reset();
-					this.dropPiece()
-				}
+				this.handlePieceMovementInput("down");
 			}
 		} else {
 			// If a piece was moved through a button-press we reset the delay.
@@ -81,18 +93,23 @@ class GameScreen extends Screen {
 			Well.rotatePiece(Well.getCurrentPiece(), Piece.DIRECTIONS.RIGHT);
 		}
 
-		// drop piece
+		// drop piece after a fixed set of frames (gets faster every level)
 		if (this.dropTimer.isReady()) {
 			// move the current piece down one row
 			this.dropPiece();
 		}
 	}
 
+	/**
+	 * Drops the current piece down by one tile.
+	 * Checks if the piece has locked in, and if so creates a new piece at the top of the well.
+	 * If the new piece overlaps any existing ones, the player is game-over
+	 */
 	dropPiece() {
 		// if a collision was detected -> we lock the piece and create a new one
 		let locked = Well.movePiece(Well.getCurrentPiece(), 0, 1);
 		if (locked) {
-			let gameOver = Well.addPiece(new Piece(Piece.getRandomPieceType()));
+			let gameOver = Well.addPiece(PieceBag.next());
 			if (gameOver) {
 				error("GAME OVER", "GameScreen");
 			}
@@ -101,6 +118,18 @@ class GameScreen extends Screen {
 		// this is done so we don't drop twice in a frame: once by the player and once by the timer
 		this.dropTimer.reset();
 		return locked;
+	}
+
+	/**
+	 * Practically a loop which continuously drops the piece
+	 * until it locks in.
+	 */
+	hardDrop() {
+		if (!this.dropPiece()) {
+			this.hardDrop();
+		} else {
+			warn("Hard drop locked in", "GameScreen");
+		}
 	}
 
 	render() {
