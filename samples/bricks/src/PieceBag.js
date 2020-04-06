@@ -1,7 +1,10 @@
-import Piece from "./Piece.js";
+//import RNG from "../../../src/utils/RNG.js";
 import ArrayHelper from "../../../src/utils/ArrayHelper.js";
+import Piece from "./Piece.js";
 
 const allTypes = [Piece.TYPES.L, Piece.TYPES.J, Piece.TYPES.Z, Piece.TYPES.S, Piece.TYPES.I, Piece.TYPES.T, Piece.TYPES.O];
+
+// RNG.seed(678);
 
 let typeBag = allTypes.slice().concat(allTypes.slice());
 ArrayHelper.shuffle(typeBag);

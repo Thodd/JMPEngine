@@ -1,7 +1,6 @@
 import Screen from "../../../src/game/Screen.js";
 import Spritesheets from "../../../src/gfx/Spritesheets.js";
 import Entity from "../../../src/game/Entity.js";
-import RNG from "../../../src/utils/RNG.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import { warn, error } from "../../../src/utils/Log.js";
@@ -15,8 +14,6 @@ import PieceBag from "./PieceBag.js";
 class GameScreen extends Screen {
 	constructor() {
 		super();
-
-		RNG.seed(-9811, true);
 
 		this.setupBGandUI();
 

@@ -1,29 +1,12 @@
-import { log } from "./Log.js";
+let _seed = 12345;
 
-/**
- * Seeds the RNG. Returns a new function.
- * From stackoverflow.com, by "Antti Sykäri" and "Remco Kranenburg".
- *
- * @param {*} iSeed
- * @param {*} bUseAsDefault
- */
-function seed(iSeed, bUseAsDefault) {
-	var fnRnd = function() {
-		iSeed = Math.sin(iSeed) * 10000;
-		return iSeed - Math.floor(iSeed);
-	};
-	if (bUseAsDefault) {
-		_random = fnRnd;
-		log("Default random() function replaced. Seed: " + iSeed, "Utils");
-	}
-	return fnRnd;
+function seed(s) {
+	_seed = s;
 }
 
-let _random = seed(123456);
-
 function random() {
-	// use seeded function internally, can be set globally via seed(..., true)
-	return _random();
+	_seed = Math.sin(_seed) * 10000;
+	return _seed - Math.floor(_seed);
 }
 
 function randomInteger(a, b) {
@@ -35,7 +18,6 @@ function randomFloat(a, b) {
 }
 
 export {
-	// numbers
 	seed,
 	random,
 	randomInteger,
@@ -43,7 +25,6 @@ export {
 }
 
 export default {
-	// numbers
 	seed,
 	random,
 	randomInteger,
