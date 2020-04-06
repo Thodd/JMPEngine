@@ -333,7 +333,7 @@ function init(containerID, mani) {
 
 	log("Initializing submodules ...", "GFX");
 
-	Spritesheets.init(manifest);
+	Spritesheets.init();
 
 	Fonts.init(manifest);
 

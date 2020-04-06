@@ -1,4 +1,4 @@
-import { log, warn, fail } from "./utils/Log.js";
+import { log, warn, fail, error } from "./utils/Log.js";
 import loadJSON from "./utils/loadJSON.js";
 import Fonts from "./gfx/Fonts.js";
 
@@ -83,11 +83,33 @@ function resolve(url) {
 }
 
 /**
- * Returns the loaded and parsed manifest.json.
- * Or the statically defined manifest object.
+ * Returns the entry under the given path in the Manifest.
+ * If no path is given the whole manifest object is returned
  */
-function get() {
-	return _manifestObject;
+function get(path) {
+	if (!path) {
+		return _manifestObject;
+	} else if (typeof path === "string") {
+		// leading slash is ignored
+		if (path[0] === "/") {
+			path = path.slice(1, path.length);
+		}
+		// trailing slash is ignored
+		if (path[path.length -1] === "/") {
+			path = path.substr(0, path.length-1);
+		}
+		// navigate through manifest object
+		let parts = path.split("/");
+		let value = _manifestObject;
+		for (let p of parts) {
+			try {
+				value = value[p];
+			} catch(e) {
+				fail(`invalid manifest path: ${path}`);
+			}
+		}
+		return value;
+	}
 }
 
 export default {

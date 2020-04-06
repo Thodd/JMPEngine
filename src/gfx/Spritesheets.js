@@ -1,16 +1,15 @@
 import { log, fail } from "../utils/Log.js";
 import ColorTools from "./ColorTools.js";
-
-let _manifest = null;
+import Manifest from "../Manifest.js";
 
 /**
  * Creates a new Canvas for all sprites in the sheet.
  */
-function init(manifest) {
+function init() {
 
-	_manifest = manifest;
+	let sheets = Manifest.get("/spritesheets");
 
-	if (Object.keys(manifest.spritesheets).length === 0) {
+	if (Object.keys(sheets).length === 0) {
 		log("No spritesheets defined.", "GFX.Spritesheets");
 		return;
 	}
@@ -18,10 +17,10 @@ function init(manifest) {
 	log("Processing spritesheets ...", "GFX.Spritesheets");
 
 	// all sheets
-	for (var s in manifest.spritesheets) {
+	for (var s in sheets) {
 
 		// single sheet main values
-		var oSheet = manifest.spritesheets[s];
+		var oSheet = sheets[s];
 		oSheet.name = s; // used internally, backwards name reference inside the manifest
 		oSheet.sprites = []; // list of all sprites in the sheet
 		oSheet._colorCache = {}; // initially an empty color cache
@@ -64,10 +63,10 @@ function init(manifest) {
 
 /**
  * Returns the sheet definition in the manifest.
- * @param {string} sSheet
+ * @param {string} sheet
  */
-function getSheet(sSheet) {
-	return _manifest.spritesheets[sSheet];
+function getSheet(sheet) {
+	return Manifest.get(`/spritesheets/${sheet}`);
 }
 
 /**
@@ -77,7 +76,7 @@ function getSheet(sSheet) {
  * @param {string} sColor a hex color string, e.g. #FF0085
  */
 function getCanvasFromSheet(sheet, id, sColor) {
-	var oSheet = _manifest.spritesheets[sheet];
+	var oSheet = Manifest.get(`/spritesheets/${sheet}`);
 	if (!oSheet) {
 		fail(`Spritesheet '${sheet}' does not exist!`, "GFX");
 	}

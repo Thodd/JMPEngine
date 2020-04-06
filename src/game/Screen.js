@@ -4,6 +4,8 @@ import Collision from "./Collision.js";
 import EntityTypeStore from "./EntityTypeStore.js";
 import { error } from "../utils/Log.js";
 
+let INSTANCE_COUNT = 0;
+
 /**
  * Layer class
  * @public
@@ -30,7 +32,7 @@ class Layer {
  */
 class Screen {
 	constructor() {
-		this._ID = Screen.INSTANCE_COUNT++;
+		this._ID = INSTANCE_COUNT++;
 		this._entities = [];
 		this._toBeAdded = [];
 		this._toBeRemoved = [];
@@ -248,7 +250,5 @@ class Screen {
 		}
 	}
 }
-
-Screen.INSTANCE_COUNT = 0;
 
 export default Screen;

@@ -1,14 +1,15 @@
 import Screen from "../../../src/game/Screen.js";
 import Spritesheets from "../../../src/gfx/Spritesheets.js";
-import Piece from "./Piece.js";
 import Entity from "../../../src/game/Entity.js";
-import Well from "./Well.js";
 import RNG from "../../../src/utils/RNG.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import { warn, error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
+
+import Well from "./Well.js";
+import Piece from "./Piece.js";
 import PieceBag from "./PieceBag.js";
 
 class GameScreen extends Screen {
@@ -17,12 +18,7 @@ class GameScreen extends Screen {
 
 		RNG.seed(-9811, true);
 
-		let bg = new Entity(0, 0);
-		bg.layer = 0;
-		bg.setSprite({
-			sheet: "UI"
-		});
-		this.add(bg);
+		this.setupBGandUI();
 
 		this.inputDelay = new FrameCounter(3);
 
@@ -33,6 +29,71 @@ class GameScreen extends Screen {
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
 		let p = PieceBag.next();
 		Well.addPiece(p);
+	}
+
+	setupBGandUI() {
+		// BG 0, 0
+		this._bg00 = new Entity(0, 0);
+		this._bg00.layer = 0;
+		this._bg00.setSprite({
+			sheet: "BG"
+		});
+		this.add(this._bg00);
+
+		// BG 1, 0
+		this._bg10 = new Entity(256, 0);
+		this._bg10.layer = 0;
+		this._bg10.setSprite({
+			sheet: "BG"
+		});
+		this.add(this._bg10);
+
+		// BG 0, 1
+		this._bg01 = new Entity(0, 192);
+		this._bg01.layer = 0;
+		this._bg01.setSprite({
+			sheet: "BG"
+		});
+		this.add(this._bg01);
+
+		// BG 1, 1
+		this._bg11 = new Entity(256, 192);
+		this._bg11.layer = 0;
+		this._bg11.setSprite({
+			sheet: "BG"
+		});
+		this.add(this._bg11);
+
+		// UI
+		let ui = new Entity(0, 0);
+		ui.layer = 0;
+		ui.setSprite({
+			sheet: "UI"
+		});
+		this.add(ui);
+	}
+
+	updateBG() {
+		this._bg00.x -= 0.3;
+		this._bg00.y -= 0.3;
+
+		this._bg01.x -= 0.3;
+		this._bg01.y -= 0.3;
+
+		this._bg10.x -= 0.3;
+		this._bg10.y -= 0.3;
+
+		this._bg11.x -= 0.3;
+		this._bg11.y -= 0.3;
+
+		[this._bg00, this._bg01, this._bg10, this._bg11].forEach((bg) => {
+			if ((bg.x + 256) <= 0) {
+				bg.x = 256;
+			}
+			if ((bg.y + 192) <= 0) {
+				bg.y = 192;
+			}
+		});
 	}
 
 	/**
@@ -63,6 +124,8 @@ class GameScreen extends Screen {
 	 */
 	update() {
 		super.update();
+
+		this.updateBG();
 
 		// handle key-presses
 		let moved = this.handlePieceMovementInput("pressed");

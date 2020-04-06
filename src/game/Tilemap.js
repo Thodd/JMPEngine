@@ -47,6 +47,18 @@ class Tilemap extends Entity {
 	}
 
 	/**
+	 * Iterates all cells in the Tilemap.
+	 * The corresponding Tile class instance will be given in the callback.
+	 */
+	each(fn) {
+		for (let x = 0; x < this._w; x++) {
+			for (let y = 0; y < this._h; y++) {
+				fn(this._field[x][y]);
+			}
+		}
+	}
+
+	/**
 	 * Gets the tile instance given at position (x,y).
 	 * @param {number} x the x coordinate of the tile to get
 	 * @param {number} y the y coordinate of the tile to get

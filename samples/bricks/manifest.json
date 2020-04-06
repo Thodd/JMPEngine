@@ -12,6 +12,11 @@
 	"fonts": {},
 
 	"spritesheets": {
+		"BG": {
+			"url": "./img/BG.png",
+			"w": 256,
+			"h": 192
+		},
 		"UI": {
 			"url": "./img/UI.png",
 			"w": 256,
