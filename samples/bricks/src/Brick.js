@@ -13,6 +13,9 @@ class Brick extends Entity {
 		this.x_rel = 0;
 		this.y_rel = 0;
 
+		// final coordinates after the bricks is locked
+		this._locked = false;
+
 		this.piece = piece;
 
 		this.setSprite({
@@ -25,11 +28,30 @@ class Brick extends Entity {
 		this.updateVisualPosition();
 	}
 
+	lock() {
+		this._locked = true;
+		this.x_final = this.piece.well_x + this.x_rel;
+		this.y_final = this.piece.well_y + this.y_rel;
+		delete this.piece;
+		this.updateVisualPosition();
+	}
+
 	updateVisualPosition() {
 		// calculate the screen position of the brick, based on the individual well position (x, y)
 		let sheet = Spritesheets.getSheet("bricks");
-		this.x = (this.renderOrigin.x + this.piece.well_x + this.x_rel) * sheet.w;
-		this.y = (this.renderOrigin.y + this.piece.well_y + this.y_rel) * sheet.h;
+		let xx = this._locked ? this.x_final : this.piece.well_x + this.x_rel;
+		let yy = this._locked ? this.y_final : this.piece.well_y + this.y_rel;
+
+		this.x = (this.renderOrigin.x + xx) * sheet.w;
+		this.y = (this.renderOrigin.y + yy) * sheet.h;
+	}
+
+	getWellCoordinates() {
+		// returns final coordinates if already set
+		return {
+			x: this._locked ? this.x_final : (this.piece.well_x + this.x_rel),
+			y: this._locked ? this.y_final : (this.piece.well_y + this.y_rel)
+		};
 	}
 }
 

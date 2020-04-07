@@ -3,7 +3,7 @@ import Spritesheets from "../../../src/gfx/Spritesheets.js";
 import Entity from "../../../src/game/Entity.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import { warn, error } from "../../../src/utils/Log.js";
+import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -169,6 +169,12 @@ class GameScreen extends Screen {
 		// if a collision was detected -> we lock the piece and create a new one
 		let locked = Well.movePiece(Well.getCurrentPiece(), 0, 1);
 		if (locked) {
+			Well.getCurrentPiece().lock();
+
+			// clean up lines
+			Well.cleanUp();
+
+			// new piece & game over check
 			let gameOver = Well.addPiece(PieceBag.next());
 			if (gameOver) {
 				error("GAME OVER", "GameScreen");
@@ -187,8 +193,6 @@ class GameScreen extends Screen {
 	hardDrop() {
 		if (!this.dropPiece()) {
 			this.hardDrop();
-		} else {
-			warn("Hard drop locked in", "GameScreen");
 		}
 	}
 

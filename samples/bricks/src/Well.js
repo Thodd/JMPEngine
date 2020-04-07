@@ -97,18 +97,18 @@ const Well = {
 	 * Should only be called after a collision checks.
 	 *
 	 * @param {Piece} p Piece instance
-	 * @param {function} updateBrick update function for the visuals of the Piece;
+	 * @param {function} updateBricks update function for the visuals of the Piece;
 	 *                        The update function is bound to the correct movement arguments.
 	 *                        Either Piece.prototype.rotate or Piece.prototype.move.
 	 */
-	_updatePiece(p, updateBrick) {
+	_updatePiece(p, updateBricks) {
 		// remove old position from field
 		for (let b of p.bricks) {
 			field[p.well_x + b.x_rel][p.well_y + b.y_rel] = undefined;
 		}
 
 		// update function is bound with brick and additional update arguments, e.g. rotation direction
-		updateBrick();
+		updateBricks();
 
 		// place the moved bricks back into the well
 		for (let b of p.bricks) {
@@ -150,6 +150,74 @@ const Well = {
 		}
 
 		return collision;
+	},
+
+	/**
+	 * Calculates which rows of bricks can be removed.
+	 */
+	cleanUp() {
+		let clearedRows = [];
+
+		// loop from bottom to top
+		for (let y = 0; y < Well.HEIGHT; y++) {
+			let bricksPerRow = this.getBricksInRow(y);
+
+			// row is fully filled from 0 to the width of the well
+			if (bricksPerRow.length == Well.WIDTH) {
+				clearedRows.push({
+					bricks: bricksPerRow,
+					y: y
+				});
+			}
+		}
+
+		// iterate cleared rows from top to bottom
+		clearedRows.forEach((row, i) => {
+			// clear a row
+			row.bricks.forEach((b) => {
+				b.destroy();
+				let coords = b.getWellCoordinates();
+				// clear position in well, so it can be occupied with a new brick
+				delete field[coords.x][coords.y];
+			});
+			// move rows down by one
+			this.dropRows(row.y);
+		});
+	},
+
+	getBricksInRow(y, includeEmpty) {
+		let bricks = [];
+		for (let x = 0; x < Well.WIDTH; x++) {
+			if (field[x][y]) {
+				bricks.push(field[x][y]);
+			} else if (includeEmpty) {
+				// for cleaning rows we need to keep track of the empty bricks
+				// they have to be moved down too once a row beneath is cleared
+				bricks.push(undefined);
+			}
+		}
+		return bricks;
+	},
+
+	/**
+	 * Dropws the rows above the given index by 1.
+	 * Assumption is
+	 * @param {int} yStart row index, all rows above will be dropped by 1
+	 */
+	dropRows(yStart) {
+		for (let y = yStart - 1; y > 0; y--) {
+			let bricks = this.getBricksInRow(y, true);
+			bricks.forEach((b, x) => {
+				// clear old position
+				field[x][y] = undefined;
+				// move brick to new position
+				field[x][y+1] = b;
+				if (b) {
+					b.y_final += 1;
+					b.updateVisualPosition();
+				}
+			});
+		}
 	},
 
 	getPiece(x, y) {

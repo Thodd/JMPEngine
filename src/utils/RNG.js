@@ -1,4 +1,4 @@
-let _seed = 12345;
+let _seed = Date.now();
 
 function seed(s) {
 	_seed = s;

@@ -39,6 +39,14 @@ class Piece {
 		this._updateBricks(xDif, yDif);
 	}
 
+	lock() {
+		this._lockedIn = true;
+
+		this.bricks.forEach((b) => {
+			b.lock();
+		})
+	}
+
 	getBrickRotationCoordinates(dir) {
 		let index = this._getNextRotationIndex(dir);
 		return this.type.rotation[index];

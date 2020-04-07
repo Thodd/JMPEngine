@@ -4,10 +4,11 @@ import Piece from "./Piece.js";
 
 const allTypes = [Piece.TYPES.L, Piece.TYPES.J, Piece.TYPES.Z, Piece.TYPES.S, Piece.TYPES.I, Piece.TYPES.T, Piece.TYPES.O];
 
-// RNG.seed(678);
+//RNG.seed(678);
 
-let typeBag = allTypes.slice().concat(allTypes.slice());
+let typeBag = allTypes.slice()
 ArrayHelper.shuffle(typeBag);
+typeBag = typeBag.concat(ArrayHelper.shuffle(allTypes.slice()));
 
 function fillBag() {
 	let h = allTypes.slice();
