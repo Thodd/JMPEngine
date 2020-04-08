@@ -8,8 +8,6 @@ import Keyboard from "./input/Keyboard.js";
 let initialized = false;
 let startTime = 0;
 
-let _manifestObject = null;
-
 let _resetKeyboard = null;
 
 const gameloop = () => {
@@ -23,7 +21,7 @@ const gameloop = () => {
 
 function loadMainModule() {
 	let main = document.createElement("script");
-	main.src = Manifest.resolve(_manifestObject.main);
+	main.src = Manifest.resolve(Manifest.get("/main"));
 	main.type = "module";
 	document.head.appendChild(main);
 }
@@ -44,7 +42,7 @@ const Engine = {
 	 * Starts the Engine.
 	 * @param {object} config
 	 * @param {string} config.placeAt the ID of the DOM-Element in which the Engine should render
-	 * @param {string|object} config.manifest the manifest, which will be used for starting the Engine.
+	 * @param {string|object|undefined} config.manifest the manifest, which will be used for starting the Engine.
 	 *                                        Either a URL pointing to a json file, or an object with
 	 *                                        the static manifest.
 	 * @returns {Promise} resolves once the Engine is fully started and Game code can be executed.
@@ -58,12 +56,12 @@ const Engine = {
 				await domReady();
 
 				// retrieve manifest
-				_manifestObject = await Manifest.init(manifest);
+				await Manifest.init(manifest);
 
 				// the AssetLoader will enhance the _manifestObject with the loaded resources
-				await AssetLoader.load(_manifestObject);
+				await AssetLoader.load();
 
-				GFX.init(placeAt, _manifestObject);
+				GFX.init(placeAt);
 
 				_resetKeyboard = Keyboard.init();
 
@@ -75,12 +73,12 @@ const Engine = {
 				gameloop();
 
 				// load main module if given
-				if (_manifestObject.main) {
+				if (Manifest.get("/main")) {
 					loadMainModule();
 				}
 
-				// always resolve with the parsed manifest object
-				return _manifestObject;
+				// resolve with the parsed manifest object
+				return Manifest.get();
 			})
 		} else {
 			warn("Already initialized!", "Engine");

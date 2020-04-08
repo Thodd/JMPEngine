@@ -82,33 +82,52 @@ function resolve(url) {
 	return new URL(url, _baseURL);
 }
 
+function _splitPath(path) {
+	if (path[0] !== "/") {
+		fail(`Manifest path has to start with a '/': path was '${path}'`, "Manifest");
+	}
+	path = path.substr(1, path.length);
+
+	// trailing slash is ignored
+	if (path[path.length -1] === "/") {
+		path = path.substr(0, path.length-1);
+	}
+	// navigate through manifest object
+	return path.split("/");
+}
+
 /**
  * Returns the entry under the given path in the Manifest.
  * If no path is given the whole manifest object is returned
  */
-function get(path) {
-	if (!path) {
+function get(path, failOnError=true) {
+	if (!path || path === "/") {
 		return _manifestObject;
 	} else if (typeof path === "string") {
-		// leading slash is ignored
-		if (path[0] === "/") {
-			path = path.slice(1, path.length);
-		}
-		// trailing slash is ignored
-		if (path[path.length -1] === "/") {
-			path = path.substr(0, path.length-1);
-		}
-		// navigate through manifest object
-		let parts = path.split("/");
+		let parts = _splitPath(path);
 		let value = _manifestObject;
 		for (let p of parts) {
 			try {
 				value = value[p];
 			} catch(e) {
-				fail(`invalid manifest path: ${path}`);
+				if (failOnError) {
+					fail(`invalid manifest path: ${path}`, "Manifest");
+				}
 			}
 		}
 		return value;
+	}
+}
+
+function set(path, value) {
+	if (path) {
+		let parts = _splitPath(path);
+		let last = parts.pop();
+		let cur = _manifestObject;
+		for (let p of parts) {
+			cur = cur[p] || {};
+		}
+		cur[last] = value;
 	}
 }
 
@@ -116,5 +135,6 @@ export default {
 	DEFAULTS,
 	init,
 	resolve,
-	get
+	get,
+	set
 };

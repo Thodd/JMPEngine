@@ -1,4 +1,5 @@
 import { log, warn, error, fail } from "../utils/Log.js";
+import Manifest from "../Manifest.js";
 import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
 import Grid from "./Grid.js";
@@ -48,8 +49,8 @@ function setupCSS() {
 function setupCanvases(containerDOM) {
 	let canvasDOM, ctx;
 
-	let canvas_scaled_w = manifest.scale * manifest.w;
-	let canvas_scaled_h = manifest.scale * manifest.h;
+	let canvas_scaled_w = Manifest.get("/scale") * Manifest.get("/w");
+	let canvas_scaled_h = Manifest.get("/scale") * Manifest.get("/h");
 
 	// wrap layers in a div
 	let wrapperDiv = document.createElement("div");
@@ -59,12 +60,13 @@ function setupCanvases(containerDOM) {
 
 	containerDOM.appendChild(wrapperDiv);
 
-	for (var i = 0; i < manifest.layers; i++) {
+	let layers = Manifest.get("/layers");
+	for (var i = 0; i < layers; i++) {
 		// create canvas & context
 		canvasDOM = document.createElement("canvas");
 		_aCanvases.push(canvasDOM);
 		canvasDOM.classList.add("jmpCanvas");
-		canvasDOM.style.cursor = manifest.hideCursor ? "none" : "";
+		canvasDOM.style.cursor = Manifest.get("/hideCursor") ? "none" : "";
 
 		ctx = canvasDOM.getContext("2d");
 		ctx.imageSmoothingEnabled = false;
@@ -75,8 +77,8 @@ function setupCanvases(containerDOM) {
 		canvasDOM.style.height = canvas_scaled_h;
 
 		// the canvas itself has a fixed width
-		canvasDOM.width = manifest.w;
-		canvasDOM.height = manifest.h;
+		canvasDOM.width = Manifest.get("/w");
+		canvasDOM.height = Manifest.get("/h");
 
 		wrapperDiv.appendChild(canvasDOM);
 	}
@@ -304,14 +306,19 @@ let initialized = false;
 let manifest = null;
 let containerDOM = null;
 
-function init(containerID, mani) {
+function init(containerID) {
 
 	if (initialized) {
 		warn("already initialized!", "GFX");
 		return;
 	}
 
-	manifest = mani;
+	// We still keep a reference on the Manifest object here.
+	// We don't want to go through the path-parsing of the Manifest everytime.
+	//  [!] The GFX module has to be as performant as possible and the API functions get called
+	//  [!] multiple times during each frame.
+	// Only the cases which are not called that often use the Manifest API.
+	manifest = Manifest.get("/");
 
 	// check container dom
 	if (typeof containerID == "string") {
@@ -335,9 +342,9 @@ function init(containerID, mani) {
 
 	Spritesheets.init();
 
-	Fonts.init(manifest);
+	Fonts.init();
 
-	Grid.init(manifest);
+	Grid.init();
 
 	initialized = true;
 }
@@ -370,13 +377,13 @@ const GFX_API = {
 
 	// width and height
 	get w() {
-		return manifest.w;
+		return Manifest.get("/w");
 	},
 	set w(v) {
 		error("Screen width can only be set from manifest!", "GFX");
 	},
 	get h() {
-		return manifest.h;
+		return Manifest.get("/h");
 	},
 	set h(v) {
 		error("Screen width can only be set from manifest!", "GFX");
