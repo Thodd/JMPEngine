@@ -3,7 +3,7 @@ import Spritesheets from "../../../src/gfx/Spritesheets.js";
 import Entity from "../../../src/game/Entity.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import { error } from "../../../src/utils/Log.js";
+import { fail } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -124,6 +124,10 @@ class GameScreen extends Screen {
 
 		this.updateBG();
 
+		if (this._cleanupAnimations) {
+			return;
+		}
+
 		// handle key-presses
 		let moved = this.handlePieceMovementInput("pressed");
 		if (Keyboard.pressed(Keys.UP)) {
@@ -172,18 +176,31 @@ class GameScreen extends Screen {
 			Well.getCurrentPiece().lock();
 
 			// clean up lines
-			Well.cleanUp();
+			this._cleanupAnimations = Well.cleanUp();
 
-			// new piece & game over check
-			let gameOver = Well.addPiece(PieceBag.next());
-			if (gameOver) {
-				error("GAME OVER", "GameScreen");
+			// sometimes we need to wait for the clean-up animation before spawning a new piece
+			if (this._cleanupAnimations) {
+				this._cleanupAnimations.then(() => {
+					delete this._cleanupAnimations;
+					this.spawnPiece();
+				});
+			} else {
+				this.spawnPiece();
 			}
+
 		}
 		// if the piece was dropped we reset the dropCounter
 		// this is done so we don't drop twice in a frame: once by the player and once by the timer
 		this.dropTimer.reset();
 		return locked;
+	}
+
+	spawnPiece() {
+		// new piece & game over check
+		let gameOver = Well.addPiece(PieceBag.next());
+		if (gameOver) {
+			fail("GAME OVER", "GameScreen");
+		}
 	}
 
 	/**

@@ -1,5 +1,6 @@
 import Entity from "../../../src/game/Entity.js";
 import Spritesheets from "../../../src/gfx/Spritesheets.js";
+import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class Brick extends Entity {
 	constructor(piece, color, renderOrigin) {
@@ -20,10 +21,24 @@ class Brick extends Entity {
 
 		this.setSprite({
 			sheet: "bricks",
-			id: color
+			//id: color,
+			animations: {
+				default: "normal",
+				"normal": {
+					frames: [color]
+				},
+				"dying": {
+					frames: [color, 42],
+					delay: 4
+				}
+			}
 		});
 
 		this.renderOrigin = renderOrigin;
+
+		// "death" animation... i couldn't come up with a better name...
+		this.dying = false;
+		this.dyingFrameCounter = new FrameCounter(10);
 
 		this.updateVisualPosition();
 	}
@@ -34,6 +49,25 @@ class Brick extends Entity {
 		this.y_final = this.piece.well_y + this.y_rel;
 		delete this.piece;
 		this.updateVisualPosition();
+	}
+
+	update() {
+		// If the brick is "dying", we wait for the animation to end and then destroy the brick.
+		// When the dying promise is resolved, the GameScreen will react to it.
+		if (this.dying) {
+			if (this.dyingFrameCounter.isReady()){
+				this._dyingResolve();
+				this.destroy();
+			}
+		}
+	}
+
+	die() {
+		this.dying = new Promise((res) => {
+			this._dyingResolve = res;
+		});
+		this.playAnimation({name: "dying"});
+		return this.dying;
 	}
 
 	updateVisualPosition() {

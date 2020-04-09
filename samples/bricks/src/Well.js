@@ -172,17 +172,31 @@ const Well = {
 		}
 
 		// iterate cleared rows from top to bottom
-		clearedRows.forEach((row, i) => {
+		let allRowAnimations = [];
+		clearedRows.forEach((row) => {
+			let bricksPerRowAnimation = [];
 			// clear a row
 			row.bricks.forEach((b) => {
-				b.destroy();
-				let coords = b.getWellCoordinates();
-				// clear position in well, so it can be occupied with a new brick
-				delete field[coords.x][coords.y];
+				bricksPerRowAnimation.push(b.die().then(() => {
+					let coords = b.getWellCoordinates();
+					// clear position in well, so it can be occupied with a new brick
+					delete field[coords.x][coords.y];
+				}));
 			});
-			// move rows down by one
-			this.dropRows(row.y);
+
+			allRowAnimations.push(Promise.all(bricksPerRowAnimation).then(() => {
+				// move rows down by one
+				this.dropRows(row.y);
+			}));
 		});
+
+		if (allRowAnimations.length > 0) {
+			// In the GameScreen we need to know if we need to wait for a clean-up animation
+			return Promise.all(allRowAnimations);
+		} else {
+			// false if no animation is necessary
+			return false;
+		}
 	},
 
 	getBricksInRow(y, includeEmpty) {
