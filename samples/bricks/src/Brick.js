@@ -3,12 +3,13 @@ import Spritesheets from "../../../src/gfx/Spritesheets.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class Brick extends Entity {
-	constructor(piece, color, renderOrigin) {
+	constructor(piece, color, renderOrigin, ghost=false) {
 		// initial position of the entity is irrelevant
 		// we update the render coordinates later
 		super(0, 0);
 
-		this.layer = 1;
+		// a ghost brick should be rendered below a regular brick
+		this.layer = ghost ? 1 : 2;
 
 		// the bricks are positioned relative to the piece
 		this.x_rel = 0;
@@ -25,10 +26,12 @@ class Brick extends Entity {
 			animations: {
 				default: "normal",
 				"normal": {
-					frames: [color]
+					frames: [color],
+					alpha: ghost ? 0.3 : 1
 				},
 				"dying": {
 					frames: [color, 42],
+					alpha: ghost ? 0.3 : 1,
 					delay: 4
 				}
 			}
@@ -38,7 +41,7 @@ class Brick extends Entity {
 
 		// "death" animation... i couldn't come up with a better name...
 		this.dying = false;
-		this.dyingFrameCounter = new FrameCounter(10);
+		this.dyingFrameCounter = new FrameCounter(15);
 
 		this.updateVisualPosition();
 	}

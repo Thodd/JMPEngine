@@ -6,8 +6,9 @@ class Piece {
 	 * Piece constructor.
 	 * @param {Piece.TYPES} type The type of the brick, e.g. "L"
 	 * @param {boolean} visualOnly whether the Piece is only for visualization and not gameplay, e.g. for the NEXT section
+	 * @param {boolean} ghost whether the brick is a ghost brick or not
 	 */
-	constructor(type, visualOnly = false) {
+	constructor(type, visualOnly = false, ghost = false) {
 		this.type = type;
 		this.visualOnly = visualOnly;
 		this.bricks = [];
@@ -22,10 +23,10 @@ class Piece {
 		let brickRenderOrigin = visualOnly ? {x: 0, y: 0} : {x: Well.ORIGIN_X, y: Well.ORIGIN_Y};
 
 		// create bricks...
-		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
-		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
-		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
-		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin, ghost));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin, ghost));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin, ghost));
+		this.bricks.push(new Brick(this, this.type.color, brickRenderOrigin, ghost));
 
 		// ...we update the actual position now based on the rotation
 		this._updateBricks(type.origin.x, type.origin.y);
@@ -68,7 +69,7 @@ class Piece {
 		return index;
 	}
 
-	_updateBricks(xDif, yDif, dir) {
+	_updateBricks(xDif=0, yDif=0, dir) {
 		// update x/y position
 		this.well_x += xDif;
 		this.well_y += yDif;
@@ -85,6 +86,12 @@ class Piece {
 		// trigger visual update
 		for (let b of this.bricks) {
 			b.updateVisualPosition();
+		}
+	}
+
+	destroy() {
+		for (let b of this.bricks) {
+			b.destroy();
 		}
 	}
 }

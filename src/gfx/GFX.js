@@ -109,6 +109,11 @@ const pal = [
  * Retrieve the low-level rendering contexts for the DOM canvases.
  * Beware: Tinkering with these objects is for advanced users only!
  */
+
+function alpha(i, v) {
+	ctx(i).globalAlpha = v;
+}
+
 function ctx(i) {
 	if (i == null) {
 		return _aCtx;
@@ -238,9 +243,17 @@ function spr(sheet, id, x, y, iLayer, sColor) {
 	oCtx.drawImage(oSprCanvas, x || 0, y || 0);
 }
 
-function spr_ext(sheet, id, x, y, w, h, iLayer, sColor) {
+function spr_ext(sheet, id, x, y, w, h, iLayer, sColor, alpha) {
 	var oCtx = _aCtx[iLayer || 0];
 	var oSprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
+
+	let oldAlpha;
+	if (alpha !== undefined) {
+		oldAlpha = oCtx.globalAlpha;
+		if (oldAlpha !== alpha) {
+			oCtx.globalAlpha = alpha;
+		}
+	}
 
 	oCtx.drawImage(
 		oSprCanvas,
@@ -255,6 +268,10 @@ function spr_ext(sheet, id, x, y, w, h, iLayer, sColor) {
 		w || oSprCanvas.width, // default to canvas width
 		h || oSprCanvas.height, // default to canvas height
 	);
+
+	if (oldAlpha) {
+		oCtx.globalAlpha = oldAlpha;
+	}
 }
 
 function grid(id, x, y, iLayer) {
@@ -352,6 +369,7 @@ function init(containerID) {
 /********************************* public API *********************************/
 const GFX_API = {
 	// dom based API
+	alpha,
 	ctx,
 	clear,
 	clear_rect,

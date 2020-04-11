@@ -1,9 +1,11 @@
 import { log } from "../../../src/utils/Log.js";
+import PieceBag from "./PieceBag.js";
 
 let currScreen;
 let field = [];
 
 let currentPiece;
+let ghostPiece;
 
 const Well = {
 	init(gs) {
@@ -16,7 +18,7 @@ const Well = {
 		}
 	},
 
-	addPiece(p, isCurrentPiece=true) {
+	addPiece(p) {
 		let overlap = false;
 
 		// mark bricks of the piece in well
@@ -35,16 +37,20 @@ const Well = {
 			currScreen.add(b);
 		});
 
-		if (isCurrentPiece) {
-			currentPiece = p;
-		}
+		currentPiece = p;
+
+		// create ghost bricks
+		ghostPiece = PieceBag.ghost(p);
+		ghostPiece.bricks.forEach((b) => {
+			currScreen.add(b);
+		});
 
 		return overlap;
 	},
 
 	rotatePiece(p, dir) {
 		let newBricksRelCoords = p.getBrickRotationCoordinates(dir);
-		let collision = this.pieceCanBeMovedTo(p, 0, 0, newBricksRelCoords);
+		let collision = this.isOccupied(p, 0, 0, newBricksRelCoords);
 
 		// no collision found at the intended rotation position
 		if (!collision) {
@@ -56,7 +62,7 @@ const Well = {
 			if (p.well_x == 0) { // piece sits on left wall
 				log("bitw_l");
 				// try to move the piece one tile to the right
-				collision = this.pieceCanBeMovedTo(p, 1, 0, newBricksRelCoords);
+				collision = this.isOccupied(p, 1, 0, newBricksRelCoords);
 				if (!collision) {
 					this._updatePiece(p, p.rotate.bind(p, dir, 1, 0));
 				}
@@ -64,13 +70,13 @@ const Well = {
 				if (p.well_x == Well.WIDTH - 1) { // piece sits on right wall
 					log("bitw_r");
 					// try to move the piece one tile to the right
-					collision = this.pieceCanBeMovedTo(p, -1, 0, newBricksRelCoords);
+					collision = this.isOccupied(p, -1, 0, newBricksRelCoords);
 					if (!collision) {
 						this._updatePiece(p, p.rotate.bind(p, dir, -1, 0));
 					}
 				} else {
 					// floorkick if wallkick didn't work
-					collision = this.pieceCanBeMovedTo(p, 0, -1, newBricksRelCoords);
+					collision = this.isOccupied(p, 0, -1, newBricksRelCoords);
 					if (!collision) {
 						this._updatePiece(p, p.rotate.bind(p, dir, 0, -1));
 					}
@@ -82,7 +88,7 @@ const Well = {
 	},
 
 	movePiece(p, xDif, yDif) {
-		let collision = this.pieceCanBeMovedTo(p, xDif, yDif, p.getBrickRotationCoordinates());
+		let collision = this.isOccupied(p, xDif, yDif, p.getBrickRotationCoordinates());
 		// no collision found, move piece and update field
 		if (!collision) {
 			this._updatePiece(p, p.move.bind(p, xDif, yDif));
@@ -125,7 +131,7 @@ const Well = {
 	 *                   The Piece will be virtually moved to this relative coordinates during collision check.
 	 * @param {object[]} newBricksRelCoords an array of the new brick coordinates relative to the origin of the Piece instance
 	 */
-	pieceCanBeMovedTo(p, xDif, yDif, newBricksRelCoords) {
+	isOccupied(p, xDif, yDif, newBricksRelCoords) {
 		// check new position for collision
 		let collision = false;
 
@@ -232,6 +238,33 @@ const Well = {
 				}
 			});
 		}
+	},
+
+	lockCurrentPiece() {
+		currentPiece.lock();
+		ghostPiece.destroy();
+	},
+
+	/**
+	 * Update the position of the Ghost Piece
+	 */
+	updateGhostPiece() {
+		// rotation
+		ghostPiece.rotationIndex = currentPiece.rotationIndex;
+
+		// position
+		ghostPiece.well_x = currentPiece.well_x;
+		ghostPiece.well_y = currentPiece.well_y;
+
+		for (let i = 0; i < 20; i++) {
+			if (!this.isOccupied(currentPiece, 0, i+1, currentPiece.getBrickRotationCoordinates())) {
+				ghostPiece.well_y += 1;
+			} else {
+				break;
+			}
+		}
+
+		ghostPiece._updateBricks();
 	},
 
 	getPiece(x, y) {

@@ -247,8 +247,9 @@ class Entity {
 			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
 			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
 			let color = anim.color || defaultSprite.color;
+			let alpha = anim.alpha || defaultSprite.alpha;
 
-			var sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id);
+			let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id);
 			let dx = this.x + (offsetX || 0) - this.scale.x;
 			let dy = this.y + (offsetY || 0) - this.scale.y;
 			let dw = sprCanvas.width * this.scale.w;
@@ -256,7 +257,7 @@ class Entity {
 
 			// sheet, id, layer, x, y, w, h, color
 			// width and height are undefined, because we want the default value from the actual sprite
-			GFX.spr_ext(sheet, id, dx, dy, dw, dh, this.layer, color);
+			GFX.spr_ext(sheet, id, dx, dy, dw, dh, this.layer, color, alpha);
 		}
 
 		if (Entity.RENDER_HITBOXES) {

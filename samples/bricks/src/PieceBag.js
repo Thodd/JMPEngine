@@ -51,8 +51,16 @@ const PieceBag = {
 	 * @param {Piece.TYPES} type the type of the piece
 	 * @param {boolean} visualOnly whether the piece is only for visuals or a gameplay piece
 	 */
-	create(type, visualOnly) {
-		return new Piece(type, visualOnly);
+	create(type, visualOnly=false, ghost=false) {
+		return new Piece(type, visualOnly, ghost);
+	},
+
+	/**
+	 * Creates a Ghost piece based on the given Piece.
+	 * @param {Piece} piece the piece which should be represented by a ghost piece
+	 */
+	ghost(piece) {
+		return this.create(piece.type, false, true);
 	}
 }
 

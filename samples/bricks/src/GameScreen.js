@@ -3,7 +3,7 @@ import Spritesheets from "../../../src/gfx/Spritesheets.js";
 import Entity from "../../../src/game/Entity.js";
 import GFX from "../../../src/gfx/GFX.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import { fail } from "../../../src/utils/Log.js";
+import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -24,8 +24,7 @@ class GameScreen extends Screen {
 		Well.init(this);
 
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
-		let p = PieceBag.next();
-		Well.addPiece(p);
+		Well.addPiece(PieceBag.next());
 	}
 
 	setupBGandUI() {
@@ -124,6 +123,10 @@ class GameScreen extends Screen {
 
 		this.updateBG();
 
+		if (this.gameOver) {
+			return;
+		}
+
 		if (this._cleanupAnimations) {
 			return;
 		}
@@ -162,6 +165,9 @@ class GameScreen extends Screen {
 			// move the current piece down one row
 			this.dropPiece();
 		}
+
+		// make sure the ghost brick is always at the bottom of the well
+		Well.updateGhostPiece();
 	}
 
 	/**
@@ -173,7 +179,7 @@ class GameScreen extends Screen {
 		// if a collision was detected -> we lock the piece and create a new one
 		let locked = Well.movePiece(Well.getCurrentPiece(), 0, 1);
 		if (locked) {
-			Well.getCurrentPiece().lock();
+			Well.lockCurrentPiece();
 
 			// clean up lines
 			this._cleanupAnimations = Well.cleanUp();
@@ -197,9 +203,9 @@ class GameScreen extends Screen {
 
 	spawnPiece() {
 		// new piece & game over check
-		let gameOver = Well.addPiece(PieceBag.next());
-		if (gameOver) {
-			fail("GAME OVER", "GameScreen");
+		this.gameOver = Well.addPiece(PieceBag.next());
+		if (this.gameOver) {
+			error("GAME OVER", "GameScreen");
 		}
 	}
 
@@ -217,14 +223,14 @@ class GameScreen extends Screen {
 		super.render();
 
 		// debug rendering of current piece origin
-		let sheet = Spritesheets.getSheet("bricks");
+		/*let sheet = Spritesheets.getSheet("bricks");
 		let p = Well.getCurrentPiece();
 		let originX = sheet.w * (Well.ORIGIN_X + p.well_x);
 		let originY = sheet.h * (Well.ORIGIN_Y + p.well_y);
 		GFX.px(originX,     originY,     "#ffffff", 2);
 		GFX.px(originX + 1, originY,     "#ffffff", 2);
 		GFX.px(originX    , originY + 1, "#ffffff", 2);
-		GFX.px(originX + 1, originY + 1, "#ffffff", 2);
+		GFX.px(originX + 1, originY + 1, "#ffffff", 2);*/
 	}
 }
 
