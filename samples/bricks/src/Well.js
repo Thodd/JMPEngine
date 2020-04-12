@@ -21,8 +21,9 @@ const Well = {
 	addPiece(p) {
 		let overlap = false;
 
-		// mark bricks of the piece in well
-		for (let b of p.bricks) {
+		// add bricks to the screen
+		p.bricks.forEach((b) => {
+			// mark bricks of the piece in well
 			// if the field coordinates are already marked with a brick we know that the player has reached a game-over
 			let pos = field[p.well_x + b.x_rel][p.well_y + b.y_rel];
 			if (pos) {
@@ -30,10 +31,6 @@ const Well = {
 			}
 			// update the coordinates anyway
 			field[p.well_x + b.x_rel][p.well_y + b.y_rel] = b;
-		}
-
-		// add bricks to the screen
-		p.bricks.forEach((b) => {
 			currScreen.add(b);
 		});
 
@@ -46,6 +43,15 @@ const Well = {
 		});
 
 		return overlap;
+	},
+
+	removePiece() {
+		// by default we remove the current piece if none is given
+		currentPiece.bricks.forEach((b) => {
+			delete field[currentPiece.well_x + b.x_rel][currentPiece.well_y + b.y_rel];
+		});
+		currentPiece.destroy();
+		ghostPiece.destroy();
 	},
 
 	rotatePiece(p, dir) {

@@ -15,16 +15,20 @@ class GameScreen extends Screen {
 	constructor() {
 		super();
 
-		this.setupBGandUI();
+		// preview and hold
+		this.currentPreview = [];
+		this.currentHoldType = null;
 
+		// timers
 		this.inputDelay = new FrameCounter(3);
-
 		this.dropTimer = new FrameCounter(90);
+
+		this.setupBGandUI();
 
 		Well.init(this);
 
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
-		Well.addPiece(PieceBag.next());
+		this.spawnPiece();
 	}
 
 	setupBGandUI() {
@@ -138,6 +142,16 @@ class GameScreen extends Screen {
 			moved = true;
 		}
 
+		// hold block
+		if (Keyboard.pressed(Keys.A)) {
+			let lastHoldType = this.currentHoldType;
+			// keep the current type
+			this.currentHoldType = Well.getCurrentPiece().type;
+			Well.removePiece();
+			this.spawnPiece(lastHoldType);
+			moved = true;
+		}
+
 		// move piece while key is down
 		// but not if it was already moved via single button press in this frame
 		if (!moved) {
@@ -201,12 +215,22 @@ class GameScreen extends Screen {
 		return locked;
 	}
 
-	spawnPiece() {
+	spawnPiece(type) {
+		// spawn a piece of the given type, or take one from the PieceBag
+		let p;
+		if (type) {
+			p = PieceBag.create(type);
+		} else {
+			p = PieceBag.next();
+		}
+
 		// new piece & game over check
-		this.gameOver = Well.addPiece(PieceBag.next());
+		this.gameOver = Well.addPiece(p);
 		if (this.gameOver) {
 			error("GAME OVER", "GameScreen");
 		}
+
+		this.updatePreviewAndHold();
 	}
 
 	/**
@@ -216,6 +240,41 @@ class GameScreen extends Screen {
 	hardDrop() {
 		if (!this.dropPiece()) {
 			this.hardDrop();
+		}
+	}
+
+	updatePreviewAndHold() {
+		// destroy old preview
+		// it's simpler to destroy and recreate all preview pieces, than to shift them
+		this.currentPreview.forEach((p) => {
+			p.destroy();
+		});
+		this.currentPreview = [];
+
+		// create new preview
+		let nextTypes = PieceBag.peek(3);
+		nextTypes.forEach((t, i) => {
+			let p = PieceBag.create(t, true);
+			p.move(22, 4+3*i);
+			// add bricks to the screen
+			p.bricks.forEach((b) => {
+				this.add(b);
+			});
+			this.currentPreview.push(p);
+		});
+
+		// destroy old hold piece
+		if (this.currentHoldPiece) {
+			this.currentHoldPiece.destroy();
+		}
+
+		// create new hold piece
+		if (this.currentHoldType) {
+			this.currentHoldPiece = PieceBag.create(this.currentHoldType, true);
+			this.currentHoldPiece.move(22, 17);
+			this.currentHoldPiece.bricks.forEach((b) => {
+				this.add(b);
+			});
 		}
 	}
 
