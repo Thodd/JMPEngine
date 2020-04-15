@@ -1,12 +1,12 @@
 import Screen from "../../../src/game/Screen.js";
-import Spritesheets from "../../../src/gfx/Spritesheets.js";
 import Entity from "../../../src/game/Entity.js";
-import GFX from "../../../src/gfx/GFX.js";
+import Text from "../../../src/gfx/Text.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import { error } from "../../../src/utils/Log.js";
+import { error, log } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
+import Score from "./Score.js";
 import Well from "./Well.js";
 import Piece from "./Piece.js";
 import PieceBag from "./PieceBag.js";
@@ -21,7 +21,7 @@ class GameScreen extends Screen {
 
 		// timers
 		this.inputDelay = new FrameCounter(3);
-		this.dropTimer = new FrameCounter(90);
+		this.dropTimer = new FrameCounter(Score.speed);
 
 		this.setupBGandUI();
 
@@ -31,6 +31,9 @@ class GameScreen extends Screen {
 		this.spawnPiece();
 	}
 
+	/**
+	 * Creates the BG animation
+	 */
 	setupBGandUI() {
 		// BG 0, 0
 		this._bg00 = new Entity(0, 0);
@@ -71,9 +74,30 @@ class GameScreen extends Screen {
 			sheet: "UI"
 		});
 		this.add(ui);
+
+		// Scoring
+		this.scoringTexts = {
+			points: new Text("0", 20, 49),
+			level:  new Text("0", 20, 89),
+			lines:  new Text("0", 20, 129)
+		}
+		this.scoringTexts.lines.layer = 3;
+		this.scoringTexts.points.layer = 3;
+		this.scoringTexts.level.layer = 3;
+
+		this.scoringTexts.lines.color = "#FF8500";
+		this.scoringTexts.points.color = "#FF8500";
+		this.scoringTexts.level.color = "#FF8500";
+
+		this.add(this.scoringTexts.lines);
+		this.add(this.scoringTexts.points);
+		this.add(this.scoringTexts.level);
 	}
 
-	updateBG() {
+	/**
+	 * Aaimates the BG
+	 */
+	animateBG() {
 		this._bg00.x -= 0.3;
 		this._bg00.y -= 0.3;
 
@@ -120,12 +144,12 @@ class GameScreen extends Screen {
 	}
 
 	/**
-	 * Update loop, called every frame.
+	 * GameScreen update loop, called every frame.
 	 */
 	update() {
 		super.update();
 
-		this.updateBG();
+		this.animateBG();
 
 		if (this.gameOver) {
 			return;
@@ -182,6 +206,11 @@ class GameScreen extends Screen {
 
 		// make sure the ghost brick is always at the bottom of the well
 		Well.updateGhostPiece();
+
+		// might change the game speed, depending on the # of cleared lines
+		this.updateSpeed();
+
+		this.updateScoringUI();
 	}
 
 	/**
@@ -215,6 +244,10 @@ class GameScreen extends Screen {
 		return locked;
 	}
 
+	/**
+	 * Spawns a new Piece with the given Type.
+	 * @param {Piece.TYPE} type The type which will be spawned
+	 */
 	spawnPiece(type) {
 		// spawn a piece of the given type, or take one from the PieceBag
 		let p;
@@ -240,9 +273,17 @@ class GameScreen extends Screen {
 	hardDrop() {
 		if (!this.dropPiece()) {
 			this.hardDrop();
+		} else {
+			// locked in on hard drop scores some points
+			// increases based on the level
+			Score.addHardDrop();
+			log("points:" + Score.points);
 		}
 	}
 
+	/**
+	 * Updtes the Preview Pieces and renders the Hold Piece if given.
+	 */
 	updatePreviewAndHold() {
 		// destroy old preview
 		// it's simpler to destroy and recreate all preview pieces, than to shift them
@@ -276,6 +317,22 @@ class GameScreen extends Screen {
 				this.add(b);
 			});
 		}
+	}
+
+	updateSpeed() {
+		if (Score.levelIncreased) {
+			this.dropTimer = new FrameCounter(Score.speed);
+			Score.levelIncreased = false;
+		}
+	}
+
+	/**
+	 * Updates the Scoring Table UI.
+	 */
+	updateScoringUI() {
+		this.scoringTexts.level.setText(`${Score.level}`);
+		this.scoringTexts.lines.setText(`${Score.getLines()}`);
+		this.scoringTexts.points.setText(`${Score.points}`);
 	}
 
 	render() {

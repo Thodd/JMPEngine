@@ -1,5 +1,7 @@
 import { log } from "../../../src/utils/Log.js";
+
 import PieceBag from "./PieceBag.js";
+import Score from "./Score.js";
 
 let currScreen;
 let field = [];
@@ -203,6 +205,9 @@ const Well = {
 		});
 
 		if (allRowAnimations.length > 0) {
+			// count score
+			Score.addLines(allRowAnimations.length);
+
 			// In the GameScreen we need to know if we need to wait for a clean-up animation
 			return Promise.all(allRowAnimations);
 		} else {

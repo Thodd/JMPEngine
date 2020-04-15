@@ -2,7 +2,6 @@ import { log, warn, error, fail } from "../utils/Log.js";
 import Manifest from "../Manifest.js";
 import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
-import Grid from "./Grid.js";
 
 var _2PI = 2 * Math.PI;
 
@@ -354,14 +353,6 @@ function init(containerID) {
 	setupCSS();
 
 	setupCanvases(containerDOM);
-
-	log("Initializing submodules ...", "GFX");
-
-	Spritesheets.init();
-
-	Fonts.init();
-
-	Grid.init();
 
 	initialized = true;
 }

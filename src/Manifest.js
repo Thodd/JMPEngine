@@ -113,6 +113,7 @@ function get(path, failOnError=true) {
 				if (failOnError) {
 					fail(`invalid manifest path: ${path}`, "Manifest");
 				}
+				return; // if failOnError is false, we return undefined
 			}
 		}
 		return value;

@@ -1,9 +1,13 @@
+import domReady from "./utils/domReady.js";
+import { log, warn } from "./utils/Log.js";
 import Manifest from "./Manifest.js";
 import AssetLoader from "./utils/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
-import domReady from "./utils/domReady.js";
-import { log, warn } from "./utils/Log.js";
+import Fonts from "./gfx/Fonts.js";
+import Spritesheets from "./gfx/Spritesheets.js";
+import Grid from "./gfx/Grid.js";
 import Keyboard from "./input/Keyboard.js";
+import IntroScreen from "./intro/IntroScreen.js";
 
 let initialized = false;
 let startTime = 0;
@@ -58,10 +62,16 @@ const Engine = {
 				// retrieve manifest
 				await Manifest.init(manifest);
 
+				// GFX init creates all canvases upfront
+				GFX.init(placeAt);
+
 				// the AssetLoader will enhance the _manifestObject with the loaded resources
 				await AssetLoader.load();
 
-				GFX.init(placeAt);
+				// assets can only be initialized after the AssetLoader is done
+				Spritesheets.init();
+				Fonts.init();
+				Grid.init();
 
 				_resetKeyboard = Keyboard.init();
 
@@ -72,13 +82,24 @@ const Engine = {
 				// kickstart gameloop
 				gameloop();
 
-				// load main module if given
-				if (Manifest.get("/main")) {
-					loadMainModule();
+				// Engine intro
+				let intro;
+				if (Manifest.get("/skipIntro")) {
+					intro = Promise.resolve();
+				} else {
+					let is = new IntroScreen();
+					Engine.screen = is;
+					intro = is.wait();
 				}
 
-				// resolve with the parsed manifest object
-				return Manifest.get();
+				// load main module if given
+				await intro.then(() => {
+					if (Manifest.get("/main")) {
+						loadMainModule();
+					}
+					// resolve with the parsed manifest object
+					return Manifest.get();
+				});
 			})
 		} else {
 			warn("Already initialized!", "Engine");
