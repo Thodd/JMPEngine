@@ -7,7 +7,7 @@ class IntroScreen extends Screen {
 	constructor(){
 		super();
 		this.getLayers(0).clearColor = "#111111"
-		this.text = new Text("Starting Engine", 2, 2);
+		this.text = new Text(":: Mint ::\n\nStarting Engine", 2, 2);
 		this.text.color = "#FF8500";
 		this.add(this.text);
 
