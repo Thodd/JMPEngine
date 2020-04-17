@@ -19,6 +19,7 @@ class GameScreen extends Screen {
 
 		// preview and hold
 		this.currentPreview = [];
+		this.canHold = true;
 		this.currentHoldType = null;
 
 		// timers
@@ -169,12 +170,13 @@ class GameScreen extends Screen {
 		}
 
 		// hold block
-		if (Keyboard.pressed(Keys.A)) {
-			let lastHoldType = this.currentHoldType;
+		if (this.canHold && Keyboard.pressed(Keys.A)) {
+			let holdType = this.currentHoldType;
 			// keep the current type
 			this.currentHoldType = Well.getCurrentPiece().type;
 			Well.removePiece();
-			this.spawnPiece(lastHoldType);
+			this.spawnPiece(holdType);
+			this.canHold = false;
 			moved = true;
 		}
 
@@ -265,6 +267,9 @@ class GameScreen extends Screen {
 			error("GAME OVER", "GameScreen");
 		}
 
+		// reactivate holding after a new piece has spawned
+		this.canHold = true;
+
 		this.updatePreviewAndHold();
 	}
 
@@ -279,7 +284,6 @@ class GameScreen extends Screen {
 			// locked in on hard drop scores some points
 			// increases based on the level
 			Score.addHardDrop();
-			log("points:" + Score.points);
 		}
 	}
 
