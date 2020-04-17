@@ -1,4 +1,4 @@
-import { log, warn, fail, error } from "./utils/Log.js";
+import { log, warn, fail } from "./utils/Log.js";
 import loadJSON from "./utils/loadJSON.js";
 import Fonts from "./gfx/Fonts.js";
 

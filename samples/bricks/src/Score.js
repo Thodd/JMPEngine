@@ -1,6 +1,5 @@
 import { log } from "../../../src/utils/Log.js";
 
-let _lines = 0;
 let _totalLines = 0;
 
 const speedTable = {
@@ -44,9 +43,10 @@ const scoringTable = {
 }
 
 const Score = {
-	level: 0,
-	levelIncreased: false,
 	points: 0,
+	level: 0,
+
+	levelIncreased: false,
 	speed: speedTable[0],
 
 	// lines
@@ -60,10 +60,6 @@ const Score = {
 			this.level += 1;
 			this.speed = speedTable[this.level];
 			this.levelIncreased = true;
-
-			log("lines:" + Score.getLines());
-			log("Level:" + Score.level);
-			log("Speed:" + Score.speed);
 		}
 	},
 	getLines() {return _totalLines},

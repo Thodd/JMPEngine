@@ -6,6 +6,8 @@ import { error, log } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
+import Manifest from "../../../src/Manifest.js";
+
 import Score from "./Score.js";
 import Well from "./Well.js";
 import Piece from "./Piece.js";
@@ -77,9 +79,9 @@ class GameScreen extends Screen {
 
 		// Scoring
 		this.scoringTexts = {
-			points: new Text("0", 20, 49),
-			level:  new Text("0", 20, 89),
-			lines:  new Text("0", 20, 129)
+			points: new Text("0", 75, 49),
+			level:  new Text("0", 75, 89),
+			lines:  new Text("0", 75, 129)
 		}
 		this.scoringTexts.lines.layer = 3;
 		this.scoringTexts.points.layer = 3;
@@ -330,9 +332,17 @@ class GameScreen extends Screen {
 	 * Updates the Scoring Table UI.
 	 */
 	updateScoringUI() {
-		this.scoringTexts.level.setText(`${Score.level}`);
-		this.scoringTexts.lines.setText(`${Score.getLines()}`);
-		this.scoringTexts.points.setText(`${Score.points}`);
+		// calculate text shift to the left
+		let fontWidth = Manifest.get("/fonts/font0/w");
+
+		function shiftAndSet(e, text) {
+			e.x = 75 - (Math.max(text.length - 1, 0) * fontWidth);
+			e.setText(text);
+		}
+
+		shiftAndSet(this.scoringTexts.points, `${Score.points}`);
+		shiftAndSet(this.scoringTexts.level,  `${Score.level}`);
+		shiftAndSet(this.scoringTexts.lines,  `${Score.getLines()}`);
 	}
 
 	render() {
