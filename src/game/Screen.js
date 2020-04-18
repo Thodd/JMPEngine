@@ -68,6 +68,9 @@ class Screen {
 		};
 
 		this._entityTypeStore = new EntityTypeStore();
+
+		// lowest layer is cleared by default with black
+		this.getLayers(0).clearColor = "#222222";
 	}
 
 	toString() {

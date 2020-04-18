@@ -2,7 +2,7 @@ import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import Text from "../../../src/gfx/Text.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import { error, log } from "../../../src/utils/Log.js";
+import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -16,6 +16,8 @@ import PieceBag from "./PieceBag.js";
 class GameScreen extends Screen {
 	constructor() {
 		super();
+
+		this.getLayers(0).clearColor = "#38a8f2";
 
 		// preview and hold
 		this.currentPreview = [];
@@ -340,7 +342,7 @@ class GameScreen extends Screen {
 		let fontWidth = Manifest.get("/fonts/font0/w");
 
 		function shiftAndSet(e, text) {
-			e.x = 75 - (Math.max(text.length - 1, 0) * fontWidth);
+			e.x = 76 - (Math.max(text.length - 1, 0) * fontWidth);
 			e.setText(text);
 		}
 
