@@ -8,7 +8,7 @@ import Spritesheets from "../gfx/Spritesheets.js";
 let TILEMAP_COUNT = 0;
 
 class Tilemap extends Entity {
-	constructor({w=20, h=20, sheet, tileClass=Tile}) {
+	constructor(sheet, w=20, h=20, tileClass=Tile) {
 
 		if (!sheet) {
 			fail(`The spritesheet ${sheet} does not exist! A Tilemap cannot be created without a spritesheet`, "Tilemap");
