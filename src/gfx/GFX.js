@@ -2,6 +2,7 @@ import { log, warn, error, fail } from "../utils/Log.js";
 import Manifest from "../Manifest.js";
 import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
+import ColorTools from "./ColorTools.js";
 
 var _2PI = 2 * Math.PI;
 
@@ -166,10 +167,32 @@ function restore(i) {
 	}
 }
 
+// track pixel buffers if needed
+let _pxBuffers = [];
+function getBuffer(layer) {
+	var oCtx = _aCtx[layer || 0];
+	if (!_pxBuffers[layer]) {
+		_pxBuffers[layer] = oCtx.getImageData(0, 0, manifest.w, manifest.h);
+	}
+	return _pxBuffers[layer];
+}
+
+// flush a pixel buffer
+function pxFlush(layer) {
+	let oCtx = _aCtx[layer || 0];
+	oCtx.putImageData(_pxBuffers[layer], 0, 0);
+}
+
 function px(x, y, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.fillStyle = color || oCtx.fillStyle;
-	oCtx.fillRect(x, y, 1, 1);
+	//oCtx.fillStyle = color || oCtx.fillStyle;
+	//oCtx.fillRect(x, y, 1, 1);
+	let d = getBuffer(iLayer);
+	let c = ColorTools.parseColorString(color);
+	let off = 4 * (y * d.width + x);
+	d.data[off + 0] = c.r;
+	d.data[off + 1] = c.g;
+	d.data[off + 2] = c.b;
+	d.data[off + 3] = 255;
 }
 
 function rect(x, y, w, h, color, iLayer) {
@@ -372,6 +395,7 @@ const GFX_API = {
 	// render API
 	pal,
 	px,
+	pxFlush,
 	rect,
 	rectf,
 	circ,

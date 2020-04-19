@@ -8,12 +8,11 @@ class IntroScreen extends Screen {
 	constructor(){
 		super();
 
-		this.endCounter = new FrameCounter(240);
+		this.endCounter = new FrameCounter(150);
 		this.endPromise = new Promise((resolve) => {
 			this.finish = resolve;
 		});
 
-		let pal = ["#f8f5b1", "#edd06b", "#de9b36", "#d57228"];
 		this.getLayers(0).clearColor = "#332c50";
 
 		let msg = "... JMP.px Engine !";
@@ -44,7 +43,7 @@ class IntroScreen extends Screen {
 				GFX.text("font0", x+1, y+1, char, 1, "#000000");
 
 				// colored text using predefined color palette
-				GFX.text("font0", x, y, char, 1, pal[0]);
+				GFX.text("font0", x, y, char, 1, "#ff0085");
 			}
 
 			if (animationDelay.isReady()) {

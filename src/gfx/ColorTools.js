@@ -1,15 +1,29 @@
+// a cache for already parsed colors
+// optimizes the access a bit
+const colorCache = {
+	"default": {r: 255, g: 255, b: 255, a:255}
+};
+
 /**
  * Parses a color string. Either hex or rgba.
  * @public
  */
-function parseColorString(sColor) {
-	if (sColor[0] === "#") {
-		return parseHexColorToRGB(sColor);
-	} else if (sColor.substring(0, 4) === "rgba") {
-		return parseRGBA(sColor);
+function parseColorString(color) {
+	// look up cache first
+	if (colorCache[color]) {
+		return colorCache[color];
+	}
+
+	if (color[0] === "#") {
+		colorCache[color] = parseHexColorToRGB(color);
+	} else if (color.substring(0, 4) === "rgba") {
+		colorCache[color] = parseRGBA(color);
 	} else {
 		// unknown color coding (?)
+		color = "default";
 	}
+
+	return colorCache[color];
 }
 
 /**

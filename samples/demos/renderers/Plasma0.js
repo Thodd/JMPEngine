@@ -20,6 +20,8 @@ const renderer = function() {
 			if(s>-1){GFX.px(i,j,GFX.pal[Math.floor(8+2.5*s)]);}
 		}
 	}
+
+	GFX.pxFlush();
 }
 
 export default {

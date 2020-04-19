@@ -1,4 +1,5 @@
-import { log, error } from "../utils/Log.js";
+import { log } from "../utils/Log.js";
+import ColorTools from "../gfx/ColorTools.js";
 import Manifest from "../Manifest.js";
 
 // Default Font
@@ -52,7 +53,7 @@ function getChar(oFont, c, color) {
 	let oChar = oFont.chars[c];
 	if (color) {
 		if (!oChar[color]) {
-			oChar[color] = colorizeCanvas(oChar.default, color);
+			oChar[color] = ColorTools.colorizeCanvas(oChar.default, color);
 		}
 		return oChar[color];
 	} else {
@@ -60,59 +61,6 @@ function getChar(oFont, c, color) {
 		// typically used for already colored fonts
 		return oChar.default;
 	}
-}
-
-/**
- * Parses a color string. Either hex or rgba.
- */
-function parseColorString(color) {
-	if (color[0] === "#") {
-		return parseHexColorToRGB(color);
-	} else {
-		error("unknown color coding: '" + color + "'", "GFX.Font");
-	}
-}
-
-/**
- * Parses a hex color value (e.g. #FF0000) to a javascript object containing r/g/b/a values from 0 to 255.
- */
-function parseHexColorToRGB(sHex) {
-	sHex = sHex.substring(1, sHex.length);
-	return {
-		r: parseInt(sHex[0] + sHex[1], 16),
-		g: parseInt(sHex[2] + sHex[3], 16),
-		b: parseInt(sHex[4] + sHex[5], 16)
-	};
-}
-
-/**
- * Colors all white pixels in the given src canvas with the given color value.
- */
-function colorizeCanvas (oSrcCanvas, color) {
-	color = color || "#FF0085";
-
-	let oRGB = parseColorString(color);
-	// create target canvas
-	let oTarget = document.createElement("canvas");
-	oTarget.width = oSrcCanvas.width;
-	oTarget.height = oSrcCanvas.height;
-
-	// get the raw data of the src
-	let oSrcData = oSrcCanvas.getContext("2d").getImageData(0, 0, oSrcCanvas.width, oSrcCanvas.height);
-	let oSrcRaw = oSrcData.data;
-
-	for (let i = 0, iPixelCount = oSrcRaw.length; i < iPixelCount; i += 4) {
-		// everything else is colored
-		oSrcRaw[i  ] = oRGB.r;
-		oSrcRaw[i+1] = oRGB.g;
-		oSrcRaw[i+2] = oRGB.b;
-		oSrcRaw[i+3] = oSrcRaw[i+3]; // alpha is not touched
-	}
-
-	// write the tinted src data to the target canvas
-	oTarget.getContext("2d").putImageData(oSrcData, 0, 0);
-
-	return oTarget;
 }
 
 export default {
