@@ -1,0 +1,12 @@
+{
+	"title": "Demos",
+
+	"main": "./main.js",
+
+	"w": 160,
+	"h": 144,
+	"scale": 2,
+	"fps": 60,
+	"hideCursor": true,
+	"skipIntro": false
+}

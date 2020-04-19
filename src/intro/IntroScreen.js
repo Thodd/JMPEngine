@@ -1,29 +1,63 @@
-
+import Manifest from "../Manifest.js";
 import Screen from "../game/Screen.js";
-import Text from "../gfx/Text.js";
+import GFX from "../gfx/GFX.js";
 import FrameCounter from "../utils/FrameCounter.js";
+import Entity from "../game/Entity.js";
 
 class IntroScreen extends Screen {
 	constructor(){
 		super();
-		this.getLayers(0).clearColor = "#111111"
-		this.text = new Text(":: Mint ::\n\nStarting Engine", 2, 2);
-		this.text.color = "#FF8500";
-		this.add(this.text);
 
-		this.animCounter = new FrameCounter(10);
-		this.endCounter = new FrameCounter(60);
+		this.endCounter = new FrameCounter(240);
 		this.endPromise = new Promise((resolve) => {
 			this.finish = resolve;
 		});
+
+		let pal = ["#f8f5b1", "#edd06b", "#de9b36", "#d57228"];
+		this.getLayers(0).clearColor = "#332c50";
+
+		let msg = "... JMP.px Engine !";
+		let ml = 0;
+
+		// we delay the color changing for 4 frames,
+		// otherwise the effect is too fast to appreciate ;)
+		// 60 color changes per second is pretty fast for the human eye...
+		let animationDelay = new FrameCounter(5);
+
+		let h = Manifest.get("/h");
+		let w = Manifest.get("/w");
+		let shiftLeft = Math.floor((msg.length*7)/2);
+		let shiftTop = 4;
+
+		// We define a custom render function on the Entity
+		// so we can use the low-level GFX API to render a pixel-perfect
+		// colored and animated Text
+		let animatedText = new Entity();
+		animatedText.render = function() {
+			for (let i = 0; i < ml; i++) {
+				let char = msg[i];
+
+				let x = w/2 + (i*7) - shiftLeft;
+				let y = h/2 - shiftTop;
+
+				// black shadow ("#000000")
+				GFX.text("font0", x+1, y+1, char, 1, "#000000");
+
+				// colored text using predefined color palette
+				GFX.text("font0", x, y, char, 1, pal[0]);
+			}
+
+			if (animationDelay.isReady()) {
+				if (ml < msg.length) {
+					ml++;
+				}
+			}
+		};
+		this.add(animatedText);
 	}
 
 	update() {
 		super.update();
-
-		if (this.animCounter.isReady()) {
-			this.text.text += ".";
-		}
 
 		if (this.endCounter.isReady()) {
 			this.finish();

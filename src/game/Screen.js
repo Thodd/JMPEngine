@@ -71,7 +71,12 @@ class Screen {
 
 		// lowest layer is cleared by default with black
 		this.getLayers(0).clearColor = "#222222";
+		// initially clear all layers so we don't have any leftover graphics from a previous Screen.
+		for (let i = 0; i < this._layers.length; i++) {
+			GFX.clear(i, this._layers[i].clearColor);
+		}
 	}
+
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;

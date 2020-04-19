@@ -92,16 +92,17 @@ function setupCanvases(containerDOM) {
 // to make geometric rendering less blurred
 const n = Math.floor;
 
-// for now the pico8 palette
+// "Arne 16" palette
+// e.g.: https://lospec.com/palette-list/arne-16
 const pal = [
-	// black, dark blue, dark purple, dark-green
-	"#000000", "#1D2B53", "#7E2553", "#008751",
-	// brown, dark gray, light gray, white
-	"#AB5236", "#5F574F", "#C2C3C7", "#FFF1E8",
-	// red, orange, yellow, green
-	"#FF004D", "#FFA300", "#FFEC27", "#00E436",
-	// blue, indigo, pink, peach
-	"#29ADFF", "#83769C", "#FF77A8", "#FFCCAA"
+	// black, dark brown, red, pink
+	"#000000", "#493c2b", "#be2633", "#e06f8b",
+	// gray, light brown, orange, yellow
+	"#9d9d9d", "#a46422", "#eb8931", "#f7e26b",
+	// white, dark blue, steel blue, dark green
+	"#ffffff", "#1b2632", "#2f484e", "#44891a",
+	// grass green, blue, sky blue, light blue
+	"#a3ce27", "#005784", "#31a2f2", "#b2dcef"
 ];
 
 /**
@@ -290,6 +291,7 @@ function grid(id, x, y, iLayer) {
 
 /**
  * Renders a single line of text.
+ * @param {string} font the font which should be used for rendering, e.g. "font0"
  */
 function text(font, x, y, sText, iLayer, color) {
 	var oFont = manifest.fonts[font];
