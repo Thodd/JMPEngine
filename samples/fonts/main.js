@@ -34,7 +34,7 @@ animatedText.render = function() {
 		GFX.text("font0", 4 + (i * 7), 31 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, "#000000");
 
 		// colored text using predefined color palette
-		GFX.text("font0", 3 + (i * 7), 30 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, GFX.pal[(this.col + i) % 15]);
+		GFX.text("font0", 3 + (i * 7), 30 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, GFX.pal((this.col + i) % 15));
 	}
 	this.count += this.step;
 

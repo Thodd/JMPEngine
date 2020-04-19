@@ -95,7 +95,7 @@ const n = Math.floor;
 
 // "Arne 16" palette
 // e.g.: https://lospec.com/palette-list/arne-16
-const pal = [
+const palette = [
 	// black, dark brown, red, pink
 	"#000000", "#493c2b", "#be2633", "#e06f8b",
 	// gray, light brown, orange, yellow
@@ -105,6 +105,18 @@ const pal = [
 	// grass green, blue, sky blue, light blue
 	"#a3ce27", "#005784", "#31a2f2", "#b2dcef"
 ];
+
+/**
+ * Returns the color at index 'i' in the defined palette.
+ * The index 'i' is looped in the available range of colors in the palette.
+ * @param {integer|undefined} i the color index. If undefined, the palette array is returned
+ */
+function pal(i) {
+	if (i == undefined) {
+		return palette;
+	}
+	return palette[i % palette.length];
+}
 
 /**
  * Retrieve the low-level rendering contexts for the DOM canvases.
@@ -177,12 +189,23 @@ function getBuffer(layer) {
 	return _pxBuffers[layer];
 }
 
-// flush a pixel buffer
+/**
+ * Flush the pixel buffer for the given layer.
+ * Only graphics drawn with GFX.px will be flushed.
+ * @param {*} layer
+ */
 function pxFlush(layer) {
 	let oCtx = _aCtx[layer || 0];
 	oCtx.putImageData(_pxBuffers[layer], 0, 0);
 }
 
+/**
+ * Renders a Pixel of the given color at coordinates (x,y).
+ * @param {integer} x
+ * @param {integer} y
+ * @param {string} color CSS-color string
+ * @param {integer} iLayer the layer on which the pixel should be set
+ */
 function px(x, y, color, iLayer) {
 	//oCtx.fillStyle = color || oCtx.fillStyle;
 	//oCtx.fillRect(x, y, 1, 1);
@@ -193,6 +216,17 @@ function px(x, y, color, iLayer) {
 	d.data[off + 1] = c.g;
 	d.data[off + 2] = c.b;
 	d.data[off + 3] = 255;
+}
+
+/**
+ * Renders an antialiased sub-pixel of the given color at coordinates (x,y).
+ * @param {*} x
+ * @param {*} y
+ * @param {*} color CSS-color string (actual color value depends on the browsers sub-pixel rendering algorithm)
+ * @param {*} layer the layer on which the pixel should be set
+ */
+function subpx(x, y, color, layer) {
+	rectf(x, y, 1, 1, color, layer);
 }
 
 function rect(x, y, w, h, color, iLayer) {
@@ -396,6 +430,7 @@ const GFX_API = {
 	pal,
 	px,
 	pxFlush,
+	subpx,
 	rect,
 	rectf,
 	circ,

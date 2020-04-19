@@ -25,7 +25,8 @@ const renderer = function() {
 			x=-.15*j+k*.28;
 			y=.26*j+w*k+.4;
 		}
-		GFX.px(x*Math.sin(Engine.now()*10*w)*15+80, 135-y*12, GFX.pal[Math.floor(4+y+r)]);
+		// for this demo a sub-pixel based rendering looks pretty nice
+		GFX.subpx(x*Math.sin(Engine.now()*10*w)*15+80, 135-y*12, GFX.pal(Math.floor(4+y+r)));
 	}
 }
 

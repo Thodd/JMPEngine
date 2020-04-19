@@ -2,9 +2,11 @@ import Engine from "../../../src/Engine.js";
 import GFX from "../../../src/gfx/GFX.js";
 import ArrayHelper from "../../../src/utils/ArrayHelper.js";
 
-export default function() {
+const author = "@SeanSLeBlanc";
+
+const renderer = function () {
 	/**
-	 * Demo made by Sean S. LeBlanc
+	 * Demo made by Sean S. LeBlanc (@SeanSLeBlanc)
 	 * Changed the colors.
 	 *
 	 * Ported from this #tweetcart:
@@ -20,11 +22,13 @@ export default function() {
 	for (var I = Math.sin(T); I < 99; I += Math.cos(T)+1.1) {
 		X+=I*Math.sin(I);
 		Y+=I*Math.cos(I);
-		GFX.line(A,B,X,Y,ArrayHelper.choose(GFX.pal, 4, 16));
+		GFX.line(A,B,X,Y,ArrayHelper.choose(GFX.pal(), 4, 16));
 		A = X;
 		B = Y;
 	}
+};
 
-	GFX.rectf(0, 0, 128, 10, GFX.pal[0], 1);
-	GFX.text("font0", 1, 1, "@SeanSLeBlanc", 1, "#ffffff");
+export default {
+	renderer,
+	author
 }

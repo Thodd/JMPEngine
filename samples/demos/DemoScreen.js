@@ -10,15 +10,15 @@ class DemoScreen extends Screen {
 	constructor() {
 		super();
 
-		this.demo = Plasma0;
+		this.demo = Spiral;
 	}
 
 	render() {
 		this.demo.renderer();
 
 		// render author name
-		GFX.rectf(0, 0, Manifest.get("/w"), 10, GFX.pal[0], 1);
-		GFX.text("font0", 1, 1, this.demo.author, 1, GFX.pal[8]);
+		GFX.rectf(0, 0, Manifest.get("/w"), 10, GFX.pal(0), 1);
+		GFX.text("font0", 1, 1, this.demo.author, 1, GFX.pal(8));
 	}
 }
 

@@ -14,10 +14,10 @@ const renderer = function() {
 	p=t()/2;
 	for (let i=0; i<160; i++) {
 		for (let j=0; j<144; j++) {
-			x=i/64;
-			y=j/64;
+			x=i/32;
+			y=j/32;
 			s=Math.sin(x*Math.cos(y+p*3)+y*Math.sin(x+p*3));
-			if(s>-1){GFX.px(i,j,GFX.pal[Math.floor(8+2.5*s)]);}
+			if(s>-1){GFX.px(i,j,GFX.pal(Math.floor(8+2.5*s)));}
 		}
 	}
 
