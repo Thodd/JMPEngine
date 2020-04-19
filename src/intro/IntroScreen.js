@@ -15,7 +15,7 @@ class IntroScreen extends Screen {
 
 		this.getLayers(0).clearColor = "#332c50";
 
-		let msg = "... JMP.px Engine !";
+		let msg = "... JMP.px Engine!";
 		let ml = 0;
 
 		// we delay the color changing for 4 frames,

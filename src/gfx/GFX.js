@@ -228,15 +228,13 @@ function pxFlush(layer) {
  * @param {integer} iLayer the layer on which the pixel should be set
  */
 function px(x, y, color, iLayer) {
-	//oCtx.fillStyle = color || oCtx.fillStyle;
-	//oCtx.fillRect(x, y, 1, 1);
 	let d = getBuffer(iLayer);
 	let c = ColorTools.parseColorString(color);
 	let off = 4 * (y * d.width + x);
 	d.data[off + 0] = c.r;
 	d.data[off + 1] = c.g;
 	d.data[off + 2] = c.b;
-	d.data[off + 3] = c.a || 255;
+	d.data[off + 3] = (c.a != undefined) || 255;
 }
 
 /**
@@ -252,7 +250,6 @@ function px(x, y, color, iLayer) {
  * @param {integer} layer
  */
 function pxClear(x, y, layer){
-	// TODO: test if this works as expected
 	px(x, y, "rgba(0,0,0,0)", layer);
 }
 

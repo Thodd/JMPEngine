@@ -10,7 +10,7 @@ let author = "@picoter8";
  */
 let p,x,y,s, t = Engine.now;
 const renderer = function() {
-	GFX.clear(0, "#222222");
+	GFX.clear(0, "#FF0085");
 	p=t()/2;
 	for (let i=0; i<160; i++) {
 		for (let j=0; j<144; j++) {
