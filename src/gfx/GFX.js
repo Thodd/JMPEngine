@@ -139,6 +139,11 @@ function clear(i, color) {
 		_aCanvases[i || 0].style.background = color;
 	}
 	_aCtx[i || 0].clearRect(0, 0, manifest.w, manifest.h);
+
+	// if a pixel buffer exists clear it too
+	if (_pxBuffers[i]) {
+		_pxBuffers[i] = new ImageData(manifest.w, manifest.h);
+	}
 }
 
 function clear_rect(i, color, x, y, w, h) {
@@ -149,6 +154,8 @@ function clear_rect(i, color, x, y, w, h) {
 	// clear everything inside the given rectangle
 	// for w/h we default to the screen-size
 	_aCtx[i || 0].clearRect(x, y, w || manifest.w, h || manifest.h);
+
+	// TODO: pixel buffers don't work with clearing a rectangle right now -> fix
 }
 
 function trans(i, x, y) {
@@ -192,11 +199,16 @@ function getBuffer(layer) {
 /**
  * Flush the pixel buffer for the given layer.
  * Only graphics drawn with GFX.px will be flushed.
+ *
+ * <b>Beware:</b>
+ * The px* routines are the lowest level of GFX API.
+ * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
+ * Go with the subpx() function for a simple pixel rendering if possible.
+ *
  * @param {*} layer
  */
 function pxFlush(layer) {
-	let buff = getBuffer(layer);
-	if (buff) {
+	if (_pxBuffers[layer]) {
 		let oCtx = _aCtx[layer || 0];
 		oCtx.putImageData(_pxBuffers[layer], 0, 0);
 	}
@@ -204,6 +216,12 @@ function pxFlush(layer) {
 
 /**
  * Renders a Pixel of the given color at coordinates (x,y).
+ *
+ * <b>Beware:</b>
+ * The px* routines are the lowest level of GFX API.
+ * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
+ * Go with the subpx() function for a simple pixel rendering if possible.
+ *
  * @param {integer} x
  * @param {integer} y
  * @param {string} color CSS-color string
@@ -218,7 +236,24 @@ function px(x, y, color, iLayer) {
 	d.data[off + 0] = c.r;
 	d.data[off + 1] = c.g;
 	d.data[off + 2] = c.b;
-	d.data[off + 3] = 255;
+	d.data[off + 3] = c.a || 255;
+}
+
+/**
+ * Clears the pixel at position (x,y).
+ *
+ * <b>Beware:</b>
+ * The px* routines are the lowest level of GFX API.
+ * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
+ * Go with the subpx() function for a simple pixel rendering if possible.
+ *
+ * @param {integer} x
+ * @param {integer} y
+ * @param {integer} layer
+ */
+function pxClear(x, y, layer){
+	// TODO: test if this works as expected
+	px(x, y, "rgba(0,0,0,0)", layer);
 }
 
 /**
@@ -433,6 +468,7 @@ const GFX_API = {
 	pal,
 	px,
 	pxFlush,
+	pxClear,
 	subpx,
 	rect,
 	rectf,

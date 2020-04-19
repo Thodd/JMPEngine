@@ -13,6 +13,7 @@ let INSTANCE_COUNT = 0;
 class Layer {
 	constructor(i) {
 		this.i = i;
+		this.autoClear = true;
 		/**
 		 * The color which will be used to clear the layer before rendering
 		 * any entities.
@@ -238,7 +239,9 @@ class Screen {
 			if (!layer.fixedCam) {
 				GFX.trans(i, -this.cam.x, -this.cam.y);
 			}
-			GFX.clear_rect(i, layer.clearColor, this.cam.x, this.cam.y);
+			if (layer.autoClear) {
+				GFX.clear_rect(i, layer.clearColor, this.cam.x, this.cam.y);
+			}
 		}
 
 		// render entities
