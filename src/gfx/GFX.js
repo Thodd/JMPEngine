@@ -195,8 +195,11 @@ function getBuffer(layer) {
  * @param {*} layer
  */
 function pxFlush(layer) {
-	let oCtx = _aCtx[layer || 0];
-	oCtx.putImageData(_pxBuffers[layer], 0, 0);
+	let buff = getBuffer(layer);
+	if (buff) {
+		let oCtx = _aCtx[layer || 0];
+		oCtx.putImageData(_pxBuffers[layer], 0, 0);
+	}
 }
 
 /**

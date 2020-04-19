@@ -10,7 +10,7 @@ class DemoScreen extends Screen {
 	constructor() {
 		super();
 
-		this.demo = Spiral;
+		this.demo = Plasma0;
 	}
 
 	render() {
