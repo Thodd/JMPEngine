@@ -51,7 +51,7 @@ class BaseLevel extends Screen {
 		tile.isBlocking = true;
 
 		// demo entities
-		for (let i = 0; i < 1; i++) {
+		for (let i = 0; i < 2; i++) {
 			let e = new Entity();
 			e.hitbox.w = 8;
 			e.hitbox.h = 8;
