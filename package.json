@@ -22,7 +22,8 @@
   "author": "Thorsten 'Thodd' Hochreuter",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^6.1.0",
+    "babel-eslint": "^8.2.6",
+    "eslint": "^4.19.1",
     "serve": "^11.2.0"
   }
 }
