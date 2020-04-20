@@ -3,9 +3,10 @@
 	<head>
 		<style>
 			body {
-				margin: 0;
+				margin: 10;
 			}
 			canvas {
+				border: 1px solid #FF0085;
 				image-rendering: pixelated;
 				image-rendering: -moz-crisp-edges;
 			}
@@ -13,14 +14,18 @@
 	</head>
 	<body>
 		<canvas id="screen" style="background: #222222;"></canvas>
-
+		<div><span>Render [t]: </span><span id="renderTime"></span></div>
+		<div><span>Bufferaccess: </span><span id="bufferAccess"></span></div>
 		<img id="bg" src="./Background.png" hidden />
 		<img id="bunny" src="HoneyBunny.png" hidden />
 
 		<script>
-			let w = 160;
-			let h = 144;
+			let w = 320;
+			let h = 240;
 			let scale = 2;
+
+			let renderTimeSpan;
+			let bufferAccessSpan;
 
 			let imgBunny;
 			let bunnyCanvas;
@@ -34,8 +39,8 @@
 
 			class Bunny {
 				constructor() {
-					this.x = Math.floor(Math.random() * w);
-					this.y = Math.floor(Math.random() * h);
+					this.x = Math.max(16, Math.floor(Math.random() * w) - 16);
+					this.y = Math.max(16, Math.floor(Math.random() * h) - 16);
 					this.xDir = 1;
 					this.yDir = 1;
 				}
@@ -43,20 +48,23 @@
 					this.x += this.xDir;
 					this.y += this.yDir;
 
-					if (this.x <= 0 || this.x + 10 >= w) {
+					if (this.x <= 0 || this.x + 16 >= w) {
 						this.xDir *= -1;
 					}
-					if (this.y <= 0 || this.y + 10 >= h) {
+					if (this.y <= 0 || this.y + 16 >= h) {
 						this.yDir *= -1;
 					}
 				}
 			}
 
 			function run() {
-				imgBunny = document.getElementById("bunny");
+				renderTimeSpan = document.getElementById("renderTime");
+				bufferAccessSpan = document.getElementById("bufferAccess");
+
+				imgBunny = document.getElementById("bg");
 				bunnyCanvas = document.createElement("canvas");
-				bunnyCanvas.width = 8;
-				bunnyCanvas.height = 8;
+				bunnyCanvas.width = 16;
+				bunnyCanvas.height = 16;
 
 				canvas = document.getElementById("screen");
 				ctx = document.getElementById("screen").getContext("2d");
@@ -71,11 +79,11 @@
 					bunnyImageData = bunnyCtx.getImageData(0,0,bunnyCanvas.width, bunnyCanvas.height);
 
 					bunnies = [];
-					for (let i = 0; i < 5000; i++) {
+					for (let i = 0; i < 300; i++) {
 						bunnies.push(new Bunny());
 					}
 
-					requestAnimationFrame(loop_lo);
+					requestAnimationFrame(loop_hi);
 				}, 200);
 			}
 
@@ -97,20 +105,27 @@
 
 
 			let imgDataScreen = new ImageData(w, h);
-
+			let access = 0;
 			function loop_lo() {
 				imgDataScreen = new ImageData(w, h);
 				let l = bunnies.length;
 				for (let i = 0; i < l; i++) {
+					bunnies[i].update();
+				}
+				let renderStart = performance.now();
+
+				access = 0;
+				for (let i = 0; i < l; i++) {
 					update_lo(bunnies[i]);
 				}
+				let renderEnd = performance.now();
+				renderTimeSpan.textContent = `${(renderEnd - renderStart).toFixed(1)}ms`;
+				bufferAccessSpan.textContent = `${access}`;
 				ctx.putImageData(imgDataScreen, 0, 0);
 				requestAnimationFrame(loop_lo);
 			}
 
 			function update_lo(bun) {
-				bun.update();
-
 				let _w = bunnyImageData.width;
 				let _h = bunnyImageData.height
 				let _tw = imgDataScreen.width;
@@ -131,6 +146,7 @@
 						// position is inside pixel buffer
 						if (pos > 0 && (pos + 3) < _tl) {
 							if (a > 0) { // only opaque pixels are rendered
+								access++;
 								imgDataScreen.data[pos] = r;
 								imgDataScreen.data[pos+1] = g;
 								imgDataScreen.data[pos+2] = b;
