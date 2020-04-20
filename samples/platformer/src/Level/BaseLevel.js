@@ -10,6 +10,8 @@ class BaseLevel extends Screen {
 	constructor() {
 		super();
 
+		Entity.RENDER_HITBOXES = "#FF0085";
+
 		this.getLayers(0).fixedCam = true; // BG
 		this.getLayers(3).fixedCam = true; // Text, e.g. HUD
 

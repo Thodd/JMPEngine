@@ -1,7 +1,7 @@
 {
 	"title": "Adventure",
 
-	"main": "./src/main.js",
+	"startScreen": "./src/WorldScreen.js",
 
 	"w": 160,
 	"h": 120,

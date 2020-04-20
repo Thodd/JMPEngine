@@ -1,7 +1,7 @@
 {
 	"title": "Bricks",
 
-	"main": "./src/main.js",
+	"startScreen": "./src/GameScreen.js",
 
 	"w": 256,
 	"h": 192,

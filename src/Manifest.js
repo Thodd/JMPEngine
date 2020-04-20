@@ -11,6 +11,7 @@ const DEFAULTS = {
 	scale: 2,
 	layers: 8,
 	fps: 60,
+	startScreen: null,
 	hideCursor: false,
 	skipIntro: false,
 	spritesheets: {},

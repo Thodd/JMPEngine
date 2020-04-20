@@ -261,10 +261,10 @@ class Entity {
 		}
 
 		if (Entity.RENDER_HITBOXES) {
-			GFX.px(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES, this.layer); // top left
-			GFX.px(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES, this.layer); // top right
-			GFX.px(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES, this.layer); // bottom left
-			GFX.px(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES, this.layer); // bottom right
+			GFX.subpx(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES, this.layer); // top left
+			GFX.subpx(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES, this.layer); // top right
+			GFX.subpx(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES, this.layer); // bottom left
+			GFX.subpx(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES, this.layer); // bottom right
 		}
 	}
 

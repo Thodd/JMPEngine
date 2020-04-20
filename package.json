@@ -1,15 +1,18 @@
 {
   "name": "JMPEngine",
   "version": "0.0.1",
-  "description": "JMP game engine",
+  "description": "JMP.px Game Engine",
   "main": "./demo/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "minze",
+    "jmp",
+    "jmp.px",
     "game",
     "engine",
+    "pixelperfect",
+    "retro",
     "JavaScript",
     "ES6",
     "hmtl5",

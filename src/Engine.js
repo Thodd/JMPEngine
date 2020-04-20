@@ -7,6 +7,7 @@ import Fonts from "./gfx/Fonts.js";
 import Spritesheets from "./gfx/Spritesheets.js";
 import Grid from "./gfx/Grid.js";
 import Keyboard from "./input/Keyboard.js";
+import Screen from "./game/Screen.js";
 import IntroScreen from "./intro/IntroScreen.js";
 
 let initialized = false;
@@ -41,13 +42,41 @@ const gameloop = () => {
 	window.requestAnimationFrame(gameloop);
 };
 
-function loadMainModule() {
-	let main = document.createElement("script");
-	main.src = Manifest.resolve(Manifest.get("/main"));
-	main.type = "module";
-	document.head.appendChild(main);
+/**
+ * Imports the start Screen class defined in the Manifest.
+ * Default to the base Screen class if none is given.
+ */
+async function getStartScreenClass() {
+	let startScreen;
+	let startScreenUrl = Manifest.get("/startScreen");
+	if (startScreenUrl) {
+		startScreen = await import(Manifest.resolve(startScreenUrl));
+		startScreen = startScreen.default;
+	} else {
+		startScreen = Screen;
+	}
+	return startScreen;
 }
 
+/**
+ * Returns a Promise which allows chaining to the end of the intro screen.
+ * Resolves directly if "skipIntro" is set in the manifest.
+ */
+function getInroScreen() {
+	let intro;
+	if (Manifest.get("/skipIntro")) {
+		intro = Promise.resolve();
+	} else {
+		let is = new IntroScreen();
+		Engine.screen = is;
+		intro = is.wait();
+	}
+	return intro;
+}
+
+/**
+ * Engine Singleton
+ */
 const Engine = {
 
 	/**
@@ -116,27 +145,20 @@ const Engine = {
 
 				log("Started.", "Engine");
 
-				// Engine intro
-				let intro;
-				if (Manifest.get("/skipIntro")) {
-					intro = Promise.resolve();
-				} else {
-					let is = new IntroScreen();
-					Engine.screen = is;
-					intro = is.wait();
-				}
-
 				// kickstart gameloop
 				gameloop();
 
-				// load main module if given
-				await intro.then(() => {
-					if (Manifest.get("/main")) {
-						loadMainModule();
-					}
-					// resolve with the parsed manifest object
-					return Manifest.get();
-				});
+				// import StartScreen class module (defaults to the Screen class)
+				let startScreenClass = await getStartScreenClass();
+
+				// show intro screen (if not skipped)
+				await getInroScreen();
+
+				// after the intro we activate an instance of the given startScreen class
+				Engine.screen = new startScreenClass();
+
+				// resolve with the parsed manifest object
+				return Manifest.get();
 			})
 		} else {
 			warn("Already initialized!", "Engine");
