@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0;
+			}
+			canvas {
+				image-rendering: pixelated;
+				image-rendering: -moz-crisp-edges;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="screen" style="background: #222222;"></canvas>
+
+		<img id="bg" src="./Background.png" hidden />
+		<img id="bunny" src="HoneyBunny.png" hidden />
+
+		<script>
+			let w = 160;
+			let h = 144;
+			let scale = 2;
+
+			let imgBunny;
+			let bunnyCanvas;
+			let bunnyCtx;
+			let bunnyImageData;
+
+			let canvas;
+			let ctx;
+
+			let bunnies;
+
+			class Bunny {
+				constructor() {
+					this.x = Math.floor(Math.random() * w);
+					this.y = Math.floor(Math.random() * h);
+					this.xDir = 1;
+					this.yDir = 1;
+				}
+				update() {
+					this.x += this.xDir;
+					this.y += this.yDir;
+
+					if (this.x <= 0 || this.x + 10 >= w) {
+						this.xDir *= -1;
+					}
+					if (this.y <= 0 || this.y + 10 >= h) {
+						this.yDir *= -1;
+					}
+				}
+			}
+
+			function run() {
+				imgBunny = document.getElementById("bunny");
+				bunnyCanvas = document.createElement("canvas");
+				bunnyCanvas.width = 8;
+				bunnyCanvas.height = 8;
+
+				canvas = document.getElementById("screen");
+				ctx = document.getElementById("screen").getContext("2d");
+				canvas.width = w;
+				canvas.height = h;
+				canvas.style.width = `${w*scale}px`;
+				canvas.style.height = `${h*scale}px`;
+
+				setTimeout(() => {
+					bunnyCtx = bunnyCanvas.getContext("2d");
+					bunnyCtx.drawImage(imgBunny, 0, 0, bunnyCanvas.width, bunnyCanvas.height, 0, 0, bunnyCanvas.width, bunnyCanvas.height);
+					bunnyImageData = bunnyCtx.getImageData(0,0,bunnyCanvas.width, bunnyCanvas.height);
+
+					bunnies = [];
+					for (let i = 0; i < 5000; i++) {
+						bunnies.push(new Bunny());
+					}
+
+					requestAnimationFrame(loop_lo);
+				}, 200);
+			}
+
+			function loop_hi() {
+				ctx.clearRect(0, 0, w, h);
+				let l = bunnies.length;
+				for (let i = 0; i < l; i++) {
+					update_hi(bunnies[i]);
+				}
+				requestAnimationFrame(loop_hi);
+			}
+
+			function update_hi(bun) {
+				bun.update();
+				ctx.drawImage(bunnyCanvas, bun.x, bun.y);
+			}
+
+
+
+
+			let imgDataScreen = new ImageData(w, h);
+
+			function loop_lo() {
+				imgDataScreen = new ImageData(w, h);
+				let l = bunnies.length;
+				for (let i = 0; i < l; i++) {
+					update_lo(bunnies[i]);
+				}
+				ctx.putImageData(imgDataScreen, 0, 0);
+				requestAnimationFrame(loop_lo);
+			}
+
+			function update_lo(bun) {
+				bun.update();
+
+				let _w = bunnyImageData.width;
+				let _h = bunnyImageData.height
+				let _tw = imgDataScreen.width;
+				let _th = imgDataScreen.height;
+				let _tl = imgDataScreen.data.length;
+
+				let pos;
+				for (let y = 0; y < _h; y++) {
+					for (let x = 0; x < _w; x++) {
+						let off = (y * _w + x) * 4;
+
+						let r = bunnyImageData.data[off];
+						let g = bunnyImageData.data[off+1];
+						let b = bunnyImageData.data[off+2];
+						let a = bunnyImageData.data[off+3];
+
+						pos = 4 * ((bun.y + y) * w + bun.x + x);
+						// position is inside pixel buffer
+						if (pos > 0 && (pos + 3) < _tl) {
+							if (a > 0) { // only opaque pixels are rendered
+								imgDataScreen.data[pos] = r;
+								imgDataScreen.data[pos+1] = g;
+								imgDataScreen.data[pos+2] = b;
+								imgDataScreen.data[pos+3] = a;
+							}
+						}
+					}
+				}
+			}
+
+
+			if (document.readyState !== "loading") {
+				run();
+			}
+			document.addEventListener("DOMContentLoaded", run);
+		</script>
+
+	</body>
+</html>
