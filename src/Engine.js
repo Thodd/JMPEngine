@@ -12,14 +12,32 @@ import IntroScreen from "./intro/IntroScreen.js";
 let initialized = false;
 let startTime = 0;
 
-let _resetKeyboard = null;
+let resetKeyboard = null;
+
+// screen change handling
+let currentScreen = null;
+let nextScreen = null;
 
 const gameloop = () => {
-	if (Engine.screen) {
-		Engine.screen.update();
-		Engine.screen.render();
-		_resetKeyboard();
+
+	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
+	if (nextScreen) {
+		if (currentScreen) {
+			currentScreen.end();
+		}
+		currentScreen = nextScreen;
+		currentScreen._begin();
+		currentScreen.begin();
+
+		nextScreen = null;
 	}
+
+	if (currentScreen) {
+		currentScreen.update();
+		currentScreen.render();
+		resetKeyboard();
+	}
+
 	window.requestAnimationFrame(gameloop);
 };
 
@@ -32,7 +50,26 @@ function loadMainModule() {
 
 const Engine = {
 
-	screen: null,
+	/**
+	 * Schedules a new screen for activation.
+	 * <b>Beware</b>: The next screen will only be activated at the beginning of the next frame.
+	 * @param {Screen} s the next screen which will be activated
+	 */
+	set screen(s) {
+		nextScreen = s;
+	},
+
+	/**
+	 * Retrieves the <b>currently</b> active screen.
+	 *
+	 * <b>Beware</b>: Accessing <code>Engine.screen</code> might lead to unexpected results!
+	 * If <code>Engine.screen</code> is accessed in the same frame as it was set to a new Screen,
+	 * the next scheduled screen is not active yet and <code>Engine.screen</code> will still contain the
+	 * old value.
+	 */
+	get screen() {
+		return currentScreen;
+	},
 
 	/**
 	 * Returns the passed time in seconds since
@@ -73,14 +110,11 @@ const Engine = {
 				Fonts.init();
 				Grid.init();
 
-				_resetKeyboard = Keyboard.init();
+				resetKeyboard = Keyboard.init();
 
 				startTime = Date.now();
 
 				log("Started.", "Engine");
-
-				// kickstart gameloop
-				gameloop();
 
 				// Engine intro
 				let intro;
@@ -91,6 +125,9 @@ const Engine = {
 					Engine.screen = is;
 					intro = is.wait();
 				}
+
+				// kickstart gameloop
+				gameloop();
 
 				// load main module if given
 				await intro.then(() => {
@@ -108,7 +145,7 @@ const Engine = {
 
 		return initialized;
 	}
-}
+};
 
 export default Engine;
 

@@ -22,11 +22,7 @@ class BaseLevel extends Screen {
 		this.add(bg);
 
 		// basic tilemap
-		let t = new Tilemap({
-			sheet: "tileset",
-			w: 50,
-			h: 50
-		});
+		let t = new Tilemap("tileset", 50, 50);
 		t.setTypes(["tiles"]);
 		t.x = 0;
 		t.y = 0;

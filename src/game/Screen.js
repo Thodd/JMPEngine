@@ -72,12 +72,34 @@ class Screen {
 
 		// lowest layer is cleared by default with black
 		this.getLayers(0).clearColor = "#222222";
+	}
+
+	/**
+	 * Begin Hook.
+	 * Called every time the Screen is activated as the currently shown <code>Engine.screen</code>.
+	 * The begin() hook is called before update() and render().
+	 * It is called one frame after the Screen was set to <code>Engine.screen</code>.
+	 *
+	 * The begin hook is called <b>after</b> the end hook of the last <code>Engine.screen</code> was called.
+	 */
+	begin() {}
+
+	// internal begin hook takes care of clean-up like layer clearing etc.
+	_begin(){
 		// initially clear all layers so we don't have any leftover graphics from a previous Screen.
 		for (let i = 0; i < this._layers.length; i++) {
 			GFX.clear(i, this._layers[i].clearColor);
 		}
 	}
 
+	/**
+	 * End Hook.
+	 * Called every time the Screen is released as the currently shown <code>Engine.screen</code>.
+	 * It is called one frame after another Screen was set to <code>Engine.screen</code>.
+	 *
+	 * The end hook is called <b>before</b> the begin hook of the new <code>Engine.screen</code>.
+	 */
+	end() {}
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
@@ -192,12 +214,6 @@ class Screen {
 			return undefined; // no collision found
 		}
 	}
-
-	// Lifecycle hook, called once the Screen begins
-	begin() {}
-
-	// Lifecycle hook, called once the Screen ends
-	end() {}
 
 	update() {
 		// update entities

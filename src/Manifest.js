@@ -12,7 +12,7 @@ const DEFAULTS = {
 	layers: 8,
 	fps: 60,
 	hideCursor: false,
-	skipIntro: true,
+	skipIntro: false,
 	spritesheets: {},
 	fonts: {}
 };
