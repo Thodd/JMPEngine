@@ -63,8 +63,8 @@
 
 				imgBunny = document.getElementById("bg");
 				bunnyCanvas = document.createElement("canvas");
-				bunnyCanvas.width = 16;
-				bunnyCanvas.height = 16;
+				bunnyCanvas.width = 128;
+				bunnyCanvas.height = 96;
 
 				canvas = document.getElementById("screen");
 				ctx = document.getElementById("screen").getContext("2d");
@@ -79,7 +79,7 @@
 					bunnyImageData = bunnyCtx.getImageData(0,0,bunnyCanvas.width, bunnyCanvas.height);
 
 					bunnies = [];
-					for (let i = 0; i < 300; i++) {
+					for (let i = 0; i < 2000; i++) {
 						bunnies.push(new Bunny());
 					}
 
@@ -90,9 +90,12 @@
 			function loop_hi() {
 				ctx.clearRect(0, 0, w, h);
 				let l = bunnies.length;
+				let renderStart = performance.now();
 				for (let i = 0; i < l; i++) {
 					update_hi(bunnies[i]);
 				}
+				let renderEnd = performance.now();
+				renderTimeSpan.textContent = `${(renderEnd - renderStart).toFixed(1)}ms`;
 				requestAnimationFrame(loop_hi);
 			}
 
@@ -112,8 +115,8 @@
 				for (let i = 0; i < l; i++) {
 					bunnies[i].update();
 				}
-				let renderStart = performance.now();
 
+				let renderStart = performance.now();
 				access = 0;
 				for (let i = 0; i < l; i++) {
 					update_lo(bunnies[i]);
@@ -142,15 +145,17 @@
 						let b = bunnyImageData.data[off+2];
 						let a = bunnyImageData.data[off+3];
 
-						pos = 4 * ((bun.y + y) * w + bun.x + x);
-						// position is inside pixel buffer
-						if (pos > 0 && (pos + 3) < _tl) {
-							if (a > 0) { // only opaque pixels are rendered
-								access++;
-								imgDataScreen.data[pos] = r;
-								imgDataScreen.data[pos+1] = g;
-								imgDataScreen.data[pos+2] = b;
-								imgDataScreen.data[pos+3] = a;
+						if (bun.y + y < _th && bun.x + x < _tw) {
+							pos = 4 * ((bun.y + y) * w + bun.x + x);
+							// position is inside pixel buffer
+							if (pos > 0 && (pos + 3) < _tl) {
+								if (a > 0) { // only opaque pixels are rendered
+									access++;
+									imgDataScreen.data[pos] = r;
+									imgDataScreen.data[pos+1] = g;
+									imgDataScreen.data[pos+2] = b;
+									imgDataScreen.data[pos+3] = a;
+								}
 							}
 						}
 					}

@@ -12,6 +12,7 @@ import Score from "./Score.js";
 import Well from "./Well.js";
 import Piece from "./Piece.js";
 import PieceBag from "./PieceBag.js";
+import BGRenderer from "./BGRenderer.js";
 
 class GameScreen extends Screen {
 	constructor() {
@@ -40,41 +41,12 @@ class GameScreen extends Screen {
 	 * Creates the BG animation
 	 */
 	setupBGandUI() {
-		// BG 0, 0
-		this._bg00 = new Entity(0, 0);
-		this._bg00.layer = 0;
-		this._bg00.setSprite({
-			sheet: "BG"
-		});
-		this.add(this._bg00);
-
-		// BG 1, 0
-		this._bg10 = new Entity(256, 0);
-		this._bg10.layer = 0;
-		this._bg10.setSprite({
-			sheet: "BG"
-		});
-		this.add(this._bg10);
-
-		// BG 0, 1
-		this._bg01 = new Entity(0, 192);
-		this._bg01.layer = 0;
-		this._bg01.setSprite({
-			sheet: "BG"
-		});
-		this.add(this._bg01);
-
-		// BG 1, 1
-		this._bg11 = new Entity(256, 192);
-		this._bg11.layer = 0;
-		this._bg11.setSprite({
-			sheet: "BG"
-		});
-		this.add(this._bg11);
+		this.bgEntity = new BGRenderer();
+		this.add(this.bgEntity);
 
 		// UI
 		let ui = new Entity(0, 0);
-		ui.layer = 0;
+		ui.layer = 1;
 		ui.setSprite({
 			sheet: "UI"
 		});
@@ -97,32 +69,6 @@ class GameScreen extends Screen {
 		this.add(this.scoringTexts.lines);
 		this.add(this.scoringTexts.points);
 		this.add(this.scoringTexts.level);
-	}
-
-	/**
-	 * Aaimates the BG
-	 */
-	animateBG() {
-		this._bg00.x -= 0.3;
-		this._bg00.y -= 0.3;
-
-		this._bg01.x -= 0.3;
-		this._bg01.y -= 0.3;
-
-		this._bg10.x -= 0.3;
-		this._bg10.y -= 0.3;
-
-		this._bg11.x -= 0.3;
-		this._bg11.y -= 0.3;
-
-		[this._bg00, this._bg01, this._bg10, this._bg11].forEach((bg) => {
-			if ((bg.x + 256) <= 0) {
-				bg.x = 256;
-			}
-			if ((bg.y + 192) <= 0) {
-				bg.y = 192;
-			}
-		});
 	}
 
 	/**
@@ -153,8 +99,6 @@ class GameScreen extends Screen {
 	 */
 	update() {
 		super.update();
-
-		this.animateBG();
 
 		if (this.gameOver) {
 			return;
