@@ -49,6 +49,12 @@ const Score = {
 	levelIncreased: false,
 	speed: speedTable[0],
 
+	setLevel(l) {
+		this.level = l;
+		this.speed = speedTable[this.level];
+		this.levelIncreased = true;
+	},
+
 	// lines
 	addLines(v) {
 		_totalLines += v;
@@ -57,9 +63,7 @@ const Score = {
 		log("points: " + this.points);
 
 		if (_totalLines >= (this.level * 10 + 10)) {
-			this.level += 1;
-			this.speed = speedTable[this.level];
-			this.levelIncreased = true;
+			this.setLevel(this.level + 1);
 		}
 	},
 	getLines() {return _totalLines},

@@ -1,5 +1,5 @@
 //import RNG from "../../../src/utils/RNG.js";
-import ArrayHelper from "../../../src/utils/ArrayHelper.js";
+import Helper from "../../../src/utils/Helper.js";
 import Piece from "./Piece.js";
 
 const allTypes = [Piece.TYPES.L, Piece.TYPES.J, Piece.TYPES.Z, Piece.TYPES.S, Piece.TYPES.I, Piece.TYPES.T, Piece.TYPES.O];
@@ -7,12 +7,12 @@ const allTypes = [Piece.TYPES.L, Piece.TYPES.J, Piece.TYPES.Z, Piece.TYPES.S, Pi
 //RNG.seed(678);
 
 let typeBag = allTypes.slice()
-ArrayHelper.shuffle(typeBag);
-typeBag = typeBag.concat(ArrayHelper.shuffle(allTypes.slice()));
+Helper.shuffle(typeBag);
+typeBag = typeBag.concat(Helper.shuffle(allTypes.slice()));
 
 function fillBag() {
 	let h = allTypes.slice();
-	ArrayHelper.shuffle(h);
+	Helper.shuffle(h);
 	typeBag = typeBag.concat(h);
 }
 

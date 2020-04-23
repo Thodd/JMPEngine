@@ -1,4 +1,4 @@
-import { contains, remove } from "../utils/ArrayHelper.js";
+import { contains, remove } from "../utils/Helper.js";
 import { log, warn } from "../utils/Log.js";
 
 let aKeyDownList = [];

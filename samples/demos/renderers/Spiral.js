@@ -1,6 +1,6 @@
 import Engine from "../../../src/Engine.js";
 import GFX from "../../../src/gfx/GFX.js";
-import ArrayHelper from "../../../src/utils/ArrayHelper.js";
+import Helper from "../../../src/utils/Helper.js";
 
 const author = "@SeanSLeBlanc";
 
@@ -22,7 +22,7 @@ const renderer = function () {
 	for (var I = Math.sin(T); I < 99; I += Math.cos(T)+1.1) {
 		X+=I*Math.sin(I);
 		Y+=I*Math.cos(I);
-		GFX.line(A,B,X,Y,ArrayHelper.choose(GFX.pal(), 4, 16));
+		GFX.line(A,B,X,Y,Helper.choose(GFX.pal(), 4, 16));
 		A = X;
 		B = Y;
 	}

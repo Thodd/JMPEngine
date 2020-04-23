@@ -44,16 +44,36 @@ function contains(e, a) {
 	return a.indexOf(e) >= 0;
 }
 
+/**
+ * Makes sure the given number #i is between (a,b).
+ * If #i is less than #a, #a is returned.
+ * If #i is greater than #b, #b is returned.
+ * Else #i is returned.
+ * @param {*} i
+ * @param {*} a
+ * @param {*} b
+ */
+function clamp(i, a, b) {
+	if (i < a) {
+		i = a;
+	} else if (i > b) {
+		i = b;
+	}
+	return i;
+}
+
 export {
 	choose,
 	shuffle,
 	remove,
-	contains
+	contains,
+	clamp
 };
 
 export default {
 	choose,
 	shuffle,
 	remove,
-	contains
+	contains,
+	clamp
 };

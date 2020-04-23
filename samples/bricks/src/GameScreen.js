@@ -13,6 +13,8 @@ import Well from "./Well.js";
 import Piece from "./Piece.js";
 import PieceBag from "./PieceBag.js";
 import BGRenderer from "./BGRenderer.js";
+import Engine from "../../../src/Engine.js";
+import LevelSelectScreen from "./LevelSelectScreen.js";
 
 class GameScreen extends Screen {
 	constructor() {
@@ -41,8 +43,7 @@ class GameScreen extends Screen {
 	 * Creates the BG animation
 	 */
 	setupBGandUI() {
-		this.bgEntity = new BGRenderer();
-		this.add(this.bgEntity);
+		this.add(new BGRenderer());
 
 		// UI
 		let ui = new Entity(0, 0);
@@ -101,6 +102,9 @@ class GameScreen extends Screen {
 		super.update();
 
 		if (this.gameOver) {
+			if (Keyboard.pressed(Keys.ESC)) {
+				Engine.screen = new LevelSelectScreen();
+			}
 			return;
 		}
 
@@ -210,6 +214,7 @@ class GameScreen extends Screen {
 		// new piece & game over check
 		this.gameOver = Well.addPiece(p);
 		if (this.gameOver) {
+			this.createGameOverlay();
 			error("GAME OVER", "GameScreen");
 		}
 
@@ -293,6 +298,46 @@ class GameScreen extends Screen {
 		shiftAndSet(this.scoringTexts.points, `${Score.points}`);
 		shiftAndSet(this.scoringTexts.level,  `${Score.level}`);
 		shiftAndSet(this.scoringTexts.lines,  `${Score.getLines()}`);
+	}
+
+	createGameOverlay() {
+		// GameOver overlay
+		let offX = 104, offY = 50;
+		let gameOverUI = new Entity(offX, offY);
+		gameOverUI.layer = 3;
+		gameOverUI.setSprite({
+			sheet: "GameOver"
+		});
+		this.add(gameOverUI);
+
+		// GAME OVER! text
+		// Ok, I got a bit lazy here and just hacked this together...
+		let t = new Text("GAME OVER!", offX+5, offY+5);
+		t.layer = 3;
+		t.color = "#FF3333";
+		t.sad = true;
+		t.blinkTimer = new FrameCounter(12);
+		t.flip = function() {
+			if (this.sad) {
+				this.color = "#FF3333";
+				this.text = "GAME OVER!";
+			} else {
+				this.color = "#FFFFFF";
+				this.text = "    :(";
+			}
+			this.sad = !this.sad;
+		};
+		t.update = function(){
+			if (this.blinkTimer.isReady()) {
+				this.flip();
+			}
+		};
+		this.add(t);
+
+		// continue text
+		let c = new Text("Press ESC\n  key to\ncontinue!", offX+9, offY+30);
+		c.layer = 3;
+		this.add(c);
 	}
 
 	render() {

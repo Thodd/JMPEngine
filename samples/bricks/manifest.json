@@ -1,27 +1,29 @@
 {
 	"title": "Bricks",
 
-	"startScreen": "./src/GameScreen.js",
+	"startScreen": "./src/LevelSelectScreen.js",
 
 	"w": 256,
 	"h": 192,
 	"scale": 1.5,
 	"fps": 60,
 	"hideCursor": true,
-	"skipIntro": true,
+	"skipIntro": false,
 
 	"fonts": {},
 
 	"spritesheets": {
 		"BG": {
-			"url": "./img/BG.png",
-			"w": 256,
-			"h": 192
+			"url": "./img/BG.png"
+		},
+		"LevelSelect": {
+			"url": "./img/LevelSelect.png"
+		},
+		"GameOver": {
+			"url": "./img/GameOver.png"
 		},
 		"UI": {
-			"url": "./img/UI.png",
-			"w": 256,
-			"h": 192
+			"url": "./img/UI.png"
 		},
 		"bricks": {
 			"url": "./img/Bricks.png",

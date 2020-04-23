@@ -1,4 +1,4 @@
-import ArrayHelper from "../utils/ArrayHelper.js";
+import Helper from "../utils/Helper.js";
 import GFX from "../gfx/GFX.js";
 import Collision from "./Collision.js";
 import EntityTypeStore from "./EntityTypeStore.js";
@@ -124,10 +124,10 @@ class Screen {
 	 */
 	add(e) {
 		// check if already scheduled for removal
-		var isScheduled = ArrayHelper.contains(e, this._toBeAdded);
+		var isScheduled = Helper.contains(e, this._toBeAdded);
 
 		if (!e._screen && !isScheduled && !e._isDestroyed) {
-			ArrayHelper.remove(e, this._toBeRemoved);
+			Helper.remove(e, this._toBeRemoved);
 			this._toBeAdded.push(e);
 
 			this._entityTypeStore.add(e);
@@ -149,10 +149,10 @@ class Screen {
 	 */
 	remove(e) {
 		// check if already scheduled for adding
-		var isScheduled = ArrayHelper.contains(e, this._toBeRemoved);
+		var isScheduled = Helper.contains(e, this._toBeRemoved);
 
 		if (e._screen == this && !isScheduled) {
-			ArrayHelper.remove(e, this._toBeAdded);
+			Helper.remove(e, this._toBeAdded);
 			this._toBeRemoved.push(e);
 
 			this._entityTypeStore.remove(e);
@@ -238,7 +238,7 @@ class Screen {
 		var lenR = this._toBeRemoved.length;
 		for (var j = 0; j < lenR; j++) {
 			var er = this._toBeRemoved[j];
-			ArrayHelper.remove(er, this._entities);
+			Helper.remove(er, this._entities);
 			er._screen = null;
 			er.removed();
 		}
