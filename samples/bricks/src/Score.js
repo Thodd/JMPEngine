@@ -1,5 +1,3 @@
-import { log } from "../../../src/utils/Log.js";
-
 let _totalLines = 0;
 
 const speedTable = {
@@ -60,7 +58,6 @@ const Score = {
 		_totalLines += v;
 
 		this.points += scoringTable[v] * (this.level + 1);
-		log("points: " + this.points);
 
 		if (_totalLines >= (this.level * 10 + 10)) {
 			this.setLevel(this.level + 1);
