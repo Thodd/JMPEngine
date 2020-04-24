@@ -16,6 +16,9 @@ class Tilemap extends Entity {
 
 		super();
 
+		// tilemap version
+		this.version = 1;
+
 		// get a unique name for the tilemap (see Map module calls later)
 		this._name = `tilemap_${TILEMAP_COUNT}`;
 		TILEMAP_COUNT++;

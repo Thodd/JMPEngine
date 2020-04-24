@@ -220,7 +220,7 @@ class Player extends Actor {
 
 		// move camera with player
 		Engine.screen.cam.x = this.x - 70;
-		//Engine.screen.cam.y = this.y - 78;
+		//Engine.screen.cam.y = this.y - 38;
 	}
 
 }

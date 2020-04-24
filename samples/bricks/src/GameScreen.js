@@ -104,6 +104,7 @@ class GameScreen extends Screen {
 		if (this.gameOver) {
 			if (Keyboard.pressed(Keys.ESC)) {
 				Engine.screen = new LevelSelectScreen();
+				Score.reset();
 			}
 			return;
 		}

@@ -65,6 +65,12 @@ const Score = {
 	},
 	getLines() {return _totalLines},
 
+	reset() {
+		this.points = 0;
+		this.setLevel(0);
+		_totalLines = 0;
+	},
+
 	addHardDrop() {
 		this.points += 10 + 100 * this.level;
 	}

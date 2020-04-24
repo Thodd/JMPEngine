@@ -55,6 +55,14 @@ class Entity {
 		return `${this.constructor.name} (${this._ID})`;
 	}
 
+	/**
+	 * Returns the Screen instance to which this Entity is added.
+	 * If the Entity is not added to a Screen, <code>null</code> is returned.
+	 */
+	getScreen() {
+		return this._screen;
+	}
+
 	setTypes(a) {
 		if (!Array.isArray(a)) {
 			fail("${this}: setType() only accepts an array of types strings!");

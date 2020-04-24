@@ -1,6 +1,6 @@
 import Screen from "../../../../src/game/Screen.js";
 import Entity from "../../../../src/game/Entity.js";
-import Tilemap from "../../../../src/game/Tilemap.js";
+import Tilemap2 from "../../../../src/game/Tilemap2.js";
 import GFX from "../../../../src/gfx/GFX.js";
 import RNG from "../../../../src/utils/RNG.js";
 import Helper from "../../../../src/utils/Helper.js";
@@ -24,7 +24,7 @@ class BaseLevel extends Screen {
 		this.add(bg);
 
 		// basic tilemap
-		let t = new Tilemap("tileset", 50, 50);
+		let t = new Tilemap2("tileset", 50, 50);
 		t.setTypes(["tiles"]);
 		t.x = 0;
 		t.y = 0;
