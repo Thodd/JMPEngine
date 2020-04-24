@@ -336,7 +336,7 @@ class GameScreen extends Screen {
 		this.add(t);
 
 		// continue text
-		let c = new Text("Press ESC\n  key to\ncontinue!", offX+9, offY+30);
+		let c = new Text("Press ESC\n  key to\ncontinue!", offX+9, offY+31);
 		c.layer = 3;
 		this.add(c);
 	}
