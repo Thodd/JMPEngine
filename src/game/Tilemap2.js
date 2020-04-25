@@ -103,11 +103,11 @@ class Tilemap2 extends Entity {
 		// calculate first visible column and row depending on the camera position
 		let colStart = 0;
 		if (this._screen.cam.x > baseX) {
-			colStart = Math.floor(Math.max((baseX + this._screen.cam.x) / this._tileWidth, 0));
+			colStart = Math.floor((this._screen.cam.x - baseX) / this._tileWidth);
 		}
 		let rowStart = 0;
 		if (this._screen.cam.y > baseY) {
-			rowStart = Math.floor(Math.max((baseY + this._screen.cam.y) / this._tileHeight, 0));
+			rowStart = Math.floor((this._screen.cam.y - baseY) / this._tileHeight);
 		}
 
 		// Calculate the last visible column and row.
@@ -116,7 +116,8 @@ class Tilemap2 extends Entity {
 		let colMax = Math.min((colStart + this._screenWidth / this._tileWidth) + 1, this._mapWidth);
 		let rowMax = Math.min((rowStart + this._screenHeight / this._tileHeight) + 1, this._mapHeight);
 
-		// Debug log if necessary (CTRL + ENTER)
+		// This log is only for debugging, since it's quite hard to judge which parts of a tilemap are currently rendered
+		// Press (CTRL + ENTER) for logging.
 		if (Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
 			log(`origin: (${colStart},${rowStart})`, "Tilemap.v2");
 			log(`end:    (${colMax},${rowMax})`, "Tilemap.v2");
@@ -137,7 +138,7 @@ class Tilemap2 extends Entity {
 				if (t && t.id >= 0) {
 					let drawX = col * this._tileWidth;
 					let drawY = row * this._tileHeight;
-					GFX.spr(this._sheet.name, t.id, baseX+drawX, baseY+drawY, this.layer, t.color);
+					GFX.spr(this._sheet.name, t.id, baseX + drawX, baseY + drawY, this.layer, t.color);
 				}
 			}
 		}

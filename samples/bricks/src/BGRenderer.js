@@ -1,36 +1,33 @@
-import Entity from "../../../src/game/Entity.js";
-import GFX from "../../../src/gfx/GFX.js";
+import Tilemap2 from "../../../src/game/Tilemap2.js";
 
-class BGRenderer extends Entity {
-	constructor(x, y) {
-		super(x, y);
+/*
+	(0,0)--------16-------(256,0)--------16------(512,0)
+	  |                      |                      |
+	 12                      |                      |
+	  |                      |                      |
+	(0,192)---------------(256,192)--------------(512,192)
+	  |                      |                      |
+	 12                      |                      |
+	  |                      |                      |
+	(0,384)---------------(256,384)--------------(512,384)
+*/
+class BGRenderer extends Tilemap2 {
+	constructor() {
+		super("BG", 32, 24);
 
-		this.parts = [
-			{x: 0, y:0},
-			{x: 256, y:0},
-			{x: 0, y:192},
-			{x: 256, y:192}
-		];
+		this.each((t) => {
+			t.set(0);
+		});
 	}
 
 	update() {
-		this.parts.forEach((p) => {
-			p.x -= 0.3;
-			p.y -= 0.3;
+		this.x -= 0.3;
+		this.y -= 0.3;
 
-			if ((p.x + 256) <= 0) {
-				p.x = 256;
-			}
-			if ((p.y + 192) <= 0) {
-				p.y = 192;
-			}
-		});
-	}
-
-	render() {
-		this.parts.forEach((p) => {
-			GFX.spr("BG", 0, p.x, p.y, 0);
-		});
+		if (this.x <= -256 || this.y <= -192) {
+			this.x = 0;
+			this.y = 0;
+		}
 	}
 }
 

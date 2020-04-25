@@ -8,13 +8,15 @@
 	"scale": 1.5,
 	"fps": 60,
 	"hideCursor": true,
-	"skipIntro": false,
+	"skipIntro": true,
 
 	"fonts": {},
 
 	"spritesheets": {
 		"BG": {
-			"url": "./img/BG.png"
+			"url": "./img/BG.png",
+			"w": 16,
+			"h": 16
 		},
 		"LevelSelect": {
 			"url": "./img/LevelSelect.png"
