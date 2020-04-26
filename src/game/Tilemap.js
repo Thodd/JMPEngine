@@ -37,8 +37,6 @@ class Tilemap extends Entity {
 		this._mapHeight = h;
 		this._tileWidth = this._sheet.w;
 		this._tileHeight = this._sheet.h;
-		this._screenWidth = Manifest.get("/w");
-		this._screenHeight = Manifest.get("/h");
 		this._screenWidthInTiles = Math.floor(Manifest.get("/w") / this._tileWidth);
 		this._screenHeightInTiles = Math.floor(Manifest.get("/h") / this._tileHeight);
 
@@ -128,32 +126,35 @@ class Tilemap extends Entity {
 		let camX = this._screen.cam.x;
 		let camY = this._screen.cam.y;
 
+		let diffX = Math.floor((camX - baseX) / this._tileWidth);
+		let diffY = Math.floor((camY - baseY) / this._tileHeight);
+
 		// Calculate the first and last visible column/row.
 		let colStart;
 		let colMax;
-		if (camX > baseX) {
-			colStart = Math.floor((camX - baseX) / this._tileWidth);
+		if (diffX > 0) {
+			colStart = diffX;
 			colMax = Math.min(colStart + this._screenWidthInTiles + 1, this._mapWidth);
 		} else {
 			colStart = 0;
-			colMax = Math.min(Math.floor((camX + Manifest.get("/w") - baseX) / this._tileWidth) + 1, this._mapWidth);
+			colMax = Math.min(diffX + this._screenWidthInTiles + 1, this._mapWidth);
 		}
 		let rowStart;
 		let rowMax;
-		if (camY > baseY) {
-			rowStart = Math.floor((camY - baseY) / this._tileHeight);
+		if (diffY > 0) {
+			rowStart = diffY;
 			rowMax = Math.min(rowStart + this._screenHeightInTiles + 1, this._mapHeight);
 		} else {
 			rowStart = 0;
-			rowMax = Math.min(Math.floor((camY + Manifest.get("/h") - baseY) / this._tileHeight) + 1, this._mapHeight);
+			rowMax = Math.min(diffY + this._screenHeightInTiles + 1, this._mapHeight);
 		}
 
 		// This log is only for debugging, since it's quite hard to judge which parts of a tilemap are currently rendered
 		// Press (CTRL + ENTER) for logging.
-		//if (Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
-		//	log(`origin: (${colStart},${rowStart})`, "Tilemap.vA");
-		//	log(`end:    (${colMax},${rowMax})`, "Tilemap.vA");
-		//}
+		// if (Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
+		// 	log(`origin: (${colStart},${rowStart})`, "Tilemap.vA");
+		// 	log(`end:    (${colMax},${rowMax})`, "Tilemap.vA");
+		// }
 
 		// if the col/row origin are outside the map's boundaries, there is nothing to draw
 		if (colStart >= this._mapWidth || colMax < 0 || rowStart >= this._mapHeight || rowMax < 0) {
