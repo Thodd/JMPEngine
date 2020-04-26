@@ -1,4 +1,4 @@
-import Tilemap2 from "../../../src/game/Tilemap2.js";
+import Tilemap from "../../../src/game/Tilemap.js";
 
 /*
 	(0,0)--------16-------(256,0)--------16------(512,0)
@@ -11,7 +11,7 @@ import Tilemap2 from "../../../src/game/Tilemap2.js";
 	  |                      |                      |
 	(0,384)---------------(256,384)--------------(512,384)
 */
-class BGRenderer extends Tilemap2 {
+class BGRenderer extends Tilemap {
 	constructor() {
 		super("BG", 32, 24);
 

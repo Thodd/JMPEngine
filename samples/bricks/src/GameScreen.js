@@ -15,7 +15,6 @@ import PieceBag from "./PieceBag.js";
 import BGRenderer from "./BGRenderer.js";
 import Engine from "../../../src/Engine.js";
 import LevelSelectScreen from "./LevelSelectScreen.js";
-import Tilemap2 from "../../../src/game/Tilemap2.js";
 
 class GameScreen extends Screen {
 	constructor() {

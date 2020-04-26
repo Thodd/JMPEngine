@@ -4,7 +4,7 @@ import { log } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
-import Tilemap2 from "../../../src/game/Tilemap2.js";
+import Tilemap from "../../../src/game/Tilemap.js";
 import GFX from "../../../src/gfx/GFX.js";
 
 class WorldScreen extends Screen {
@@ -122,7 +122,7 @@ class WorldScreen extends Screen {
 		/**
 		 * Tilemap demo
 		 */
-		let t = new Tilemap2("tileset", 50, 50);
+		let t = new Tilemap("tileset", 16, 12);
 		t.x = 0;
 		t.y = 0;
 		t.layer = 1;

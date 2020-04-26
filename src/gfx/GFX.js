@@ -14,7 +14,7 @@ var _aCtx = [];
  * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
  */
 function setupCSS() {
-    const head = document.getElementsByTagName('head')[0];
+	const head = document.getElementsByTagName('head')[0];
 
 	const style = document.createElement('style');
 	style.type = 'text/css';
@@ -118,15 +118,14 @@ function pal(i) {
 	return palette[i % palette.length];
 }
 
-/**
- * Retrieve the low-level rendering contexts for the DOM canvases.
- * Beware: Tinkering with these objects is for advanced users only!
- */
-
 function alpha(i, v) {
 	ctx(i).globalAlpha = v;
 }
 
+/**
+ * Retrieve the low-level rendering contexts for the DOM canvases.
+ * Beware: Tinkering with these objects is for advanced users only!
+ */
 function ctx(i) {
 	if (i == null) {
 		return _aCtx;
