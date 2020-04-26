@@ -34,24 +34,22 @@ const gameloop = () => {
 		nextScreen = null;
 	}
 
-	// resets the performance tracking at the beginning of the frame
-	PerformanceTrace._reset();
 
 	if (currentScreen) {
+		// resets the performance tracking at the beginning of the frame
+		PerformanceTrace.reset();
+
 		// update
-		let tUpdateStart = PerformanceTrace.now();
+		PerformanceTrace.start("update");
 		currentScreen.update();
-		let tUpdateEnd = PerformanceTrace.now();
+		PerformanceTrace.end("update");
 
 		// rendering
-		let tRenderStart = PerformanceTrace.now();
+		PerformanceTrace.start("render");
 		currentScreen.render();
-		let tRenderEnd = PerformanceTrace.now();
+		PerformanceTrace.end("render");
 
-		// track update and rendering performance data
-		PerformanceTrace.updateTime = tUpdateEnd - tUpdateStart;
-		PerformanceTrace.renderTime = tRenderEnd - tRenderStart;
-		PerformanceTrace.frameTime = PerformanceTrace.updateTime + PerformanceTrace.renderTime;
+		PerformanceTrace.finalize();
 
 		resetKeyboard();
 	}

@@ -26,11 +26,7 @@
 		"tileset": {
 			"url": "./img/Tileset.png",
 			"w": 8,
-			"h": 8,
-			"infos": {
-				"0": {"block": true},
-				"1": {"block": false}
-			}
+			"h": 8
 		}
 	},
 
