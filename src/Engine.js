@@ -1,5 +1,6 @@
 import domReady from "./utils/domReady.js";
 import { log, warn } from "./utils/Log.js";
+import PerformanceTrace from "./utils/PerformanceTrace.js";
 import Manifest from "./Manifest.js";
 import AssetLoader from "./utils/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
@@ -33,9 +34,25 @@ const gameloop = () => {
 		nextScreen = null;
 	}
 
+	// resets the performance tracking at the beginning of the frame
+	PerformanceTrace._reset();
+
 	if (currentScreen) {
+		// update
+		let tUpdateStart = PerformanceTrace.now();
 		currentScreen.update();
+		let tUpdateEnd = PerformanceTrace.now();
+
+		// rendering
+		let tRenderStart = PerformanceTrace.now();
 		currentScreen.render();
+		let tRenderEnd = PerformanceTrace.now();
+
+		// track update and rendering performance data
+		PerformanceTrace.updateTime = tUpdateEnd - tUpdateStart;
+		PerformanceTrace.renderTime = tRenderEnd - tRenderStart;
+		PerformanceTrace.frameTime = PerformanceTrace.updateTime + PerformanceTrace.renderTime;
+
 		resetKeyboard();
 	}
 
@@ -101,10 +118,15 @@ const Engine = {
 	},
 
 	/**
-	 * Returns the passed time in seconds since
-	 * the start of the Engine.
+	 * Returns the passed time in (milli)seconds since the start of the Engine.
+	 * @param {string} [res] the optional timer resolution, "ms" = milliseconds
 	 */
-	now: () => {
+	now: (res) => {
+		// resolution in milliseconds
+		if (res == "ms") {
+			return Date.now() - startTime;
+		}
+		// resolution in seconds
 		return (Date.now() - startTime) / 1000;
 	},
 
@@ -170,6 +192,3 @@ const Engine = {
 };
 
 export default Engine;
-
-// debugging shortcut
-window.Engine = Engine;

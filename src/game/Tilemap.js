@@ -1,13 +1,10 @@
 import Manifest from "../Manifest.js";
 import Entity from "./Entity.js";
 import Grid from "../gfx/Grid.js";
-import { log, fail } from "../utils/Log.js";
+import { fail } from "../utils/Log.js";
 import Tile from "./Tile.js";
 import GFX from "../gfx/GFX.js";
 import Spritesheets from "../gfx/Spritesheets.js";
-
-import Keyboard from "../input/Keyboard.js";
-import Keys from "../input/Keys.js";
 
 let TILEMAP_COUNT = 0;
 

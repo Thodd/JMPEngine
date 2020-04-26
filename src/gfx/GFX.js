@@ -1,4 +1,5 @@
 import { log, warn, error, fail } from "../utils/Log.js";
+import PerformanceTrace from "../utils/PerformanceTrace.js";
 import Manifest from "../Manifest.js";
 import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
@@ -210,6 +211,8 @@ function pxFlush(layer) {
 	if (_pxBuffers[layer]) {
 		let oCtx = _aCtx[layer || 0];
 		oCtx.putImageData(_pxBuffers[layer], 0, 0);
+
+		PerformanceTrace.drawCalls++;
 	}
 }
 
@@ -270,12 +273,16 @@ function rect(x, y, w, h, color, iLayer) {
 	oCtx.strokeRect(n(x), n(y), w, h);
 	oCtx.stroke();
 	oCtx.closePath();
+
+	PerformanceTrace.drawCalls++;
 }
 
 function rectf(x, y, w, h, color, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
 	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fillRect(x, y, w, h);
+
+	PerformanceTrace.drawCalls++;
 }
 
 function circ(x, y, r, color, iLayer) {
@@ -285,6 +292,8 @@ function circ(x, y, r, color, iLayer) {
 	oCtx.closePath();
 	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.stroke();
+
+	PerformanceTrace.drawCalls++;
 }
 
 function circf(x, y, r, color, iLayer) {
@@ -294,6 +303,8 @@ function circf(x, y, r, color, iLayer) {
 	oCtx.closePath();
 	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fill();
+
+	PerformanceTrace.drawCalls++;
 }
 
 function tri(x0, y0, x1, y1, x2, y2, color, iLayer) {
@@ -305,6 +316,8 @@ function tri(x0, y0, x1, y1, x2, y2, color, iLayer) {
 	oCtx.closePath();
 	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.stroke();
+
+	PerformanceTrace.drawCalls++;
 }
 
 function trif(x0, y0, x1, y1, x2, y2, color, iLayer) {
@@ -316,6 +329,8 @@ function trif(x0, y0, x1, y1, x2, y2, color, iLayer) {
 	oCtx.closePath();
 	oCtx.fillStyle = color || oCtx.fillStyle;
 	oCtx.fill();
+
+	PerformanceTrace.drawCalls++;
 }
 
 function line(x0, y0, x1, y1, color, iLayer) {
@@ -326,12 +341,16 @@ function line(x0, y0, x1, y1, color, iLayer) {
 	oCtx.closePath();
 	oCtx.strokeStyle = color || oCtx.strokeStyle;
 	oCtx.stroke();
+
+	PerformanceTrace.drawCalls++;
 }
 
 function spr(sheet, id, x, y, iLayer, sColor) {
 	var oCtx = _aCtx[iLayer || 0];
 	var oSprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
 	oCtx.drawImage(oSprCanvas, x || 0, y || 0);
+
+	PerformanceTrace.drawCalls++;
 }
 
 function spr_ext(sheet, id, x, y, w, h, iLayer, sColor, alpha) {
@@ -360,6 +379,8 @@ function spr_ext(sheet, id, x, y, w, h, iLayer, sColor, alpha) {
 		h || oSprCanvas.height, // default to canvas height
 	);
 
+	PerformanceTrace.drawCalls++;
+
 	if (oldAlpha) {
 		oCtx.globalAlpha = oldAlpha;
 	}
@@ -372,6 +393,8 @@ function grid(id, x, y, iLayer) {
 		fail(`Grid '"${id}' does not exist!`);
 	}
 	oCtx.drawImage(grid.canvas, x, y);
+
+	PerformanceTrace.drawCalls++;
 }
 
 // mapp = map part
@@ -392,6 +415,8 @@ function text(font, x, y, sText, iLayer, color) {
 		var c = sText[i];
 		oCtx.drawImage(Fonts.getChar(oFont, c, color), x + iOffsetX * oFont.w, y);
 		iOffsetX++;
+
+		PerformanceTrace.drawCalls++;
 	}
 }
 
@@ -451,7 +476,7 @@ function init(containerID) {
 }
 
 /********************************* public API *********************************/
-const GFX_API = {
+const GFX = {
 	// dom based API
 	alpha,
 	ctx,
@@ -505,7 +530,4 @@ const GFX_API = {
 		return _aCanvases;
 	}
 };
-export default GFX_API;
-
-// debugging shortcut
-window.GFX = GFX_API;
+export default GFX;

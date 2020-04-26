@@ -305,6 +305,4 @@ Well.ORIGIN_Y = 2;
 Well.WIDTH = 10;
 Well.HEIGHT = 20;
 
-window.Well = Well;
-
 export default Well;

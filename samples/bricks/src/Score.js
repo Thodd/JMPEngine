@@ -77,5 +77,4 @@ const Score = {
 
 };
 
-window.Score = Score;
 export default Score;

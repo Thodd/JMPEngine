@@ -2,6 +2,7 @@ import domReady from "./utils/domReady.js";
 import Engine from "./Engine.js";
 
 domReady().then(() => {
+
 	// find manifest bootstrap URL
 	let bootstrapScriptElement = document.querySelectorAll("script[data-jmp-manifest]")[0];
 
