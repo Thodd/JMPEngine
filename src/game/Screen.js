@@ -251,7 +251,7 @@ class Screen {
 		for (let i = 0; i < this._layers.length; i++) {
 			let layer = this._layers[i];
 			//GFX.save(i);
-			// translate camera
+			// translate camera; layers with a fixedCam will not move with the camera
 			if (!layer.fixedCam) {
 				GFX.trans(i, -this.cam.x, -this.cam.y);
 			}

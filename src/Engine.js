@@ -20,6 +20,13 @@ let resetKeyboard = null;
 let currentScreen = null;
 let nextScreen = null;
 
+/**
+ * The game loop.
+ * Takes care of:
+ * 1. Updating the currently activated Screen
+ * 2. Rendering the currently activated Screen
+ * 3. Switching Screens and calling lifecycle Hooks
+ */
 const gameloop = () => {
 
 	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
