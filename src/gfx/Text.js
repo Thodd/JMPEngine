@@ -20,7 +20,7 @@ class Text extends Entity {
 	}
 
 	setFont(f) {
-		if (Manifest.get(`/fonts/${f}`)) {
+		if (Manifest.get(`/assets/fonts/${f}`)) {
 			this.font = f;
 		} else {
 			warn(`The font '${f}' is not known. Default font 'font0' will be set.`, "Text-Entity");

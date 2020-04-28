@@ -388,7 +388,7 @@ function spr_ext(sheet, id, x, y, w, h, iLayer, sColor, alpha) {
 
 function grid(id, x, y, iLayer) {
 	var oCtx = _aCtx[iLayer || 0];
-	var grid = manifest.maps[id];
+	var grid = manifest._maps[id];
 	if (!grid) {
 		fail(`Grid '"${id}' does not exist!`);
 	}
@@ -408,7 +408,7 @@ function grid(id, x, y, iLayer) {
  * @param {string} font the font which should be used for rendering, e.g. "font0"
  */
 function text(font, x, y, sText, iLayer, color) {
-	var oFont = manifest.fonts[font];
+	var oFont = manifest.assets.fonts[font];
 	var oCtx = _aCtx[iLayer || 0];
 	var iOffsetX = 0;
 	for (var i in sText) {
@@ -424,7 +424,7 @@ function text(font, x, y, sText, iLayer, color) {
  * Renders multiline texts.
  */
 function textm(font, x, y, sText, iLayer, color) {
-	var oFont = manifest.fonts[font];
+	var oFont = manifest.assets.fonts[font];
 
 	// check for linebreak style
 	var sLineDelimiter = sText.indexOf("\n\r") >= 0 ? "\n\r" : "\n";

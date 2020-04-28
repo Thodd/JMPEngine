@@ -289,7 +289,7 @@ class GameScreen extends Screen {
 	 */
 	updateScoringUI() {
 		// calculate text shift to the left
-		let fontWidth = Manifest.get("/fonts/font0/w");
+		let fontWidth = Manifest.get("/assets/fonts/font0/w");
 
 		function shiftAndSet(e, text) {
 			e.x = 76 - (Math.max(text.length - 1, 0) * fontWidth);

@@ -10,24 +10,26 @@
 	"hideCursor": false,
 	"skipIntro": true,
 
-	"fonts": {},
-
-	"spritesheets": {
-		"player": {
-			"url": "./img/player.png",
-			"w": 24,
-			"h": 24
+	"assets": {
+		"spritesheets": {
+			"player": {
+				"url": "./img/player.png",
+				"w": 24,
+				"h": 24
+			},
+			"tileset": {
+				"url": "./img/tileset.png",
+				"w": 10,
+				"h": 10
+			}
 		},
-		"tileset": {
-			"url": "./img/tileset.png",
-			"w": 10,
-			"h": 10,
-			"infos": {
-				"0": {"block": true},
-				"1": {"block": false}
+		"fonts": {},
+		"sounds": {},
+		"maps": {
+			"plugin": "./MapAssetPlugin.js",
+			"town": {
+				"url": "./maps/Town.map"
 			}
 		}
-	},
-
-	"sounds": {}
+	}
 }

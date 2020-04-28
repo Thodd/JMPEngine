@@ -13,9 +13,7 @@ const DEFAULTS = {
 	fps: 60,
 	startScreen: null,
 	hideCursor: false,
-	skipIntro: false,
-	spritesheets: {},
-	fonts: {}
+	skipIntro: false
 };
 
 
@@ -67,9 +65,14 @@ function assignDefaults() {
 	// assign good default values for the manifest,
 	// no matter from what source we got it
 	_manifestObject = Object.assign(DEFAULTS, _manifestObject);
+	_manifestObject.assets = Object.assign({
+		spritesheets: {},
+		fonts: {},
+		sounds: {}
+	}, _manifestObject.assets);
 
 	// at least define the default font 'font0'
-	_manifestObject.fonts["font0"] = {
+	_manifestObject.assets.fonts["font0"] = {
 		"url": Fonts.DEFAULT_JMP_FONT,
 		"w": 7,
 		"h": 8

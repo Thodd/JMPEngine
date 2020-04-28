@@ -10,7 +10,7 @@ class Grid {
 
 		this.w = mOptions.w;
 		this.h = mOptions.h;
-		this.sheet = Manifest.get(`/spritesheets/${mOptions.sheet}`);
+		this.sheet = Manifest.get(`/assets/spritesheets/${mOptions.sheet}`);
 
 		if (!this.sheet) {
 			fail(`Spritesheet not found ${mOptions.sheet}!`);
@@ -100,7 +100,7 @@ function init() {
 	_mManifest = Manifest.get();
 
 	// make sure we have at least an empty maps object
-	Manifest.set("/maps", Manifest.get("/maps", false) || {});
+	Manifest.set("/_maps", Manifest.get("/_maps", false) || {});
 
 	if (initialized) {
 		warn("already initialized!", "GFX.Grid");
@@ -117,11 +117,11 @@ export default {
 	init,
 
 	create: function(mOptions) {
-		let existing = Manifest.get(`/maps/${mOptions.id}`, false);
+		let existing = Manifest.get(`/_maps/${mOptions.id}`, false);
 		if (existing) {
 			fail(`A Grid with ID ${mOptions.id} already exists!`, "GFX.Grid");
 		}
-		Manifest.set(`/maps/${mOptions.id}`, new Grid(mOptions));
+		Manifest.set(`/_maps/${mOptions.id}`, new Grid(mOptions));
 	},
 
 	/**

@@ -2,7 +2,7 @@ import domReady from "./utils/domReady.js";
 import { log, warn } from "./utils/Log.js";
 import PerformanceTrace from "./utils/PerformanceTrace.js";
 import Manifest from "./Manifest.js";
-import AssetLoader from "./utils/AssetLoader.js";
+import AssetLoader from "./utils/assets/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
 import Fonts from "./gfx/Fonts.js";
 import Spritesheets from "./gfx/Spritesheets.js";

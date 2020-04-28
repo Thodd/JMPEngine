@@ -15,7 +15,7 @@ function init() {
 
 	log("Processing fonts ...", "GFX.Fonts");
 
-	let fontsDefinition = Manifest.get("/fonts");
+	let fontsDefinition = Manifest.get("/assets/fonts");
 
 	if (Object.keys(fontsDefinition).length === 0) {
 		log("No fonts defined.", "GFX.Fonts");

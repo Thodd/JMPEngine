@@ -10,25 +10,23 @@
 	"hideCursor": false,
 	"skipIntro": true,
 
-	"fonts": {},
+	"assets": {
+		"spritesheets": {
+			"background": {
+				"url": "./img/Background.png"
+			},
 
-	"spritesheets": {
-		"background": {
-			"url": "./img/Background.png"
-		},
+			"player": {
+				"url": "./img/HoneyBunny.png",
+				"w": 10,
+				"h": 10
+			},
 
-		"player": {
-			"url": "./img/HoneyBunny.png",
-			"w": 10,
-			"h": 10
-		},
-
-		"tileset": {
-			"url": "./img/Tileset.png",
-			"w": 8,
-			"h": 8
+			"tileset": {
+				"url": "./img/Tileset.png",
+				"w": 8,
+				"h": 8
+			}
 		}
-	},
-
-	"sounds": {}
+	}
 }

@@ -10,29 +10,27 @@
 	"hideCursor": true,
 	"skipIntro": true,
 
-	"fonts": {},
-
-	"spritesheets": {
-		"BG": {
-			"url": "./img/BG.png",
-			"w": 16,
-			"h": 16
-		},
-		"LevelSelect": {
-			"url": "./img/LevelSelect.png"
-		},
-		"GameOver": {
-			"url": "./img/GameOver.png"
-		},
-		"UI": {
-			"url": "./img/UI.png"
-		},
-		"bricks": {
-			"url": "./img/Bricks.png",
-			"w": 8,
-			"h": 8
+	"assets": {
+		"spritesheets": {
+			"BG": {
+				"url": "./img/BG.png",
+				"w": 16,
+				"h": 16
+			},
+			"LevelSelect": {
+				"url": "./img/LevelSelect.png"
+			},
+			"GameOver": {
+				"url": "./img/GameOver.png"
+			},
+			"UI": {
+				"url": "./img/UI.png"
+			},
+			"bricks": {
+				"url": "./img/Bricks.png",
+				"w": 8,
+				"h": 8
+			}
 		}
-	},
-
-	"sounds": {}
+	}
 }

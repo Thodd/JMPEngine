@@ -1,5 +1,5 @@
-import { log } from "../utils/Log.js";
-import Manifest from "../Manifest.js";
+import { log } from "../Log.js";
+import Manifest from "../../Manifest.js";
 
 
 function load() {
@@ -17,7 +17,7 @@ function load() {
 		};
 
 		var fnLoadResources = function(sType) {
-			let resourceDefinitions = Manifest.get(`/${sType}`);
+			let resourceDefinitions = Manifest.get(`/assets/${sType}`);
 			for (var sResourceID in resourceDefinitions) {
 				var oResource = resourceDefinitions[sResourceID];
 				oResource.id = sResourceID; // link id to itself
@@ -35,8 +35,8 @@ function load() {
 		};
 
 		// count the number of resources to load
-		var aSheets = Object.keys(Manifest.get("/spritesheets"));
-		var aFonts = Object.keys(Manifest.get("/fonts"));
+		var aSheets = Object.keys(Manifest.get("/assets/spritesheets"));
+		var aFonts = Object.keys(Manifest.get("/assets/fonts"));
 		var iResourcesToLoad = aSheets.length + aFonts.length;
 
 		// nothing to do, no sprites used

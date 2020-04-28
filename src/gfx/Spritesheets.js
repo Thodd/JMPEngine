@@ -7,7 +7,7 @@ import Manifest from "../Manifest.js";
  */
 function init() {
 
-	let sheets = Manifest.get("/spritesheets");
+	let sheets = Manifest.get("/assets/spritesheets");
 
 	if (Object.keys(sheets).length === 0) {
 		log("No spritesheets defined.", "GFX.Spritesheets");
@@ -66,7 +66,7 @@ function init() {
  * @param {string} sheet
  */
 function getSheet(sheet) {
-	return Manifest.get(`/spritesheets/${sheet}`);
+	return Manifest.get(`/assets/spritesheets/${sheet}`);
 }
 
 /**
@@ -76,7 +76,7 @@ function getSheet(sheet) {
  * @param {string} sColor a hex color string, e.g. #FF0085
  */
 function getCanvasFromSheet(sheet, id, sColor) {
-	var oSheet = Manifest.get(`/spritesheets/${sheet}`);
+	var oSheet = Manifest.get(`/assets/spritesheets/${sheet}`);
 	if (!oSheet) {
 		fail(`Spritesheet '${sheet}' does not exist!`, "GFX");
 	}
