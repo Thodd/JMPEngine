@@ -1,58 +1,39 @@
 import { log } from "../Log.js";
 import Manifest from "../../Manifest.js";
+import loadImage from "./plugins/loadImage.js";
 
 
-function load() {
-	return new Promise(function(resolve) {
+function load(assets) {
+	// loading
+	function loadResources(type) {
+		let resPromises = [];
+		// get map of all assets of the given type
+		let resources = assets[type];
 
-		var fnGetCallback = function (oResource, sType) {
-			return function() {
-				iResourcesToLoad--;
-				log("  > loaded: " + oResource.url + " (" + sType + ")", "AssetLoader");
-				if (iResourcesToLoad == 0) {
-					log("All sprites & fonts loaded.", "AssetLoader");
-					resolve();
-				}
-			};
-		};
-
-		var fnLoadResources = function(sType) {
-			let resourceDefinitions = Manifest.get(`/assets/${sType}`);
-			for (var sResourceID in resourceDefinitions) {
-				var oResource = resourceDefinitions[sResourceID];
-				oResource.id = sResourceID; // link id to itself
-
-				var oRawImg = new Image();
-
-				oResource.raw = oRawImg;
-
-				// resolve resource urls
-				oResource.url = Manifest.resolve(oResource.url);
-
-				oRawImg.src = oResource.url;
-				oRawImg.onload = fnGetCallback(oResource, sType);
-			}
-		};
-
-		// count the number of resources to load
-		var aSheets = Object.keys(Manifest.get("/assets/spritesheets"));
-		var aFonts = Object.keys(Manifest.get("/assets/fonts"));
-		var iResourcesToLoad = aSheets.length + aFonts.length;
-
-		// nothing to do, no sprites used
-		if (iResourcesToLoad == 0) {
-			log("Nothing to load.", "AssetLoader");
-			return resolve();
+		for (let resourceID in resources) {
+			let res = resources[resourceID];
+			res.id = resourceID;
+			res.url = Manifest.resolve(res.url)
+			// trigger loading
+			resPromises.push(loadImage(res).then((rawImg) => {
+				// store loaded raw image in manifest asset object
+				res.raw = rawImg;
+				log("  > loaded: " + res.url + " (" + type + ")", "AssetLoader");
+			}));
 		}
+		return resPromises;
+	}
 
-		log("Preloading assets ...", "AssetLoader");
+	log("Preloading assets ...", "AssetLoader");
 
-		fnLoadResources("spritesheets");
+	let allAssets = [];
 
-		fnLoadResources("fonts");
+	for (let type in assets) {
+		allAssets = allAssets.concat(loadResources(type));
+	}
 
-		// TODO: sound
-		// TODO: maps
+	return Promise.all(allAssets).then(() => {
+		log("All sprites & fonts loaded.", "AssetLoader");
 	});
 }
 
