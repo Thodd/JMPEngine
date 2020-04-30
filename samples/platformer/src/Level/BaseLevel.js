@@ -1,7 +1,7 @@
 import Screen from "../../../../src/game/Screen.js";
 import Entity from "../../../../src/game/Entity.js";
 import Tilemap from "../../../../src/game/Tilemap.js";
-import GFX from "../../../../src/gfx/GFX.js";
+import Text from "../../../../src/gfx/Text.js";
 import RNG from "../../../../src/utils/RNG.js";
 import Helper from "../../../../src/utils/Helper.js";
 import Player from "../Actors/Player.js";
@@ -73,12 +73,14 @@ class BaseLevel extends Screen {
 		window.player = player; // only used for debugging (do NOT do this in a real game ;))
 
 		// text demo
-		let text = new Entity();
-		text.render = () => {
-			GFX.text("font0", 2, 2, "Platformer Demo", 3, "#000000");
-			GFX.text("font0", 1, 1, "Platformer Demo", 3, "#FFFFFF");
-		};
-		this.add(text);
+		let textBG = new Text("Platformer Demo", 2, 2);
+		textBG.layer = 3;
+		textBG.color = "#000000";
+		this.add(textBG);
+
+		let textFG = new Text("Platformer Demo", 1, 1);
+		textFG.layer = 3;
+		this.add(textFG);
 	}
 }
 
