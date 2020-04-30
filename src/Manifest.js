@@ -104,6 +104,7 @@ function _splitPath(path) {
 /**
  * Returns the entry under the given path in the Manifest.
  * If no path is given the whole manifest object is returned
+ * @param {string} path the path through the Manifest object. Must start with a "/".
  */
 function get(path, failOnError=true) {
 	if (!path || path === "/") {

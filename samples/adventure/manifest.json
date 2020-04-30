@@ -8,7 +8,7 @@
 	"scale": 3,
 	"fps": 60,
 	"hideCursor": false,
-	"skipIntro": true,
+	"skipIntro": false,
 
 	"assets": {
 		"spritesheets": {
@@ -21,14 +21,6 @@
 				"url": "./img/tileset.png",
 				"w": 10,
 				"h": 10
-			}
-		},
-		"fonts": {},
-		"sounds": {},
-		"maps": {
-			"plugin": "./MapAssetPlugin.js",
-			"town": {
-				"url": "./maps/Town.map"
 			}
 		}
 	}
