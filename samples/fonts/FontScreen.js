@@ -1,6 +1,7 @@
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import GFX from "../../../src/gfx/GFX.js";
+import Text from "../../src/gfx/Text.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class FontScreen extends Screen {
@@ -58,20 +59,18 @@ following GFX-API:
 
 'GFX.textm(...)'`;
 
-		let multilineText = new Entity();
+		let multilineTextShadow = new Text(multilineMessage, 11, 81);
+		multilineTextShadow.color = "#000000";
+		this.add(multilineTextShadow);
 
-		multilineText.render = function() {
-			GFX.textm("font0", 11, 81, multilineMessage, 1, "#000000"); // displaced rendering as a "shadow" effect
-			GFX.textm("font0", 10, 80, multilineMessage, 1, "#FF0085");
-		};
-
-		this.add(multilineText);
+		let multilineTextColored = new Text(multilineMessage, 10, 80);
+		multilineTextColored.color = "#FF0085";
+		this.add(multilineTextColored);
 
 
 		/**
 		 * Custom ASCII Bitmap Font Demo
 		 */
-		let customFont = new Entity();
 		let customMsg = `
 This is a sample of a
 custom font.
@@ -80,11 +79,7 @@ the built-in 'font0'.
 A custom font must be
 monospaced and in
 ASCII order.`;
-		customFont.render = function() {
-			GFX.textm("font0", 6, 161, customMsg, 1, "#000000");
-			GFX.textm("font0", 5, 160, customMsg, 1);
-		};
-
+		let customFont = new Text(customMsg, 5, 160);
 		this.add(customFont);
 	}
 }

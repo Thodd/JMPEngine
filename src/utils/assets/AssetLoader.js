@@ -160,7 +160,9 @@ async function load(assetsMap) {
 		return plugin.process(a);
 	});
 
-	return Promise.all(procPromises);
+	return Promise.all(procPromises).then(() => {
+		log("Assets processed.", "AssetLoader");
+	});
 }
 
 export default {

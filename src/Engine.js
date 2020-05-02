@@ -159,7 +159,7 @@ const Engine = {
 				// the AssetLoader will enhance the _manifestObject with the loaded resources
 				await AssetLoader.load(Manifest.get("/assets"));
 
-				// assets can only be initialized after the AssetLoader is done
+				// TODO: refactor grid into Tilemap class
 				Grid.init();
 
 				resetKeyboard = Keyboard.init();
