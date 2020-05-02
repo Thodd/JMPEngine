@@ -54,14 +54,14 @@ class Screen {
 		 * During rendering this will be respected for correctly shifting entities around.
 		 */
 		this.cam = {
-			set x (iXValue) {
-				_camX = iXValue * -1;
+			set x (x) {
+				_camX = x * -1;
 			},
 			get x() {
 				return -1 * _camX;
 			},
-			set y (iYValue) {
-				_camY = iYValue * -1;
+			set y (y) {
+				_camY = y * -1;
 			},
 			get y() {
 				return -1 * _camY;

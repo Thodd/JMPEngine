@@ -2,18 +2,18 @@ import { log, warn, fail } from "../utils/Log.js";
 import Spritesheets from "./Spritesheets.js";
 import Manifest from "../Manifest.js";
 
-let _mManifest = null;
+let manifestObject = null;
 
 class Grid {
-	constructor(mOptions) {
-		this.id = mOptions.id;
+	constructor(options) {
+		this.id = options.id;
 
-		this.w = mOptions.w;
-		this.h = mOptions.h;
-		this.sheet = Manifest.get(`/assets/spritesheets/${mOptions.sheet}`);
+		this.w = options.w;
+		this.h = options.h;
+		this.sheet = Manifest.get(`/assets/spritesheets/${options.sheet}`);
 
 		if (!this.sheet) {
-			fail(`Spritesheet not found ${mOptions.sheet}!`);
+			fail(`Spritesheet not found ${options.sheet}!`);
 		}
 
 		this.data = [];
@@ -36,7 +36,7 @@ class Grid {
  * default tile upon creation.
  */
 function _get(id, x, y) {
-	var grid = _mManifest.maps[id];
+	var grid = manifestObject._maps[id];
 	// missing grid
 	if (!grid) {
 		fail(`Grid does not exist: ${id}`, "GFX.Grid");
@@ -65,7 +65,7 @@ function _set(id, x, y, v, color) {
 	_get(id, x, y);
 
 	// write value to grid data
-	var grid = _mManifest.maps[id];
+	var grid = manifestObject._maps[id];
 	grid.data[x][y] = v;
 
 	_render(id, x, y, v, color);
@@ -76,7 +76,7 @@ function _set(id, x, y, v, color) {
  * Color information is respected here, even though the tile still only has the "value" set.
  */
 function _render(id, x, y, v, color) {
-	var grid = _mManifest.maps[id];
+	var grid = manifestObject._maps[id];
 	if (!grid) {
 		fail(`Grid '${id}' does not exists!`, "GFX.Grid");
 	}
@@ -87,25 +87,25 @@ function _render(id, x, y, v, color) {
 	// everything except -1 means we have a tile
 	// -1 means the tile is only cleared
 	if (v != -1) {
-		var oTileCanvas = Spritesheets.getCanvasFromSheet(grid.sheet.name, v, color);
+		var tileCanvas = Spritesheets.getCanvasFromSheet(grid.sheet.name, v, color);
 
-		grid.ctx.drawImage(oTileCanvas, x * grid.sheet.w, y * grid.sheet.h);
+		grid.ctx.drawImage(tileCanvas, x * grid.sheet.w, y * grid.sheet.h);
 	}
 }
 
 let initialized = false;
 
 function init() {
-	// we keep a reference on the Manifest, to optimize the access to the grid-based rendering functions
-	_mManifest = Manifest.get();
-
-	// make sure we have at least an empty maps object
-	Manifest.set("/_maps", Manifest.get("/_maps", false) || {});
-
 	if (initialized) {
 		warn("already initialized!", "GFX.Grid");
 		return;
 	}
+
+	// we keep a reference on the Manifest, to optimize the access to the grid-based rendering functions
+	manifestObject = Manifest.get();
+
+	// make sure we have at least an empty maps object
+	Manifest.set("/_maps", Manifest.get("/_maps", false) || {});
 
 	log("module initialized.", "GFX.Grid");
 
@@ -116,12 +116,12 @@ export default {
 
 	init,
 
-	create: function(mOptions) {
-		let existing = Manifest.get(`/_maps/${mOptions.id}`, false);
+	create: function(options) {
+		let existing = Manifest.get(`/_maps/${options.id}`, false);
 		if (existing) {
-			fail(`A Grid with ID ${mOptions.id} already exists!`, "GFX.Grid");
+			fail(`A Grid with ID ${options.id} already exists!`, "GFX.Grid");
 		}
-		Manifest.set(`/_maps/${mOptions.id}`, new Grid(mOptions));
+		Manifest.set(`/_maps/${options.id}`, new Grid(options));
 	},
 
 	/**

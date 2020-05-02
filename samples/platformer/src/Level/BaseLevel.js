@@ -72,6 +72,9 @@ class BaseLevel extends Screen {
 		this.add(player);
 		window.player = player; // only used for debugging (do NOT do this in a real game ;))
 
+		// initial Camera offset
+		this.cam.x = player.x - 70;
+
 		// text demo
 		let textBG = new Text("Platformer Demo", 2, 2);
 		textBG.layer = 3;

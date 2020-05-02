@@ -8,8 +8,18 @@ import Spritesheets from "../gfx/Spritesheets.js";
 
 let TILEMAP_COUNT = 0;
 
+/**
+ * Version A: renders every frame only the visible part of the map, based on the camera offset
+ * Version B: renders everything to a big canvas on tile change,
+ *            the big canvas is then rendered partially to the screen -> Only one render call
+ */
+const Version = {
+	"A": "A",
+	"B": "B"
+};
+
 class Tilemap extends Entity {
-	constructor(sheet, w=20, h=20, tileClass=Tile, version="A") {
+	constructor(sheet, w=20, h=20, tileClass=Tile, v=Version.A) {
 
 		if (!sheet) {
 			fail(`The spritesheet ${sheet} does not exist! A Tilemap cannot be created without a spritesheet`, "Tilemap");
@@ -18,7 +28,7 @@ class Tilemap extends Entity {
 		super();
 
 		// tilemap version
-		this.version = version;
+		this.version = v;
 
 		// sheet from which we will render the tiles
 		this._sheet = Spritesheets.getSheet(sheet);
@@ -38,12 +48,14 @@ class Tilemap extends Entity {
 		this._screenHeightInTiles = Math.floor(Manifest.get("/h") / this._tileHeight);
 
 		// register map on low-level API
-		Grid.create({
-			id: this._name,
-			sheet: sheet,
-			w: this._mapWidth,
-			h: this._mapHeight
-		});
+		if (this.version == Version.B) {
+			Grid.create({
+				id: this._name,
+				sheet: sheet,
+				w: this._mapWidth,
+				h: this._mapHeight
+			});
+		}
 
 		// create tile instances
 		this._field = [];
@@ -96,14 +108,14 @@ class Tilemap extends Entity {
 	 * Rerenders the given tile.
 	 */
 	_rerenderTile(t) {
-		if (this.version == "A") {
+		if (this.version == Version.A) {
 			fail(`_renderTile(${t && t.id}) is not supported!`, "Tilemap.vA");
 		}
 		Grid.set(this._name, t.x, t.y, t.id, t.color);
 	}
 
 	render() {
-		if (this.version == "A") {
+		if (this.version == Version.A) {
 			this._renderA();
 		} else {
 			// Version B
@@ -174,5 +186,7 @@ class Tilemap extends Entity {
 		}
 	}
 }
+
+Tilemap.Version = Version;
 
 export default Tilemap;

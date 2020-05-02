@@ -6,6 +6,7 @@ import Keys from "../../../src/input/Keys.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import GFX from "../../../src/gfx/GFX.js";
+import Tile from "../../../src/game/Tile.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -122,7 +123,7 @@ class WorldScreen extends Screen {
 		/**
 		 * Tilemap demo
 		 */
-		let t = new Tilemap("tileset", 16, 12);
+		let t = new Tilemap("tileset", 16, 12, Tile, "B");
 		t.x = 0;
 		t.y = 0;
 		t.layer = 1;

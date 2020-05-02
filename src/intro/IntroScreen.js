@@ -16,7 +16,7 @@ class IntroScreen extends Screen {
 		this.getLayers(0).clearColor = "#332c50";
 
 		let msg = "... JMP.px Engine!";
-		let ml = 0;
+		let curMsgLength = 0;
 
 		// we delay the color changing for 4 frames,
 		// otherwise the effect is too fast to appreciate ;)
@@ -33,7 +33,7 @@ class IntroScreen extends Screen {
 		// colored and animated Text
 		let animatedText = new Entity();
 		animatedText.render = function() {
-			for (let i = 0; i < ml; i++) {
+			for (let i = 0; i < curMsgLength; i++) {
 				let char = msg[i];
 
 				let x = w/2 + (i*7) - shiftLeft;
@@ -47,8 +47,8 @@ class IntroScreen extends Screen {
 			}
 
 			if (animationDelay.isReady()) {
-				if (ml < msg.length) {
-					ml++;
+				if (curMsgLength < msg.length) {
+					curMsgLength++;
 				}
 			}
 		};

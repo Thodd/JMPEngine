@@ -46,15 +46,15 @@ Keys.SINGLEQUOTE = 222;
 
 // alphanumeric characters
 var i,
-	sNumbers = "0123456789",
-	sAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	numbers = "0123456789",
+	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-for (i = 0; i < sNumbers.length; i++) {
-	Keys["NUM_" + sNumbers[i]] = 48 + i;
+for (i = 0; i < numbers.length; i++) {
+	Keys["NUM_" + numbers[i]] = 48 + i;
 }
 
-for (i = 0; i < sAlphabet.length; i++) {
-	Keys[sAlphabet[i]] = 65 + i;
+for (i = 0; i < alphabet.length; i++) {
+	Keys[alphabet[i]] = 65 + i;
 }
 
 export default Keys;

@@ -34,9 +34,7 @@ class Tile {
 		this.id = id;
 		this.color = color;
 
-		// Version 1: renders everything to a big canvas on tile change
-		// Version 2: renders every frame only the visible part of the map, based on the camera offset
-		if (this.tilemap.version == 1) {
+		if (this.tilemap.version == "B") {
 			this.tilemap._rerenderTile(this);
 		}
 	}

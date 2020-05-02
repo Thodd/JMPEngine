@@ -11,34 +11,34 @@ function process(sheet) {
 	sheet.sprites = []; // list of all sprites in the sheet
 	sheet._colorCache = {}; // initially an empty color cache
 
-	var oRawSheet = sheet.raw;
+	var rawSheet = sheet.raw;
 
 	// defaults to the full raw image size
-	var iSpriteWidth = sheet.w || oRawSheet.width;
-	var iSpriteHeight = sheet.h || oRawSheet.height;
+	var spriteWidth = sheet.w || rawSheet.width;
+	var spriteHeight = sheet.h || rawSheet.height;
 
-	var _iVerticalNoSprites = oRawSheet.height / iSpriteWidth;
-	var _iHorizontalNoSprites = oRawSheet.width / iSpriteHeight;
+	var verticalSpritesCount = rawSheet.height / spriteWidth;
+	var horizontalSpritesCount = rawSheet.width / spriteHeight;
 
-	for (var y = 0; y < _iVerticalNoSprites; y++) {
-		for (var x = 0; x < _iHorizontalNoSprites; x++) {
-			var oSpriteCanvas = document.createElement("canvas");
-			oSpriteCanvas.width = iSpriteWidth;
-			oSpriteCanvas.height = iSpriteHeight;
-			var ctx = oSpriteCanvas.getContext("2d");
+	for (var y = 0; y < verticalSpritesCount; y++) {
+		for (var x = 0; x < horizontalSpritesCount; x++) {
+			var spriteCanvas = document.createElement("canvas");
+			spriteCanvas.width = spriteWidth;
+			spriteCanvas.height = spriteHeight;
+			var ctx = spriteCanvas.getContext("2d");
 			// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 			ctx.drawImage(
-				oRawSheet,
-				x * iSpriteWidth,
-				y * iSpriteHeight,
-				iSpriteWidth,
-				iSpriteHeight,
+				rawSheet,
+				x * spriteWidth,
+				y * spriteHeight,
+				spriteWidth,
+				spriteHeight,
 				0,
 				0,
-				iSpriteWidth,
-				iSpriteHeight
+				spriteWidth,
+				spriteHeight
 			);
-			sheet.sprites.push(oSpriteCanvas);
+			sheet.sprites.push(spriteCanvas);
 		}
 	}
 	log(`  > done: ${sheet.name}`, "GFX.Spritesheets");
@@ -55,42 +55,42 @@ function getSheet(sheet) {
 
 /**
  * Retrieves the (colorized) Sprite-Canvas from a spritesheet.
- * @param {string} sheet the name of the spritesheet
+ * @param {string} sheetName the name of the spritesheet
  * @param {int} id the id of the sprite inside the given spritesheet
- * @param {string} sColor a hex color string, e.g. #FF0085
+ * @param {string} color a hex color string, e.g. #FF0085
  */
-function getCanvasFromSheet(sheet, id, sColor) {
-	var oSheet = Manifest.get(`/assets/spritesheets/${sheet}`);
-	if (!oSheet) {
-		fail(`Spritesheet '${sheet}' does not exist!`, "GFX");
+function getCanvasFromSheet(sheetName, id, color) {
+	var sheet = Manifest.get(`/assets/spritesheets/${sheetName}`);
+	if (!sheet) {
+		fail(`Spritesheet '${sheetName}' does not exist!`, "GFX");
 	}
 
-	var oSprSrcCanvas = oSheet.sprites[id || 0]; // default version is not colorized
-	if (!oSprSrcCanvas) {
-		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheet}'!`, "GFX");
+	var spriteSrcCanvas = sheet.sprites[id || 0]; // default version is not colorized
+	if (!spriteSrcCanvas) {
+		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheetName}'!`, "GFX");
 	}
 
-	if (sColor) {
+	if (color) {
 		// make sure we have a color cache per spritesheet
-		var mColorCache = oSheet._colorCache[sColor];
-		if (!mColorCache) {
-			mColorCache = oSheet._colorCache[sColor] = {};
+		var colorCacheEntry = sheet._colorCache[color];
+		if (!colorCacheEntry) {
+			colorCacheEntry = sheet._colorCache[color] = {};
 		}
 
 		// check cache for an already colorized canvas
-		var oColorizedCanvas = mColorCache[id];
-		if (oColorizedCanvas) {
-			return oColorizedCanvas;
+		var colorizedCanvas = colorCacheEntry[id];
+		if (colorizedCanvas) {
+			return colorizedCanvas;
 		} else {
 			// colorize canvas
-			oSprSrcCanvas = ColorTools.colorizeCanvas(oSprSrcCanvas, sColor);
+			spriteSrcCanvas = ColorTools.colorizeCanvas(spriteSrcCanvas, color);
 			// save it in cache
-			mColorCache[id] = oSprSrcCanvas;
+			colorCacheEntry[id] = spriteSrcCanvas;
 		}
 	}
 
 	// if no color was used the default canvas is returned
-	return oSprSrcCanvas;
+	return spriteSrcCanvas;
 }
 
 export default {

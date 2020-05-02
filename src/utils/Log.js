@@ -2,6 +2,7 @@ function dump(method, s, prefix) {
 	if (prefix) {
 		s = `[${prefix}] ${s}`;
 	}
+	// eslint-disable-next-line no-console
 	console[method](s);
 }
 

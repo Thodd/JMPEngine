@@ -33,17 +33,17 @@ function process(font) {
  * Gets the given char in the wanted color.
  * The colored char canvas is cached.
  */
-function getChar(oFont, c, color) {
-	let oChar = oFont.chars[c];
+function getChar(font, c, color) {
+	let char = font.chars[c];
 	if (color) {
-		if (!oChar[color]) {
-			oChar[color] = ColorTools.colorizeCanvas(oChar.default, color);
+		if (!char[color]) {
+			char[color] = ColorTools.colorizeCanvas(char.default, color);
 		}
-		return oChar[color];
+		return char[color];
 	} else {
 		// no color tinting given, then we return the default
 		// typically used for already colored fonts
-		return oChar.default;
+		return char.default;
 	}
 }
 

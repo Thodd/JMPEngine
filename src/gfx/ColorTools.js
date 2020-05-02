@@ -30,12 +30,12 @@ function parseColorString(color) {
  * Parses a hex color value (e.g. #FF0000) to a javascript object containing r/g/b/a values from 0 to 255.
  * @public
  */
-function parseHexColorToRGB(sHex) {
-	sHex = sHex.substring(1, sHex.length);
+function parseHexColorToRGB(hex) {
+	hex = hex.substring(1, hex.length);
 	return {
-		r: parseInt(sHex[0] + sHex[1], 16),
-		g: parseInt(sHex[2] + sHex[3], 16),
-		b: parseInt(sHex[4] + sHex[5], 16)
+		r: parseInt(hex[0] + hex[1], 16),
+		g: parseInt(hex[2] + hex[3], 16),
+		b: parseInt(hex[4] + hex[5], 16)
 	};
 }
 
@@ -43,14 +43,14 @@ function parseHexColorToRGB(sHex) {
  * Parses an RGBA color statement to a javascript object with r/g/b/a values from 0 to 255.
  * @public
  */
-function parseRGBA(sRGBA) {
-	var sColorValues = sRGBA.substring(5, sRGBA.length - 1);
-	var aColors = sColorValues.split(",");
+function parseRGBA(rgba) {
+	var colorValues = rgba.substring(5, rgba.length - 1);
+	var colorParts = colorValues.split(",");
 	return {
-		r: parseInt(aColors[0], 10),
-		g: parseInt(aColors[1], 10),
-		b: parseInt(aColors[2], 10),
-		a: parseFloat(aColors[3]),
+		r: parseInt(colorParts[0], 10),
+		g: parseInt(colorParts[1], 10),
+		b: parseInt(colorParts[2], 10),
+		a: parseFloat(colorParts[3]),
 	};
 }
 
@@ -58,34 +58,34 @@ function parseRGBA(sRGBA) {
  * Colors all white pixels in the given src canvas with the given color value.
  * @public
  */
-function colorizeCanvas(oSrcCanvas, sColor) {
-	sColor = sColor || "#FF0085";
+function colorizeCanvas(srcCanvas, color) {
+	color = color || "#FF0085";
 
-	var oRGB = parseColorString(sColor);
+	var RGBAValues = parseColorString(color);
 
 	// create new target canvas
-	var oTarget = document.createElement("canvas");
-	oTarget.width = oSrcCanvas.width;
-	oTarget.height = oSrcCanvas.height;
+	var target = document.createElement("canvas");
+	target.width = srcCanvas.width;
+	target.height = srcCanvas.height;
 
 	// get the raw data of the src
-	var oSrcData = oSrcCanvas.getContext("2d").getImageData(0, 0, oSrcCanvas.width, oSrcCanvas.height);
-	var oSrcRaw = oSrcData.data;
+	var srcData = srcCanvas.getContext("2d").getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+	var srcRaw = srcData.data;
 
-	for (var i = 0, iPixelCount = oSrcRaw.length; i < iPixelCount; i += 4) {
+	for (var i = 0, iPixelCount = srcRaw.length; i < iPixelCount; i += 4) {
 		// mix colors:
 		// (original color in % of 255) * new Color
 		// white will become the new color, all other colors will be toned down depending on their distance to 255
-		oSrcRaw[i  ] = (oSrcRaw[i  ] / 255) * oRGB.r;
-		oSrcRaw[i+1] = (oSrcRaw[i+1] / 255) * oRGB.g;
-		oSrcRaw[i+2] = (oSrcRaw[i+2] / 255) * oRGB.b;
-		oSrcRaw[i+3] = oSrcRaw[i+3]; // alpha is not touched
+		srcRaw[i  ] = (srcRaw[i  ] / 255) * RGBAValues.r;
+		srcRaw[i+1] = (srcRaw[i+1] / 255) * RGBAValues.g;
+		srcRaw[i+2] = (srcRaw[i+2] / 255) * RGBAValues.b;
+		srcRaw[i+3] = srcRaw[i+3]; // alpha is not touched
 	}
 
 	// write the tinted src data to the target canvas
-	oTarget.getContext("2d").putImageData(oSrcData, 0, 0);
+	target.getContext("2d").putImageData(srcData, 0, 0);
 
-	return oTarget;
+	return target;
 }
 
 // single function export
