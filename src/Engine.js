@@ -2,12 +2,12 @@ import domReady from "./utils/domReady.js";
 import { log, warn } from "./utils/Log.js";
 import PerformanceTrace from "./utils/PerformanceTrace.js";
 import Manifest from "./Manifest.js";
-import AssetLoader from "./utils/assets/AssetLoader.js";
+import AssetLoader from "./assets/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
 import Grid from "./gfx/Grid.js";
 import Keyboard from "./input/Keyboard.js";
 import Screen from "./game/Screen.js";
-import IntroScreen from "./intro/IntroScreen.js";
+import IntroScreen from "./game/intro/IntroScreen.js";
 
 let initialized = false;
 let startTime = 0;

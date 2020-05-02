@@ -1,6 +1,6 @@
 import loadImage from "./loadImage.js";
 
-import Spritesheets from "../../../gfx/Spritesheets.js";
+import Spritesheets from "../../gfx/Spritesheets.js";
 
 
 async function load(resourceObject) {

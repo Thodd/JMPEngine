@@ -1,5 +1,5 @@
-import { log } from "../Log.js";
-import Manifest from "../../Manifest.js";
+import { log } from "../utils/Log.js";
+import Manifest from "../Manifest.js";
 
 import loadSpritesheet from "./plugins/loadSpritesheet.js";
 import loadFont from "./plugins/loadFont.js";

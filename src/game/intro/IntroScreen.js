@@ -1,8 +1,8 @@
-import Manifest from "../Manifest.js";
-import Screen from "../game/Screen.js";
-import GFX from "../gfx/GFX.js";
-import FrameCounter from "../utils/FrameCounter.js";
-import Entity from "../game/Entity.js";
+import Manifest from "../../Manifest.js";
+import Screen from "../Screen.js";
+import GFX from "../../gfx/GFX.js";
+import FrameCounter from "../../utils/FrameCounter.js";
+import Entity from "../Entity.js";
 
 class IntroScreen extends Screen {
 	constructor(){

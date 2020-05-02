@@ -1,4 +1,4 @@
-import domReady from "../../utils/domReady.js";
+import domReady from "../../src/utils/domReady.js";
 
 domReady().then(() => {
 	let fontImg = document.getElementById("jmp_font");

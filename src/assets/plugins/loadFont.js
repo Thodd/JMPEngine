@@ -1,6 +1,6 @@
 import loadImage from "./loadImage.js";
 
-import Fonts from "../../../gfx/Fonts.js";
+import Fonts from "../../gfx/Fonts.js";
 
 async function load(resourceObject) {
 	return loadImage.load(resourceObject);
