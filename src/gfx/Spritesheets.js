@@ -5,60 +5,44 @@ import Manifest from "../Manifest.js";
 /**
  * Creates a new Canvas for all sprites in the sheet.
  */
-function init() {
+function process(sheet) {
 
-	let sheets = Manifest.get("/assets/spritesheets");
+	// single sheet main values
+	sheet.sprites = []; // list of all sprites in the sheet
+	sheet._colorCache = {}; // initially an empty color cache
 
-	if (Object.keys(sheets).length === 0) {
-		log("No spritesheets defined.", "GFX.Spritesheets");
-		return;
-	}
+	var oRawSheet = sheet.raw;
 
-	log("Processing spritesheets ...", "GFX.Spritesheets");
+	// defaults to the full raw image size
+	var iSpriteWidth = sheet.w || oRawSheet.width;
+	var iSpriteHeight = sheet.h || oRawSheet.height;
 
-	// all sheets
-	for (var s in sheets) {
+	var _iVerticalNoSprites = oRawSheet.height / iSpriteWidth;
+	var _iHorizontalNoSprites = oRawSheet.width / iSpriteHeight;
 
-		// single sheet main values
-		var oSheet = sheets[s];
-		oSheet.name = s; // used internally, backwards name reference inside the manifest
-		oSheet.sprites = []; // list of all sprites in the sheet
-		oSheet._colorCache = {}; // initially an empty color cache
-
-		var oRawSheet = oSheet.raw;
-		// defaults to the full raw image size
-		var iSpriteWidth = oSheet.w || oRawSheet.width;
-		var iSpriteHeight = oSheet.h || oRawSheet.height;
-
-		var _iVerticalNoSprites = oRawSheet.height / iSpriteWidth;
-		var _iHorizontalNoSprites = oRawSheet.width / iSpriteHeight;
-
-		for (var y = 0; y < _iVerticalNoSprites; y++) {
-			for (var x = 0; x < _iHorizontalNoSprites; x++) {
-				var oSpriteCanvas = document.createElement("canvas");
-				oSpriteCanvas.width = iSpriteWidth;
-				oSpriteCanvas.height = iSpriteHeight;
-				var ctx = oSpriteCanvas.getContext("2d");
-				// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-				ctx.drawImage(
-					oRawSheet,
-					x * iSpriteWidth,
-					y * iSpriteHeight,
-					iSpriteWidth,
-					iSpriteHeight,
-					0,
-					0,
-					iSpriteWidth,
-					iSpriteHeight
-				);
-				oSheet.sprites.push(oSpriteCanvas);
-			}
+	for (var y = 0; y < _iVerticalNoSprites; y++) {
+		for (var x = 0; x < _iHorizontalNoSprites; x++) {
+			var oSpriteCanvas = document.createElement("canvas");
+			oSpriteCanvas.width = iSpriteWidth;
+			oSpriteCanvas.height = iSpriteHeight;
+			var ctx = oSpriteCanvas.getContext("2d");
+			// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+			ctx.drawImage(
+				oRawSheet,
+				x * iSpriteWidth,
+				y * iSpriteHeight,
+				iSpriteWidth,
+				iSpriteHeight,
+				0,
+				0,
+				iSpriteWidth,
+				iSpriteHeight
+			);
+			sheet.sprites.push(oSpriteCanvas);
 		}
-		log(`  > done: ${"sprites_" + s}`, "GFX.Spritesheets");
-
 	}
-	// clean up
-	log("All spritesheets processed.", "GFX.Spritesheets");
+	log(`  > done: ${sheet.name}`, "GFX.Spritesheets");
+
 }
 
 /**
@@ -110,7 +94,7 @@ function getCanvasFromSheet(sheet, id, sColor) {
 }
 
 export default {
-	init,
+	process,
 	getCanvasFromSheet,
 	getSheet
 };

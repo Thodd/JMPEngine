@@ -1,14 +1,41 @@
 import { log } from "../Log.js";
 import Manifest from "../../Manifest.js";
 
-// Loading loop
-async function loadResources(assetsMap, type) {
+import loadSpritesheet from "./plugins/loadSpritesheet.js";
+import loadFont from "./plugins/loadFont.js";
+
+// keep track of all imported asset-loading plugins
+// default plugins are already available
+const assetTypePlugins = {
+	"spritesheets": loadSpritesheet,
+	"fonts": loadFont
+};
+
+/**
+ * Loads all resources of a given type.
+ * Makes sure the plugin is loaded beforehand.
+ *
+ * @param {object} assetsMap a map containing all sets of assets
+ * @param {*} type the type which will be loaded now
+ */
+async function loadResourceType(assetsMap, type) {
+	let allResourcesPromises = [];
+
 	// get map of all assets of the given type
 	let allResources = assetsMap[type];
 
+	// get loader plugin
+	let plugin = assetTypePlugins[type];
+	if (!plugin) {
+		plugin = assetTypePlugins[type] = await import(allResources.plugin);
+	}
+
+	// trigger the necessary plugin for all resource definitions
 	for (let resourceID in allResources) {
 		let res = allResources[resourceID];
-		res.id = resourceID;
+
+		// set name and type
+		res.name = resourceID;
 		res.type = type;
 
 		// check if URL needs to be resolved (default);
@@ -16,14 +43,58 @@ async function loadResources(assetsMap, type) {
 			res.url = Manifest.resolve(res.url);
 		}
 
-		// get loader plugin
-		// TODO: refactor this once sound support is available
-		let plugin = await import(allResources.plugin || "./plugins/loadImage.js");
-
-		// trigger loading
-		let resourceObject = await plugin.default(res);
-		log("  > loaded: " + resourceObject.url + " (" + type + ")", "AssetLoader");
+		// we collect all loading promises,
+		// so we can wait for the overall loading to finish before processing the assets
+		allResourcesPromises.push(
+			plugin.load(res).then((resourceObject) => {
+				log("  > loaded: " + resourceObject.url + " (" + type + ")", "AssetLoader");
+				return resourceObject;
+			})
+		);
 	}
+
+	return Promise.all(allResourcesPromises);
+}
+
+/**
+ * Internal load function.
+ * @param {object} assetsMap a map containing sets of assets
+ */
+async function _load(assetsMap) {
+
+	let allAssetsLoadedPromises = [];
+
+	log("Loading assets ...", "AssetLoader");
+
+	for (let type in assetsMap) {
+		// merge new asset blocks into existing assets stored in Manifest
+		// they are grouped by type
+		let newAssets = assetsMap[type];
+		let existingAssets = Manifest.get("/assets");
+
+		// make sure we have at least an empty object in the manifest
+		existingAssets[type] = existingAssets[type] || {};
+
+		// the existing assets might be overwritten by new assets
+		Object.assign(existingAssets[type], newAssets);
+
+		// trigger asset loading per type
+		// all asset-requests are triggered in parallel!
+		allAssetsLoadedPromises.push(loadResourceType(assetsMap, type));
+	}
+
+	// we wait for all loading requests to finish, asset-processing is then done afterwards
+	return Promise.all(allAssetsLoadedPromises).then((allAssetsPerType) => {
+		log("All assets loaded!", "AssetLoader");
+
+		// unwrap all assets
+		let all = [];
+		for (let a of allAssetsPerType) {
+			all = all.concat(a);
+		}
+
+		return all;
+	});
 }
 
 /**
@@ -42,8 +113,8 @@ async function loadResources(assetsMap, type) {
  *
  * The default asset types are <code>spritesheets</code>, <code>fonts</code> and <code>sounds</code>.
  * These asset types don't need to specify a loader plugin.
- * Spritesheets and fonts will be loaded with the provided default image-loader plugin.
- * Sounds will be loaded with the provided default sound-loader plugin.
+ * Spritesheets and fonts will be loaded with the built-in image-loader plugin.
+ * Sounds will be loaded with the default built-in sound-loader plugin.
  *
  * @example
  * <pre>
@@ -79,26 +150,17 @@ async function loadResources(assetsMap, type) {
  */
 async function load(assetsMap) {
 
-	log("Loading assets ...", "AssetLoader");
+	let allAssets = await _load(assetsMap);
 
-	for (let type in assetsMap) {
+	log("Triggering asset processing:", "AssetLoader");
 
-		// merge new asset blocks into existing assets stored in Manifest
-		// they are grouped by type
-		let newAssets = assetsMap[type];
-		let existingAssets = Manifest.get("/assets");
+	// iterate all assets and trigger processing on the corresponding plugin
+	let procPromises = allAssets.map((a) => {
+		let plugin = assetTypePlugins[a.type];
+		return plugin.process(a);
+	});
 
-		// make sure we have at least an empty object in the manifest
-		existingAssets[type] = existingAssets[type] || {};
-
-		// the existing assets might be overwritten by new assets
-		Object.assign(existingAssets[type], newAssets);
-
-		// finally trigger asset loading per type
-		await loadResources(assetsMap, type);
-	}
-
-	log("All assets loaded!", "AssetLoader")
+	return Promise.all(procPromises);
 }
 
 export default {

@@ -67,13 +67,12 @@ function assignDefaults() {
 	_manifestObject = Object.assign(DEFAULTS, _manifestObject);
 	_manifestObject.assets = Object.assign({
 		spritesheets: {},
-		fonts: {},
-		sounds: {}
+		fonts: {}
 	}, _manifestObject.assets);
 
 	// at least define the default font 'font0'
 	_manifestObject.assets.fonts["font0"] = {
-		"url": Fonts.DEFAULT_JMP_FONT,
+		"url": Fonts.DEFAULT_JMP_FONT0,
 		"w": 7,
 		"h": 8
 	};

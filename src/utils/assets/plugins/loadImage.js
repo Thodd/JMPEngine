@@ -1,7 +1,10 @@
 /**
- * An AssetLoader plugin always has to export an async function as the default module export!
+ * Asynchronously loads an image resource.
+ * Triggered once for all resources defined in an <code>AssetLoader.load</code> call.
+ *
+ * @param {object} resourceObject resource definition containing the image url (as given to the AssetLoader)
  */
-export default async function(resourceObject) {
+async function load(resourceObject) {
 	// the async load plugin function has to return a Promise
 	return new Promise(function(resolve) {
 		var raw = new Image();
@@ -14,4 +17,19 @@ export default async function(resourceObject) {
 			resolve(resourceObject);
 		};
 	});
+}
+
+/**
+ * Processes the given resource object, e.g. by splitting the spritesheet into single images.
+ */
+async function process() {}
+
+/**
+ * An AssetLoader plugin always has to export two async functions:
+ * 1. load: loads the asset
+ * 2. process: processes the asset, e.g. splitting spritesheets
+ */
+export default {
+	load,
+	process
 }

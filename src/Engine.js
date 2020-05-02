@@ -4,8 +4,6 @@ import PerformanceTrace from "./utils/PerformanceTrace.js";
 import Manifest from "./Manifest.js";
 import AssetLoader from "./utils/assets/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
-import Fonts from "./gfx/Fonts.js";
-import Spritesheets from "./gfx/Spritesheets.js";
 import Grid from "./gfx/Grid.js";
 import Keyboard from "./input/Keyboard.js";
 import Screen from "./game/Screen.js";
@@ -162,8 +160,6 @@ const Engine = {
 				await AssetLoader.load(Manifest.get("/assets"));
 
 				// assets can only be initialized after the AssetLoader is done
-				Spritesheets.init();
-				Fonts.init();
 				Grid.init();
 
 				resetKeyboard = Keyboard.init();
