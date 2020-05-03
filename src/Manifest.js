@@ -1,6 +1,5 @@
 import { log, warn, fail } from "./utils/Log.js";
 import loadJSON from "./assets/plugins/JSONLoader.js";
-import Fonts from "./gfx/Fonts.js";
 
 /**
  * Defaults for the Screen.
@@ -71,13 +70,6 @@ function assignDefaults() {
 		spritesheets: {},
 		fonts: {}
 	}, _manifestObject.assets);
-
-	// at least define the default font 'font0'
-	_manifestObject.assets.fonts["font0"] = {
-		"url": Fonts.DEFAULT_JMP_FONT0,
-		"w": 7,
-		"h": 8
-	};
 }
 
 /**

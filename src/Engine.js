@@ -1,15 +1,15 @@
 import domReady from "./utils/domReady.js";
-import { log, warn } from "./utils/Log.js";
+import { log } from "./utils/Log.js";
 import PerformanceTrace from "./utils/PerformanceTrace.js";
 import Manifest from "./Manifest.js";
 import AssetLoader from "./assets/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
+import Fonts from "./gfx/Fonts.js";
 import Grid from "./gfx/Grid.js";
 import Keyboard from "./input/Keyboard.js";
 import Screen from "./game/Screen.js";
 import IntroScreen from "./game/intro/IntroScreen.js";
 
-let initialized = false;
 let startTime = 0;
 
 let resetKeyboard = null;
@@ -82,7 +82,7 @@ async function getStartScreenClass() {
  * Returns a Promise which allows chaining to the end of the intro screen.
  * Resolves directly if "skipIntro" is set in the manifest.
  */
-function getInroScreen() {
+function getIntroScreen() {
 	let intro;
 	if (Manifest.get("/skipIntro")) {
 		intro = Promise.resolve();
@@ -143,52 +143,60 @@ const Engine = {
 	 * @returns {Promise} resolves once the Engine is fully started and Game code can be executed.
 	 */
 	async start({ placeAt, manifest }) {
+		log("Starting Engine. Waiting for DOM ...", "Engine");
+		await domReady();
 
-		if (!initialized) {
-			initialized = Promise.resolve().then(async function() {
+		// retrieve manifest
+		await Manifest.init(manifest);
 
-				log("Starting Engine. Waiting for DOM ...", "Engine");
-				await domReady();
+		// GFX init creates all canvases upfront
+		GFX.init(placeAt);
 
-				// retrieve manifest
-				await Manifest.init(manifest);
+		// we now "load" the default font and place it into the Manifest
+		// this way we can access simple font rendering before the rest of the assets are loaded
+		await AssetLoader.load({
+			"fonts": {
+				"font0": {
+					"url": Fonts.DEFAULT_JMP_FONT0,
+					"w": 7,
+					"h": 8
+				}
+			}
+		});
 
-				// GFX init creates all canvases upfront
-				GFX.init(placeAt);
+		// TODO: refactor grid into Tilemap class
+		Grid.init();
 
-				// the AssetLoader will enhance the _manifestObject with the loaded resources
-				await AssetLoader.load(Manifest.get("/assets"));
+		resetKeyboard = Keyboard.init();
 
-				// TODO: refactor grid into Tilemap class
-				Grid.init();
+		startTime = Date.now();
 
-				resetKeyboard = Keyboard.init();
+		// kickstart gameloop
+		gameloop();
+		log("Started.", "Engine");
 
-				startTime = Date.now();
+		// Now we do some parallel stuff while the intro screen is showing.
+		// All of which involves additional resource requests:
+		//   1. show the intro screen, since the gameloop is already running we can see stuff on screen
+		//   2. loading the manifest defined assets
+		//   3. loading the start screen class
+		let parallel = [];
 
-				log("Started.", "Engine");
+		// show intro screen (instantly resolves if skipped via manifest configuration)
+		parallel.push(getIntroScreen());
 
-				// kickstart gameloop
-				gameloop();
+		// the AssetLoader will enhance the _manifestObject with the loaded resources
+		parallel.push(AssetLoader.load(Manifest.get("/assets")));
 
-				// import StartScreen class module (defaults to the Screen class)
-				let startScreenClass = await getStartScreenClass();
+		// import StartScreen class module (defaults to the Screen class)
+		parallel.push(getStartScreenClass());
 
-				// show intro screen (if not skipped)
-				await getInroScreen();
+		// after the intro is done and all assets are loaded we activate an instance of the defined start screen class
+		return Promise.all(parallel).then((results) => {
+			let startScreenClass = results[2];
 
-				// after the intro we activate an instance of the given startScreen class
-				Engine.screen = new startScreenClass();
-
-				// resolve with the parsed manifest object
-				return Manifest.get();
-			})
-		} else {
-			warn("Already initialized!", "Engine");
-			return initialized;
-		}
-
-		return initialized;
+			Engine.screen = new startScreenClass();
+		});
 	}
 };
 
