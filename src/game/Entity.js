@@ -98,8 +98,10 @@ class Entity {
 	 * The "removed" hook always called afterwards!
 	 */
 	destroy() {
-		this._screen.remove(this);
-		this._isDestroyed = true;
+		if (!this._isDestroyed) {
+			this._screen.remove(this);
+			this._isDestroyed = true;
+		}
 	}
 
 	/**
