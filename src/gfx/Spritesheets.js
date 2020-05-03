@@ -41,7 +41,7 @@ function process(sheet) {
 			sheet.sprites.push(spriteCanvas);
 		}
 	}
-	log(`  > done: ${sheet.name}`, "GFX.Spritesheets");
+	log(`  > done: ${sheet.name}`, "Spritesheets.process");
 
 }
 
@@ -62,12 +62,12 @@ function getSheet(sheet) {
 function getCanvasFromSheet(sheetName, id, color) {
 	let sheet = Manifest.get(`/assets/spritesheets/${sheetName}`);
 	if (!sheet) {
-		fail(`Spritesheet '${sheetName}' does not exist!`, "GFX");
+		fail(`Spritesheet '${sheetName}' does not exist!`, "Spritesheets");
 	}
 
 	let spriteSrcCanvas = sheet.sprites[id || 0]; // default version is not colorized
 	if (!spriteSrcCanvas) {
-		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheetName}'!`, "GFX");
+		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheetName}'!`, "Spritesheets");
 	}
 
 	if (color) {

@@ -26,7 +26,7 @@ function process(font) {
 			default: charCanvas
 		};
 	}
-	log(`  > done: ${font.name}`, "GFX.Fonts");
+	log(`  > done: ${font.name}`, "Fonts.process");
 }
 
 /**

@@ -12,6 +12,20 @@ const assetTypePlugins = {
 };
 
 /**
+ * Checks if the given resource is a default resource.
+ * Default resources are handled separately during the Engine's startup
+ * sequence. This means, that we do not need to process them
+ * twice during the asset loading of the Manifest.
+ *
+ * Additionally, this function prevents the default assets from being
+ * overwritten by application code.
+ */
+function isExistingDefaultResource(resourceObject) {
+	// the check for "raw" means that a default resource was already processed
+	return resourceObject.raw != null && (resourceObject.name == "font0" || resourceObject.name == "sound0");
+}
+
+/**
  * Loads all resources of a given type.
  * Makes sure the plugin is loaded beforehand.
  *
@@ -37,6 +51,11 @@ async function loadResourceType(assetsMap, type) {
 		// set name and type
 		res.name = resourceID;
 		res.type = type;
+
+		// default resources are handled only once and can't be overwritten
+		if (isExistingDefaultResource(res)) {
+			continue;
+		}
 
 		// check if URL needs to be resolved (default);
 		if (!res.noUrlResolution) {

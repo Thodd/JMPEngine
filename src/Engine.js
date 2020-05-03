@@ -137,7 +137,7 @@ const Engine = {
 	 * Starts the Engine.
 	 * @param {object} config
 	 * @param {string} config.placeAt the ID of the DOM-Element in which the Engine should render
-	 * @param {string|object|undefined} config.manifest the manifest, which will be used for starting the Engine.
+	 * @param {string} config.manifest the manifest, which will be used for starting the Engine.
 	 *                                        Either a URL pointing to a json file, or an object with
 	 *                                        the static manifest.
 	 * @returns {Promise} resolves once the Engine is fully started and Game code can be executed.
@@ -152,7 +152,7 @@ const Engine = {
 		// GFX init creates all canvases upfront
 		GFX.init(placeAt);
 
-		// we now "load" the default font and place it into the Manifest
+		// we wait for the "load" of the default font (and implicitly merge it into the Manifest)
 		// this way we can access simple font rendering before the rest of the assets are loaded
 		await AssetLoader.load({
 			"fonts": {
