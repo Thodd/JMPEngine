@@ -8,8 +8,8 @@ import ColorTools from "./ColorTools.js";
 var _2PI = 2 * Math.PI;
 
 // rendering canvases & contexts
-var _aCanvases = [];
-var _aCtx = [];
+var _canvases = [];
+var _contexts = [];
 
 /**
  * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
@@ -65,13 +65,13 @@ function setupCanvases(containerDOM) {
 	for (var i = 0; i < layers; i++) {
 		// create canvas & context
 		canvasDOM = document.createElement("canvas");
-		_aCanvases.push(canvasDOM);
+		_canvases.push(canvasDOM);
 		canvasDOM.classList.add("jmpCanvas");
 		canvasDOM.style.cursor = Manifest.get("/hideCursor") ? "none" : "";
 
 		ctx = canvasDOM.getContext("2d");
 		ctx.imageSmoothingEnabled = false;
-		_aCtx.push(ctx);
+		_contexts.push(ctx);
 
 		// the style w/h are scaled
 		canvasDOM.style.width = canvas_scaled_w;
@@ -129,16 +129,16 @@ function alpha(i, v) {
  */
 function ctx(i) {
 	if (i == null) {
-		return _aCtx;
+		return _contexts;
 	}
-	return _aCtx[i || 0];
+	return _contexts[i || 0];
 }
 
 function clear(i, color) {
 	if (color) {
-		_aCanvases[i || 0].style.background = color;
+		_canvases[i || 0].style.background = color;
 	}
-	_aCtx[i || 0].clearRect(0, 0, manifest.w, manifest.h);
+	_contexts[i || 0].clearRect(0, 0, manifest.w, manifest.h);
 
 	// if a pixel buffer exists clear it too
 	if (_pxBuffers[i]) {
@@ -148,50 +148,50 @@ function clear(i, color) {
 
 function clear_rect(i, color, x, y, w, h) {
 	if (color) {
-		_aCanvases[i || 0].style.background = color;
+		_canvases[i || 0].style.background = color;
 	}
 
 	// clear everything inside the given rectangle
 	// for w/h we default to the screen-size
-	_aCtx[i || 0].clearRect(x, y, w || manifest.w, h || manifest.h);
+	_contexts[i || 0].clearRect(x, y, w || manifest.w, h || manifest.h);
 
 	// TODO: pixel buffers don't work with clearing a rectangle right now -> fix
 }
 
 function trans(i, x, y) {
-	_aCtx[i || 0].translate(x, y);
+	_contexts[i || 0].translate(x, y);
 }
 
 function save(i) {
 	// save all
 	if (i == null) {
-		for (let c in _aCtx) {
-			_aCtx[c].save();
+		for (let c in _contexts) {
+			_contexts[c].save();
 		}
 	} else {
 		// save single ctx
-		_aCtx[i || 0].save();
+		_contexts[i || 0].save();
 	}
 }
 
 function restore(i) {
 	// restore all
 	if (i == null) {
-		for (let c in _aCtx) {
-			_aCtx[c].restore();
+		for (let c in _contexts) {
+			_contexts[c].restore();
 		}
 	} else {
 		// restore single ctx
-		_aCtx[i || 0].restore();
+		_contexts[i || 0].restore();
 	}
 }
 
 // track pixel buffers if needed
 let _pxBuffers = [];
 function getBuffer(layer) {
-	var oCtx = _aCtx[layer || 0];
+	var ctx = _contexts[layer || 0];
 	if (!_pxBuffers[layer]) {
-		_pxBuffers[layer] = oCtx.getImageData(0, 0, manifest.w, manifest.h);
+		_pxBuffers[layer] = ctx.getImageData(0, 0, manifest.w, manifest.h);
 	}
 	return _pxBuffers[layer];
 }
@@ -209,8 +209,8 @@ function getBuffer(layer) {
  */
 function pxFlush(layer) {
 	if (_pxBuffers[layer]) {
-		let oCtx = _aCtx[layer || 0];
-		oCtx.putImageData(_pxBuffers[layer], 0, 0);
+		let ctx = _contexts[layer || 0];
+		ctx.putImageData(_pxBuffers[layer], 0, 0);
 
 		PerformanceTrace.drawCalls++;
 	}
@@ -227,10 +227,10 @@ function pxFlush(layer) {
  * @param {integer} x
  * @param {integer} y
  * @param {string} color CSS-color string
- * @param {integer} iLayer the layer on which the pixel should be set
+ * @param {integer} layer the layer on which the pixel should be set
  */
-function px(x, y, color, iLayer) {
-	let d = getBuffer(iLayer);
+function px(x, y, color, layer) {
+	let d = getBuffer(layer);
 	let c = ColorTools.parseColorString(color);
 	let off = 4 * (y * d.width + x);
 	d.data[off + 0] = c.r;
@@ -266,140 +266,140 @@ function subpx(x, y, color, layer) {
 	rectf(x, y, 1, 1, color, layer);
 }
 
-function rect(x, y, w, h, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.beginPath();
-	oCtx.strokeStyle = color || oCtx.strokeStyle;
-	oCtx.strokeRect(n(x), n(y), w, h);
-	oCtx.stroke();
-	oCtx.closePath();
+function rect(x, y, w, h, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.beginPath();
+	ctx.strokeStyle = color || ctx.strokeStyle;
+	ctx.strokeRect(n(x), n(y), w, h);
+	ctx.stroke();
+	ctx.closePath();
 
 	PerformanceTrace.drawCalls++;
 }
 
-function rectf(x, y, w, h, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.fillStyle = color || oCtx.fillStyle;
-	oCtx.fillRect(x, y, w, h);
+function rectf(x, y, w, h, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.fillStyle = color || ctx.fillStyle;
+	ctx.fillRect(x, y, w, h);
 
 	PerformanceTrace.drawCalls++;
 }
 
-function circ(x, y, r, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.beginPath();
-	oCtx.arc(x, y, r, 0, _2PI, false);
-	oCtx.closePath();
-	oCtx.strokeStyle = color || oCtx.strokeStyle;
-	oCtx.stroke();
+function circ(x, y, r, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.beginPath();
+	ctx.arc(x, y, r, 0, _2PI, false);
+	ctx.closePath();
+	ctx.strokeStyle = color || ctx.strokeStyle;
+	ctx.stroke();
 
 	PerformanceTrace.drawCalls++;
 }
 
-function circf(x, y, r, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.beginPath();
-	oCtx.arc(x, y, r, 0, _2PI, false);
-	oCtx.closePath();
-	oCtx.fillStyle = color || oCtx.fillStyle;
-	oCtx.fill();
+function circf(x, y, r, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.beginPath();
+	ctx.arc(x, y, r, 0, _2PI, false);
+	ctx.closePath();
+	ctx.fillStyle = color || ctx.fillStyle;
+	ctx.fill();
 
 	PerformanceTrace.drawCalls++;
 }
 
-function tri(x0, y0, x1, y1, x2, y2, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.beginPath();
-	oCtx.moveTo(n(x0), n(y0));
-	oCtx.lineTo(n(x1), n(y1));
-	oCtx.lineTo(n(x2), n(y2));
-	oCtx.closePath();
-	oCtx.strokeStyle = color || oCtx.strokeStyle;
-	oCtx.stroke();
+function tri(x0, y0, x1, y1, x2, y2, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.beginPath();
+	ctx.moveTo(n(x0), n(y0));
+	ctx.lineTo(n(x1), n(y1));
+	ctx.lineTo(n(x2), n(y2));
+	ctx.closePath();
+	ctx.strokeStyle = color || ctx.strokeStyle;
+	ctx.stroke();
 
 	PerformanceTrace.drawCalls++;
 }
 
-function trif(x0, y0, x1, y1, x2, y2, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.beginPath();
-	oCtx.moveTo(x0, y0);
-	oCtx.lineTo(x1, y1);
-	oCtx.lineTo(x2, y2);
-	oCtx.closePath();
-	oCtx.fillStyle = color || oCtx.fillStyle;
-	oCtx.fill();
+function trif(x0, y0, x1, y1, x2, y2, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.beginPath();
+	ctx.moveTo(x0, y0);
+	ctx.lineTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.closePath();
+	ctx.fillStyle = color || ctx.fillStyle;
+	ctx.fill();
 
 	PerformanceTrace.drawCalls++;
 }
 
-function line(x0, y0, x1, y1, color, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
-	oCtx.beginPath();
-	oCtx.moveTo(n(x0), n(y0));
-	oCtx.lineTo(n(x1), n(y1));
-	oCtx.closePath();
-	oCtx.strokeStyle = color || oCtx.strokeStyle;
-	oCtx.stroke();
+function line(x0, y0, x1, y1, color, layer) {
+	var ctx = _contexts[layer || 0];
+	ctx.beginPath();
+	ctx.moveTo(n(x0), n(y0));
+	ctx.lineTo(n(x1), n(y1));
+	ctx.closePath();
+	ctx.strokeStyle = color || ctx.strokeStyle;
+	ctx.stroke();
 
 	PerformanceTrace.drawCalls++;
 }
 
-function spr(sheet, id, x, y, iLayer, sColor) {
-	var oCtx = _aCtx[iLayer || 0];
-	var oSprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
-	oCtx.drawImage(oSprCanvas, x || 0, y || 0);
+function spr(sheet, id, x, y, layer, sColor) {
+	var ctx = _contexts[layer || 0];
+	var sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
+	ctx.drawImage(sprCanvas, x || 0, y || 0);
 
 	PerformanceTrace.drawCalls++;
 }
 
-function spr_ext(sheet, id, x, y, w, h, iLayer, sColor, alpha) {
-	var oCtx = _aCtx[iLayer || 0];
-	var oSprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
+function spr_ext(sheet, id, x, y, w, h, layer, color, alpha) {
+	var ctx = _contexts[layer || 0];
+	var sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
 	let oldAlpha;
 	if (alpha !== undefined) {
-		oldAlpha = oCtx.globalAlpha;
+		oldAlpha = ctx.globalAlpha;
 		if (oldAlpha !== alpha) {
-			oCtx.globalAlpha = alpha;
+			ctx.globalAlpha = alpha;
 		}
 	}
 
-	oCtx.drawImage(
-		oSprCanvas,
+	ctx.drawImage(
+		sprCanvas,
 		// take the whole src sprite canvas as a base
 		0, // sx
 		0, // sy
-		oSprCanvas.width, // sw
-		oSprCanvas.height, // sh
+		sprCanvas.width, // sw
+		sprCanvas.height, // sh
 		// stretch it if w/h is given
 		x || 0,
 		y || 0,
-		w || oSprCanvas.width, // default to canvas width
-		h || oSprCanvas.height, // default to canvas height
+		w || sprCanvas.width, // default to canvas width
+		h || sprCanvas.height, // default to canvas height
 	);
 
 	PerformanceTrace.drawCalls++;
 
 	if (oldAlpha) {
-		oCtx.globalAlpha = oldAlpha;
+		ctx.globalAlpha = oldAlpha;
 	}
 }
 
-function grid(id, x, y, iLayer) {
-	var oCtx = _aCtx[iLayer || 0];
+function grid(id, x, y, layer) {
+	var ctx = _contexts[layer || 0];
 	var grid = manifest._maps[id];
 	if (!grid) {
 		fail(`Grid '"${id}' does not exist!`);
 	}
-	oCtx.drawImage(grid.canvas, x, y);
+	ctx.drawImage(grid.canvas, x, y);
 
 	PerformanceTrace.drawCalls++;
 }
 
 // mapp = map part
 // renders only a part of the map with the given source rectangle (sx, sy, sw, sh)
-//function mapp(i, x, y, sx, sy, sw, sh, iLayer) {
+//function mapp(i, x, y, sx, sy, sw, sh, layer) {
 	// TODO
 //}
 
@@ -407,14 +407,14 @@ function grid(id, x, y, iLayer) {
  * Renders a single line of text.
  * @param {string} font the font which should be used for rendering, e.g. "font0"
  */
-function text(font, x, y, sText, iLayer, color) {
-	var oFont = manifest.assets.fonts[font];
-	var oCtx = _aCtx[iLayer || 0];
-	var iOffsetX = 0;
-	for (var i in sText) {
-		var c = sText[i];
-		oCtx.drawImage(Fonts.getChar(oFont, c, color), x + iOffsetX * oFont.w, y);
-		iOffsetX++;
+function text(font, x, y, msg, layer, color) {
+	var fontObj = manifest.assets.fonts[font];
+	var ctx = _contexts[layer || 0];
+	var offsetX = 0;
+	for (var i in msg) {
+		var c = msg[i];
+		ctx.drawImage(Fonts.getChar(fontObj, c, color), x + offsetX * fontObj.w, y);
+		offsetX++;
 
 		PerformanceTrace.drawCalls++;
 	}
@@ -423,16 +423,16 @@ function text(font, x, y, sText, iLayer, color) {
 /**
  * Renders multiline texts.
  */
-function textm(font, x, y, sText, iLayer, color) {
-	var oFont = manifest.assets.fonts[font];
+function textm(font, x, y, msg, layer, color) {
+	var fontObj = manifest.assets.fonts[font];
 
 	// check for linebreak style
-	var sLineDelimiter = sText.indexOf("\n\r") >= 0 ? "\n\r" : "\n";
-	var aLines = sText.split(sLineDelimiter);
+	var lineDelimiter = msg.indexOf("\n\r") >= 0 ? "\n\r" : "\n";
+	var lines = msg.split(lineDelimiter);
 
-	for (var i = 0; i < aLines.length; i++) {
-		var sLine = aLines[i];
-		text(font, x, y + (i * oFont.h), sLine, iLayer, color);
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		text(font, x, y + (i * fontObj.h), line, layer, color);
 	}
 }
 
@@ -527,7 +527,7 @@ const GFX = {
 	 * @return {Canvas[]}
 	 */
 	get canvases() {
-		return _aCanvases;
+		return _canvases;
 	}
 };
 export default GFX;
