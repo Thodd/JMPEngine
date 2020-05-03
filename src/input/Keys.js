@@ -45,9 +45,9 @@ Keys.BRACKET_CLOSE = 221;
 Keys.SINGLEQUOTE = 222;
 
 // alphanumeric characters
-var i,
-	numbers = "0123456789",
-	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let i;
+const numbers = "0123456789";
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 for (i = 0; i < numbers.length; i++) {
 	Keys["NUM_" + numbers[i]] = 48 + i;

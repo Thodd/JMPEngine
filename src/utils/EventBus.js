@@ -1,7 +1,7 @@
 /**
  * Event Bus
  */
-var channels = {};
+const channels = {};
 
 /**
  * Subscribe to the given event channel.
@@ -18,7 +18,7 @@ function subscribe(ch, callback) {
  */
 function unsubscribe(ch, callback) {
 	if (channels[ch]) {
-		var i = channels[ch].indexOf(callback);
+		let i = channels[ch].indexOf(callback);
 		if (i >= 0) {
 			channels[ch].splice(i, 1);
 		}
@@ -29,7 +29,7 @@ function unsubscribe(ch, callback) {
  * Publish event on the give channel
  */
 function publish(ch, oEvent) {
-	var aListeners = channels[ch];
+	let aListeners = channels[ch];
 	if (aListeners) {
 		aListeners.forEach(function(oListener) {
 			oListener(oEvent);

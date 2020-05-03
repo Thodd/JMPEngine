@@ -20,7 +20,7 @@ class WorldScreen extends Screen {
 		/**
 		 * Simple Entity with input handling
 		 */
-		var e = new Entity();
+		let e = new Entity();
 
 		e.x = 70;
 		e.y = 50;

@@ -5,11 +5,11 @@ import Fonts from "./Fonts.js";
 import Spritesheets from "./Spritesheets.js";
 import ColorTools from "./ColorTools.js";
 
-var _2PI = 2 * Math.PI;
+let _2PI = 2 * Math.PI;
 
 // rendering canvases & contexts
-var _canvases = [];
-var _contexts = [];
+let _canvases = [];
+let _contexts = [];
 
 /**
  * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
@@ -62,7 +62,7 @@ function setupCanvases(containerDOM) {
 	containerDOM.appendChild(wrapperDiv);
 
 	let layers = Manifest.get("/layers");
-	for (var i = 0; i < layers; i++) {
+	for (let i = 0; i < layers; i++) {
 		// create canvas & context
 		canvasDOM = document.createElement("canvas");
 		_canvases.push(canvasDOM);
@@ -189,7 +189,7 @@ function restore(i) {
 // track pixel buffers if needed
 let _pxBuffers = [];
 function getBuffer(layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	if (!_pxBuffers[layer]) {
 		_pxBuffers[layer] = ctx.getImageData(0, 0, manifest.w, manifest.h);
 	}
@@ -267,7 +267,7 @@ function subpx(x, y, color, layer) {
 }
 
 function rect(x, y, w, h, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.beginPath();
 	ctx.strokeStyle = color || ctx.strokeStyle;
 	ctx.strokeRect(n(x), n(y), w, h);
@@ -278,7 +278,7 @@ function rect(x, y, w, h, color, layer) {
 }
 
 function rectf(x, y, w, h, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.fillStyle = color || ctx.fillStyle;
 	ctx.fillRect(x, y, w, h);
 
@@ -286,7 +286,7 @@ function rectf(x, y, w, h, color, layer) {
 }
 
 function circ(x, y, r, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.beginPath();
 	ctx.arc(x, y, r, 0, _2PI, false);
 	ctx.closePath();
@@ -297,7 +297,7 @@ function circ(x, y, r, color, layer) {
 }
 
 function circf(x, y, r, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.beginPath();
 	ctx.arc(x, y, r, 0, _2PI, false);
 	ctx.closePath();
@@ -308,7 +308,7 @@ function circf(x, y, r, color, layer) {
 }
 
 function tri(x0, y0, x1, y1, x2, y2, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.beginPath();
 	ctx.moveTo(n(x0), n(y0));
 	ctx.lineTo(n(x1), n(y1));
@@ -321,7 +321,7 @@ function tri(x0, y0, x1, y1, x2, y2, color, layer) {
 }
 
 function trif(x0, y0, x1, y1, x2, y2, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.beginPath();
 	ctx.moveTo(x0, y0);
 	ctx.lineTo(x1, y1);
@@ -334,7 +334,7 @@ function trif(x0, y0, x1, y1, x2, y2, color, layer) {
 }
 
 function line(x0, y0, x1, y1, color, layer) {
-	var ctx = _contexts[layer || 0];
+	let ctx = _contexts[layer || 0];
 	ctx.beginPath();
 	ctx.moveTo(n(x0), n(y0));
 	ctx.lineTo(n(x1), n(y1));
@@ -346,16 +346,16 @@ function line(x0, y0, x1, y1, color, layer) {
 }
 
 function spr(sheet, id, x, y, layer, sColor) {
-	var ctx = _contexts[layer || 0];
-	var sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
+	let ctx = _contexts[layer || 0];
+	let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
 	ctx.drawImage(sprCanvas, x || 0, y || 0);
 
 	PerformanceTrace.drawCalls++;
 }
 
 function spr_ext(sheet, id, x, y, w, h, layer, color, alpha) {
-	var ctx = _contexts[layer || 0];
-	var sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
+	let ctx = _contexts[layer || 0];
+	let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
 	let oldAlpha;
 	if (alpha !== undefined) {
@@ -387,8 +387,8 @@ function spr_ext(sheet, id, x, y, w, h, layer, color, alpha) {
 }
 
 function grid(id, x, y, layer) {
-	var ctx = _contexts[layer || 0];
-	var grid = manifest._maps[id];
+	let ctx = _contexts[layer || 0];
+	let grid = manifest._maps[id];
 	if (!grid) {
 		fail(`Grid '"${id}' does not exist!`);
 	}
@@ -408,11 +408,11 @@ function grid(id, x, y, layer) {
  * @param {string} font the font which should be used for rendering, e.g. "font0"
  */
 function text(font, x, y, msg, layer, color) {
-	var fontObj = manifest.assets.fonts[font];
-	var ctx = _contexts[layer || 0];
-	var offsetX = 0;
-	for (var i in msg) {
-		var c = msg[i];
+	let fontObj = manifest.assets.fonts[font];
+	let ctx = _contexts[layer || 0];
+	let offsetX = 0;
+	for (let i in msg) {
+		let c = msg[i];
 		ctx.drawImage(Fonts.getChar(fontObj, c, color), x + offsetX * fontObj.w, y);
 		offsetX++;
 
@@ -424,14 +424,14 @@ function text(font, x, y, msg, layer, color) {
  * Renders multiline texts.
  */
 function textm(font, x, y, msg, layer, color) {
-	var fontObj = manifest.assets.fonts[font];
+	let fontObj = manifest.assets.fonts[font];
 
 	// check for linebreak style
-	var lineDelimiter = msg.indexOf("\n\r") >= 0 ? "\n\r" : "\n";
-	var lines = msg.split(lineDelimiter);
+	let lineDelimiter = msg.indexOf("\n\r") >= 0 ? "\n\r" : "\n";
+	let lines = msg.split(lineDelimiter);
 
-	for (var i = 0; i < lines.length; i++) {
-		var line = lines[i];
+	for (let i = 0; i < lines.length; i++) {
+		let line = lines[i];
 		text(font, x, y + (i * fontObj.h), line, layer, color);
 	}
 }

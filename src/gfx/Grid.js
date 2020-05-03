@@ -36,7 +36,7 @@ class Grid {
  * default tile upon creation.
  */
 function _get(id, x, y) {
-	var grid = manifestObject._maps[id];
+	let grid = manifestObject._maps[id];
 	// missing grid
 	if (!grid) {
 		fail(`Grid does not exist: ${id}`, "GFX.Grid");
@@ -46,11 +46,11 @@ function _get(id, x, y) {
 		fail(`Grid coordinates are invalid: (#: ${id}, x: ${x}, y: ${y}).`, "GFX.Grid");
 	}
 
-	var aX = grid.data[x];
+	let aX = grid.data[x];
 	if (aX == undefined) {
 		grid.data[x] = [];
 	}
-	var aY = grid.data[x][y];
+	let aY = grid.data[x][y];
 	if (aY == undefined) {
 		grid.data[x][y] = -1;
 	}
@@ -65,7 +65,7 @@ function _set(id, x, y, v, color) {
 	_get(id, x, y);
 
 	// write value to grid data
-	var grid = manifestObject._maps[id];
+	let grid = manifestObject._maps[id];
 	grid.data[x][y] = v;
 
 	_render(id, x, y, v, color);
@@ -76,7 +76,7 @@ function _set(id, x, y, v, color) {
  * Color information is respected here, even though the tile still only has the "value" set.
  */
 function _render(id, x, y, v, color) {
-	var grid = manifestObject._maps[id];
+	let grid = manifestObject._maps[id];
 	if (!grid) {
 		fail(`Grid '${id}' does not exists!`, "GFX.Grid");
 	}
@@ -87,7 +87,7 @@ function _render(id, x, y, v, color) {
 	// everything except -1 means we have a tile
 	// -1 means the tile is only cleared
 	if (v != -1) {
-		var tileCanvas = Spritesheets.getCanvasFromSheet(grid.sheet.name, v, color);
+		let tileCanvas = Spritesheets.getCanvasFromSheet(grid.sheet.name, v, color);
 
 		grid.ctx.drawImage(tileCanvas, x * grid.sheet.w, y * grid.sheet.h);
 	}

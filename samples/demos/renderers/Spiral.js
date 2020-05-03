@@ -13,13 +13,13 @@ const renderer = function () {
 	 * https://twitter.com/SeanSLeBlanc/status/781767880509497344
 	 */
 	GFX.clear(0, "#222222");
-	var A = GFX.w/2;
-	var B = GFX.h/2;
-	var X = GFX.w/2;
-	var Y = GFX.h/2;
-	var T = Engine.now() / 2;
+	let A = GFX.w/2;
+	let B = GFX.h/2;
+	let X = GFX.w/2;
+	let Y = GFX.h/2;
+	let T = Engine.now() / 2;
 
-	for (var I = Math.sin(T); I < 99; I += Math.cos(T)+1.1) {
+	for (let I = Math.sin(T); I < 99; I += Math.cos(T)+1.1) {
 		X+=I*Math.sin(I);
 		Y+=I*Math.cos(I);
 		GFX.line(A,B,X,Y,Helper.choose(GFX.pal(), 4, 16));

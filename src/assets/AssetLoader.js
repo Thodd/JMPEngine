@@ -1,8 +1,8 @@
 import { log } from "../utils/Log.js";
 import Manifest from "../Manifest.js";
 
-import loadSpritesheet from "./plugins/loadSpritesheet.js";
-import loadFont from "./plugins/loadFont.js";
+import loadSpritesheet from "./plugins/SpritesheetLoader.js";
+import loadFont from "./plugins/FontLoader.js";
 
 // keep track of all imported asset-loading plugins
 // default plugins are already available

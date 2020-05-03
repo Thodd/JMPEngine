@@ -124,7 +124,7 @@ class Screen {
 	 */
 	add(e) {
 		// check if already scheduled for removal
-		var isScheduled = Helper.contains(e, this._toBeAdded);
+		let isScheduled = Helper.contains(e, this._toBeAdded);
 
 		if (!e._screen && !isScheduled && !e._isDestroyed) {
 			Helper.remove(e, this._toBeRemoved);
@@ -149,7 +149,7 @@ class Screen {
 	 */
 	remove(e) {
 		// check if already scheduled for adding
-		var isScheduled = Helper.contains(e, this._toBeRemoved);
+		let isScheduled = Helper.contains(e, this._toBeRemoved);
 
 		if (e._screen == this && !isScheduled) {
 			Helper.remove(e, this._toBeAdded);
@@ -225,9 +225,9 @@ class Screen {
 
 		// clean up
 		// add scheduled entities
-		var lenA = this._toBeAdded.length;
-		for (var i = 0; i < lenA; i++) {
-			var ea = this._toBeAdded[i];
+		let lenA = this._toBeAdded.length;
+		for (let i = 0; i < lenA; i++) {
+			let ea = this._toBeAdded[i];
 			this._entities.push(ea);
 			ea._screen = this;
 			ea.added();
@@ -235,9 +235,9 @@ class Screen {
 		this._toBeAdded = [];
 
 		// remove scheduled entities
-		var lenR = this._toBeRemoved.length;
-		for (var j = 0; j < lenR; j++) {
-			var er = this._toBeRemoved[j];
+		let lenR = this._toBeRemoved.length;
+		for (let j = 0; j < lenR; j++) {
+			let er = this._toBeRemoved[j];
 			Helper.remove(er, this._entities);
 			er._screen = null;
 			er.removed();

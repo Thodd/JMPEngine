@@ -1,4 +1,4 @@
-import loadImage from "./loadImage.js";
+import loadImage from "./ImageLoader.js";
 
 import Fonts from "../../gfx/Fonts.js";
 

@@ -11,21 +11,21 @@ function process(sheet) {
 	sheet.sprites = []; // list of all sprites in the sheet
 	sheet._colorCache = {}; // initially an empty color cache
 
-	var rawSheet = sheet.raw;
+	let rawSheet = sheet.raw;
 
 	// defaults to the full raw image size
-	var spriteWidth = sheet.w || rawSheet.width;
-	var spriteHeight = sheet.h || rawSheet.height;
+	let spriteWidth = sheet.w || rawSheet.width;
+	let spriteHeight = sheet.h || rawSheet.height;
 
-	var verticalSpritesCount = rawSheet.height / spriteWidth;
-	var horizontalSpritesCount = rawSheet.width / spriteHeight;
+	let verticalSpritesCount = rawSheet.height / spriteWidth;
+	let horizontalSpritesCount = rawSheet.width / spriteHeight;
 
-	for (var y = 0; y < verticalSpritesCount; y++) {
-		for (var x = 0; x < horizontalSpritesCount; x++) {
-			var spriteCanvas = document.createElement("canvas");
+	for (let y = 0; y < verticalSpritesCount; y++) {
+		for (let x = 0; x < horizontalSpritesCount; x++) {
+			let spriteCanvas = document.createElement("canvas");
 			spriteCanvas.width = spriteWidth;
 			spriteCanvas.height = spriteHeight;
-			var ctx = spriteCanvas.getContext("2d");
+			let ctx = spriteCanvas.getContext("2d");
 			// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 			ctx.drawImage(
 				rawSheet,
@@ -60,25 +60,25 @@ function getSheet(sheet) {
  * @param {string} color a hex color string, e.g. #FF0085
  */
 function getCanvasFromSheet(sheetName, id, color) {
-	var sheet = Manifest.get(`/assets/spritesheets/${sheetName}`);
+	let sheet = Manifest.get(`/assets/spritesheets/${sheetName}`);
 	if (!sheet) {
 		fail(`Spritesheet '${sheetName}' does not exist!`, "GFX");
 	}
 
-	var spriteSrcCanvas = sheet.sprites[id || 0]; // default version is not colorized
+	let spriteSrcCanvas = sheet.sprites[id || 0]; // default version is not colorized
 	if (!spriteSrcCanvas) {
 		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheetName}'!`, "GFX");
 	}
 
 	if (color) {
 		// make sure we have a color cache per spritesheet
-		var colorCacheEntry = sheet._colorCache[color];
+		let colorCacheEntry = sheet._colorCache[color];
 		if (!colorCacheEntry) {
 			colorCacheEntry = sheet._colorCache[color] = {};
 		}
 
 		// check cache for an already colorized canvas
-		var colorizedCanvas = colorCacheEntry[id];
+		let colorizedCanvas = colorCacheEntry[id];
 		if (colorizedCanvas) {
 			return colorizedCanvas;
 		} else {

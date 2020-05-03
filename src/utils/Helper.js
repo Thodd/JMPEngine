@@ -7,9 +7,9 @@ function choose(array, a, b) {
 }
 
 function shuffle(a) {
-	var i = 0;
-	var j = 0;
-	var t = null;
+	let i = 0;
+	let j = 0;
+	let t = null;
 
 	for (i = a.length - 1; i > 0; i -= 1) {
 		j = Math.floor(random() * (i + 1));
@@ -27,7 +27,7 @@ function shuffle(a) {
  * @param {array} a
  */
 function remove(e, a) {
-	var i = a.indexOf(e);
+	let i = a.indexOf(e);
 	if (i >= 0) {
 		a.splice(i, 1);
 		return true;

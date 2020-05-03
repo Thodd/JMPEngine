@@ -44,8 +44,8 @@ function parseHexColorToRGB(hex) {
  * @public
  */
 function parseRGBA(rgba) {
-	var colorValues = rgba.substring(5, rgba.length - 1);
-	var colorParts = colorValues.split(",");
+	let colorValues = rgba.substring(5, rgba.length - 1);
+	let colorParts = colorValues.split(",");
 	return {
 		r: parseInt(colorParts[0], 10),
 		g: parseInt(colorParts[1], 10),
@@ -61,18 +61,18 @@ function parseRGBA(rgba) {
 function colorizeCanvas(srcCanvas, color) {
 	color = color || "#FF0085";
 
-	var RGBAValues = parseColorString(color);
+	let RGBAValues = parseColorString(color);
 
 	// create new target canvas
-	var target = document.createElement("canvas");
+	let target = document.createElement("canvas");
 	target.width = srcCanvas.width;
 	target.height = srcCanvas.height;
 
 	// get the raw data of the src
-	var srcData = srcCanvas.getContext("2d").getImageData(0, 0, srcCanvas.width, srcCanvas.height);
-	var srcRaw = srcData.data;
+	let srcData = srcCanvas.getContext("2d").getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+	let srcRaw = srcData.data;
 
-	for (var i = 0, iPixelCount = srcRaw.length; i < iPixelCount; i += 4) {
+	for (let i = 0, iPixelCount = srcRaw.length; i < iPixelCount; i += 4) {
 		// mix colors:
 		// (original color in % of 255) * new Color
 		// white will become the new color, all other colors will be toned down depending on their distance to 255

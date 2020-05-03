@@ -105,7 +105,7 @@ function define(symbols) {
 	/*
 	 * { "nameForKey": Keys.SPACE, ... }
 	 */
-	var strName;
+	let strName;
 	//iterate all given symbolic names
 	for (strName in symbols) {
 		symbolicNames[strName] = symbols[strName];
@@ -113,7 +113,7 @@ function define(symbols) {
 }
 
 function resolveKey(key) {
-	var t = typeof (key);
+	let t = typeof (key);
 	if (t === "string") {
 		return symbolicNames[key];
 	} else if (t === "number") {
@@ -148,14 +148,14 @@ function _reset() {
 /*
 // get the gamepad button/axes states
 function _pollgamepads() {
-	var gamepads = navigator && navigator.getgamepads && navigator.getgamepads();
+	let gamepads = navigator && navigator.getgamepads && navigator.getgamepads();
 	if (gamepads && gamepads[0]) {
-		var pad = gamepads[0];
+		let pad = gamepads[0];
 
 		//buttons
-		for (var i = 0; i < pad.buttons.length; i++) {
-			var button = pad.buttons[i];
-			var btnCode = Gamepad["BUTTON_"+i];
+		for (let i = 0; i < pad.buttons.length; i++) {
+			let button = pad.buttons[i];
+			let btnCode = Gamepad["BUTTON_"+i];
 
 			if (button.pressed) {
 				if (!keyDownList[btnCode]) {
@@ -171,7 +171,7 @@ function _pollgamepads() {
 
 		// axes
 		// horizontal
-		var horizontal = pad.axes[0];
+		let horizontal = pad.axes[0];
 		if (horizontal <= -1) {
 			if (!keyDownList[Gamepad.LEFT]) {
 				keyDownList[Gamepad.LEFT] = true;
@@ -192,7 +192,7 @@ function _pollgamepads() {
 		}
 
 		// vertical
-		var vertical = pad.axes[1];
+		let vertical = pad.axes[1];
 		if (vertical <= -1) {
 			if (!keyDownList[Gamepad.UP]) {
 				keyDownList[Gamepad.UP] = true;

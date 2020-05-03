@@ -1,5 +1,5 @@
 import { log, warn, fail } from "./utils/Log.js";
-import loadJSON from "./utils/loadJSON.js";
+import loadJSON from "./assets/plugins/JSONLoader.js";
 import Fonts from "./gfx/Fonts.js";
 
 /**
@@ -34,7 +34,9 @@ async function init(manifest) {
 		initialized = Promise.resolve().then(async function() {
 			if (typeof manifest === "string") {
 				log(`Loading Manifest from '${manifest}' ...`, "Manifest");
-				_manifestObject = await loadJSON(manifest);
+				_manifestObject = await loadJSON.load({
+					url: manifest
+				});
 
 				// resolve manifest base URL
 				let u = new URL(manifest, window.location);
