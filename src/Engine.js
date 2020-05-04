@@ -156,11 +156,7 @@ const Engine = {
 		// this way we can access simple font rendering before the rest of the assets are loaded
 		await AssetLoader.load({
 			"fonts": {
-				"font0": {
-					"url": Fonts.DEFAULT_JMP_FONT0,
-					"w": 7,
-					"h": 8
-				}
+				"font0": Fonts.DEFAULT_JMP_FONT0
 			}
 		});
 

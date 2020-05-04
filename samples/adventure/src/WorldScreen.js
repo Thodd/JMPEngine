@@ -6,6 +6,7 @@ import Keys from "../../../src/input/Keys.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import GFX from "../../../src/gfx/GFX.js";
+import Text from "../../../src/gfx/Text.js";
 import Tile from "../../../src/game/Tile.js";
 
 class WorldScreen extends Screen {
@@ -144,13 +145,15 @@ class WorldScreen extends Screen {
 
 		this.add(t);
 
+		// text sample
+		let textShadow = new Text("JMP Adventure", 1, 111, 0, true);
+		textShadow.color = "#000000";
+		textShadow.layer = 3;
+		this.add(textShadow);
 
-		let text = new Entity();
-		text.render = () => {
-			GFX.text("font0", 1, 111, "JMP Adventure", 3, "#000000");
-			GFX.text("font0", 0, 110, "JMP Adventure", 3, "#FFFFFF");
-		};
-		this.add(text);
+		let textColored = new Text("JMP Adventure", 0, 110, 0, true);
+		textColored.layer = 3;
+		this.add(textColored);
 	}
 }
 

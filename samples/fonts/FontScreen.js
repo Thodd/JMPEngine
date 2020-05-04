@@ -34,10 +34,10 @@ class FontScreen extends Screen {
 				let char = this.msg[i];
 
 				// black shadow ("#000000")
-				GFX.text("font0", 4 + (i * 7), 31 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, "#000000");
+				GFX.text("font0", 4 + (i * 7), 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, 0, "#000000");
 
 				// colored text using predefined color palette
-				GFX.text("font0", 3 + (i * 7), 30 + Math.cos(i/3 + this.count) * Math.max(0, 30 - this.count), char, 0, GFX.pal((this.col + i) % 15));
+				GFX.text("font0", 3 + (i * 7), 25 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, 0, GFX.pal((this.col + i) % 15));
 			}
 			this.count += this.step;
 
@@ -51,19 +51,17 @@ class FontScreen extends Screen {
 		/**
 		 * Multi-line Text Rendering Demo
 		 */
-		let multilineMessage = `This is a Demo for
-multi-line Strings.
-You can render these
-Strings with the
-following GFX-API:
+		let multilineMessage = `This is a demo of the
+built-in font: 'font0'.
+It supports kerning.
+The sample is rendered
+with a 'leading' of 2.`;
 
-'GFX.textm(...)'`;
-
-		let multilineTextShadow = new Text(multilineMessage, 11, 81);
+		let multilineTextShadow = new Text(multilineMessage, 6, 61, 2, true);
 		multilineTextShadow.color = "#000000";
 		this.add(multilineTextShadow);
 
-		let multilineTextColored = new Text(multilineMessage, 10, 80);
+		let multilineTextColored = new Text(multilineMessage, 5, 60, 2, true);
 		multilineTextColored.color = "#FF0085";
 		this.add(multilineTextColored);
 
@@ -72,16 +70,61 @@ following GFX-API:
 		 * Custom ASCII Bitmap Font Demo
 		 */
 		let customMsg = `
-This is a sample of a
-custom font.
-It's a variation of
-the built-in 'font0'.
-A custom font must be
-monospaced and in
-ASCII order.`;
-		let customFont = new Text(customMsg, 5, 160);
+This is a custom font.
+It's is 8x8 pixels in
+format and monospaced.
+Kerning values can be
+provided too!
+A custom font is not
+required to use ASCII
+ordering. This is use-
+full if you want to
+use special characters
+e.g. German Umlauts.
+`;
+		let customFont = new Text(customMsg, 5, 115, 2);
+		customFont.color = "#FF8500";
 		this.add(customFont);
+
+
+		/**
+		 * Lorem Ipsum sample
+		 */
+		let lorem =
+`Following Witty Engine!
+Lorem Ipsum dolor sit
+amet, consetetur sad
+diam nonumy eirmod
+tempor invidunt ut la-
+bore et dolore magna
+aliquyam erat, sed
+diam voluptua.
+
+At vero eos et accu.
+Stet clita kasd guber
+gren, no sea takimat!
+
+  Character Order:
+--------------------
+!"#$%&'()*+,-./
+0123456789:;<=>?@
+ABCDEFGHIJKLM
+NOPQRSTUVWXYZ
+[\\]^_\`
+abcdefghijklm
+nopqrstuvwxyz
+{|}
+`
+		// TODO: Activate for performance test
+		// let loremFontShadow = new Text(lorem, 169, 8, 1, true);
+		// loremFontShadow.color = "#000000";
+		// this.add(loremFontShadow);
+
+		let loremFontColor = new Text(lorem, 168, 7, 2, true);
+		loremFontColor.color = "#ffffff";
+		this.add(loremFontColor);
 	}
+
 }
 
 export default FontScreen;

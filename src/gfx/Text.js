@@ -4,11 +4,13 @@ import Entity from "../game/Entity.js";
 import Manifest from "../Manifest.js";
 
 class Text extends Entity {
-	constructor(t, x, y) {
+	constructor(t, x, y, leading, useKerning) {
 		super(x, y);
 		this.text = t;
 		this.font = "font0";
 		this.color = "#ffffff";
+		this.leading = leading;
+		this.useKerning = useKerning;
 	}
 
 	setSprite() {
@@ -30,7 +32,7 @@ class Text extends Entity {
 
 	render() {
 		super.render();
-		GFX.textm(this.font, this.x, this.y, this.text, this.layer, this.color);
+		GFX.textm(this.font, this.x, this.y, this.text, this.layer, this.color, this.leading, this.useKerning);
 	}
 }
 

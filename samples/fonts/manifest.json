@@ -4,9 +4,10 @@
 	"startScreen" : "./FontScreen.js",
 
 	"layers": 2,
-	"w": 160,
+	"w": 320,
 	"h": 240,
 	"scale": 2,
 	"fps": 60,
-	"hideCursor": false
+	"hideCursor": false,
+	"skipIntro": true
 }

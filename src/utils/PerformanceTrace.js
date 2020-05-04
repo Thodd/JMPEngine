@@ -1,3 +1,5 @@
+import { exposeOnWindow } from "./Log.js";
+
 const now = function() {
 	if (window.performance) {
 		return window.performance.now();
@@ -36,9 +38,6 @@ const PerformanceTrace = {
 	}
 };
 
-// debugging shortcut
-window.jmp = {
-	PerformanceTrace: PerformanceTrace
-};
+exposeOnWindow("PerformanceTrace", PerformanceTrace);
 
 export default PerformanceTrace;

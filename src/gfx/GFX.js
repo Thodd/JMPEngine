@@ -397,24 +397,40 @@ function grid(id, x, y, layer) {
 	PerformanceTrace.drawCalls++;
 }
 
-// mapp = map part
-// renders only a part of the map with the given source rectangle (sx, sy, sw, sh)
-//function mapp(i, x, y, sx, sy, sw, sh, layer) {
-	// TODO
-//}
+
 
 /**
  * Renders a single line of text.
  * @param {string} font the font which should be used for rendering, e.g. "font0"
  */
-function text(font, x, y, msg, layer, color) {
+function text(font, x, y, msg, layer, color, useKerning=false) {
 	let fontObj = manifest.assets.fonts[font];
+
 	let ctx = _contexts[layer || 0];
-	let offsetX = 0;
-	for (let i in msg) {
+
+	let kerningValueAcc = 0;
+
+	let ml = msg.length;
+	for (let i = 0; i < ml; i++) {
 		let c = msg[i];
-		ctx.drawImage(Fonts.getChar(fontObj, c, color), x + offsetX * fontObj.w, y);
-		offsetX++;
+
+		ctx.drawImage(Fonts.getChar(fontObj, c, color), x + i * fontObj.w + kerningValueAcc, y);
+
+		if (useKerning) {
+			// to be a bit more fault tolerant we check for the existance of a kerning tree
+			let kerningTree = fontObj._kerningTree;
+			if (kerningTree) {
+				// we have to check all characters + their look-ahead for kerning values
+				let lookahead = msg[i+1];
+				if (lookahead != null) {
+					if ((kerningTree[c] && kerningTree[c][lookahead] != null)) {
+						kerningValueAcc += kerningTree[c][lookahead];
+					}
+				}
+			} else {
+				warn(`Kerning for GFX.text(${font}, ...) call was activated, though no kerning data is available for this font.`, "GFX.text");
+			}
+		}
 
 		PerformanceTrace.drawCalls++;
 	}
@@ -423,7 +439,7 @@ function text(font, x, y, msg, layer, color) {
 /**
  * Renders multiline texts.
  */
-function textm(font, x, y, msg, layer, color) {
+function textm(font, x, y, msg, layer, color, leading=0, useKerning=false) {
 	let fontObj = manifest.assets.fonts[font];
 
 	// check for linebreak style
@@ -432,7 +448,7 @@ function textm(font, x, y, msg, layer, color) {
 
 	for (let i = 0; i < lines.length; i++) {
 		let line = lines[i];
-		text(font, x, y + (i * fontObj.h), line, layer, color);
+		text(font, x, y + (i * fontObj.h) + (i * leading), line, layer, color, useKerning);
 	}
 }
 

@@ -1,4 +1,4 @@
-import { log, warn, fail } from "./utils/Log.js";
+import { log, warn, fail, exposeOnWindow } from "./utils/Log.js";
 import loadJSON from "./assets/plugins/JSONLoader.js";
 
 /**
@@ -130,6 +130,10 @@ function set(path, value) {
 		cur[last] = value;
 	}
 }
+
+exposeOnWindow("Manifest", {
+	get: get
+});
 
 export default {
 	DEFAULTS,
