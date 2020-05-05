@@ -10,7 +10,7 @@ const DEFAULT_JMP_FONT0 = {
 	"w": 7,
 	"h": 8,
 	"kerning": { // simple kerning values
-		"spacing": 5,
+		"spacing": 6,
 		"AP": 1,
 
 		"En": 1,

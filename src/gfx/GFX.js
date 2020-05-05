@@ -406,31 +406,45 @@ function grid(id, x, y, layer) {
 function text(font, x, y, msg, layer, color, useKerning=false) {
 	let fontObj = manifest.assets.fonts[font];
 
+	let kerningTree;
+	if (useKerning) {
+		kerningTree = fontObj._kerningTree;
+		if (!kerningTree) {
+			warn(`Kerning for GFX.text(${font}, ...) call was activated, though no kerning data is available for this font.`, "GFX.text");
+		}
+	}
+
 	let ctx = _contexts[layer || 0];
 
 	let kerningValueAcc = 0;
-
 	let ml = msg.length;
-	for (let i = 0; i < ml; i++) {
+	let i = 0;
+	let shift = 0;
+
+	while(i < ml) {
 		let c = msg[i];
 
-		ctx.drawImage(Fonts.getChar(fontObj, c, color), x + i * fontObj.w + kerningValueAcc, y);
+		ctx.drawImage(Fonts.getChar(fontObj, c, color), x + shift + kerningValueAcc, y);
 
 		if (useKerning) {
-			// to be a bit more fault tolerant we check for the existance of a kerning tree
-			let kerningTree = fontObj._kerningTree;
-			if (kerningTree) {
-				// we have to check all characters + their look-ahead for kerning values
-				let lookahead = msg[i+1];
-				if (lookahead != null) {
-					if ((kerningTree[c] && kerningTree[c][lookahead] != null)) {
-						kerningValueAcc += kerningTree[c][lookahead];
-					}
+			// we have to check all characters + their look-ahead for kerning values
+			let lookahead = msg[i+1];
+			if (lookahead != null) {
+				if ((kerningTree[c] && kerningTree[c][lookahead] != null)) {
+					kerningValueAcc += kerningTree[c][lookahead];
 				}
-			} else {
-				warn(`Kerning for GFX.text(${font}, ...) call was activated, though no kerning data is available for this font.`, "GFX.text");
 			}
 		}
+
+		// check if the font has a spacing value defined
+		if (useKerning && c == " ") {
+			shift += fontObj.kerning.spacing || fontObj.w;
+		} else {
+			// default character shift for monospaced fonts
+			shift += fontObj.w;
+		}
+
+		i++;
 
 		PerformanceTrace.drawCalls++;
 	}

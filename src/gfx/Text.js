@@ -19,6 +19,7 @@ class Text extends Entity {
 
 	setText(t) {
 		this.text = t;
+		//TODO: Rerender to back-buffer
 	}
 
 	setFont(f) {
