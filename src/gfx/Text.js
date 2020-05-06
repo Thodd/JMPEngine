@@ -4,13 +4,14 @@ import Entity from "../game/Entity.js";
 import Manifest from "../Manifest.js";
 
 class Text extends Entity {
-	constructor(t, x, y, leading, useKerning) {
+	constructor(t, x, y, leading=0, useKerning=false) {
 		super(x, y);
-		this.text = t;
 		this.font = "font0";
 		this.color = "#ffffff";
 		this.leading = leading;
 		this.useKerning = useKerning;
+
+		this.setText(t);
 	}
 
 	setSprite() {
@@ -19,6 +20,9 @@ class Text extends Entity {
 
 	setText(t) {
 		this.text = t;
+		this.backbuffer = document.createElement("canvas");
+
+		// set dimensions to the maximum possible values
 		//TODO: Rerender to back-buffer
 	}
 
@@ -32,8 +36,8 @@ class Text extends Entity {
 	}
 
 	render() {
-		super.render();
-		GFX.textm(this.font, this.x, this.y, this.text, this.layer, this.color, this.leading, this.useKerning);
+		// TODO: Split text here in multiple lines, and render separately   -->   remove textm API
+		GFX.get(this.layer).textm(this.font, this.x, this.y, this.text, this.color, this.leading, this.useKerning);
 	}
 }
 

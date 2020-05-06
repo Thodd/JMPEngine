@@ -12,7 +12,7 @@ const renderer = function () {
 	 * Ported from this #tweetcart:
 	 * https://twitter.com/SeanSLeBlanc/status/781767880509497344
 	 */
-	GFX.clear(0, "#222222");
+	GFX.get(0).clear("#222222");
 	let A = GFX.w/2;
 	let B = GFX.h/2;
 	let X = GFX.w/2;
@@ -22,7 +22,7 @@ const renderer = function () {
 	for (let I = Math.sin(T); I < 99; I += Math.cos(T)+1.1) {
 		X+=I*Math.sin(I);
 		Y+=I*Math.cos(I);
-		GFX.line(A,B,X,Y,Helper.choose(GFX.pal(), 4, 16));
+		GFX.get(0).line(A,B,X,Y,Helper.choose(GFX.pal(), 4, 16));
 		A = X;
 		B = Y;
 	}

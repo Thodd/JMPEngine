@@ -31,6 +31,7 @@ class Entity {
 			h: 1
 		};
 
+		// by default we render on layer 0
 		this.layer = 0;
 
 		// collision
@@ -243,6 +244,8 @@ class Entity {
 		// if animations are defined we advance the currently set one frame-by-frame
 		this._updateCurrentAnimation();
 
+		let g = GFX.get(this.layer);
+
 		// only try to render if we have either an animation or a default sprite config
 		if (this._currentAnimation || this._spriteConfig) {
 
@@ -267,14 +270,14 @@ class Entity {
 
 			// sheet, id, layer, x, y, w, h, color
 			// width and height are undefined, because we want the default value from the actual sprite
-			GFX.spr_ext(sheet, id, dx, dy, dw, dh, this.layer, color, alpha);
+			g.spr_ext(sheet, id, dx, dy, dw, dh, color, alpha);
 		}
 
 		if (Entity.RENDER_HITBOXES) {
-			GFX.subpx(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES, this.layer); // top left
-			GFX.subpx(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES, this.layer); // top right
-			GFX.subpx(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES, this.layer); // bottom left
-			GFX.subpx(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES, this.layer); // bottom right
+			g.subpx(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top left
+			g.subpx(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top right
+			g.subpx(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES); // bottom left
+			g.subpx(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES); // bottom right
 		}
 	}
 

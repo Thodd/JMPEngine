@@ -5,7 +5,6 @@ import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import Tilemap from "../../../src/game/Tilemap.js";
-import GFX from "../../../src/gfx/GFX.js";
 import Text from "../../../src/gfx/Text.js";
 import Tile from "../../../src/game/Tile.js";
 

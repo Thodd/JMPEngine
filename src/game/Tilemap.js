@@ -119,7 +119,7 @@ class Tilemap extends Entity {
 			this._renderA();
 		} else {
 			// Version B
-			GFX.grid(this._name, this.x, this.y, this.layer);
+			GFX.get(this.layer).grid(this._name, this.x, this.y);
 		}
 	}
 
@@ -170,6 +170,8 @@ class Tilemap extends Entity {
 			return;
 		}
 
+		let g = GFX.get(this.layer);
+
 		// Only draw the tiles which are inside the camera (and inside the map range)
 		for (let col = colStart; col < colMax; col++) {
 			for (let row = rowStart; row < rowMax; row++) {
@@ -180,7 +182,7 @@ class Tilemap extends Entity {
 				if (t && t.id >= 0) {
 					let drawX = col * this._tileWidth;
 					let drawY = row * this._tileHeight;
-					GFX.spr(this._sheet.name, t.id, baseX + drawX, baseY + drawY, this.layer, t.color);
+					g.spr(this._sheet.name, t.id, baseX + drawX, baseY + drawY, t.color);
 				}
 			}
 		}

@@ -34,10 +34,10 @@ class FontScreen extends Screen {
 				let char = this.msg[i];
 
 				// black shadow ("#000000")
-				GFX.text("font0", 4 + (i * 7), 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, 0, "#000000");
+				GFX.get(0).text("font0", 4 + (i * 7), 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, "#000000");
 
 				// colored text using predefined color palette
-				GFX.text("font0", 3 + (i * 7), 25 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, 0, GFX.pal((this.col + i) % 15));
+				GFX.get(0).text("font0", 3 + (i * 7), 25 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, GFX.pal((this.col + i) % 15));
 			}
 			this.count += this.step;
 

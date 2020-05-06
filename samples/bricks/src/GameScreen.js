@@ -345,14 +345,16 @@ class GameScreen extends Screen {
 		super.render();
 
 		// debug rendering of current piece origin
-		/*let sheet = Spritesheets.getSheet("bricks");
+		/*
+		let sheet = Spritesheets.getSheet("bricks");
 		let p = Well.getCurrentPiece();
 		let originX = sheet.w * (Well.ORIGIN_X + p.well_x);
 		let originY = sheet.h * (Well.ORIGIN_Y + p.well_y);
-		GFX.px(originX,     originY,     "#ffffff", 2);
-		GFX.px(originX + 1, originY,     "#ffffff", 2);
-		GFX.px(originX    , originY + 1, "#ffffff", 2);
-		GFX.px(originX + 1, originY + 1, "#ffffff", 2);*/
+		GFX.get(2).px(originX,     originY,     "#ffffff");
+		GFX.get(2).px(originX + 1, originY,     "#ffffff");
+		GFX.get(2).px(originX    , originY + 1, "#ffffff");
+		GFX.get(2).px(originX + 1, originY + 1, "#ffffff");
+		*/
 	}
 }
 

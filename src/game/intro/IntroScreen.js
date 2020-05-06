@@ -33,6 +33,8 @@ class IntroScreen extends Screen {
 		// colored and animated Text
 		let animatedText = new Entity();
 		animatedText.render = function() {
+			let g = GFX.get(1);
+
 			for (let i = 0; i < curMsgLength; i++) {
 				let char = msg[i];
 
@@ -40,10 +42,10 @@ class IntroScreen extends Screen {
 				let y = h/2 - shiftTop;
 
 				// black shadow ("#000000")
-				GFX.text("font0", x+1, y+1, char, 1, "#000000");
+				g.text("font0", x+1, y+1, char, "#000000");
 
 				// colored text using predefined color palette
-				GFX.text("font0", x, y, char, 1, "#ff0085");
+				g.text("font0", x, y, char, "#ff0085");
 			}
 
 			if (animationDelay.isReady()) {

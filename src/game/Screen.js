@@ -40,7 +40,7 @@ class Screen {
 
 		// create layers
 		this._layers = [];
-		for (let i = 0; i < GFX.canvases.length; i++) {
+		for (let i = 0; i < GFX.buffers.length; i++) {
 			this._layers.push(new Layer(i));
 		}
 
@@ -84,11 +84,13 @@ class Screen {
 	 */
 	begin() {}
 
-	// internal begin hook takes care of clean-up like layer clearing etc.
+	/**
+	 * Internal begin hook takes care of clean-up like layer clearing etc.
+	 */
 	_begin(){
 		// initially clear all layers so we don't have any leftover graphics from a previous Screen.
 		for (let i = 0; i < this._layers.length; i++) {
-			GFX.clear(i, this._layers[i].clearColor);
+			GFX.get(i).clear(this._layers[i].clearColor);
 		}
 	}
 
@@ -253,10 +255,10 @@ class Screen {
 			//GFX.save(i);
 			// translate camera; layers with a fixedCam will not move with the camera
 			if (!layer.fixedCam) {
-				GFX.trans(i, -this.cam.x, -this.cam.y);
+				GFX.get(i).trans(-this.cam.x, -this.cam.y);
 			}
 			if (layer.autoClear) {
-				GFX.clear_rect(i, layer.clearColor, this.cam.x, this.cam.y);
+				GFX.get(i).clear_rect(layer.clearColor, this.cam.x, this.cam.y);
 			}
 		}
 
@@ -272,7 +274,7 @@ class Screen {
 			//GFX.restore(i);
 			let layer = this._layers[i];
 			if (!layer.fixedCam) {
-				GFX.trans(i, +this.cam.x, +this.cam.y);
+				GFX.get(i).trans(+this.cam.x, +this.cam.y);
 			}
 		}
 	}
