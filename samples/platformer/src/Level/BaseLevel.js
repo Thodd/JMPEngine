@@ -76,12 +76,11 @@ class BaseLevel extends Screen {
 		this.cam.x = player.x - 70;
 
 		// text demo
-		let textBG = new Text("Platformer Demo", 2, 2, 0, true);
+		let textBG = new Text({text: "Platformer Demo", x: 2, y: 2, color: "#000000", useKerning: true});
 		textBG.layer = 3;
-		textBG.color = "#000000";
 		this.add(textBG);
 
-		let textFG = new Text("Platformer Demo", 1, 1, 0, true);
+		let textFG = new Text({text: "Platformer Demo", x: 1, y: 1, useKerning: true});
 		textFG.layer = 3;
 		this.add(textFG);
 	}

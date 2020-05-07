@@ -11,7 +11,7 @@ let _2PI = 2 * Math.PI;
 const n = Math.floor;
 
 class Buffer {
-	constructor(w, h, scale, depth=-1) {
+	constructor(w, h, scale, depth="offscreen") {
 		this.w = w;
 		this.h = h;
 		this.scale = scale;
@@ -328,22 +328,6 @@ class Buffer {
 	}
 
 	/**
-	 * Renders multiline texts.
-	 */
-	textm(font, x, y, msg, color, leading=0, useKerning=false) {
-		let fontObj = manifest.assets.fonts[font];
-
-		// check for linebreak style
-		let lineDelimiter = msg.indexOf("\n\r") >= 0 ? "\n\r" : "\n";
-		let lines = msg.split(lineDelimiter);
-
-		for (let i = 0; i < lines.length; i++) {
-			let line = lines[i];
-			this.text(font, x, y + (i * fontObj.h) + (i * leading), line, color, useKerning);
-		}
-	}
-
-	/**
 	 * Renders the given offscreen Buffer instance to the screen.
 	 *
 	 * @param {Buffer} buffer the Buffer object.
@@ -436,6 +420,12 @@ let manifest = null;
 const GFX = {
 	buffers: [],
 
+	/**
+	 * Returns the Buffer for the given layer index.
+	 *
+	 * @param {integer} i the layer of the Buffer
+	 * @returns {Buffer}
+	 */
 	get: function(i) {
 		return this.buffers[i];
 	},
@@ -516,6 +506,7 @@ const GFX = {
 	 *
 	 * The backbuffer itsef is not scaled!
 	 * But it will be rendered scaled according to the initial scaling factor of the game screen.
+	 * @returns {Buffer} the newly created offscreen buffer
 	 */
 	createOffscreenBuffer(w, h) {
 		return new Buffer(w, h, 1);

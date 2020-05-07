@@ -43,7 +43,6 @@ class WorldScreen extends Screen {
 					frames: [0]
 				},
 
-				// TODO:
 				"walk_up": {
 					frames: [20, 21, 20, 22],
 					delay: 7
@@ -145,12 +144,11 @@ class WorldScreen extends Screen {
 		this.add(t);
 
 		// text sample
-		let textShadow = new Text("JMP Adventure", 1, 111, 0, true);
-		textShadow.color = "#000000";
+		let textShadow = new Text({text: "JMP Adventure", x: 1, y: 111, color: "#000000", useKerning: true});
 		textShadow.layer = 3;
 		this.add(textShadow);
 
-		let textColored = new Text("JMP Adventure", 0, 110, 0, true);
+		let textColored = new Text({text: "JMP Adventure", x: 0, y: 110, color: "#FFFFFF", useKerning: true});
 		textColored.layer = 3;
 		this.add(textColored);
 	}

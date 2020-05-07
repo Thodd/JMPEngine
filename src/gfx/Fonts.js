@@ -15,8 +15,6 @@ const DEFAULT_JMP_FONT0 = {
 
 		"En": 1,
 
-		"fo": -1,
-
 		"hi": -1,
 
 		// since the "i" is very slim we have to apply kerning to all "i-pairings"
@@ -44,6 +42,7 @@ const DEFAULT_JMP_FONT0 = {
 		"ri": -1,
 
 		"sa": -1,
+		"sc": -1,
 		"sd": -1,
 		"si": -2,
 
@@ -51,10 +50,11 @@ const DEFAULT_JMP_FONT0 = {
 	}
 };
 
-// apply kerning values for the following characters: [i, l, t, I]
+// apply kerning values for the following characters: [f, i, l, t, I]
 // some the lower-case characters are pretty slim...
 for (let c of _chars) {
 	// we skip those values which have been predefined
+	DEFAULT_JMP_FONT0.kerning["f" + c] = DEFAULT_JMP_FONT0.kerning["f" + c] || -1;
 	DEFAULT_JMP_FONT0.kerning["I" + c] = DEFAULT_JMP_FONT0.kerning["I" + c] || -1;
 	DEFAULT_JMP_FONT0.kerning["i" + c] = DEFAULT_JMP_FONT0.kerning["i" + c] || -2;
 	DEFAULT_JMP_FONT0.kerning["l" + c] = DEFAULT_JMP_FONT0.kerning["l" + c] || -1;

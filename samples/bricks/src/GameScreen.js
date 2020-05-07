@@ -55,9 +55,9 @@ class GameScreen extends Screen {
 
 		// Scoring
 		this.scoringTexts = {
-			points: new Text("0", 75, 49),
-			level:  new Text("0", 75, 89),
-			lines:  new Text("0", 75, 129)
+			points: new Text({text: "0", x: 75, y: 49}),
+			level:  new Text({text: "0", x: 75, y: 89}),
+			lines:  new Text({text: "0", x: 75, y: 129})
 		}
 		this.scoringTexts.lines.layer = 3;
 		this.scoringTexts.points.layer = 3;
@@ -313,9 +313,9 @@ class GameScreen extends Screen {
 
 		// GAME OVER! text
 		// Ok, I got a bit lazy here and just hacked this together...
-		let t = new Text("GAME OVER!", offX+5, offY+5);
+		let t = new Text({text: "GAME OVER!", x: offX+5, y: offY+5, color: "#FF3333"});
 		t.layer = 3;
-		t.color = "#FF3333";
+
 		t.sad = true;
 		t.blinkTimer = new FrameCounter(12);
 		t.flip = function() {
@@ -336,7 +336,7 @@ class GameScreen extends Screen {
 		this.add(t);
 
 		// continue text
-		let c = new Text("Press ESC\n  key to\ncontinue!", offX+9, offY+28, 2, true);
+		let c = new Text({text: "Press ESC\n  key to\ncontinue!", x: offX+9, y: offY+28, leading: 2, useKerning: true});
 		c.layer = 3;
 		this.add(c);
 	}

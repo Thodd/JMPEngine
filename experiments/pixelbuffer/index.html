@@ -14,7 +14,7 @@
 	</head>
 	<body>
 		<canvas id="screen" style="background: #222222;"></canvas>
-		<div><span>Render [t]: </span><span id="renderTime"></span></div>
+		<div><span>avg. render [t]: </span><span id="renderTime"></span></div>
 		<div><span>Bufferaccess: </span><span id="bufferAccess"></span></div>
 		<img id="bg" src="./Background.png" hidden />
 		<img id="bunny" src="HoneyBunny.png" hidden />
@@ -25,6 +25,9 @@
 			let scale = 2;
 
 			let renderTimeSpan;
+			let renderTimeTotal = 0;
+			let renderCycles = 0;
+
 			let bufferAccessSpan;
 
 			let imgBunny;
@@ -61,10 +64,10 @@
 				renderTimeSpan = document.getElementById("renderTime");
 				bufferAccessSpan = document.getElementById("bufferAccess");
 
-				imgBunny = document.getElementById("bg");
+				imgBunny = document.getElementById("bunny");
 				bunnyCanvas = document.createElement("canvas");
-				bunnyCanvas.width = 128;
-				bunnyCanvas.height = 96;
+				bunnyCanvas.width = 8;
+				bunnyCanvas.height = 8;
 
 				canvas = document.getElementById("screen");
 				ctx = document.getElementById("screen").getContext("2d");
@@ -79,11 +82,11 @@
 					bunnyImageData = bunnyCtx.getImageData(0,0,bunnyCanvas.width, bunnyCanvas.height);
 
 					bunnies = [];
-					for (let i = 0; i < 2000; i++) {
+					for (let i = 0; i < 10000; i++) {
 						bunnies.push(new Bunny());
 					}
 
-					requestAnimationFrame(loop_hi);
+					requestAnimationFrame(loop_lo);
 				}, 200);
 			}
 
@@ -95,7 +98,10 @@
 					update_hi(bunnies[i]);
 				}
 				let renderEnd = performance.now();
-				renderTimeSpan.textContent = `${(renderEnd - renderStart).toFixed(1)}ms`;
+				renderTimeTotal = renderTimeTotal + (renderEnd - renderStart);
+				renderTimeSpan.textContent = `${(renderTimeTotal/renderCycles).toFixed(1)}ms`;
+
+				renderCycles++;
 				requestAnimationFrame(loop_hi);
 			}
 
@@ -122,9 +128,13 @@
 					update_lo(bunnies[i]);
 				}
 				let renderEnd = performance.now();
-				renderTimeSpan.textContent = `${(renderEnd - renderStart).toFixed(1)}ms`;
+				renderTimeTotal = renderTimeTotal + (renderEnd - renderStart);
+				renderTimeSpan.textContent = `${(renderTimeTotal/renderCycles).toFixed(1)}ms`;
 				bufferAccessSpan.textContent = `${access}`;
 				ctx.putImageData(imgDataScreen, 0, 0);
+
+				renderCycles++;
+
 				requestAnimationFrame(loop_lo);
 			}
 

@@ -143,7 +143,6 @@ const Well = {
 		// check new position for collision
 		let collision = false;
 
-		// TODO: refactor to remove try catch -> check if coordinates are inside Well only
 		try {
 			for (let b of newBricksRelCoords) {
 				let newX = p.well_x + xDif + b.x;

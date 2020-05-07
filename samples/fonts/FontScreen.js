@@ -57,12 +57,10 @@ It supports kerning.
 The sample is rendered
 with a 'leading' of 2.`;
 
-		let multilineTextShadow = new Text(multilineMessage, 6, 61, 2, true);
-		multilineTextShadow.color = "#000000";
+		let multilineTextShadow = new Text({text: multilineMessage, x: 6, y: 61, color: "#000000", leading: 2, useKerning: true});
 		this.add(multilineTextShadow);
 
-		let multilineTextColored = new Text(multilineMessage, 5, 60, 2, true);
-		multilineTextColored.color = "#FF0085";
+		let multilineTextColored = new Text({text: multilineMessage, x: 5, y: 60, color: "#FF0085", leading: 2, useKerning: true});
 		this.add(multilineTextColored);
 
 
@@ -82,8 +80,7 @@ full if you want to
 use special characters
 e.g. German Umlauts.
 `;
-		let customFont = new Text(customMsg, 5, 115, 2);
-		customFont.color = "#FF8500";
+		let customFont = new Text({text: customMsg, x: 5, y: 115, color: "#FF8500", leading: 2});
 		this.add(customFont);
 
 
@@ -91,18 +88,18 @@ e.g. German Umlauts.
 		 * Lorem Ipsum sample
 		 */
 		let lorem =
-`Following Witty Engine!
-Lorem Ipsum dolor sit
-amet, consetetur sad
-diam nonumy eirmod
-tempor invidunt ut la-
-bore et dolore magna
-aliquyam erat, sed
-diam voluptua.
-
-At vero eos et accu.
-Stet clita kasd guber
-gren, no sea takimat!
+`The following paragraph
+is a kerning & leading
+test.
+Rendering longer texts
+will take some time when
+instantiating a new Text
+Entity.
+The rendertime during a
+single frame however
+is pretty short, as an
+offscreen buffer is
+used for pre-rendering.
 
   Character Order:
 --------------------
@@ -115,13 +112,10 @@ abcdefghijklm
 nopqrstuvwxyz
 {|}
 `
-		// TODO: Activate for performance test
-		// let loremFontShadow = new Text(lorem, 169, 8, 1, true);
-		// loremFontShadow.color = "#000000";
-		// this.add(loremFontShadow);
+		let loremFontShadow = new Text({text: lorem, x: 165, y: 8, color: "#000000", leading: 2, useKerning: true});
+		this.add(loremFontShadow);
 
-		let loremFontColor = new Text(lorem, 168, 7, 2, true);
-		loremFontColor.color = "#ffffff";
+		let loremFontColor = new Text({text: lorem, x: 164, y: 7, leading: 2, useKerning: true});
 		this.add(loremFontColor);
 	}
 
