@@ -5,7 +5,7 @@ import Manifest from "../Manifest.js";
 
 class Text extends Entity {
 	constructor({text, x, y, font="font0", color="#FFFFFF", leading=0, useKerning=false}) {
-		super(x, y);
+		super({x, y});
 		this._color = color;
 		this.leading = leading;
 		this.useKerning = useKerning;

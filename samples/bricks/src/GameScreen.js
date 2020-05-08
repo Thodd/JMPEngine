@@ -46,7 +46,7 @@ class GameScreen extends Screen {
 		this.add(new BGRenderer());
 
 		// UI
-		let ui = new Entity(0, 0);
+		let ui = new Entity();
 		ui.layer = 1;
 		ui.setSprite({
 			sheet: "UI"
@@ -304,7 +304,7 @@ class GameScreen extends Screen {
 	createGameOverlay() {
 		// GameOver overlay
 		let offX = 104, offY = 50;
-		let gameOverUI = new Entity(offX, offY);
+		let gameOverUI = new Entity({x: offX, y: offY});
 		gameOverUI.layer = 3;
 		gameOverUI.setSprite({
 			sheet: "GameOver"

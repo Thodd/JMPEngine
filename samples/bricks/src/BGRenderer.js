@@ -1,6 +1,9 @@
 import Tilemap from "../../../src/game/Tilemap.js";
 
 /*
+	We render the tilemap with doubled width and height.
+	This way we can simply move it around without creating seams or gaps.
+
 	(0,0)--------16-------(256,0)--------16------(512,0)
 	  |                      |                      |
 	 12                      |                      |
@@ -13,7 +16,7 @@ import Tilemap from "../../../src/game/Tilemap.js";
 */
 class BGRenderer extends Tilemap {
 	constructor() {
-		super("BG", 32, 24);
+		super({sheet: "BG", w: 32, h: 24, version: "B"});
 
 		this.each((t) => {
 			t.set(0);

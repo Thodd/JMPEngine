@@ -16,21 +16,17 @@ class LevelSelectScreen extends Screen {
 
 		this.add(new BGRenderer());
 
-		this.ui = new Entity();
+		this.ui = new Entity({x: 83, y: 50});
 		this.ui.setSprite({
 			sheet: "LevelSelect"
 		});
-		this.ui.x = 83;
-		this.ui.y = 50;
 		this.add(this.ui);
 
-		this.cursor = new Entity();
+		this.cursor = new Entity({x: 92, y: 90});
 		this.cursor.setSprite({
 			sheet: "bricks",
 			id: 43
 		});
-		this.cursor.x = 92;
-		this.cursor.y = 90;
 		this.add(this.cursor);
 
 		this.cursorPos = {

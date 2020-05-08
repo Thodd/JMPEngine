@@ -1,3 +1,5 @@
+import { fail } from "../utils/Log.js";
+
 class Tile {
 	/**
 	 *
@@ -5,7 +7,10 @@ class Tile {
 	 * @param {number} x the x coordinate of this Tile instance inside its Tilemap
 	 * @param {number} y the x coordinate of this Tile instance inside its Tilemap
 	 */
-	constructor(tilemap, x, y) {
+	constructor({tilemap=null, x=0, y=0}={}) {
+		if (tilemap == null) {
+			fail("Tile cannot be created without a tilemap.", "Game.Tile");
+		}
 		this.tilemap = tilemap;
 		this.x = x;
 		this.y = y;

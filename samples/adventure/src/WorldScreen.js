@@ -20,10 +20,7 @@ class WorldScreen extends Screen {
 		/**
 		 * Simple Entity with input handling
 		 */
-		let e = new Entity();
-
-		e.x = 70;
-		e.y = 50;
+		let e = new Entity({x: 70, y: 50});
 		e.layer = 2;
 
 		e.inputDelay = new FrameCounter(5);
@@ -122,7 +119,7 @@ class WorldScreen extends Screen {
 		/**
 		 * Tilemap demo
 		 */
-		let t = new Tilemap("tileset", 16, 12, Tile, "B");
+		let t = new Tilemap({sheet: "tileset", x: 16, y: 12, version: Tilemap.Version.B});
 		t.x = 0;
 		t.y = 0;
 		t.layer = 1;

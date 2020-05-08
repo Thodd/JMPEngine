@@ -10,7 +10,7 @@ let INSTANCE_COUNT = 0;
  * Entity Constructor
  */
 class Entity {
-	constructor(x=0, y=0) {
+	constructor({x=0, y=0}={}) {
 		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;

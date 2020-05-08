@@ -19,7 +19,7 @@ const Version = {
 };
 
 class Tilemap extends Entity {
-	constructor(sheet, w=20, h=20, tileClass=Tile, v=Version.A) {
+	constructor({sheet, w=20, h=20, tileClass=Tile, version=Version.A}) {
 
 		if (!sheet) {
 			fail(`The spritesheet ${sheet} does not exist! A Tilemap cannot be created without a spritesheet`, "Tilemap");
@@ -28,7 +28,7 @@ class Tilemap extends Entity {
 		super();
 
 		// tilemap version
-		this.version = v;
+		this.version = version;
 
 		// sheet from which we will render the tiles
 		this._sheet = Spritesheets.getSheet(sheet);
@@ -62,7 +62,7 @@ class Tilemap extends Entity {
 		for (let x = 0; x < this._mapWidth; x++) {
 			this._field[x] = [];
 			for (let y = 0; y < this._mapHeight; y++) {
-				this._field[x][y] = new tileClass(this, x, y);
+				this._field[x][y] = new tileClass({tilemap: this, x: x, y: y});
 			}
 		}
 	}

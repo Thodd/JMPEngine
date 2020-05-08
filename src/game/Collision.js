@@ -46,7 +46,7 @@ export default {
 	},
 
 	/**
-	 * Checks if entity1 collides with entity2 when placing e1 at (x, y)
+	 * Checks if entity1 collides with entity2 when placing e1 at (x, y).
 	 * @param {Entity} e1
 	 * @param {Entity} e2
 	 * @param {int} x

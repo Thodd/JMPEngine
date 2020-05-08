@@ -24,7 +24,7 @@ class BaseLevel extends Screen {
 		this.add(bg);
 
 		// basic tilemap
-		let t = new Tilemap("tileset", 50, 50);
+		let t = new Tilemap({sheet: "tileset", x: 50, y: 50});
 		t.setTypes(["tiles"]);
 		t.x = 0;
 		t.y = 0;
@@ -51,14 +51,15 @@ class BaseLevel extends Screen {
 		tile.isBlocking = true;
 
 		// demo entities
-		for (let i = 0; i < 2; i++) {
-			let e = new Entity();
+		for (let i = 0; i < 4; i++) {
+			let e = new Entity({
+				x: RNG.randomInteger(0, 120),
+				y: RNG.randomInteger(0, 88)
+			});
 			e.hitbox.w = 8;
 			e.hitbox.h = 8;
 			e.setTypes(["box"]);
 			e.layer = 4;
-			e.x = RNG.randomInteger(0, 120);
-			e.y = RNG.randomInteger(0, 88);
 			e.setSprite({
 				sheet:"tileset",
 				id: 9
@@ -67,7 +68,7 @@ class BaseLevel extends Screen {
 		}
 
 		// create player
-		let player = new Player(80, 40);
+		let player = new Player({x: 80, y: 40});
 		player.layer = 2;
 		this.add(player);
 		window.player = player; // only used for debugging (do NOT do this in a real game ;))
