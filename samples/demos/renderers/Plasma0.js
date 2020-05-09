@@ -21,8 +21,6 @@ const renderer = function() {
 			if(s>-1){g.px(i,j,GFX.pal(Math.floor(8+2.5*s)));}
 		}
 	}
-
-	g.pxFlush();
 }
 
 export default {

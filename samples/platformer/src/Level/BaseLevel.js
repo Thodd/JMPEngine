@@ -12,8 +12,8 @@ class BaseLevel extends Screen {
 
 		Entity.RENDER_HITBOXES = "#FF0085";
 
-		this.getLayers(0).fixedCam = true; // BG
-		this.getLayers(3).fixedCam = true; // Text, e.g. HUD
+		this.getLayer(0).fixedCam = true; // BG
+		this.getLayer(3).fixedCam = true; // Text, e.g. HUD
 
 		// background
 		let bg = new Entity();

@@ -14,8 +14,8 @@ class WorldScreen extends Screen {
 
 		let that = this;
 
-		this.getLayers(0).clearColor = "#333333";
-		this.getLayers(3).fixedCam = true;
+		this.getLayer(0).clearColor = "#333333";
+		this.getLayer(3).fixedCam = true;
 
 		/**
 		 * Simple Entity with input handling

@@ -8,7 +8,7 @@ class FontScreen extends Screen {
 	constructor() {
 		super();
 
-		this.getLayers(0).clearColor = "#333333";
+		this.getLayer(0).clearColor = "#333333";
 
 		/**
 		 * Low-Level Text Rendering Demo

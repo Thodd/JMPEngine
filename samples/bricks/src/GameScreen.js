@@ -20,7 +20,7 @@ class GameScreen extends Screen {
 	constructor() {
 		super();
 
-		this.getLayers(0).clearColor = "#38a8f2";
+		this.getLayer(0).clearColor = "#38a8f2";
 
 		// preview and hold
 		this.currentPreview = [];

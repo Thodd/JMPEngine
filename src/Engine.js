@@ -46,12 +46,12 @@ const gameloop = () => {
 
 		// update
 		PerformanceTrace.start("update");
-		currentScreen.update();
+		currentScreen._update();
 		PerformanceTrace.end("update");
 
 		// rendering
 		PerformanceTrace.start("render");
-		currentScreen.render();
+		currentScreen._render();
 		PerformanceTrace.end("render");
 
 		PerformanceTrace.finalize();

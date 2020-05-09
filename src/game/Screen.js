@@ -1,3 +1,4 @@
+import Manifest from "../Manifest.js";
 import Helper from "../utils/Helper.js";
 import GFX from "../gfx/GFX.js";
 import Collision from "./Collision.js";
@@ -40,7 +41,8 @@ class Screen {
 
 		// create layers
 		this._layers = [];
-		for (let i = 0; i < GFX.buffers.length; i++) {
+		let ln = Manifest.get("/layers");
+		for (let i = 0; i < ln; i++) {
 			this._layers.push(new Layer(i));
 		}
 
@@ -71,7 +73,7 @@ class Screen {
 		this._entityTypeStore = new EntityTypeStore();
 
 		// lowest layer is cleared by default with black
-		this.getLayers(0).clearColor = "#222222";
+		this.getLayer(0).clearColor = "#222222";
 	}
 
 	/**
@@ -113,7 +115,7 @@ class Screen {
 	 * @param {int|undefined} i The layer position
 	 * @returns {Layer} the chosen layer
 	 */
-	getLayers(i) {
+	getLayer(i) {
 		if (i == null) {
 			return this._layers;
 		}
@@ -217,7 +219,14 @@ class Screen {
 		}
 	}
 
-	update() {
+	/**
+	 * Internal update method.
+	 * Updates the Screen itself and then the entities added to the Screen.
+	 */
+	_update() {
+		// call update hook before the entities are updated
+		this.update();
+
 		// update entities
 		this._entities.forEach(function(e) {
 			if (e && e.active && !e._isDestroyed) {
@@ -247,7 +256,17 @@ class Screen {
 		this._toBeRemoved = [];
 	}
 
-	render() {
+	/**
+	 * Update Hook.
+	 * Overwrite this in your subclasses if needed.
+	 * The Screen's update method is called before the entities of the Screen are updated.
+	 */
+	update() {}
+
+	/**
+	 * Internal render method.
+	 */
+	_render() {
 		// 1. move (translate) camera and
 		// 2. clear layers
 		for (let i = 0; i < this._layers.length; i++) {
@@ -261,6 +280,9 @@ class Screen {
 				GFX.get(i).clear_rect(layer.clearColor, this.cam.x, this.cam.y);
 			}
 		}
+
+		// call render hook before the entities are rendered
+		this.render();
 
 		// render entities
 		this._entities.forEach(function(e) {
@@ -276,8 +298,16 @@ class Screen {
 			if (!layer.fixedCam) {
 				GFX.get(i).trans(+this.cam.x, +this.cam.y);
 			}
+			GFX.get(i).flush();
 		}
 	}
+
+	/**
+	 * Render Hook.
+	 * Overwrite this in your subclasses if needed.
+	 * The Screen's render method is called before the entities of the Screen are rendered.
+	 */
+	render() {}
 }
 
 export default Screen;
