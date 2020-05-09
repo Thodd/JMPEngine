@@ -1,10 +1,7 @@
 import { warn, fail } from "../../utils/Log.js";
 import Fonts from "../Fonts.js";
 import Spritesheets from "../Spritesheets.js";
-import ColorTools from "../ColorTools.js";
 import PerformanceTrace from "../../utils/PerformanceTrace.js";
-
-const _2PI = 2 * Math.PI;
 
 // to make geometric rendering less blurred
 const n = Math.floor;
@@ -26,21 +23,11 @@ class Basic {
 	/**
 	 * GFX Module API
 	 */
-
-	alpha(v) {
-		this._ctx.globalAlpha = v;
-	}
-
 	clear(color) {
 		if (color) {
 			this._canvasDOM.style.background = color;
 		}
 		this._ctx.clearRect(0, 0, this.manifest.w, this.manifest.h);
-
-		// if a pixel buffer exists clear it too
-		if (this._pixelBuffer) {
-			this._pixelBuffer = new ImageData(this.manifest.w, this.manifest.h);
-		}
 	}
 
 	clear_rect(color, x, y, w, h) {
@@ -51,8 +38,6 @@ class Basic {
 		// clear everything inside the given rectangle
 		// for w/h we default to the screen-size
 		this._ctx.clearRect(x, y, w || this.manifest.w, h || this.manifest.h);
-
-		// TODO: pixel buffers don't work with clearing a rectangle right now -> fix?
 	}
 
 	trans(x, y) {
@@ -67,72 +52,35 @@ class Basic {
 		this._ctx.restore();
 	}
 
-	getPixelBuffer() {
-		if (!this._pixelBuffer) {
-			this._pixelBuffer = this._ctx.getImageData(0, 0, this.manifest.w, this.manifest.h);
-		}
-		return this._pixelBuffer;
-	}
+	flush() {}
 
 	/**
-	 * Flush the pixels in the Buffer to the Screen.
-	 * The Screen class calls this function at the end of each frame.
+	 * Renders a pixel of the given color at (x,y).
 	 *
-	 * <b>Beware</b>: Don't call this manually. Might lead to unwanted side effects.
+	 * For pixel perfect rendering please use the <code>GFX.RenderMode.Raw</code>.
+	 * Call <code>GFX.setRenderMode(n, GFX.RenderMode.Raw)</code> to change the RenderMode of
+	 * the Screen layer at depth 'n'.
+	 *
+	 * @param {Number} x can be a float
+	 * @param {Number} y can be a float
+	 * @param {CSS-String} color CSS-color string (actual color value depends on the browsers sub-pixel rendering algorithm)
 	 */
-	flush() {
-		if (this._pixelBuffer) {
-			this._ctx.putImageData(this._pixelBuffer, 0, 0);
-
-			PerformanceTrace.drawCalls++;
-		}
+	pxSet(x, y, color) {
+		this.rectf(x, y, 1, 1, color);
 	}
 
-	/**
-	 * Renders a Pixel of the given color at coordinates (x,y).
-	 *
-	 * <b>Beware:</b>
-	 * The px* routines are the lowest level of GFX API.
-	 * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
-	 * Go with the subpx() function for a simple pixel rendering if possible.
-	 *
-	 * @param {integer} x
-	 * @param {integer} y
-	 * @param {string} color CSS-color string
-	 */
-	px(x, y, color) {
-		let d = this.getPixelBuffer();
-		let c = ColorTools.parseColorString(color);
-		let off = 4 * (y * d.width + x);
-		d.data[off + 0] = c.r;
-		d.data[off + 1] = c.g;
-		d.data[off + 2] = c.b;
-		d.data[off + 3] = (c.a != undefined) || 255;
+	pxGet(/*x, y*/) {
+		fail("Not implemented yet!", "Renderer.Basic");
 	}
 
 	/**
 	 * Clears the pixel at position (x,y).
 	 *
-	 * <b>Beware:</b>
-	 * The px* routines are the lowest level of GFX API.
-	 * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
-	 * Go with the subpx() function for a simple pixel rendering if possible.
-	 *
 	 * @param {integer} x
 	 * @param {integer} y
 	 */
 	pxClear(x, y){
-		this.px(x, y, "rgba(0,0,0,0)");
-	}
-
-	/**
-	 * Renders an antialiased sub-pixel of the given color at coordinates (x,y).
-	 * @param {Number} x can be a float
-	 * @param {Number} y can be a float
-	 * @param {CSS-String} color CSS-color string (actual color value depends on the browsers sub-pixel rendering algorithm)
-	 */
-	subpx(x, y, color) {
-		this.rectf(x, y, 1, 1, color);
+		this.clear_rect("transparent", x, y, 1, 1);
 	}
 
 	rect(x, y, w, h, color) {
@@ -154,7 +102,7 @@ class Basic {
 
 	circ(x, y, r, color) {
 		this._ctx.beginPath();
-		this._ctx.arc(x, y, r, 0, _2PI, false);
+		this._ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		this._ctx.closePath();
 		this._ctx.strokeStyle = color || this._ctx.strokeStyle;
 		this._ctx.stroke();
@@ -164,7 +112,7 @@ class Basic {
 
 	circf(x, y, r, color) {
 		this._ctx.beginPath();
-		this._ctx.arc(x, y, r, 0, _2PI, false);
+		this._ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		this._ctx.closePath();
 		this._ctx.fillStyle = color || this._ctx.fillStyle;
 		this._ctx.fill();

@@ -10,6 +10,7 @@ let author = "@picoter8";
  */
 let p,x,y,s, t = Engine.now;
 const renderer = function() {
+	GFX.setRenderMode(0, GFX.RenderModes.RAW);
 	let g = GFX.get(0);
 	g.clear("#FF0085");
 	p=t()/2;
@@ -18,7 +19,7 @@ const renderer = function() {
 			x=i/32;
 			y=j/32;
 			s=Math.sin(x*Math.cos(y+p*3)+y*Math.sin(x+p*3));
-			if(s>-1){g.px(i,j,GFX.pal(Math.floor(8+2.5*s)));}
+			if(s>-1){g.pxSet(i,j,GFX.pal(Math.floor(8+2.5*s)));}
 		}
 	}
 }

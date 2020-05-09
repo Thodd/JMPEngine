@@ -298,6 +298,8 @@ class Screen {
 			if (!layer.fixedCam) {
 				GFX.get(i).trans(+this.cam.x, +this.cam.y);
 			}
+			// flush buffers
+			// only has effect for buffers with GFX.RenderModes.RAW
 			GFX.get(i).flush();
 		}
 	}

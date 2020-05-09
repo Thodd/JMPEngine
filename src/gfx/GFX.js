@@ -125,21 +125,10 @@ const palette = [
 	"#a3ce27", "#005784", "#31a2f2", "#b2dcef"
 ];
 
-// GFX is a Facade to access low-level APIs
-// Buffer is only used internally to store: Canvas, Context and Renderer
-//    |-- Buffer <-> Renderer Composition
-// GFX.get(n) returns Renderer of Buffer on Layer 'n'
-/*
-GFX.get(0)                                   // renderer
-GFX.setRenderMode(0, GFX.RenderModes.RAW);   // switch renderer (clear screen!)
-GFX.getCanvas(0)                             // canvas dom
-GFX.getContext(0)                            // 2d ctx object
-*/
-
 const _buffers = [];
 
 /**
- * GFX Module
+ * GFX Facade
  */
 const GFX = {
 	/**
