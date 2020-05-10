@@ -48,12 +48,12 @@ class Text extends Entity {
 			}
 
 			// we dimension the offscreen buffer to the maximum width without considering kerning for simplicity
-			this.backbuffer = GFX.createOffscreenBuffer(longestLine * this.font.w, (this.font.h + this.leading) * lines.length);
+			this.backbuffer = GFX.createOffscreenBuffer(longestLine * this.font.w, (this.font.h + this.leading) * lines.length, GFX.getRenderMode(this.layer));
 
 			// render line per line to the offscreen buffer
 			for (let i = 0; i < lines.length; i++) {
 				let line = lines[i];
-				this.backbuffer.text(
+				this.backbuffer.renderer.text(
 					this.font.name,
 					// no x and y offsets relative to the Text Entity
 					// the buffer will later be rendered to the Entity coordinates

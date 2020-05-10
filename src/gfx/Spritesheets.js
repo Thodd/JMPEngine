@@ -2,6 +2,21 @@ import { log, fail } from "../utils/Log.js";
 import ColorTools from "./ColorTools.js";
 import Manifest from "../Manifest.js";
 
+let _manifest = null;
+
+// Performance:
+// We provide a getter for the imageData of the canvas, so we can lazily retrieve it if needed.
+// Caching the imagedata for the fullsize of the sprite significantly improves the performance of the RAW RenderMode.
+function mixinImageDataGetter(spriteCanvas) {
+	spriteCanvas._getImgDataFullSize = function() {
+		if (!spriteCanvas._imgDataFullSize) {
+			let ctx = spriteCanvas.getContext("2d");
+			spriteCanvas._imgDataFullSize = ctx.getImageData(0, 0, spriteCanvas.width, spriteCanvas.height);
+		}
+		return spriteCanvas._imgDataFullSize;
+	};
+}
+
 /**
  * Creates a new Canvas for all sprites in the sheet.
  */
@@ -25,7 +40,9 @@ function process(sheet) {
 			let spriteCanvas = document.createElement("canvas");
 			spriteCanvas.width = spriteWidth;
 			spriteCanvas.height = spriteHeight;
+
 			let ctx = spriteCanvas.getContext("2d");
+
 			// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 			ctx.drawImage(
 				rawSheet,
@@ -38,6 +55,9 @@ function process(sheet) {
 				spriteWidth,
 				spriteHeight
 			);
+
+			mixinImageDataGetter(spriteCanvas);
+
 			sheet.sprites.push(spriteCanvas);
 		}
 	}
@@ -49,8 +69,11 @@ function process(sheet) {
  * Returns the sheet definition in the manifest.
  * @param {string} sheet
  */
-function getSheet(sheet) {
-	return Manifest.get(`/assets/spritesheets/${sheet}`);
+function getSheet(sheetName) {
+	if (!_manifest) {
+		_manifest = Manifest.get();
+	}
+	return _manifest.assets.spritesheets[sheetName];
 }
 
 /**
@@ -60,7 +83,13 @@ function getSheet(sheet) {
  * @param {string} color a hex color string, e.g. #FF0085
  */
 function getCanvasFromSheet(sheetName, id, color) {
-	let sheet = Manifest.get(`/assets/spritesheets/${sheetName}`);
+	// only retrieve manifest once to save some time (actually quite a lot of time if called at 60fps...)
+	if (!_manifest) {
+		_manifest = Manifest.get();
+	}
+
+	let sheet =  _manifest.assets.spritesheets[sheetName];
+
 	if (!sheet) {
 		fail(`Spritesheet '${sheetName}' does not exist!`, "Spritesheets");
 	}
@@ -84,6 +113,7 @@ function getCanvasFromSheet(sheetName, id, color) {
 		} else {
 			// colorize canvas
 			spriteSrcCanvas = ColorTools.colorizeCanvas(spriteSrcCanvas, color);
+			mixinImageDataGetter(spriteSrcCanvas);
 			// save it in cache
 			colorCacheEntry[id] = spriteSrcCanvas;
 		}

@@ -190,7 +190,6 @@ const Engine = {
 		// after the intro is done and all assets are loaded we activate an instance of the defined start screen class
 		return Promise.all(parallel).then((results) => {
 			let startScreenClass = results[2];
-
 			Engine.screen = new startScreenClass();
 		});
 	}

@@ -5,15 +5,21 @@ import Text from "../../../../src/gfx/Text.js";
 import RNG from "../../../../src/utils/RNG.js";
 import Helper from "../../../../src/utils/Helper.js";
 import Player from "../Actors/Player.js";
+import GFX from "../../../../src/gfx/GFX.js";
 
 class BaseLevel extends Screen {
 	constructor() {
 		super();
 
+		// "#FF0085"
 		Entity.RENDER_HITBOXES = "#FF0085";
 
 		this.getLayer(0).fixedCam = true; // BG
+		this.getLayer(0).autoClear = false;
 		this.getLayer(3).fixedCam = true; // Text, e.g. HUD
+
+		//GFX.setRenderMode(1, GFX.RenderModes.RAW);
+		GFX.setRenderMode(2, GFX.RenderModes.RAW);
 
 		// background
 		let bg = new Entity();
@@ -51,7 +57,7 @@ class BaseLevel extends Screen {
 		tile.isBlocking = true;
 
 		// demo entities
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < 1; i++) {
 			let e = new Entity({
 				x: RNG.randomInteger(0, 120),
 				y: RNG.randomInteger(0, 88)
@@ -59,7 +65,7 @@ class BaseLevel extends Screen {
 			e.hitbox.w = 8;
 			e.hitbox.h = 8;
 			e.setTypes(["box"]);
-			e.layer = 4;
+			e.layer = 2;
 			e.setSprite({
 				sheet:"tileset",
 				id: 9

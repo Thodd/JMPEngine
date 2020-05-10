@@ -16,7 +16,7 @@ import Tilemap from "../../../src/game/Tilemap.js";
 */
 class BGRenderer extends Tilemap {
 	constructor() {
-		super({sheet: "BG", w: 32, h: 24, version: "B"});
+		super({sheet: "BG", w: 32, h: 24, version: Tilemap.Version.B});
 
 		this.each((t) => {
 			t.set(0);

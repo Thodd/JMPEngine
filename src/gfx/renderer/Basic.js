@@ -18,6 +18,9 @@ class Basic {
 		this.buffer = buffer;
 		this._canvasDOM = this.buffer.getCanvas();
 		this._ctx = this.buffer.getContext();
+
+		this.camX = 0;
+		this.camY = 0;
 	}
 
 	/**
@@ -42,6 +45,8 @@ class Basic {
 
 	trans(x, y) {
 		this._ctx.translate(x, y);
+		this.camX = -1 * x;
+		this.camY = -1 * y;
 	}
 
 	save() {
@@ -70,7 +75,7 @@ class Basic {
 	}
 
 	pxGet(/*x, y*/) {
-		fail("Not implemented yet!", "Renderer.Basic");
+		fail("Unsupported operation 'pxGet(...)' for RenderMode.BASIC!", "RenderMode.BASIC");
 	}
 
 	/**
@@ -155,42 +160,61 @@ class Basic {
 		PerformanceTrace.drawCalls++;
 	}
 
-	spr(sheet, id, x, y, sColor) {
-		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
-		this._ctx.drawImage(sprCanvas, x || 0, y || 0);
-
-		PerformanceTrace.drawCalls++;
+	spr(sheet, id, x, y, color) {
+		this.spr_ext(sheet, id, x, y, undefined, undefined, color, undefined);
 	}
 
 	spr_ext(sheet, id, x, y, w, h, color, alpha) {
 		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
-		let oldAlpha;
-		if (alpha !== undefined) {
-			oldAlpha = this._ctx.globalAlpha;
-			if (oldAlpha !== alpha) {
-				this._ctx.globalAlpha = alpha;
+		// sprite dimensions
+		let x1 = x;
+		let y1 = y;
+		let w1 = sprCanvas.width;
+		let h1 = sprCanvas.height;
+
+		// screen dimensions
+		let x2 = this.camX;
+		let y2 = this.camY;
+		let w2 = this.manifest.w;
+		let h2 = this.manifest.h;
+
+		// check if sprite is in view
+		// While the calculation has some overhead it still reduces the number of draw calls.
+		// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
+		// Browsers still seem to be very bad at ignoring offscreen render calls...
+		if (x1 < x2 + w2 &&
+			x1 + w1 > x2 &&
+			y1 < y2 + h2 &&
+			y1 + h1 > y2) {
+
+			let oldAlpha;
+			if (alpha !== undefined) {
+				oldAlpha = this._ctx.globalAlpha;
+				if (oldAlpha !== alpha) {
+					this._ctx.globalAlpha = alpha;
+				}
 			}
-		}
 
-		this._ctx.drawImage(
-			sprCanvas,
-			// take the whole src sprite canvas as a base
-			0, // sx
-			0, // sy
-			sprCanvas.width, // sw
-			sprCanvas.height, // sh
-			// stretch it if w/h is given
-			x || 0,
-			y || 0,
-			w || sprCanvas.width, // default to canvas width
-			h || sprCanvas.height, // default to canvas height
-		);
+			this._ctx.drawImage(
+				sprCanvas,
+				// take the whole src sprite canvas as a base
+				0, // sx
+				0, // sy
+				sprCanvas.width, // sw
+				sprCanvas.height, // sh
+				// stretch it if w/h is given
+				x || 0,
+				y || 0,
+				w || sprCanvas.width, // default to canvas width
+				h || sprCanvas.height, // default to canvas height
+			);
 
-		PerformanceTrace.drawCalls++;
+			PerformanceTrace.drawCalls++;
 
-		if (oldAlpha) {
-			this._ctx.globalAlpha = oldAlpha;
+			if (oldAlpha) {
+				this._ctx.globalAlpha = oldAlpha;
+			}
 		}
 	}
 
@@ -215,7 +239,7 @@ class Basic {
 		if (useKerning) {
 			kerningTree = fontObj._kerningTree;
 			if (!kerningTree) {
-				warn(`Kerning for GFX.text(${font}, ...) call was activated, though no kerning data is available for this font.`, "GFX.text");
+				warn(`Kerning for was activated, though no kerning data is available for this font.`, "RenderMode.BASIC.text");
 			}
 		}
 
@@ -261,6 +285,11 @@ class Basic {
 	 * @param {Number} y target y
 	 */
 	renderOffscreenBuffer(buffer, x, y) {
+		// force flush on RAW buffer
+		// this allows to render RAW buffers to a BASIC one
+		if (buffer.getRenderMode() == "RAW") {
+			buffer.renderer.flush();
+		}
 		this._ctx.drawImage(buffer._canvasDOM, x, y);
 	}
 }

@@ -1,10 +1,10 @@
-import { warn, fail } from "../../utils/Log.js";
-import Fonts from "../Fonts.js";
+import { fail } from "../../utils/Log.js";
 import Spritesheets from "../Spritesheets.js";
 import ColorTools from "../ColorTools.js";
 import PerformanceTrace from "../../utils/PerformanceTrace.js";
 
-// to make geometric rendering less blurred
+// We can only render full-pixels in the RAW mode
+// so for convenience we shorten the Math.floor() function to n(...)
 const n = Math.floor;
 
 class Raw {
@@ -21,6 +21,9 @@ class Raw {
 		this._ctx = this.buffer.getContext();
 
 		this._pixels = new ImageData(this.manifest.w, this.manifest.h);
+
+		this.camX = 0;
+		this.camY = 0;
 	}
 
 	/**
@@ -28,6 +31,58 @@ class Raw {
 	 */
 	_pxOff(x, y) {
 		return 4 * (y * this.manifest.w + x)
+	}
+
+	_copyData(source, tx, ty) {
+		this._copyDataExt(source, this._pixels, tx, ty);
+	}
+
+	/**
+	 * Copies the given source ImageData into the given target ImageData
+	 * @param {ImageData} source
+	 * @param {ImageData} target
+	 * @param {integer} tx target x
+	 * @param {integer} ty target y
+	 */
+	_copyDataExt(source, target, tx, ty) {
+		// shift the target coordinates based on current camera position
+		tx = tx - this.camX;
+		ty = ty - this.camY;
+
+		// source data
+		let _sw = source.width;
+		let _sh = source.height
+
+		// target data (typically the screen's imageData)
+		let _tw = target.width;
+		let _th = target.height;
+
+		let pos;
+		for (let y = 0; y < _sh; y++) {
+			for (let x = 0; x < _sw; x++) {
+				let off = (y * _sw + x) * 4;
+
+				let r = source.data[off];
+				let g = source.data[off+1];
+				let b = source.data[off+2];
+				let a = source.data[off+3];
+
+				if (a > 0) { // only opaque pixels are rendered
+					// check if target x/y are inside the view
+					if (tx + x >= 0 && tx + x < _tw &&
+						ty + y >= 0 && ty + y < _th) {
+						// position is inside pixel buffer
+						pos = 4 * ((ty + y) * _tw + tx + x);
+
+						target.data[pos] = r;
+						target.data[pos+1] = g;
+						target.data[pos+2] = b;
+						target.data[pos+3] = a;
+						PerformanceTrace.pixelsDrawn++;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -42,20 +97,21 @@ class Raw {
 	}
 
 	clear_rect(color, /* x, y, w, h */) {
+		// TODO: implement clearing of a rectangle
 		this.clear(color);
 	}
 
+	/**
+	 * Translating is unsupported for the RenderMode.RAW.
+	 */
 	trans(x, y) {
-		//this._ctx.translate(x, y);
+		this.camX = -1 * x;
+		this.camY = -1 * y;
 	}
 
-	save() {
-		//this._ctx.save();
-	}
+	save() {}
 
-	restore() {
-		//this._ctx.restore();
-	}
+	restore() {}
 
 	/**
 	 * Flush the pixels in the Buffer to the Screen.
@@ -71,28 +127,56 @@ class Raw {
 	/**
 	 * Renders a Pixel of the given color at coordinates (x,y).
 	 *
-	 * <b>Beware:</b>
-	 * The px* routines are the lowest level of GFX API.
-	 * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
-	 * Go with the subpx() function for a simple pixel rendering if possible.
+	 * @sample
+	 * pxSet(10, 20, {r: 200, g: 100, b: 0, a: 50});
+	 * pxSet(10, 20, "#FF0085");
 	 *
 	 * @param {integer} x
 	 * @param {integer} y
-	 * @param {string} color CSS-color string
+	 * @param {object|string} color object containing r/g/b/a values, or CSS-color string
 	 */
 	pxSet(x, y, color) {
+		x = n(x - this.camX);
+		y = n(y - this.camY);
+
+		if (x < 0 || x >= this.manifest.w || y < 0 || y >= this.manifest.h) {
+			// nothing to draw
+			return;
+		}
+
 		let d = this._pixels;
-		let c = ColorTools.parseColorString(color);
+		if (typeof color == "string") {
+			color = ColorTools.parseColorString(color);
+		}
+
 		let off = this._pxOff(x, y);
-		d.data[off + 0] = c.r;
-		d.data[off + 1] = c.g;
-		d.data[off + 2] = c.b;
-		d.data[off + 3] = (c.a != undefined) || 255;
+		// colors
+		d.data[off + 0] = color.r;
+		d.data[off + 1] = color.g;
+		d.data[off + 2] = color.b;
+
+		// alpha
+		d.data[off + 3] = (color.a != undefined) ? color.a : 255;
+
+		PerformanceTrace.pixelsDrawn++;
 	}
 
+	/**
+	 * Retrieves the color information of the pixel at the given coordinates.
+	 * The returned object has the following properties: r,g,b,a
+	 *
+	 * <b>Beware</b>: ONLY pixels on the screen can be retrieved! Unrendered pixels are practically non-existent to the renderer!
+	 *
+	 * @param {integer} x
+	 * @param {integer} y
+	 */
 	pxGet(x, y) {
+		x = n(x - this.camX);
+		y = n(y - this.camY);
+
 		let d = this._pixels;
 		let off = this._pxOff(x, y);
+		PerformanceTrace.pixelsDrawn++;
 		return {
 			r: d.data[off + 0],
 			g: d.data[off + 1],
@@ -103,12 +187,6 @@ class Raw {
 
 	/**
 	 * Clears the pixel at position (x,y).
-	 *
-	 * <b>Beware:</b>
-	 * The px* routines are the lowest level of GFX API.
-	 * Setting, clearing and flushing pixels might lead to unwanted side-effects during rendering.
-	 * Go with the subpx() function for a simple pixel rendering if possible.
-	 *
 	 * @param {integer} x
 	 * @param {integer} y
 	 */
@@ -117,129 +195,93 @@ class Raw {
 	}
 
 	rect(x, y, w, h, color) {
-		PerformanceTrace.drawCalls++;
+		fail("The function 'rect()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	rectf(x, y, w, h, color) {
-		PerformanceTrace.drawCalls++;
+		fail("The function 'rectf()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	circ(x, y, r, color) {
-		PerformanceTrace.drawCalls++;
+		fail("The function 'circ()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	circf(x, y, r, color) {
-		PerformanceTrace.drawCalls++;
+		fail("The function 'circf()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	tri(x0, y0, x1, y1, x2, y2, color) {
-		PerformanceTrace.drawCalls++;
+		fail("The function 'tri()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	trif(x0, y0, x1, y1, x2, y2, color) {
-		PerformanceTrace.drawCalls++;
+		fail("The function 'trif()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	line(x0, y0, x1, y1, color) {
-		PerformanceTrace.drawCalls++;
-	}
-
-	spr(sheet, id, x, y, sColor) {
-		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, sColor);
-		this._ctx.drawImage(sprCanvas, x || 0, y || 0);
-
-		PerformanceTrace.drawCalls++;
-	}
-
-	spr_ext(sheet, id, x, y, w, h, color, alpha) {
-		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
-
-		let oldAlpha;
-		if (alpha !== undefined) {
-			oldAlpha = this._ctx.globalAlpha;
-			if (oldAlpha !== alpha) {
-				this._ctx.globalAlpha = alpha;
-			}
-		}
-
-		this._ctx.drawImage(
-			sprCanvas,
-			// take the whole src sprite canvas as a base
-			0, // sx
-			0, // sy
-			sprCanvas.width, // sw
-			sprCanvas.height, // sh
-			// stretch it if w/h is given
-			x || 0,
-			y || 0,
-			w || sprCanvas.width, // default to canvas width
-			h || sprCanvas.height, // default to canvas height
-		);
-
-		PerformanceTrace.drawCalls++;
-
-		if (oldAlpha) {
-			this._ctx.globalAlpha = oldAlpha;
-		}
-	}
-
-	grid(id, x, y) {
-		let grid = this.manifest._maps[id];
-		if (!grid) {
-			fail(`Grid '"${id}' does not exist!`);
-		}
-		this._ctx.drawImage(grid.canvas, x, y);
-
-		PerformanceTrace.drawCalls++;
+		fail("The function 'line()' is not implemented yet.", "Renderer.RAW");
 	}
 
 	/**
-	 * Renders a single line of text.
-	 * @param {string} font the font which should be used for rendering, e.g. "font0"
+	 * Renders a sprite at the given coordinates.
+	 * @param {string} sheet spritesheet name
+	 * @param {integer} id sprite id in the sheet
+	 * @param {integer} x x
+	 * @param {integer} y y
+	 * @param {string} color css color string
 	 */
+	spr(sheet, id, x, y, color) {
+		this.spr_ext(sheet, id, x, y, undefined, undefined, color);
+	}
+
+	/**
+	 * Renders a sprite at the given coordinates.
+	 * <b>Note:</b> Does not support scaling via w/h arguments!
+	 *
+	 * @param {string} sheet spritesheet name
+	 * @param {integer} id sprite id in the sheet
+	 * @param {integer} x draw x
+	 * @param {integer} y draw y
+	 * @param {integer} w unsupported!
+	 * @param {integer} h unsupported!
+	 * @param {string} color css color string
+	 */
+	spr_ext(sheet, id, x, y, w, h, color) {
+		x = n(x);
+		y = n(y);
+
+		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
+
+		// sprite dimensions
+		let x1 = x;
+		let y1 = y;
+		let w1 = sprCanvas.width;
+		let h1 = sprCanvas.height;
+
+		// screen dimensions
+		let x2 = this.camX;
+		let y2 = this.camY;
+		let w2 = this.manifest.w;
+		let h2 = this.manifest.h;
+
+		// check if sprite is in view
+		if (x1 < x2 + w2 &&
+			x1 + w1 > x2 &&
+			y1 < y2 + h2 &&
+			y1 + h1 > y2) {
+
+			let imgData = sprCanvas._getImgDataFullSize();
+			this._copyDataExt(imgData, this._pixels, x, y);
+		}
+
+	}
+
+	grid(id, x, y) {
+		fail("Unsupported operation 'grid(...)' for RenderMode.RAW", "Renderer.RAW");
+	}
+
 	text(font, x, y, msg, color, useKerning=false) {
-		let fontObj = this.manifest.assets.fonts[font];
-
-		let kerningTree;
-		if (useKerning) {
-			kerningTree = fontObj._kerningTree;
-			if (!kerningTree) {
-				warn(`Kerning for GFX.text(${font}, ...) call was activated, though no kerning data is available for this font.`, "GFX.text");
-			}
-		}
-
-		let kerningValueAcc = 0;
-		let ml = msg.length;
-		let i = 0;
-		let shift = 0;
-
-		while(i < ml) {
-			let c = msg[i];
-
-			this._ctx.drawImage(Fonts.getChar(fontObj, c, color), x + shift + kerningValueAcc, y);
-
-			if (useKerning) {
-				// we have to check all characters + their look-ahead for kerning values
-				let lookahead = msg[i+1];
-				if (lookahead != null) {
-					if ((kerningTree[c] && kerningTree[c][lookahead] != null)) {
-						kerningValueAcc += kerningTree[c][lookahead];
-					}
-				}
-			}
-
-			// check if the font has a spacing value defined
-			if (useKerning && c == " ") {
-				shift += fontObj.kerning.spacing || fontObj.w;
-			} else {
-				// default character shift for monospaced fonts
-				shift += fontObj.w;
-			}
-
-			i++;
-
-			PerformanceTrace.drawCalls++;
-		}
+		fail("Rendering of text on Buffers in RenderMode.RAW is not supported. Please use a Buffer in RenderMode.BASIC instead.", "RenderMode.RAW");
 	}
 
 	/**
@@ -250,7 +292,10 @@ class Raw {
 	 * @param {Number} y target y
 	 */
 	renderOffscreenBuffer(buffer, x, y) {
-		this._ctx.drawImage(buffer._canvasDOM, x, y);
+		if (buffer.getRenderMode() != "RAW") {
+			fail("Unable to render Offscreen Buffer in RenderMode.BASIC into Buffer in RenderMode.RAW.", "RenderMode.RAW");
+		}
+		this._copyData(buffer.renderer._pixels, x, y);
 	}
 }
 

@@ -1,5 +1,6 @@
 import { log, error, fail } from "../utils/Log.js";
 import Manifest from "../Manifest.js";
+import PerformanceTrace from "../utils/PerformanceTrace.js";
 
 import Basic from "./renderer/Basic.js";
 import Raw from "./renderer/Raw.js";
@@ -41,7 +42,12 @@ class Buffer {
 		if (!GFX.RenderModes[r]) {
 			fail(`Unknown render mode: ${r}.`, "GFX");
 		}
+		this.renderMode = r;
 		this.renderer = this._renderers[r];
+	}
+
+	getRenderMode() {
+		return this.renderMode;
 	}
 
 	getCanvas() {
@@ -176,6 +182,14 @@ const GFX = {
 	},
 
 	/**
+	 * Retrieves the RenderMode for the given layer.
+	 * @param {integer} i layer
+	 */
+	getRenderMode(i) {
+		return _buffers[i].getRenderMode();
+	},
+
+	/**
 	 * Returns the color at index 'i' in the defined palette.
 	 * The index 'i' is looped in the available range of colors in the palette.
 	 * @param {integer|undefined} i the color index. If undefined, the palette array is returned
@@ -212,6 +226,19 @@ const GFX = {
 		setupCSS();
 
 		setupBuffers(containerDOM);
+
+		// debugging
+		let d = document.createElement("div");
+		d.style.fontFamily = "monospace";
+		document.body.appendChild(d);
+		setInterval(() => {
+			d.innerHTML = `
+				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
+				update-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
+				draw-calls : ${PerformanceTrace.drawCalls}<br />
+				pixelsDrawn: ${PerformanceTrace.pixelsDrawn}
+			`;
+		}, 500);
 
 		// remove init function, so it can only be called once
 		delete GFX.init;
@@ -254,7 +281,7 @@ const GFX = {
 	createOffscreenBuffer(w, h, renderMode=GFX.RenderModes.BASIC) {
 		let b = new Buffer(w, h, 1);
 		b.setRenderMode(renderMode);
-		return b.renderer;
+		return b;
 	},
 
 	/**

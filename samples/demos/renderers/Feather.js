@@ -9,6 +9,7 @@ let x=0, y=20, w=.17;
 const renderer = function() {
 	// made by Jan Vorisek
 	// @blokatt
+	GFX.setRenderMode(0, GFX.RenderModes.RAW);
 	let g = GFX.get(0);
 	g.clear("#222222");
 	for (let i=0; i<2800; i++) {
@@ -26,8 +27,7 @@ const renderer = function() {
 			x=-.15*j+k*.28;
 			y=.26*j+w*k+.4;
 		}
-		// for this demo a sub-pixel based rendering looks pretty nice
-		g.subpx(x*Math.sin(Engine.now()*10*w)*15+80, 135-y*12, GFX.pal(Math.floor(4+y+r)));
+		g.pxSet(x*Math.sin(Engine.now()*10*w)*15+80, 135-y*12, GFX.pal(Math.floor(4+y+r)));
 	}
 }
 

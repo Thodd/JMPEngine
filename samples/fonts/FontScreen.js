@@ -29,15 +29,18 @@ class FontScreen extends Screen {
 		// We define a custom render function on the Entity
 		// so we can use the low-level GFX API to render a pixel-perfect
 		// colored and animated Text
+		//GFX.setRenderMode(0, GFX.RenderModes.RAW);
+		//GFX.setRenderMode(1, GFX.RenderModes.RAW);
+
 		animatedText.render = function() {
 			for (let i = 0; i < this.msg.length; i++) {
 				let char = this.msg[i];
 
 				// black shadow ("#000000")
-				GFX.get(0).text("font0", 4 + (i * 7), 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, "#000000");
+				GFX.get(1).text("font0", 4 + (i * 7), 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, "#000000");
 
 				// colored text using predefined color palette
-				GFX.get(0).text("font0", 3 + (i * 7), 25 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, GFX.pal((this.col + i) % 15));
+				GFX.get(1).text("font0", 3 + (i * 7), 25 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, GFX.pal((this.col + i) % 15));
 			}
 			this.count += this.step;
 

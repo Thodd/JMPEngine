@@ -118,11 +118,12 @@
 			function loop_lo() {
 				imgDataScreen = new ImageData(w, h);
 				let l = bunnies.length;
+
+				let renderStart = performance.now();
 				for (let i = 0; i < l; i++) {
 					bunnies[i].update();
 				}
 
-				let renderStart = performance.now();
 				access = 0;
 				for (let i = 0; i < l; i++) {
 					update_lo(bunnies[i]);
@@ -148,18 +149,20 @@
 				let pos;
 				for (let y = 0; y < _h; y++) {
 					for (let x = 0; x < _w; x++) {
-						let off = (y * _w + x) * 4;
 
-						let r = bunnyImageData.data[off];
-						let g = bunnyImageData.data[off+1];
-						let b = bunnyImageData.data[off+2];
-						let a = bunnyImageData.data[off+3];
-
+						// check if source pixel coordinates are inside the screen
 						if (bun.y + y < _th && bun.x + x < _tw) {
-							pos = 4 * ((bun.y + y) * w + bun.x + x);
-							// position is inside pixel buffer
-							if (pos > 0 && (pos + 3) < _tl) {
-								if (a > 0) { // only opaque pixels are rendered
+							// get source image data
+							let off = (y * _w + x) * 4;
+							let r = bunnyImageData.data[off];
+							let g = bunnyImageData.data[off+1];
+							let b = bunnyImageData.data[off+2];
+							let a = bunnyImageData.data[off+3];
+
+							if (a > 0) { // only opaque pixels are rendered
+								pos = 4 * ((bun.y + y) * _tw + bun.x + x);
+								// position is inside pixel buffer
+								if (pos > 0 && (pos + 3) < _tl) {
 									access++;
 									imgDataScreen.data[pos] = r;
 									imgDataScreen.data[pos+1] = g;
