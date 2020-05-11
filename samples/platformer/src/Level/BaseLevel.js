@@ -57,7 +57,7 @@ class BaseLevel extends Screen {
 		tile.isBlocking = true;
 
 		// demo entities
-		for (let i = 0; i < 1; i++) {
+		for (let i = 0; i < 2 ; i++) {
 			let e = new Entity({
 				x: RNG.randomInteger(0, 120),
 				y: RNG.randomInteger(0, 88)
@@ -85,12 +85,10 @@ class BaseLevel extends Screen {
 		// text demo
 		let textBG = new Text({text: "Platformer Demo", x: 2, y: 2, color: "#000000", useKerning: true});
 		textBG.layer = 3;
-		textBG.alpha = 0.5;
 		this.add(textBG);
 
 		let textFG = new Text({text: "Platformer Demo", x: 1, y: 1, useKerning: true});
 		textFG.layer = 3;
-		textFG.alpha = 0.5;
 		this.add(textFG);
 	}
 }

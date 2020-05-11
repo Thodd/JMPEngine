@@ -283,12 +283,7 @@ class Screen {
 
 			// layers with autoclear=false are not cleared each frame
 			if (layer.autoClear) {
-
-				// BUG:
-				// TODO -> Don't clear at (cam.x, cam.y) for layers with fixed cam
-
-
-				GFX.get(i).clear_rect(layer.clearColor, this.cam.x, this.cam.y);
+				GFX.get(i).clear(layer.clearColor);
 			}
 		}
 
@@ -302,15 +297,9 @@ class Screen {
 			}
 		});
 
-		// [5] move camera back after entity rendering
-		// [6] flush buffer of each layer
+		// [5] flush buffer of each layer
 		for (let i in this._layers) {
-			let layer = this._layers[i];
-			if (!layer.fixedCam) {
-				GFX.get(i).trans(+this.cam.x, +this.cam.y);
-			}
-			// flush buffers
-			// only has effect for buffers with GFX.RenderModes.RAW
+			// flush buffers: only has effect for buffers with GFX.RenderModes.RAW
 			GFX.get(i).flush();
 		}
 	}

@@ -263,7 +263,7 @@ class Entity {
 			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
 			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
 			let color = anim.color || defaultSprite.color;
-			let alpha = anim.alpha || defaultSprite.alpha || this.alpha;
+			let alpha = anim.alpha || defaultSprite.alpha || this.alpha; // the entity's alpha is the last fallback
 
 			let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id);
 			let dx = this.x + (offsetX || 0) - this.scale.x;
@@ -277,12 +277,10 @@ class Entity {
 		}
 
 		if (Entity.RENDER_HITBOXES) {
-			if (this.isInView()) {
-				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top left
-				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top right
-				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES); // bottom left
-				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES); // bottom right
-			}
+			g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top left
+			g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top right
+			g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES); // bottom left
+			g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES); // bottom right
 		}
 	}
 

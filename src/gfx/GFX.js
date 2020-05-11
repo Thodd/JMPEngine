@@ -235,7 +235,7 @@ const GFX = {
 		setInterval(() => {
 			d.innerHTML = `
 				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
-				update-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
+				update-time: ${PerformanceTrace.updateTime.toFixed(2)}ms<br />
 				draw-calls : ${PerformanceTrace.drawCalls}<br />
 				pixelsDrawn: ${PerformanceTrace.pixelsDrawn}
 			`;

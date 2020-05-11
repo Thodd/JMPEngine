@@ -85,16 +85,11 @@ class Basic {
 	trans(x, y) {
 		this.camX = -1 * x;
 		this.camY = -1 * y;
-		this._ctx.translate(x, y);
 	}
 
-	save() {
-		this._ctx.save();
-	}
+	save() {}
 
-	restore() {
-		this._ctx.restore();
-	}
+	restore() {}
 
 	flush() {}
 
@@ -110,7 +105,10 @@ class Basic {
 	 * @param {CSS-String} color CSS-color string (actual color value depends on the browsers sub-pixel rendering algorithm)
 	 */
 	pxSet(x, y, color) {
-		this.rectf(x, y, 1, 1, color);
+		// check if pixel is inside the viewport, drawRect is more expensive than this check
+		if (this._isRectangleInView(x,y,1,1)) {
+			this.rectf(x, y, 1, 1, color);
+		}
 	}
 
 	pxGet(/*x, y*/) {
@@ -124,13 +122,22 @@ class Basic {
 	 * @param {integer} y
 	 */
 	pxClear(x, y){
+		// shift x/y based on camera
+		x = n(x - this.camX);
+		y = n(y - this.camY);
+
 		this.clear_rect("transparent", x, y, 1, 1);
 	}
 
 	rect(x, y, w, h, color) {
+		// shift x/y based on camera
+		x = n(x - this.camX);
+		y = n(y - this.camY);
+
+		// draw rectangle
 		this._ctx.beginPath();
 		this._ctx.strokeStyle = color || this._ctx.strokeStyle;
-		this._ctx.strokeRect(n(x), n(y), w, h);
+		this._ctx.strokeRect(x, y, w, h);
 		this._ctx.stroke();
 		this._ctx.closePath();
 
@@ -138,6 +145,11 @@ class Basic {
 	}
 
 	rectf(x, y, w, h, color) {
+		// shift x/y based on camera
+		x = x - this.camX;
+		y = y - this.camY;
+
+		// draw rectangle filled
 		this._ctx.fillStyle = color || this._ctx.fillStyle;
 		this._ctx.fillRect(x, y, w, h);
 
@@ -145,6 +157,11 @@ class Basic {
 	}
 
 	circ(x, y, r, color) {
+		// shift x/y based on camera
+		x = x - this.camX;
+		y = y - this.camY;
+
+		// draw circle
 		this._ctx.beginPath();
 		this._ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		this._ctx.closePath();
@@ -155,6 +172,11 @@ class Basic {
 	}
 
 	circf(x, y, r, color) {
+		// shift x/y based on camera
+		x = x - this.camX;
+		y = y - this.camY;
+
+		// draw circle filled
 		this._ctx.beginPath();
 		this._ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		this._ctx.closePath();
@@ -165,10 +187,21 @@ class Basic {
 	}
 
 	tri(x0, y0, x1, y1, x2, y2, color) {
+		// shift x/y based on camera
+		x0 = n(x0 - this.camX);
+		y0 = n(y0 - this.camY);
+
+		x1 = n(x1 - this.camX);
+		y1 = n(y1 - this.camY);
+
+		x2 = n(x2 - this.camX);
+		y2 = n(y2 - this.camY);
+
+		// draw triangle
 		this._ctx.beginPath();
-		this._ctx.moveTo(n(x0), n(y0));
-		this._ctx.lineTo(n(x1), n(y1));
-		this._ctx.lineTo(n(x2), n(y2));
+		this._ctx.moveTo(x0, y0);
+		this._ctx.lineTo(x1, y1);
+		this._ctx.lineTo(x2, y2);
 		this._ctx.closePath();
 		this._ctx.strokeStyle = color || this._ctx.strokeStyle;
 		this._ctx.stroke();
@@ -177,6 +210,17 @@ class Basic {
 	}
 
 	trif(x0, y0, x1, y1, x2, y2, color) {
+		// shift x/y based on camera
+		x0 = x0 - this.camX;
+		y0 = y0 - this.camY;
+
+		x1 = x1 - this.camX;
+		y1 = y1 - this.camY;
+
+		x2 = x2 - this.camX;
+		y2 = y2 - this.camY;
+
+		// draw triangle filled
 		this._ctx.beginPath();
 		this._ctx.moveTo(x0, y0);
 		this._ctx.lineTo(x1, y1);
@@ -189,9 +233,17 @@ class Basic {
 	}
 
 	line(x0, y0, x1, y1, color) {
+		// shift x/y based on camera
+		x0 = n(x0 - this.camX);
+		y0 = n(y0 - this.camY);
+
+		x1 = n(x1 - this.camX);
+		y1 = n(y1 - this.camY);
+
+		// draw line
 		this._ctx.beginPath();
-		this._ctx.moveTo(n(x0), n(y0));
-		this._ctx.lineTo(n(x1), n(y1));
+		this._ctx.moveTo(x0, y0);
+		this._ctx.lineTo(x1, y1);
 		this._ctx.closePath();
 		this._ctx.strokeStyle = color || this._ctx.strokeStyle;
 		this._ctx.stroke();
@@ -207,6 +259,10 @@ class Basic {
 		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
 		if (this._isRectangleInView(x, y, w || sprCanvas.width, h || sprCanvas.height)) {
+
+			// shift x/y based on camera
+			x = x - this.camX;
+			y = y - this.camY;
 
 			let oldAlpha;
 			if (alpha !== undefined) {
@@ -240,6 +296,10 @@ class Basic {
 	}
 
 	grid(id, x, y) {
+		// shift x/y based on camera
+		x = x - this.camX;
+		y = y - this.camY;
+
 		let grid = this.manifest._maps[id];
 		if (!grid) {
 			fail(`Grid '"${id}' does not exist!`);
@@ -254,6 +314,10 @@ class Basic {
 	 * @param {string} font the font which should be used for rendering, e.g. "font0"
 	 */
 	text(font, x, y, msg, color, useKerning=false) {
+		// shift x/y based on camera
+		x = x - this.camX;
+		y = y - this.camY;
+
 		let fontObj = this.manifest.assets.fonts[font];
 
 		let kerningTree;
@@ -319,6 +383,10 @@ class Basic {
 		h = h || buffer.height
 
 		if (this._isRectangleInView(x, y, w, h)) {
+			// shift x/y based on camera
+			x = x - this.camX;
+			y = y - this.camY;
+
 			// check for alpha value
 			let oldAlpha;
 			if (alpha !== undefined) {
