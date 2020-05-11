@@ -34,6 +34,9 @@ class Entity {
 		// by default we render on layer 0
 		this.layer = 0;
 
+		// defaults to 1
+		this.alpha = undefined;
+
 		// collision
 		this.hitbox = {
 			x: 0,
@@ -260,7 +263,7 @@ class Entity {
 			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
 			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
 			let color = anim.color || defaultSprite.color;
-			let alpha = anim.alpha || defaultSprite.alpha;
+			let alpha = anim.alpha || defaultSprite.alpha || this.alpha;
 
 			let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id);
 			let dx = this.x + (offsetX || 0) - this.scale.x;
@@ -274,13 +277,49 @@ class Entity {
 		}
 
 		if (Entity.RENDER_HITBOXES) {
-			g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top left
-			g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top right
-			g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES); // bottom left
-			g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES); // bottom right
+			if (this.isInView()) {
+				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top left
+				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top right
+				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES); // bottom left
+				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES); // bottom right
+			}
 		}
 	}
 
+	/**
+	 * Checks if the entity is inside the view with respect to its hitbox.
+	 *
+	 * @param {Number} x x to check, defaults to this.x
+	 * @param {Number} y y to check, defaults to this.y
+	 * @param {integer} w w to check, defaults to this.hitbox.w
+	 * @param {integer} h h to check, defaults to this.hitbox.h
+	 */
+	isInView(x, y, w, h) {
+		// sprite dimensions
+		let x1 = (x != undefined) ? x : this.x;
+		let y1 = (y != undefined) ? y : this.y;
+		let w1 = w || this.hitbox.w;
+		let h1 = h || this.hitbox.h;
+
+		// screen dimensions
+		let x2 = this._screen.cam.x;
+		let y2 = this._screen.cam.y;
+		let w2 = this._screen.width;
+		let h2 = this._screen.height;
+
+		// check if sprite is in view
+		// While the calculation has some overhead it still reduces the number of draw calls.
+		// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
+		// Browsers still seem to be very bad at ignoring offscreen render calls...
+		if (x1 < x2 + w2 &&
+			x1 + w1 > x2 &&
+			y1 < y2 + h2 &&
+			y1 + h1 > y2) {
+				return true;
+		}
+
+		return false;
+	}
 }
 
 Entity.RENDER_HITBOXES = false;

@@ -7,8 +7,8 @@ import Raw from "./renderer/Raw.js";
 
 class Buffer {
 	constructor(w, h, scale, depth="offscreen") {
-		this.w = w;
-		this.h = h;
+		this.width = w;
+		this.height = h;
 		this.scale = scale;
 		this.depth = depth;
 
@@ -19,14 +19,15 @@ class Buffer {
 
 		this._ctx = this._canvasDOM.getContext("2d");
 		this._ctx.imageSmoothingEnabled = false;
+		this._ctx._depth = depth;
 
 		// the style of the canvas scales it to the given scale factor
 		this._canvasDOM.style.width = w * scale;
 		this._canvasDOM.style.height = h * scale;
 
 		// the canvas itself however has a fixed width and height
-		this._canvasDOM.width = this.w;
-		this._canvasDOM.height = this.h;
+		this._canvasDOM.width = this.width;
+		this._canvasDOM.height = this.height;
 
 		// create renderer instances
 		this._renderers = {

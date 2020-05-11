@@ -46,6 +46,10 @@ class Screen {
 			this._layers.push(new Layer(i));
 		}
 
+		// dimensions
+		this.width = Manifest.get("/w");
+		this.height = Manifest.get("/h");
+
 		// the public camera interface
 		let _camX = 0;
 		let _camY = 0;
@@ -224,18 +228,18 @@ class Screen {
 	 * Updates the Screen itself and then the entities added to the Screen.
 	 */
 	_update() {
-		// call update hook before the entities are updated
+		// [1] call update hook before the entities are updated
 		this.update();
 
-		// update entities
+		// [2] update entities
 		this._entities.forEach(function(e) {
 			if (e && e.active && !e._isDestroyed) {
 				e.update();
 			}
 		});
 
-		// clean up
-		// add scheduled entities
+		// Houskeeping (Safely adding & removing entities)
+		// [3] add scheduled entities
 		let lenA = this._toBeAdded.length;
 		for (let i = 0; i < lenA; i++) {
 			let ea = this._toBeAdded[i];
@@ -245,7 +249,7 @@ class Screen {
 		}
 		this._toBeAdded = [];
 
-		// remove scheduled entities
+		// [5] remove scheduled entities
 		let lenR = this._toBeRemoved.length;
 		for (let j = 0; j < lenR; j++) {
 			let er = this._toBeRemoved[j];
@@ -267,33 +271,40 @@ class Screen {
 	 * Internal render method.
 	 */
 	_render() {
-		// 1. move (translate) camera and
-		// 2. clear layers
+		// [1] move (translate) camera and
+		// [2] clear layers
 		for (let i = 0; i < this._layers.length; i++) {
 			let layer = this._layers[i];
-			//GFX.save(i);
+
 			// translate camera; layers with a fixedCam will not move with the camera
 			if (!layer.fixedCam) {
 				GFX.get(i).trans(-this.cam.x, -this.cam.y);
 			}
+
+			// layers with autoclear=false are not cleared each frame
 			if (layer.autoClear) {
+
+				// BUG:
+				// TODO -> Don't clear at (cam.x, cam.y) for layers with fixed cam
+
+
 				GFX.get(i).clear_rect(layer.clearColor, this.cam.x, this.cam.y);
 			}
 		}
 
-		// call render hook before the entities are rendered
+		// [3] call render hook before the entities are rendered
 		this.render();
 
-		// render entities
+		// [4] render entities
 		this._entities.forEach(function(e) {
 			if (e && e.visible && !e._isDestroyed) {
 				e.render();
 			}
 		});
 
-		// move camera back after entity rendering
+		// [5] move camera back after entity rendering
+		// [6] flush buffer of each layer
 		for (let i in this._layers) {
-			//GFX.restore(i);
 			let layer = this._layers[i];
 			if (!layer.fixedCam) {
 				GFX.get(i).trans(+this.cam.x, +this.cam.y);

@@ -6,6 +6,7 @@ import PerformanceTrace from "../../utils/PerformanceTrace.js";
 // to make geometric rendering less blurred
 const n = Math.floor;
 
+
 class Basic {
 	constructor(buffer, manifest) {
 		// We still keep a reference on the Manifest object here.
@@ -24,8 +25,46 @@ class Basic {
 	}
 
 	/**
+	 * Helper functions
+	 */
+	_isRectangleInView(x, y, w, h) {
+		// sprite dimensions
+		let x1 = x;
+		let y1 = y;
+		let w1 = w;
+		let h1 = h;
+
+		// screen dimensions
+		let x2 = this.camX;
+		let y2 = this.camY;
+		let w2 = this.manifest.w;
+		let h2 = this.manifest.h;
+
+		// check if sprite is in view
+		// While the calculation has some overhead it still reduces the number of draw calls.
+		// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
+		// Browsers still seem to be very bad at ignoring offscreen render calls...
+		if (x1 < x2 + w2 &&
+			x1 + w1 > x2 &&
+			y1 < y2 + h2 &&
+			y1 + h1 > y2) {
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * GFX Module API
 	 */
+	alpha(a) {
+		if (a >= 0) {
+			this._ctx.globalAlpha = a;
+		} else {
+			return this._ctx.globalAlpha;
+		}
+	}
+
 	clear(color) {
 		if (color) {
 			this._canvasDOM.style.background = color;
@@ -44,9 +83,9 @@ class Basic {
 	}
 
 	trans(x, y) {
-		this._ctx.translate(x, y);
 		this.camX = -1 * x;
 		this.camY = -1 * y;
+		this._ctx.translate(x, y);
 	}
 
 	save() {
@@ -167,26 +206,7 @@ class Basic {
 	spr_ext(sheet, id, x, y, w, h, color, alpha) {
 		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
-		// sprite dimensions
-		let x1 = x;
-		let y1 = y;
-		let w1 = sprCanvas.width;
-		let h1 = sprCanvas.height;
-
-		// screen dimensions
-		let x2 = this.camX;
-		let y2 = this.camY;
-		let w2 = this.manifest.w;
-		let h2 = this.manifest.h;
-
-		// check if sprite is in view
-		// While the calculation has some overhead it still reduces the number of draw calls.
-		// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
-		// Browsers still seem to be very bad at ignoring offscreen render calls...
-		if (x1 < x2 + w2 &&
-			x1 + w1 > x2 &&
-			y1 < y2 + h2 &&
-			y1 + h1 > y2) {
+		if (this._isRectangleInView(x, y, w || sprCanvas.width, h || sprCanvas.height)) {
 
 			let oldAlpha;
 			if (alpha !== undefined) {
@@ -216,6 +236,7 @@ class Basic {
 				this._ctx.globalAlpha = oldAlpha;
 			}
 		}
+
 	}
 
 	grid(id, x, y) {
@@ -283,14 +304,52 @@ class Basic {
 	 * @param {Buffer} buffer the Buffer object.
 	 * @param {Number} x target x
 	 * @param {Number} y target y
+	 * @param {integer} w width
+	 * @param {integer} h height
+	 * @param {Number} alpha alpha value, ranging from 0 (invisible) to 1 (opaque)
 	 */
-	renderOffscreenBuffer(buffer, x, y) {
+	renderOffscreenBuffer(buffer, x, y, w, h, alpha) {
 		// force flush on RAW buffer
 		// this allows to render RAW buffers to a BASIC one
 		if (buffer.getRenderMode() == "RAW") {
 			buffer.renderer.flush();
 		}
-		this._ctx.drawImage(buffer._canvasDOM, x, y);
+
+		w = w || buffer.width;
+		h = h || buffer.height
+
+		if (this._isRectangleInView(x, y, w, h)) {
+			// check for alpha value
+			let oldAlpha;
+			if (alpha !== undefined) {
+				oldAlpha = this._ctx.globalAlpha;
+				if (oldAlpha !== alpha) {
+					this._ctx.globalAlpha = alpha;
+				}
+			}
+
+			// draw buffer
+			this._ctx.drawImage(
+				buffer._canvasDOM,
+				// take the whole src sprite canvas as a base
+				0, // sx
+				0, // sy
+				buffer.width, // sw
+				buffer.height, // sh
+				// stretch it if w/h is given
+				x || 0,
+				y || 0,
+				w, // default to canvas width
+				h, // default to canvas height
+			);
+
+			// reset alpha value
+			if (oldAlpha) {
+				this._ctx.globalAlpha = oldAlpha;
+			}
+
+			PerformanceTrace.drawCalls++;
+		}
 	}
 }
 

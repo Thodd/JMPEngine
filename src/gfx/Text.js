@@ -79,7 +79,12 @@ class Text extends Entity {
 	}
 
 	render() {
-		GFX.get(this.layer).renderOffscreenBuffer(this.backbuffer, this.x, this.y);
+		let dx = this.x - this.scale.x;
+		let dy = this.y - this.scale.y;
+		let dw = this.backbuffer.width * this.scale.w;
+		let dh = this.backbuffer.height * this.scale.h;
+
+		GFX.get(this.layer).renderOffscreenBuffer(this.backbuffer, dx, dy, dw, dh, this.alpha);
 	}
 }
 

@@ -19,7 +19,7 @@ class BaseLevel extends Screen {
 		this.getLayer(3).fixedCam = true; // Text, e.g. HUD
 
 		//GFX.setRenderMode(1, GFX.RenderModes.RAW);
-		GFX.setRenderMode(2, GFX.RenderModes.RAW);
+		//GFX.setRenderMode(2, GFX.RenderModes.RAW);
 
 		// background
 		let bg = new Entity();
@@ -85,10 +85,12 @@ class BaseLevel extends Screen {
 		// text demo
 		let textBG = new Text({text: "Platformer Demo", x: 2, y: 2, color: "#000000", useKerning: true});
 		textBG.layer = 3;
+		textBG.alpha = 0.5;
 		this.add(textBG);
 
 		let textFG = new Text({text: "Platformer Demo", x: 1, y: 1, useKerning: true});
 		textFG.layer = 3;
+		textFG.alpha = 0.5;
 		this.add(textFG);
 	}
 }
