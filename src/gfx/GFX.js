@@ -119,6 +119,23 @@ function setupBuffers(containerDOM) {
 	log("Canvases created.", "GFX");
 }
 
+function setupDebugUI() {
+	let up = new URLSearchParams(window.location.search);
+	if (up.get("debug")) {
+		let d = document.createElement("div");
+		d.style.fontFamily = "monospace";
+		document.body.appendChild(d);
+		setInterval(() => {
+			d.innerHTML = `
+				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
+				update-time: ${PerformanceTrace.updateTime.toFixed(2)}ms<br />
+				draw-calls : ${PerformanceTrace.drawCalls}<br />
+				pixelsDrawn: ${PerformanceTrace.pixelsDrawn}
+			`;
+		}, 500);
+	}
+}
+
 // "Arne 16" palette
 // e.g.: https://lospec.com/palette-list/arne-16
 const palette = [
@@ -228,18 +245,7 @@ const GFX = {
 
 		setupBuffers(containerDOM);
 
-		// debugging
-		let d = document.createElement("div");
-		d.style.fontFamily = "monospace";
-		document.body.appendChild(d);
-		setInterval(() => {
-			d.innerHTML = `
-				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
-				update-time: ${PerformanceTrace.updateTime.toFixed(2)}ms<br />
-				draw-calls : ${PerformanceTrace.drawCalls}<br />
-				pixelsDrawn: ${PerformanceTrace.pixelsDrawn}
-			`;
-		}, 500);
+		setupDebugUI();
 
 		// remove init function, so it can only be called once
 		delete GFX.init;
