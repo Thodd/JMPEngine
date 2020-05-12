@@ -88,6 +88,15 @@ class Buffer {
 	}
 
 	/**
+	 * Returns the currently active renderer.
+	 * The actual instance depends on the set render-mode.
+	 * @returns {Basic|Raw} the currently active renderer instance
+	 */
+	getRenderer() {
+		return this.renderer;
+	}
+
+	/**
 	 * Sets the default clear color for the Buffer.
 	 * If no arguments are given, the clear color is set to "transparent".
 	 * @param {string} c CSS color string

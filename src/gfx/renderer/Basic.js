@@ -6,7 +6,10 @@ import PerformanceTrace from "../../utils/PerformanceTrace.js";
 // to make geometric rendering less blurred
 const n = Math.floor;
 
-
+/**
+ * Basic Render Module
+ * @module Basic
+ */
 class Basic {
 	constructor(buffer, manifest) {
 		// We still keep a reference on the Manifest object here.

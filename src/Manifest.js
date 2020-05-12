@@ -5,8 +5,8 @@ import loadJSON from "./assets/plugins/JSONLoader.js";
  * Defaults for the Screen.
  */
 const DEFAULTS = {
-	w: 184,
-	h: 136,
+	w: 160,
+	h: 144,
 	scale: 2,
 	layers: 8,
 	fps: 60,

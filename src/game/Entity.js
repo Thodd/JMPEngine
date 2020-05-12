@@ -299,9 +299,13 @@ class Entity {
 		let w1 = w || this.hitbox.w;
 		let h1 = h || this.hitbox.h;
 
-		// screen dimensions
-		let x2 = this._screen.cam.x;
-		let y2 = this._screen.cam.y;
+		// Screen dimensions
+		// The camera position depends on the layer the Entity is on:
+		// If the Buffer for that layer has a fixed camera,
+		// the last Screen camera state is not pushed to this specific layer!
+		let layerCam = GFX.getBuffer(this.layer).getCam();
+		let x2 = layerCam.x;
+		let y2 = layerCam.y;
 		let w2 = this._screen.width;
 		let h2 = this._screen.height;
 

@@ -7,26 +7,30 @@ import { error } from "../utils/Log.js";
 
 let INSTANCE_COUNT = 0;
 
-/*
-Screen lifecycle
-[+] = public
-[-] = private
-
-	[+] constructor    (called once)                  -> game logic
-	[-] _setup         (called every activation)      -> Buffer.reset(), no screen clearing
-	[+] setup          (called every activation)      -> Setup Buffers, e.g. change render-mode
-	[-] _initialClear  (called every activation)      -> clear the Buffers, some might be excluded to to "autoclear=false"
-	[+] begin          (called every activation)      -> game logic
-	[+] update         (called each frame)            -> update hook for the Screen (game logic)
-		[-]            (called each frame)            -> update entities (game logic)
-	[+] render         (called each frame)            -> render hook for the Screen
-		[-]            (called each frame)            -> render entities
-	[+] end            (called every deactivation)    -> game logic
-*/
-
-
 /**
  * Screen class
+ *
+ * Below you find the lifecycle of the Screen class.
+ * Please check the API documentation of all public functions to better understand what you can and should do
+ * in these functions/hooks.
+ *
+ * [+] = public:            These functions can safely be overwriten
+ * [-] = private:           <b>Don't overwrite these functions!</b>
+ *
+ * [+] constructor          (called once)                  -> game logic
+ *
+ * [-] _setup               (called every activation)      -> Buffer.reset(false), no screen clearing (see below)
+ * [+] setup                (called every activation)      -> Setup Buffers, e.g. change render-mode
+ * [-] _initialClear        (called every activation)      -> clear the Buffers, some might be excluded to to "autoclear=false"
+ * [+] begin                (called every activation)      -> game logic, recurring things which need to be done before any other game logic
+ *
+ * [+] update               (called each frame)            -> update hook for the Screen (game logic)
+ * [-] update entities      (called each frame)            -> update entities (game logic)
+ * [+] render               (called each frame)            -> render hook for the Screen
+ * [-] render entities      (called each frame)            -> render entities
+ *
+ * [+] end                  (called every deactivation)    -> game logic
+ *
  * @public
  */
 class Screen {
@@ -70,6 +74,48 @@ class Screen {
 		this._entityTypeStore = new EntityTypeStore();
 	}
 
+	toString() {
+		return `${this.constructor.name} (${this._ID})`;
+	}
+
+	/**
+	 * Internal setup function.
+	 * Resets all buffers back to the initial state.
+	 * This is done so each Screen can start in a fresh GFX state.
+	 * If the setup() hook is correctly implemented, the game implementation can set
+	 * camera values, clear-colors etc. before the _initalClear().
+	 */
+	_setup() {
+		for (let i = 0; i < this._layers; i++) {
+			GFX.getBuffer(i).reset(false);
+		}
+	}
+
+	/**
+	 * Setup Hook.
+	 * Called at the very beginning of each Screen activation.
+	 *
+	 * Configuration of the managed GFX Buffer instances should be done here:
+	 * - setting the clear-color
+	 * - disabling the automatic clearing
+	 * - changing the RenderMode
+	 * - Fixing the camera to a static position
+	 */
+	setup() {}
+
+	/**
+	 * Clears the buffers initially.
+	 * Called every Screen activation.
+	 */
+	_initialClear(){
+		for (let i = 0; i < this._layers; i++) {
+			let b = GFX.getBuffer(i);
+			if (b.isAutoCleared()) {
+				b.getRenderer().clear();
+			}
+		}
+	}
+
 	/**
 	 * Begin Hook.
 	 * Called every time the Screen is activated as the currently shown <code>Engine.screen</code>.
@@ -79,29 +125,6 @@ class Screen {
 	 * The begin hook is called <b>after</b> the end hook of the last <code>Engine.screen</code> was called.
 	 */
 	begin() {}
-
-	/**
-	 * Internal begin hook takes care of clean-up like layer clearing etc.
-	 */
-	_begin(){
-		// initially clear all layers so we don't have any leftover graphics from a previous Screen.
-		for (let i = 0; i < this._layers; i++) {
-			GFX.get(i).clear();
-		}
-	}
-
-	/**
-	 * End Hook.
-	 * Called every time the Screen is released as the currently shown <code>Engine.screen</code>.
-	 * It is called one frame after another Screen was set to <code>Engine.screen</code>.
-	 *
-	 * The end hook is called <b>before</b> the begin hook of the new <code>Engine.screen</code>.
-	 */
-	end() {}
-
-	toString() {
-		return `${this.constructor.name} (${this._ID})`;
-	}
 
 	/**
 	 * Schedules the given entity for adding to the
@@ -286,6 +309,15 @@ class Screen {
 	 * The Screen's render method is called before the entities of the Screen are rendered.
 	 */
 	render() {}
+
+	/**
+	 * End Hook.
+	 * Called every time the Screen is released as the currently shown <code>Engine.screen</code>.
+	 * It is called one frame after another Screen was set to <code>Engine.screen</code>.
+	 *
+	 * The end hook is called on the "old" Screen <b>before</b> the begin hook of the newly set <code>Engine.screen</code>.
+	 */
+	end() {}
 }
 
 export default Screen;

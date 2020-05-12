@@ -38,7 +38,7 @@ class GameScreen extends Screen {
 		this.spawnPiece();
 	}
 
-	begin() {
+	setup() {
 		GFX.getBuffer(0).setClearColor("#38a8f2");
 	}
 

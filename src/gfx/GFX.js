@@ -73,10 +73,11 @@ function setupDebugUI() {
 		document.body.appendChild(d);
 		setInterval(() => {
 			d.innerHTML = `
-				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
 				update-time: ${PerformanceTrace.updateTime.toFixed(2)}ms<br />
+				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
+				total-time:  ${PerformanceTrace.frameTime.toFixed(2)}ms<br />
 				draw-calls : ${PerformanceTrace.drawCalls}<br />
-				pixelsDrawn: ${PerformanceTrace.pixelsDrawn}
+				pixels-drawn: ${PerformanceTrace.pixelsDrawn}
 			`;
 		}, 500);
 	}
@@ -98,6 +99,13 @@ const palette = [
 const _buffers = [];
 
 /**
+ * Hack for Visual Code to have Code Completion on Renderers.
+ * Can this be done any better?
+ * @typedef {import('./renderer/Basic').default} Basic
+ * @typedef {import('./renderer/Raw').default} Raw
+ */
+
+/**
  * GFX Facade
  */
 const GFX = {
@@ -105,7 +113,7 @@ const GFX = {
 	 * Returns the Renderer instance for the managed Buffer on the given layer.
 	 *
 	 * @param {integer} i the layer
-	 * @returns {Basic|Raw}
+	 * @return {Basic|Raw} the renderer of the Buffer on the given layer
 	 */
 	get: function(i) {
 		return _buffers[i].renderer;
@@ -115,6 +123,7 @@ const GFX = {
 	 * Returns the Buffer on the given layer.
 	 *
 	 * @param {integer} i the layer
+	 * @return {Buffer} the buffer instance on the given layer
 	 */
 	getBuffer(i) {
 		return _buffers[i];

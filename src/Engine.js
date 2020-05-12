@@ -29,11 +29,18 @@ const gameloop = () => {
 
 	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
 	if (nextScreen) {
+		// end old screen
 		if (currentScreen) {
 			currentScreen.end();
 		}
 		currentScreen = nextScreen;
-		currentScreen._begin();
+
+		// setup phase (GFX setup)
+		currentScreen._setup();
+		currentScreen.setup();
+		currentScreen._initialClear();
+
+		// begin phase (game logic)
 		currentScreen.begin();
 
 		nextScreen = null;
@@ -114,7 +121,7 @@ const Engine = {
 	 * <b>Beware</b>: Accessing <code>Engine.screen</code> might lead to unexpected results!
 	 * If <code>Engine.screen</code> is accessed in the same frame as it was set to a new Screen,
 	 * the next scheduled screen is not active yet and <code>Engine.screen</code> will still contain the
-	 * old value.
+	 * old value!
 	 */
 	get screen() {
 		return currentScreen;

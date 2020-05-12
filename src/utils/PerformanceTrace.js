@@ -22,6 +22,7 @@ const PerformanceTrace = {
 	updateTime:  0,
 	renderTime:  0,
 	frameTime:   0,
+
 	drawCalls:   0,
 	pixelsDrawn: 0,
 
@@ -31,7 +32,7 @@ const PerformanceTrace = {
 
 	end: function(s) {
 		let end = now();
-		this[`${s}Time`] = end - traces[s];
+		this[`${s}Time`] = (end - traces[s]);
 	},
 
 	finalize: function() {

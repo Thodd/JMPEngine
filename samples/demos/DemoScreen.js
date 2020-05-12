@@ -5,12 +5,19 @@ import Screen from "../../src/game/Screen.js";
 import Feather from "./renderers/Feather.js";
 import Spiral from "./renderers/Spiral.js";
 import Plasma0 from "./renderers/Plasma0.js";
+import WhiteNoise from "./renderers/WhiteNoise.js";
 
 class DemoScreen extends Screen {
 	constructor() {
 		super();
 
-		this.demo = Plasma0;
+		this.demo = WhiteNoise;
+	}
+
+	setup() {
+		if (this.demo.setup) {
+			this.demo.setup();
+		}
 	}
 
 	render() {

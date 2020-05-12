@@ -102,7 +102,7 @@ class BaseLevel extends Screen {
 		this.add(textFG);
 	}
 
-	begin() {
+	setup() {
 		GFX.getBuffer(0).setCameraFixed(true);
 		GFX.getBuffer(0).setAutoCleared(false);
 		GFX.getBuffer(3).setCameraFixed(true)

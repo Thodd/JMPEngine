@@ -147,7 +147,7 @@ class WorldScreen extends Screen {
 		this.add(textColored);
 	}
 
-	begin() {
+	setup() {
 		GFX.getBuffer(0).setClearColor("#333333");
 		GFX.getBuffer(3).setCameraFixed(true);
 	}

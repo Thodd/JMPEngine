@@ -13,8 +13,6 @@ class IntroScreen extends Screen {
 			this.finish = resolve;
 		});
 
-		GFX.getBuffer(0).setClearColor("#332c50");
-
 		let msg = "... JMP.px Engine!";
 		let curMsgLength = 0;
 
@@ -55,6 +53,10 @@ class IntroScreen extends Screen {
 			}
 		};
 		this.add(animatedText);
+	}
+
+	setup() {
+		GFX.getBuffer(0).setClearColor("#332c50");
 	}
 
 	update() {

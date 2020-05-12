@@ -120,7 +120,7 @@ nopqrstuvwxyz
 		this.add(loremFontColor);
 	}
 
-	begin() {
+	setup() {
 		GFX.getBuffer(0).setClearColor("#333333");
 	}
 

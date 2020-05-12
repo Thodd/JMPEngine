@@ -1,17 +1,22 @@
+import { random } from "../../../src/utils/RNG.js";
 import Engine from "../../../src/Engine.js";
 import GFX from "../../../src/gfx/GFX.js";
-import { random } from "../../../src/utils/RNG.js";
+import Buffer from "../../../src/gfx/Buffer.js";
 
 const author = "@blokatt";
+
+const setup = function() {
+	let b = GFX.getBuffer(0);
+	b.setRenderMode(Buffer.RenderModes.RAW);
+	b.setClearColor("#222222");
+}
 
 let x=0, y=20, w=.17;
 
 const renderer = function() {
 	// made by Jan Vorisek
 	// @blokatt
-	GFX.getBuffer(0).setRenderMode(GFX.RenderModes.RAW);
 	let g = GFX.get(0);
-	g.clear("#222222");
 	for (let i=0; i<2800; i++) {
 		let j = x, k = y, r = random();
 		if (r<.02) {
@@ -32,6 +37,7 @@ const renderer = function() {
 }
 
 export default {
+	setup,
 	renderer,
 	author
 }
