@@ -10,7 +10,7 @@ let author = "@picoter8";
  */
 let p,x,y,s, t = Engine.now;
 const renderer = function() {
-	GFX.setRenderMode(0, GFX.RenderModes.RAW);
+	GFX.getBuffer(0).setRenderMode(GFX.RenderModes.RAW);
 	let g = GFX.get(0);
 	g.clear("#FF0085");
 	p=t()/2;

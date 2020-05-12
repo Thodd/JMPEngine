@@ -7,12 +7,11 @@ import { clamp } from "../../../src/utils/Helper.js";
 import Score from "./Score.js";
 import Engine from "../../../src/Engine.js";
 import GameScreen from "./GameScreen.js";
+import GFX from "../../../src/gfx/GFX.js";
 
 class LevelSelectScreen extends Screen {
 	constructor() {
 		super();
-
-		this.getLayer(0).clearColor = "#38a8f2";
 
 		this.add(new BGRenderer());
 
@@ -33,6 +32,10 @@ class LevelSelectScreen extends Screen {
 			col: 0,
 			row: 0
 		};
+	}
+
+	begin() {
+		GFX.getBuffer(0).setClearColor("#38a8f2");
 	}
 
 	update() {

@@ -1,3 +1,4 @@
+import GFX from "../../../src/gfx/GFX.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import Text from "../../../src/gfx/Text.js";
@@ -20,8 +21,6 @@ class GameScreen extends Screen {
 	constructor() {
 		super();
 
-		this.getLayer(0).clearColor = "#38a8f2";
-
 		// preview and hold
 		this.currentPreview = [];
 		this.canHold = true;
@@ -37,6 +36,10 @@ class GameScreen extends Screen {
 
 		// create a new piece and implicitly add it as the "currentPiece" to the Well
 		this.spawnPiece();
+	}
+
+	begin() {
+		GFX.getBuffer(0).setClearColor("#38a8f2");
 	}
 
 	/**

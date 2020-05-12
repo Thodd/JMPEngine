@@ -2,63 +2,7 @@ import { log, error, fail } from "../utils/Log.js";
 import Manifest from "../Manifest.js";
 import PerformanceTrace from "../utils/PerformanceTrace.js";
 
-import Basic from "./renderer/Basic.js";
-import Raw from "./renderer/Raw.js";
-
-class Buffer {
-	constructor(w, h, scale, depth="offscreen") {
-		this.width = w;
-		this.height = h;
-		this.scale = scale;
-		this.depth = depth;
-
-		// create canvas & context
-		this._canvasDOM = document.createElement("canvas");
-		this._canvasDOM.classList.add("jmpCanvas");
-		this._canvasDOM.style.cursor = Manifest.get("/hideCursor") ? "none" : "";
-
-		this._ctx = this._canvasDOM.getContext("2d");
-		this._ctx.imageSmoothingEnabled = false;
-		this._ctx._depth = depth;
-
-		// the style of the canvas scales it to the given scale factor
-		this._canvasDOM.style.width = w * scale;
-		this._canvasDOM.style.height = h * scale;
-
-		// the canvas itself however has a fixed width and height
-		this._canvasDOM.width = this.width;
-		this._canvasDOM.height = this.height;
-
-		// create renderer instances
-		this._renderers = {
-			"BASIC": new Basic(this, Manifest.get()),
-			"RAW"  : new Raw(this, Manifest.get())
-		};
-
-		// default renderer is "Basic"
-		this.setRenderMode(GFX.RenderModes.BASIC);
-	}
-
-	setRenderMode(r) {
-		if (!GFX.RenderModes[r]) {
-			fail(`Unknown render mode: ${r}.`, "GFX");
-		}
-		this.renderMode = r;
-		this.renderer = this._renderers[r];
-	}
-
-	getRenderMode() {
-		return this.renderMode;
-	}
-
-	getCanvas() {
-		return this._canvasDOM;
-	}
-
-	getContext() {
-		return this._ctx;
-	}
-}
+import Buffer from "./Buffer.js";
 
 /**
  * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
@@ -72,6 +16,8 @@ function setupCSS() {
 	const css = `
 		.jmpCanvas {
 			position: absolute;
+
+			/*transform: translateZ(0px);*/
 
 			image-rendering: pixelated;
 			image-rendering: -webkit-crisp-edges;
@@ -156,55 +102,22 @@ const _buffers = [];
  */
 const GFX = {
 	/**
-	 * Returns the Buffer for the given layer.
+	 * Returns the Renderer instance for the managed Buffer on the given layer.
 	 *
-	 * @param {integer} i the layer of the Buffer
-	 * @returns {Buffer}
+	 * @param {integer} i the layer
+	 * @returns {Basic|Raw}
 	 */
 	get: function(i) {
 		return _buffers[i].renderer;
 	},
 
 	/**
-	 * Returns the Canvas DOM Element for the given layer.
-	 * @param {integer} i layer
-	 */
-	getCanvas: function(i) {
-		return _buffers[i]._canvasDOM;
-	},
-
-	/**
-	 * Returns the 2d Context for the given layer.
-	 * @param {integer} i layer
-	 */
-	getContext: function(i) {
-		return _buffers[i]._ctx;
-	},
-
-	/**
-	 * Changes the RenderMode for the given layer.
+	 * Returns the Buffer on the given layer.
 	 *
-	 * <b>Beware</b>:
-	 * Changing the RenderMode mid frame might lead to unexpected results.
-	 * It is recommended to change the RenderMode in the <code>Screen</code> constructor
-	 * or during the <code>begin</code> event of the Screen.
-	 *
-	 * @param {integer} i layer
-	 * @param {GFX.RenderModes} r the new RenderMode
+	 * @param {integer} i the layer
 	 */
-	setRenderMode(i, r) {
-		if (!GFX.RenderModes[r]) {
-			fail(`Unknown render mode: ${r}.`, "GFX");
-		}
-		_buffers[i].setRenderMode(r);
-	},
-
-	/**
-	 * Retrieves the RenderMode for the given layer.
-	 * @param {integer} i layer
-	 */
-	getRenderMode(i) {
-		return _buffers[i].getRenderMode();
+	getBuffer(i) {
+		return _buffers[i];
 	},
 
 	/**
@@ -271,34 +184,6 @@ const GFX = {
 	},
 	set h(v) {
 		error("Screen height can only be set via manifest!", "GFX");
-	},
-
-
-	/**
-	 * Creates an offscreen <code>Buffer</code> instance, which supports the complete Buffer API.
-	 * Can be used to (pre-)render graphics to a separate canvas.
-	 *
-	 * The <code>Buffer#renderOffscreenBuffer</code> method allows to render
-	 * such an offscreen Buffer to the Screen.
-	 *
-	 * The backbuffer itsef is not scaled!
-	 * But it will be rendered scaled according to the initial scaling factor of the game screen.
-	 * @returns {Buffer} the newly created offscreen buffer
-	 */
-	createOffscreenBuffer(w, h, renderMode=GFX.RenderModes.BASIC) {
-		let b = new Buffer(w, h, 1);
-		b.setRenderMode(renderMode);
-		return b;
-	},
-
-	/**
-	 * The List of available render modes:
-	 * - Basic  (native canvas draw calls)
-	 * - Raw    (pixelbuffering)
-	 */
-	RenderModes: {
-		"BASIC": "BASIC",
-		"RAW"  : "RAW"
 	}
 };
 

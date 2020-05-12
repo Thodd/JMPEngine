@@ -7,26 +7,23 @@ import { error } from "../utils/Log.js";
 
 let INSTANCE_COUNT = 0;
 
-/**
- * Layer class
- * @public
- */
-class Layer {
-	constructor(i) {
-		this.i = i;
-		this.autoClear = true;
-		/**
-		 * The color which will be used to clear the layer before rendering
-		 * any entities.
-		 */
-		this.clearColor = "transparent";
-		/**
-		 * Marks if the camera should be fixed for this layer.
-		 * Useful for UI elements.
-		 */
-		this.fixedCam = false
-	}
-}
+/*
+Screen lifecycle
+[+] = public
+[-] = private
+
+	[+] constructor    (called once)                  -> game logic
+	[-] _setup         (called every activation)      -> Buffer.reset(), no screen clearing
+	[+] setup          (called every activation)      -> Setup Buffers, e.g. change render-mode
+	[-] _initialClear  (called every activation)      -> clear the Buffers, some might be excluded to to "autoclear=false"
+	[+] begin          (called every activation)      -> game logic
+	[+] update         (called each frame)            -> update hook for the Screen (game logic)
+		[-]            (called each frame)            -> update entities (game logic)
+	[+] render         (called each frame)            -> render hook for the Screen
+		[-]            (called each frame)            -> render entities
+	[+] end            (called every deactivation)    -> game logic
+*/
+
 
 /**
  * Screen class
@@ -40,11 +37,7 @@ class Screen {
 		this._toBeRemoved = [];
 
 		// create layers
-		this._layers = [];
-		let ln = Manifest.get("/layers");
-		for (let i = 0; i < ln; i++) {
-			this._layers.push(new Layer(i));
-		}
+		this._layers = Manifest.get("/layers");
 
 		// dimensions
 		this.width = Manifest.get("/w");
@@ -75,9 +68,6 @@ class Screen {
 		};
 
 		this._entityTypeStore = new EntityTypeStore();
-
-		// lowest layer is cleared by default with black
-		this.getLayer(0).clearColor = "#222222";
 	}
 
 	/**
@@ -95,8 +85,8 @@ class Screen {
 	 */
 	_begin(){
 		// initially clear all layers so we don't have any leftover graphics from a previous Screen.
-		for (let i = 0; i < this._layers.length; i++) {
-			GFX.get(i).clear(this._layers[i].clearColor);
+		for (let i = 0; i < this._layers; i++) {
+			GFX.get(i).clear();
 		}
 	}
 
@@ -111,19 +101,6 @@ class Screen {
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
-	}
-
-	/**
-	 * Returns the layer with the given position.
-	 * If no position is given, an array with all layers are returned.
-	 * @param {int|undefined} i The layer position
-	 * @returns {Layer} the chosen layer
-	 */
-	getLayer(i) {
-		if (i == null) {
-			return this._layers;
-		}
-		return this._layers[i];
 	}
 
 	/**
@@ -273,17 +250,16 @@ class Screen {
 	_render() {
 		// [1] move (translate) camera and
 		// [2] clear layers
-		for (let i = 0; i < this._layers.length; i++) {
-			let layer = this._layers[i];
+		for (let i = 0; i < this._layers; i++) {
+			let buffer = GFX.getBuffer(i);
 
-			// translate camera; layers with a fixedCam will not move with the camera
-			if (!layer.fixedCam) {
-				GFX.get(i).trans(-this.cam.x, -this.cam.y);
+			// push Screen camera state to the Buffers
+			if (!buffer.isCameraFixed()) {
+				buffer.cam(-this.cam.x, -this.cam.y);
 			}
 
-			// layers with autoclear=false are not cleared each frame
-			if (layer.autoClear) {
-				GFX.get(i).clear(layer.clearColor);
+			if (buffer.isAutoCleared()) {
+				GFX.get(i).clear();
 			}
 		}
 
@@ -298,7 +274,7 @@ class Screen {
 		});
 
 		// [5] flush buffer of each layer
-		for (let i in this._layers) {
+		for (let i = 0; i < this._layers; i++) {
 			// flush buffers: only has effect for buffers with GFX.RenderModes.RAW
 			GFX.get(i).flush();
 		}

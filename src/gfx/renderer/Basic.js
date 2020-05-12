@@ -19,9 +19,6 @@ class Basic {
 		this.buffer = buffer;
 		this._canvasDOM = this.buffer.getCanvas();
 		this._ctx = this.buffer.getContext();
-
-		this.camX = 0;
-		this.camY = 0;
 	}
 
 	/**
@@ -35,8 +32,8 @@ class Basic {
 		let h1 = h;
 
 		// screen dimensions
-		let x2 = this.camX;
-		let y2 = this.camY;
+		let x2 = this.buffer.camX;
+		let y2 = this.buffer.camY;
 		let w2 = this.manifest.w;
 		let h2 = this.manifest.h;
 
@@ -66,6 +63,7 @@ class Basic {
 	}
 
 	clear(color) {
+		color = color || this.buffer.getClearColor();
 		if (color) {
 			this._canvasDOM.style.background = color;
 		}
@@ -82,11 +80,6 @@ class Basic {
 		this._ctx.clearRect(x, y, w || this.manifest.w, h || this.manifest.h);
 	}
 
-	trans(x, y) {
-		this.camX = -1 * x;
-		this.camY = -1 * y;
-	}
-
 	save() {}
 
 	restore() {}
@@ -97,7 +90,7 @@ class Basic {
 	 * Renders a pixel of the given color at (x,y).
 	 *
 	 * For pixel perfect rendering please use the <code>GFX.RenderMode.Raw</code>.
-	 * Call <code>GFX.setRenderMode(n, GFX.RenderMode.Raw)</code> to change the RenderMode of
+	 * Call <code>GFX.getBuffer(n).setRenderMode(GFX.RenderMode.Raw)</code> to change the RenderMode of
 	 * the Screen layer at depth 'n'.
 	 *
 	 * @param {Number} x can be a float
@@ -123,16 +116,16 @@ class Basic {
 	 */
 	pxClear(x, y){
 		// shift x/y based on camera
-		x = n(x - this.camX);
-		y = n(y - this.camY);
+		x = n(x - this.buffer.camX);
+		y = n(y - this.buffer.camY);
 
 		this.clear_rect("transparent", x, y, 1, 1);
 	}
 
 	rect(x, y, w, h, color) {
 		// shift x/y based on camera
-		x = n(x - this.camX);
-		y = n(y - this.camY);
+		x = n(x - this.buffer.camX);
+		y = n(y - this.buffer.camY);
 
 		// draw rectangle
 		this._ctx.beginPath();
@@ -146,8 +139,8 @@ class Basic {
 
 	rectf(x, y, w, h, color) {
 		// shift x/y based on camera
-		x = x - this.camX;
-		y = y - this.camY;
+		x = x - this.buffer.camX;
+		y = y - this.buffer.camY;
 
 		// draw rectangle filled
 		this._ctx.fillStyle = color || this._ctx.fillStyle;
@@ -158,8 +151,8 @@ class Basic {
 
 	circ(x, y, r, color) {
 		// shift x/y based on camera
-		x = x - this.camX;
-		y = y - this.camY;
+		x = x - this.buffer.camX;
+		y = y - this.buffer.camY;
 
 		// draw circle
 		this._ctx.beginPath();
@@ -173,8 +166,8 @@ class Basic {
 
 	circf(x, y, r, color) {
 		// shift x/y based on camera
-		x = x - this.camX;
-		y = y - this.camY;
+		x = x - this.buffer.camX;
+		y = y - this.buffer.camY;
 
 		// draw circle filled
 		this._ctx.beginPath();
@@ -188,14 +181,14 @@ class Basic {
 
 	tri(x0, y0, x1, y1, x2, y2, color) {
 		// shift x/y based on camera
-		x0 = n(x0 - this.camX);
-		y0 = n(y0 - this.camY);
+		x0 = n(x0 - this.buffer.camX);
+		y0 = n(y0 - this.buffer.camY);
 
-		x1 = n(x1 - this.camX);
-		y1 = n(y1 - this.camY);
+		x1 = n(x1 - this.buffer.camX);
+		y1 = n(y1 - this.buffer.camY);
 
-		x2 = n(x2 - this.camX);
-		y2 = n(y2 - this.camY);
+		x2 = n(x2 - this.buffer.camX);
+		y2 = n(y2 - this.buffer.camY);
 
 		// draw triangle
 		this._ctx.beginPath();
@@ -211,14 +204,14 @@ class Basic {
 
 	trif(x0, y0, x1, y1, x2, y2, color) {
 		// shift x/y based on camera
-		x0 = x0 - this.camX;
-		y0 = y0 - this.camY;
+		x0 = x0 - this.buffer.camX;
+		y0 = y0 - this.buffer.camY;
 
-		x1 = x1 - this.camX;
-		y1 = y1 - this.camY;
+		x1 = x1 - this.buffer.camX;
+		y1 = y1 - this.buffer.camY;
 
-		x2 = x2 - this.camX;
-		y2 = y2 - this.camY;
+		x2 = x2 - this.buffer.camX;
+		y2 = y2 - this.buffer.camY;
 
 		// draw triangle filled
 		this._ctx.beginPath();
@@ -234,11 +227,11 @@ class Basic {
 
 	line(x0, y0, x1, y1, color) {
 		// shift x/y based on camera
-		x0 = n(x0 - this.camX);
-		y0 = n(y0 - this.camY);
+		x0 = n(x0 - this.buffer.camX);
+		y0 = n(y0 - this.buffer.camY);
 
-		x1 = n(x1 - this.camX);
-		y1 = n(y1 - this.camY);
+		x1 = n(x1 - this.buffer.camX);
+		y1 = n(y1 - this.buffer.camY);
 
 		// draw line
 		this._ctx.beginPath();
@@ -261,8 +254,8 @@ class Basic {
 		if (this._isRectangleInView(x, y, w || sprCanvas.width, h || sprCanvas.height)) {
 
 			// shift x/y based on camera
-			x = x - this.camX;
-			y = y - this.camY;
+			x = x - this.buffer.camX;
+			y = y - this.buffer.camY;
 
 			let oldAlpha;
 			if (alpha !== undefined) {
@@ -297,8 +290,8 @@ class Basic {
 
 	grid(id, x, y) {
 		// shift x/y based on camera
-		x = x - this.camX;
-		y = y - this.camY;
+		x = x - this.buffer.camX;
+		y = y - this.buffer.camY;
 
 		let grid = this.manifest._maps[id];
 		if (!grid) {
@@ -315,8 +308,8 @@ class Basic {
 	 */
 	text(font, x, y, msg, color, useKerning=false) {
 		// shift x/y based on camera
-		x = x - this.camX;
-		y = y - this.camY;
+		x = x - this.buffer.camX;
+		y = y - this.buffer.camY;
 
 		let fontObj = this.manifest.assets.fonts[font];
 
@@ -384,8 +377,8 @@ class Basic {
 
 		if (this._isRectangleInView(x, y, w, h)) {
 			// shift x/y based on camera
-			x = x - this.camX;
-			y = y - this.camY;
+			x = x - this.buffer.camX;
+			y = y - this.buffer.camY;
 
 			// check for alpha value
 			let oldAlpha;

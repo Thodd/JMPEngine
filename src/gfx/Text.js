@@ -1,5 +1,6 @@
 import { warn, fail } from "../utils/Log.js";
 import GFX from "./GFX.js";
+import Buffer from "./Buffer.js";
 import Entity from "../game/Entity.js";
 import Manifest from "../Manifest.js";
 
@@ -48,7 +49,13 @@ class Text extends Entity {
 			}
 
 			// we dimension the offscreen buffer to the maximum width without considering kerning for simplicity
-			this.backbuffer = GFX.createOffscreenBuffer(longestLine * this.font.w, (this.font.h + this.leading) * lines.length, GFX.getRenderMode(this.layer));
+			this.backbuffer = new Buffer(
+				// width
+				longestLine * this.font.w,
+				// height
+				(this.font.h + this.leading) * lines.length
+			);
+			this.backbuffer.setRenderMode(GFX.getBuffer(this.layer).getRenderMode());
 
 			// render line per line to the offscreen buffer
 			for (let i = 0; i < lines.length; i++) {

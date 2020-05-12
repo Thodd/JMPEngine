@@ -9,7 +9,7 @@ let x=0, y=20, w=.17;
 const renderer = function() {
 	// made by Jan Vorisek
 	// @blokatt
-	GFX.setRenderMode(0, GFX.RenderModes.RAW);
+	GFX.getBuffer(0).setRenderMode(GFX.RenderModes.RAW);
 	let g = GFX.get(0);
 	g.clear("#222222");
 	for (let i=0; i<2800; i++) {

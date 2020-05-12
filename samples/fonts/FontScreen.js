@@ -8,8 +8,6 @@ class FontScreen extends Screen {
 	constructor() {
 		super();
 
-		this.getLayer(0).clearColor = "#333333";
-
 		/**
 		 * Low-Level Text Rendering Demo
 		 */
@@ -29,8 +27,8 @@ class FontScreen extends Screen {
 		// We define a custom render function on the Entity
 		// so we can use the low-level GFX API to render a pixel-perfect
 		// colored and animated Text
-		//GFX.setRenderMode(0, GFX.RenderModes.RAW);
-		//GFX.setRenderMode(1, GFX.RenderModes.RAW);
+		//GFX.getBuffer(0).setRenderMode(GFX.RenderModes.RAW);
+		//GFX.getBuffer(1).setRenderMode(GFX.RenderModes.RAW);
 
 		animatedText.render = function() {
 			for (let i = 0; i < this.msg.length; i++) {
@@ -120,6 +118,10 @@ nopqrstuvwxyz
 
 		let loremFontColor = new Text({text: lorem, x: 164, y: 7, leading: 2, useKerning: true});
 		this.add(loremFontColor);
+	}
+
+	begin() {
+		GFX.getBuffer(0).setClearColor("#333333");
 	}
 
 }

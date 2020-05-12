@@ -13,7 +13,7 @@ class IntroScreen extends Screen {
 			this.finish = resolve;
 		});
 
-		this.getLayer(0).clearColor = "#332c50";
+		GFX.getBuffer(0).setClearColor("#332c50");
 
 		let msg = "... JMP.px Engine!";
 		let curMsgLength = 0;

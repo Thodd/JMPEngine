@@ -14,9 +14,6 @@ class WorldScreen extends Screen {
 
 		let that = this;
 
-		this.getLayer(0).clearColor = "#333333";
-		this.getLayer(3).fixedCam = true;
-
 		/**
 		 * Simple Entity with input handling
 		 */
@@ -119,7 +116,6 @@ class WorldScreen extends Screen {
 		/**
 		 * Tilemap demo
 		 */
-		//GFX.setRenderMode(1, GFX.RenderModes.RAW);
 		let t = new Tilemap({sheet: "tileset", x: 16, y: 12, version: Tilemap.Version.A});
 		t.x = 0;
 		t.y = 0;
@@ -149,6 +145,11 @@ class WorldScreen extends Screen {
 		let textColored = new Text({text: "JMP Adventure", x: 0, y: 110, color: "#FFFFFF", useKerning: true});
 		textColored.layer = 3;
 		this.add(textColored);
+	}
+
+	begin() {
+		GFX.getBuffer(0).setClearColor("#333333");
+		GFX.getBuffer(3).setCameraFixed(true);
 	}
 }
 

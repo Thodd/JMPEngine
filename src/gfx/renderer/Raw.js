@@ -20,10 +20,7 @@ class Raw {
 		this._canvasDOM = this.buffer.getCanvas();
 		this._ctx = this.buffer.getContext();
 
-		this._pixels = new ImageData(this.manifest.w, this.manifest.h);
-
-		this.camX = 0;
-		this.camY = 0;
+		this.clear();
 	}
 
 	/**
@@ -46,8 +43,8 @@ class Raw {
 	 */
 	_copyDataExt(source, target, tx, ty) {
 		// shift the target coordinates based on current camera position
-		tx = tx - this.camX;
-		ty = ty - this.camY;
+		tx = tx - this.buffer.camX;
+		ty = ty - this.buffer.camY;
 
 		// source data
 		let _sw = source.width;
@@ -105,8 +102,8 @@ class Raw {
 	 * Translating is unsupported for the RenderMode.RAW.
 	 */
 	trans(x, y) {
-		this.camX = -1 * x;
-		this.camY = -1 * y;
+		this.buffer.camX = -1 * x;
+		this.buffer.camY = -1 * y;
 	}
 
 	save() {}
@@ -136,8 +133,8 @@ class Raw {
 	 * @param {object|string} color object containing r/g/b/a values, or CSS-color string
 	 */
 	pxSet(x, y, color) {
-		x = n(x - this.camX);
-		y = n(y - this.camY);
+		x = n(x - this.buffer.camX);
+		y = n(y - this.buffer.camY);
 
 		if (x < 0 || x >= this.manifest.w || y < 0 || y >= this.manifest.h) {
 			// nothing to draw
@@ -171,8 +168,8 @@ class Raw {
 	 * @param {integer} y
 	 */
 	pxGet(x, y) {
-		x = n(x - this.camX);
-		y = n(y - this.camY);
+		x = n(x - this.buffer.camX);
+		y = n(y - this.buffer.camY);
 
 		let d = this._pixels;
 		let off = this._pxOff(x, y);
@@ -259,8 +256,8 @@ class Raw {
 		let h1 = sprCanvas.height;
 
 		// screen dimensions
-		let x2 = this.camX;
-		let y2 = this.camY;
+		let x2 = this.buffer.camX;
+		let y2 = this.buffer.camY;
 		let w2 = this.manifest.w;
 		let h2 = this.manifest.h;
 

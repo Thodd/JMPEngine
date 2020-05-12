@@ -6,20 +6,16 @@ import RNG from "../../../../src/utils/RNG.js";
 import Helper from "../../../../src/utils/Helper.js";
 import Player from "../Actors/Player.js";
 import GFX from "../../../../src/gfx/GFX.js";
+import Manifest from "../../../../src/Manifest.js";
 
 class BaseLevel extends Screen {
 	constructor() {
 		super();
 
-		// "#FF0085"
-		Entity.RENDER_HITBOXES = "#FF0085";
+		const width = Manifest.get("/w");
+		const height = Manifest.get("/h");
 
-		this.getLayer(0).fixedCam = true; // BG
-		this.getLayer(0).autoClear = false;
-		this.getLayer(3).fixedCam = true; // Text, e.g. HUD
-
-		//GFX.setRenderMode(1, GFX.RenderModes.RAW);
-		//GFX.setRenderMode(2, GFX.RenderModes.RAW);
+		//Entity.RENDER_HITBOXES = "#FF0085";
 
 		// background
 		let bg = new Entity();
@@ -57,7 +53,7 @@ class BaseLevel extends Screen {
 		tile.isBlocking = true;
 
 		// demo entities
-		for (let i = 0; i < 2 ; i++) {
+		for (let i = 0; i < 1 ; i++) {
 			let e = new Entity({
 				x: RNG.randomInteger(0, 120),
 				y: RNG.randomInteger(0, 88)
@@ -70,6 +66,20 @@ class BaseLevel extends Screen {
 				sheet:"tileset",
 				id: 9
 			});
+			e.xDif = Helper.choose([-1, 1]);
+			e.yDif = Helper.choose([-1, 1]);
+			e.update = function() {
+				this.x += this.xDif;
+				this.y += this.yDif;
+
+				if (this.x < 0 || this.x > width) {
+					this.xDif *= -1;
+				}
+
+				if (this.y < 0 || this.y > height) {
+					this.yDif *= -1;
+				}
+			};
 			this.add(e);
 		}
 
@@ -90,6 +100,15 @@ class BaseLevel extends Screen {
 		let textFG = new Text({text: "Platformer Demo", x: 1, y: 1, useKerning: true});
 		textFG.layer = 3;
 		this.add(textFG);
+	}
+
+	begin() {
+		GFX.getBuffer(0).setCameraFixed(true);
+		GFX.getBuffer(0).setAutoCleared(false);
+		GFX.getBuffer(3).setCameraFixed(true)
+
+		//GFX.getBuffer(1).setRenderMode(GFX.RenderModes.RAW);
+		//GFX.getBuffer(2).setRenderMode(GFX.RenderModes.RAW);
 	}
 }
 
