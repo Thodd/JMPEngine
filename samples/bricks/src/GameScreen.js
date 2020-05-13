@@ -16,6 +16,7 @@ import PieceBag from "./PieceBag.js";
 import BGRenderer from "./BGRenderer.js";
 import Engine from "../../../src/Engine.js";
 import LevelSelectScreen from "./LevelSelectScreen.js";
+import Buffer from "../../../src/gfx/Buffer.js";
 
 class GameScreen extends Screen {
 	constructor() {
@@ -40,6 +41,7 @@ class GameScreen extends Screen {
 
 	setup() {
 		GFX.getBuffer(0).setClearColor("#38a8f2");
+		GFX.getBuffer(2).setRenderMode(Buffer.RenderModes.RAW);
 	}
 
 	/**
@@ -50,7 +52,8 @@ class GameScreen extends Screen {
 
 		// UI
 		let ui = new Entity();
-		ui.layer = 1;
+		ui.layer = 2;
+		//ui.alpha = 0.5;
 		ui.setSprite({
 			sheet: "UI"
 		});
@@ -62,9 +65,9 @@ class GameScreen extends Screen {
 			level:  new Text({text: "0", x: 75, y: 89}),
 			lines:  new Text({text: "0", x: 75, y: 129})
 		}
-		this.scoringTexts.lines.layer = 3;
-		this.scoringTexts.points.layer = 3;
-		this.scoringTexts.level.layer = 3;
+		this.scoringTexts.lines.layer = 4;
+		this.scoringTexts.points.layer = 4;
+		this.scoringTexts.level.layer = 4;
 
 		this.scoringTexts.lines.color = "#FF8500";
 		this.scoringTexts.points.color = "#FF8500";
@@ -308,7 +311,7 @@ class GameScreen extends Screen {
 		// GameOver overlay
 		let offX = 104, offY = 50;
 		let gameOverUI = new Entity({x: offX, y: offY});
-		gameOverUI.layer = 3;
+		gameOverUI.layer = 4;
 		gameOverUI.setSprite({
 			sheet: "GameOver"
 		});
@@ -317,7 +320,7 @@ class GameScreen extends Screen {
 		// GAME OVER! text
 		// Ok, I got a bit lazy here and just hacked this together...
 		let t = new Text({text: "GAME OVER!", x: offX+5, y: offY+5, color: "#FF3333"});
-		t.layer = 3;
+		t.layer = 5;
 
 		t.sad = true;
 		t.blinkTimer = new FrameCounter(12);
@@ -340,7 +343,7 @@ class GameScreen extends Screen {
 
 		// continue text
 		let c = new Text({text: "Press ESC\n  key to\ncontinue!", x: offX+9, y: offY+28, leading: 2, useKerning: true});
-		c.layer = 3;
+		c.layer = 5;
 		this.add(c);
 	}
 

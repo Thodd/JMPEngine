@@ -9,7 +9,7 @@ class Brick extends Entity {
 		super(0, 0);
 
 		// a ghost brick should be rendered below a regular brick
-		this.layer = ghost ? 1 : 2;
+		this.layer = ghost ? 2 : 3;
 
 		// the bricks are positioned relative to the piece
 		this.x_rel = 0;

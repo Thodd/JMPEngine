@@ -40,8 +40,11 @@ class Raw {
 	 * @param {ImageData} target
 	 * @param {integer} tx target x
 	 * @param {integer} ty target y
+	 * @param {number} alpha the alpha channel for the given image-data.
+	 *                       The alpha value is multiplied with all alpha values in the source image-data.
 	 */
-	_copyDataExt(source, target, tx, ty) {
+	_copyDataExt(source, target, tx, ty, alpha) {
+		alpha = alpha || 1;
 		// shift the target coordinates based on current camera position
 		tx = tx - this.buffer.camX;
 		ty = ty - this.buffer.camY;
@@ -59,22 +62,43 @@ class Raw {
 			for (let x = 0; x < _sw; x++) {
 				let off = (y * _sw + x) * 4;
 
-				let r = source.data[off];
-				let g = source.data[off+1];
-				let b = source.data[off+2];
-				let a = source.data[off+3];
+				let r0 = source.data[off];
+				let g0 = source.data[off+1];
+				let b0 = source.data[off+2];
+				let a0 = source.data[off+3];
 
-				if (a > 0) { // only opaque pixels are rendered
+				a0 = a0 * alpha;
+
+				// only visible source pixels with an alpha value greater then 0 are rendered
+				if (a0 > 0) {
 					// check if target x/y are inside the view
 					if (tx + x >= 0 && tx + x < _tw &&
 						ty + y >= 0 && ty + y < _th) {
 						// position is inside pixel buffer
 						pos = 4 * ((ty + y) * _tw + tx + x);
 
-						target.data[pos] = r;
-						target.data[pos+1] = g;
-						target.data[pos+2] = b;
-						target.data[pos+3] = a;
+						let r1 = target.data[pos];
+						let g1 = target.data[pos+1];
+						let b1 = target.data[pos+2];
+						let a1 = target.data[pos+3];
+
+						// blend alpha values if necessary
+
+						// TODO: Blend colors if source has alpha value OR alpha value is given   ->   how?
+						let finalAlpha = 255;
+						if (a0 < 255 && a1 < 255) {
+							let ad = 1;
+							if (alpha != null) {
+								ad = alpha;
+							}
+							finalAlpha = (a0 + a1) / 2;
+						}
+
+						// calculate weighted average of the two colors
+						target.data[pos] = (r0 * a0 + r1 * a1) / (a0 + a1);
+						target.data[pos+1] = (g0 * a0 + g1 * a1) / (a0 + a1);
+						target.data[pos+2] = (b0 * a0 + b1 * a1) / (a0 + a1);
+						target.data[pos+3] = finalAlpha;
 						PerformanceTrace.pixelsDrawn++;
 					}
 				}
@@ -243,7 +267,7 @@ class Raw {
 	 * @param {integer} h unsupported!
 	 * @param {string} color css color string
 	 */
-	spr_ext(sheet, id, x, y, w, h, color) {
+	spr_ext(sheet, id, x, y, w, h, color, alpha) {
 		x = n(x);
 		y = n(y);
 
@@ -268,7 +292,7 @@ class Raw {
 			y1 + h1 > y2) {
 
 			let imgData = sprCanvas._getImgDataFullSize();
-			this._copyDataExt(imgData, this._pixels, x, y);
+			this._copyDataExt(imgData, this._pixels, x, y, alpha);
 		}
 
 	}

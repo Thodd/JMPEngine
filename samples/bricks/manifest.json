@@ -8,7 +8,7 @@
 	"scale": 1.5,
 	"fps": 60,
 	"hideCursor": true,
-	"skipIntro": false,
+	"skipIntro": true,
 
 	"assets": {
 		"spritesheets": {
