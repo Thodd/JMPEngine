@@ -228,18 +228,8 @@ class Screen {
 	 * Updates the Screen itself and then the entities added to the Screen.
 	 */
 	_update() {
-		// [1] call update hook before the entities are updated
-		this.update();
-
-		// [2] update entities
-		this._entities.forEach(function(e) {
-			if (e && e.active && !e._isDestroyed) {
-				e.update();
-			}
-		});
-
 		// Houskeeping (Safely adding & removing entities)
-		// [3] add scheduled entities
+		// [1] add scheduled entities
 		let lenA = this._toBeAdded.length;
 		for (let i = 0; i < lenA; i++) {
 			let ea = this._toBeAdded[i];
@@ -249,7 +239,7 @@ class Screen {
 		}
 		this._toBeAdded = [];
 
-		// [5] remove scheduled entities
+		// [2] remove scheduled entities
 		let lenR = this._toBeRemoved.length;
 		for (let j = 0; j < lenR; j++) {
 			let er = this._toBeRemoved[j];
@@ -258,6 +248,16 @@ class Screen {
 			er.removed();
 		}
 		this._toBeRemoved = [];
+
+		// [3] call update hook before the entities are updated
+		this.update();
+
+		// [4] update entities
+		this._entities.forEach(function(e) {
+			if (e && e.active && !e._isDestroyed) {
+				e.update();
+			}
+		});
 	}
 
 	/**

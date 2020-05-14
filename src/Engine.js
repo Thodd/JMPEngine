@@ -26,7 +26,6 @@ let nextScreen = null;
  * 3. Switching Screens and calling lifecycle Hooks
  */
 const gameloop = () => {
-
 	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
 	if (nextScreen) {
 		// end old screen
@@ -68,7 +67,60 @@ const gameloop = () => {
 
 	window.requestAnimationFrame(gameloop);
 };
+/*
+var now,
+    dt   = 0,
+    last = window.performance.now(),
+    step = 1/60;
 
+function gameloop() {
+	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
+	if (nextScreen) {
+		// end old screen
+		if (currentScreen) {
+			currentScreen.end();
+		}
+		currentScreen = nextScreen;
+
+		// setup phase (GFX setup)
+		currentScreen._setup();
+		currentScreen.setup();
+		currentScreen._initialClear();
+
+		// begin phase (game logic)
+		currentScreen.begin();
+
+		nextScreen = null;
+	}
+  now = window.performance.now();
+  dt = dt + Math.min(1, (now - last) / 1000);
+  while(dt > step) {
+    dt = dt - step;
+    if (currentScreen) {
+		// resets the performance tracking at the beginning of the frame
+		PerformanceTrace.reset();
+
+		// update
+		PerformanceTrace.start("update");
+		currentScreen._update();
+		PerformanceTrace.end("update");
+
+		// rendering
+		PerformanceTrace.start("render");
+		currentScreen._render();
+		PerformanceTrace.end("render");
+
+		PerformanceTrace.finalize();
+
+		resetKeyboard();
+	}
+  }
+
+
+  last = now;
+  requestAnimationFrame(gameloop);
+}
+*/
 /**
  * Imports the start Screen class defined in the Manifest.
  * Default to the base Screen class if none is given.

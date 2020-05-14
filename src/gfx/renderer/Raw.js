@@ -44,10 +44,12 @@ class Raw {
 	 *                       The alpha value is multiplied with all alpha values in the source image-data.
 	 */
 	_copyDataExt(source, target, tx, ty, alpha) {
+		// alpha = 1 is default
 		alpha = alpha || 1;
+
 		// shift the target coordinates based on current camera position
-		tx = tx - this.buffer.camX;
-		ty = ty - this.buffer.camY;
+		tx = Math.round(tx - this.buffer.camX);
+		ty = Math.round(ty - this.buffer.camY);
 
 		// source data
 		let _sw = source.width;
@@ -61,6 +63,8 @@ class Raw {
 		for (let y = 0; y < _sh; y++) {
 			for (let x = 0; x < _sw; x++) {
 				let off = (y * _sw + x) * 4;
+
+				PerformanceTrace.pixelsDrawn++;
 
 				let r0 = source.data[off];
 				let g0 = source.data[off+1];
@@ -83,23 +87,23 @@ class Raw {
 						let a1 = target.data[pos+3];
 
 						// blend alpha values if necessary
-
-						// TODO: Blend colors if source has alpha value OR alpha value is given   ->   how?
-						let finalAlpha = 255;
-						if (a0 < 255 && a1 < 255) {
-							let ad = 1;
-							if (alpha != null) {
-								ad = alpha;
+						if (a0 < 255) {
+							// TODO: Blend colors if source has alpha value OR alpha value is given   ->   how?
+							let finalAlpha = 255;
+							if (a0 < 255 && a1 < 255) {
+								finalAlpha = (a0 + a1) / 2;
 							}
-							finalAlpha = (a0 + a1) / 2;
+							// calculate weighted average of the two colors if the source has an alpha value
+							target.data[pos] = (r0 * a0 + r1 * a1) / (a0 + a1);
+							target.data[pos+1] = (g0 * a0 + g1 * a1) / (a0 + a1);
+							target.data[pos+2] = (b0 * a0 + b1 * a1) / (a0 + a1);
+							target.data[pos+3] = finalAlpha;
+						} else {
+							target.data[pos] = r0;
+							target.data[pos+1] = g0;
+							target.data[pos+2] = b0;
+							target.data[pos+3] = 255;
 						}
-
-						// calculate weighted average of the two colors
-						target.data[pos] = (r0 * a0 + r1 * a1) / (a0 + a1);
-						target.data[pos+1] = (g0 * a0 + g1 * a1) / (a0 + a1);
-						target.data[pos+2] = (b0 * a0 + b1 * a1) / (a0 + a1);
-						target.data[pos+3] = finalAlpha;
-						PerformanceTrace.pixelsDrawn++;
 					}
 				}
 			}

@@ -7,6 +7,7 @@ import Helper from "../../../../src/utils/Helper.js";
 import Player from "../Actors/Player.js";
 import GFX from "../../../../src/gfx/GFX.js";
 import Manifest from "../../../../src/Manifest.js";
+import Buffer from "../../../../src/gfx/Buffer.js";
 
 class BaseLevel extends Screen {
 	constructor() {
@@ -107,8 +108,11 @@ class BaseLevel extends Screen {
 		GFX.getBuffer(0).setAutoCleared(false);
 		GFX.getBuffer(3).setCameraFixed(true)
 
-		//GFX.getBuffer(1).setRenderMode(GFX.RenderModes.RAW);
-		//GFX.getBuffer(2).setRenderMode(GFX.RenderModes.RAW);
+		// layer 0: background is rendered in BASIC mode
+		// layer 1 and 2: sprites and tiles are rendered in RAW mode
+		// layer 3: text is rendered in BASIC mode (and with fixed camera)
+		GFX.getBuffer(1).setRenderMode(Buffer.RenderModes.RAW);
+		GFX.getBuffer(2).setRenderMode(Buffer.RenderModes.RAW);
 	}
 }
 

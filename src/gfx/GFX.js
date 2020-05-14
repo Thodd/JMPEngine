@@ -17,7 +17,7 @@ function setupCSS() {
 		.jmpCanvas {
 			position: absolute;
 
-			/*transform: translateZ(0px);*/
+			transform: translateZ(0px);
 
 			image-rendering: pixelated;
 			image-rendering: -webkit-crisp-edges;
