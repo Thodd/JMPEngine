@@ -41,7 +41,7 @@ class GameScreen extends Screen {
 
 	setup() {
 		GFX.getBuffer(0).setClearColor("#38a8f2");
-		GFX.getBuffer(2).setRenderMode(Buffer.RenderModes.RAW);
+		//GFX.getBuffer(2).setRenderMode(Buffer.RenderModes.RAW);
 	}
 
 	/**

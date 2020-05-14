@@ -1,0 +1,22 @@
+{
+	"title": "Fruitmark",
+
+	"startScreen": "./src/MenuScreen.js",
+
+	"w": 256,
+	"h": 256,
+	"scale": 1.5,
+	"fps": 60,
+	"hideCursor": true,
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"char": {
+				"url": "./img/fruits.png",
+				"w": 8,
+				"h": 8
+			}
+		}
+	}
+}

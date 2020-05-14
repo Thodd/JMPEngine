@@ -176,7 +176,7 @@ const Engine = {
 
 		// kickstart gameloop
 		gameloop();
-		log("Started.", "Engine");
+		log("Gameloop started.", "Engine");
 
 		// Now we do some parallel stuff while the intro screen is showing.
 		// All of which involves additional resource requests:
