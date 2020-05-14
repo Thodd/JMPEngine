@@ -48,10 +48,15 @@ class Text extends Entity {
 				}
 			}
 
+			let kerningDiff = 0;
+			if (this.useKerning && this.font.kerning) {
+				kerningDiff = this.font.kerning.maxPositiveKerning || 0;
+			}
+
 			// we dimension the offscreen buffer to the maximum width without considering kerning for simplicity
 			this.backbuffer = new Buffer(
 				// width
-				longestLine * this.font.w,
+				(longestLine + kerningDiff) * this.font.w,
 				// height
 				(this.font.h + this.leading) * lines.length
 			);

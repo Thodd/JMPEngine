@@ -17,19 +17,13 @@ class MenuScreen extends Screen {
 	createTexts() {
 		let msg =
 `
-AIBICIDIEIFIGIHIJIKILI
-IMINIOIPIQIRISITIUIVIWIXIYIZI
-IaIbIcIdIeIfIgIhIjIkIlI
-ImInIoIpIqIrIsItIuIvIwIxIyIzI
+RenderMode: BASIC
 
-AiBiCiDiEiFiGiHiIiJiKiLi
-iMiNiOiPiQiRiSiTiUiViWiXiYiZi
-iaibicidieifigihiiijikili
-iminioipiqirisitiuiviwixiyizi
+RenderMode: RAW
 `;
 		let t = new Text({
 			x: 20,
-			y: Manifest.get("/h") / 2,
+			y: Manifest.get("/h") / 2 - 25,
 			text: msg,
 			leading: 2,
 			useKerning: true,
