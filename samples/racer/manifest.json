@@ -1,0 +1,23 @@
+{
+	"title": "racer",
+
+	"startScreen": "./src/RaceTrack.js",
+
+	"layers": 3,
+	"w": 256,
+	"h": 192,
+	"scale": 2,
+	"fps": 60,
+	"hideCursor": true,
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"fruits": {
+				"url": "./img/fruits.png",
+				"w": 8,
+				"h": 8
+			}
+		}
+	}
+}

@@ -121,6 +121,7 @@ class Raw {
 	 * GFX Module API
 	 */
 	clear(color) {
+		color = color || this.buffer.getClearColor();
 		if (color) {
 			this._canvasDOM.style.background = color;
 		}
@@ -157,6 +158,27 @@ class Raw {
 	}
 
 	/**
+	 * Returns the internal ImageData object.
+	 * <b>Use at your own risk!</b>
+	 *
+	 * You can directly manipulate each pixel's bytes.
+	 * This might be useful if you need to manipulate a great number of pixels.
+	 * Please check if using <code>pxSetFast()</code> is sufficient before
+	 * manipulating the pixel's byte values directly.
+	 *
+	 * One final hint:
+	 * ----------------
+	 * To get the offset of a single pixel inside the data array (UInt8ClampedArray) of the ImageData object:
+	 * let img = GFX.get(0).getImageData();
+	 * let off = 4 * (y * img.width + x);
+	 *
+	 * From here on you're on your own.
+	 */
+	getImageData() {
+		return this._pixels;
+	}
+
+	/**
 	 * Renders a Pixel of the given color at coordinates (x,y).
 	 *
 	 * @sample
@@ -167,7 +189,7 @@ class Raw {
 	 * @param {integer} y
 	 * @param {object|string} color object containing r/g/b/a values, or CSS-color string
 	 */
-	pxSet(x, y, color) {
+	pxSet(x, y, color = {r: 255, g: 255, b: 255, a: 255}) {
 		x = n(x - this.buffer.camX);
 		y = n(y - this.buffer.camY);
 
@@ -189,6 +211,36 @@ class Raw {
 
 		// alpha
 		d.data[off + 3] = (color.a != undefined) ? color.a : 255;
+
+		PerformanceTrace.pixelsDrawn++;
+	}
+
+	/**
+	 * Fastest public API to render a pixel.
+	 *
+	 * - No smoothing of coordinates!
+	 * - No boundary checks!
+	 * - No CSS color-string resolution!
+	 *
+	 * <b>Use at your own risk!</b>
+	 *
+	 * @param {integer} x x, must be an integer!
+	 * @param {integer} y y, must be an integer!
+	 * @param {integer} r red
+	 * @param {integer} g green
+	 * @param {integer} b blue
+	 * @param {integer} a alpha
+	 */
+	pxSetFast(x, y, r, g, b, a) {
+		x = x - this.buffer.camX;
+		y = y - this.buffer.camY;
+
+		let d = this._pixels;
+		let off = 4 * (y * this.manifest.w + x);
+		d.data[off + 0] = r;
+		d.data[off + 1] = g;
+		d.data[off + 2] = b;
+		d.data[off + 3] = (a != undefined) ? a : 255;
 
 		PerformanceTrace.pixelsDrawn++;
 	}
