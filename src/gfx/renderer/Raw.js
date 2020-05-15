@@ -23,6 +23,10 @@ class Raw {
 		this.clear();
 	}
 
+	_release() {
+		delete this._pixels;
+	}
+
 	/**
 	 * Helpers to simplify implementation
 	 */
@@ -48,6 +52,7 @@ class Raw {
 		alpha = alpha || 1;
 
 		// shift the target coordinates based on current camera position
+		// rounded to the next integer, as we can't render "subpixels" in RAW mode
 		tx = Math.round(tx - this.buffer.camX);
 		ty = Math.round(ty - this.buffer.camY);
 
@@ -81,19 +86,21 @@ class Raw {
 						// position is inside pixel buffer
 						pos = 4 * ((ty + y) * _tw + tx + x);
 
-						let r1 = target.data[pos];
-						let g1 = target.data[pos+1];
-						let b1 = target.data[pos+2];
-						let a1 = target.data[pos+3];
-
 						// blend alpha values if necessary
 						if (a0 < 255) {
+							// target colors
+							let r1 = target.data[pos];
+							let g1 = target.data[pos+1];
+							let b1 = target.data[pos+2];
+							let a1 = target.data[pos+3];
+
 							// TODO: Blend colors if source has alpha value OR alpha value is given   ->   how?
 							let finalAlpha = 255;
 							if (a0 < 255 && a1 < 255) {
 								finalAlpha = (a0 + a1) / 2;
 							}
-							// calculate weighted average of the two colors if the source has an alpha value
+
+							// calculate average of the two colors
 							target.data[pos] = (r0 * a0 + r1 * a1) / (a0 + a1);
 							target.data[pos+1] = (g0 * a0 + g1 * a1) / (a0 + a1);
 							target.data[pos+2] = (b0 * a0 + b1 * a1) / (a0 + a1);
@@ -118,7 +125,7 @@ class Raw {
 			this._canvasDOM.style.background = color;
 		}
 		delete this._pixels;
-		this._pixels = new ImageData(this.manifest.w, this.manifest.h);
+		this._pixels = this._ctx.createImageData(this.manifest.w, this.manifest.h);
 	}
 
 	clear_rect(color, /* x, y, w, h */) {

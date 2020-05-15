@@ -77,6 +77,14 @@ class Buffer {
 			fail(`Unknown render mode: ${r}.`, "GFX");
 		}
 		this.renderMode = r;
+
+		// The renderers might retain some "costly" ImageData objects,
+		// which are not needed for Screens which will mainly use the BASIC RenderMode.
+		// The difference can be seen in the Chrome/Edge Memory profiler, even with only two layers.
+		if (this.renderer) {
+			this.renderer._release();
+		}
+
 		this.renderer = this._renderers[r];
 	}
 

@@ -24,6 +24,8 @@ class Basic {
 		this._ctx = this.buffer.getContext();
 	}
 
+	_release() {}
+
 	/**
 	 * Helper functions
 	 */
