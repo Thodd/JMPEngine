@@ -4,8 +4,12 @@ import Entity from "../../../src/game/Entity.js";
 import RNG from "../../../src/utils/RNG.js";
 import Helper from "../../../src/utils/Helper.js";
 import GFX from "../../../src/gfx/GFX.js";
-import Buffer from "../../../src/gfx/Buffer.js";
-import Tilemap from "../../../src/game/Tilemap.js";
+import Keyboard from "../../../src/input/Keyboard.js";
+import Keys from "../../../src/input/Keys.js";
+import Engine from "../../../src/Engine.js";
+import Text from "../../../src/gfx/Text.js";
+
+import Scope from "./Scope.js";
 
 const screenWidth = Manifest.get("/w");
 const screenHeight = Manifest.get("/h");
@@ -14,7 +18,7 @@ class Fruit extends Entity {
 	constructor() {
 		super({});
 
-		this.layer = 1;
+		this.layer = 0;
 
 		this.xDir = Helper.choose([-1, 1]);
 		this.yDir = Helper.choose([-1, 1]);
@@ -48,19 +52,41 @@ class Fruitmark extends Screen {
 	constructor() {
 		super();
 
-		let t = new Tilemap({sheet: "fruits", w: 40, h: 40, version: "B"});
-		t.each((tile) => {
-			tile.set(2);
-		})
-		this.add(t);
+		// keep a reference so we can reuse it from the MenuScreen
+		Scope.fruitmarkScreen = this;
+	}
 
-		for (let i = 0; i < 2000; i++) {
+	init(renderMode, entityCount) {
+		this.renderMode = renderMode;
+
+		for (let i = 0; i < entityCount; i++) {
 			this.add(new Fruit({}));
 		}
+
+		let helpText = new Text({
+			x: 2,
+			y: 2,
+			text: "Press 'ESC' to go back",
+			color: "#FF0085",
+			useKerning: true
+		});
+		helpText.layer = 2;
+		this.add(helpText);
 	}
 
 	setup() {
-		GFX.getBuffer(1).setRenderMode(Buffer.RenderModes.RAW);
+		GFX.getBuffer(0).setRenderMode(this.renderMode);
+	}
+
+	update() {
+		if (Keyboard.pressed(Keys.ESC)) {
+			this.getEntities().forEach(this.remove.bind(this));
+			Engine.screen = Scope.menuScreen;
+		}
+	}
+
+	render() {
+		GFX.get(1).rectf(0, 0, screenWidth, 12, "#332c50");
 	}
 }
 

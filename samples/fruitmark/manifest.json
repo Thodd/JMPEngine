@@ -1,8 +1,9 @@
 {
 	"title": "Fruitmark",
 
-	"startScreen": "./src/Fruitmark.js",
+	"startScreen": "./src/MenuScreen.js",
 
+	"layers": 3,
 	"w": 256,
 	"h": 256,
 	"scale": 2,

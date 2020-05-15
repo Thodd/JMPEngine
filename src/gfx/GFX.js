@@ -73,12 +73,14 @@ function setupDebugUI() {
 		document.body.appendChild(d);
 		setInterval(() => {
 			d.innerHTML = `
-				update-time: ${PerformanceTrace.updateTime.toFixed(2)}ms<br />
-				render-time: ${PerformanceTrace.renderTime.toFixed(2)}ms<br />
-				total-time:  ${PerformanceTrace.frameTime.toFixed(2)}ms<br />
-				draw-calls : ${PerformanceTrace.drawCalls}<br />
-				pixels-drawn: ${PerformanceTrace.pixelsDrawn}
-			`;
+<pre>
+avg. update-time   : ${(PerformanceTrace.avgUpdateTime).toFixed(2)}ms
+avg. render-time   : ${(PerformanceTrace.avgRenderTime).toFixed(2)}ms
+avg. total-time    : ${(PerformanceTrace.avgUpdateTime + PerformanceTrace.avgRenderTime).toFixed(2)}ms
+draw-calls/frame   : ${PerformanceTrace.drawCalls}
+pixels-drawn/frame : ${PerformanceTrace.pixelsDrawn}
+</pre>
+`;
 		}, 500);
 	}
 }

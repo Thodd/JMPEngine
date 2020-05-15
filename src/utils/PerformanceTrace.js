@@ -10,6 +10,8 @@ const now = function() {
 
 const traces = {};
 
+let framesCount = 0;
+
 /**
  * Tracks Performance information every frame.
  * - updateTime:  The time [ms] spent in the update-cycle of each frame
@@ -21,7 +23,9 @@ const traces = {};
 const PerformanceTrace = {
 	updateTime:  0,
 	renderTime:  0,
-	frameTime:   0,
+
+	avgUpdateTime: 0,
+	avgRenderTime: 0,
 
 	drawCalls:   0,
 	pixelsDrawn: 0,
@@ -32,20 +36,28 @@ const PerformanceTrace = {
 
 	end: function(s) {
 		let end = now();
-		this[`${s}Time`] = (end - traces[s]);
+		this[`${s}Time`] += (end - traces[s]);
 	},
 
 	finalize: function() {
-		this.frameTime = this.updateTime + this.renderTime;
+		this.avgRenderTime = this.renderTime / framesCount;
+		this.avgUpdateTime = this.updateTime / framesCount;
+		framesCount++;
 	},
 
 	// resets the drawCalls counter
-	reset: function() {
-		this.updateTime  = 0;
-		this.renderTime  = 0;
-		this.frameTime   = 0;
+	resetDrawCounters: function() {
 		this.drawCalls   = 0;
 		this.pixelsDrawn = 0;
+	},
+
+	clear: function() {
+		framesCount = 0;
+		this.updateTime = 0;
+		this.renderTime = 0;
+		this.avgUpdateTime = 0;
+		this.avgRenderTime = 0;
+		this.resetDrawCounters();
 	}
 };
 

@@ -43,12 +43,15 @@ const gameloop = () => {
 		currentScreen.begin();
 
 		nextScreen = null;
+
+		// new performance trace for each screen
+		PerformanceTrace.clear();
 	}
 
 
 	if (currentScreen) {
 		// resets the performance tracking at the beginning of the frame
-		PerformanceTrace.reset();
+		PerformanceTrace.resetDrawCounters();
 
 		// update
 		PerformanceTrace.start("update");

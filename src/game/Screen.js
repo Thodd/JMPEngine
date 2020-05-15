@@ -175,6 +175,10 @@ class Screen {
 		}
 	}
 
+	getEntities() {
+		return this._entities;
+	}
+
 	/**
 	 * Updates the given Entitys collision types in the EntityTypeStore.
 	 * @param {Entity} e
