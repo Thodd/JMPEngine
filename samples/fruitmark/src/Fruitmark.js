@@ -22,6 +22,9 @@ class Fruit extends Entity {
 
 		this.layer = 0;
 
+		//this.scale.w = 2;
+		//this.scale.h = 2;
+
 		this.xDir = Helper.choose([-1, 1]);
 		this.yDir = Helper.choose([-1, 1]);
 

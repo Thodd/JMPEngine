@@ -16,17 +16,22 @@ class Buffer {
 		this._canvasDOM.classList.add("jmpCanvas");
 		this._canvasDOM.style.cursor = Manifest.get("/hideCursor") ? "none" : "";
 
-		this._ctx = this._canvasDOM.getContext("2d");
-		this._ctx.imageSmoothingEnabled = false;
-		this._ctx._depth = depth;
+		// the canvas itself however has a fixed width and height
+		this._canvasDOM.width = this.width;
+		this._canvasDOM.height = this.height;
 
 		// the style of the canvas scales it to the given scale factor
 		this._canvasDOM.style.width = w * scale;
 		this._canvasDOM.style.height = h * scale;
 
-		// the canvas itself however has a fixed width and height
-		this._canvasDOM.width = this.width;
-		this._canvasDOM.height = this.height;
+		// render context
+		this._ctx = this._canvasDOM.getContext("2d");
+		this._ctx._depth = depth;
+
+		// ok here's something funny:
+		// the imageSmoothing for this context has to be deactivated AFTER giving the canvas DOM a width and height
+		// Changing the dimensions resets the render context somehow...
+		this._ctx.imageSmoothingEnabled = false;
 
 		// create renderer instances
 		this._renderers = {
