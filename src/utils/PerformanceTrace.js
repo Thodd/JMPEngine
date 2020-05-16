@@ -1,13 +1,5 @@
 import { exposeOnWindow } from "./Log.js";
 
-const now = function() {
-	if (window.performance) {
-		return window.performance.now();
-	} else {
-		return Date.now();
-	}
-};
-
 const traces = {};
 
 let framesCount = 0;
@@ -31,11 +23,11 @@ const PerformanceTrace = {
 	pixelsDrawn: 0,
 
 	start: function(s) {
-		traces[s] = now();
+		traces[s] = window.performance.now();
 	},
 
 	end: function(s) {
-		let end = now();
+		let end = window.performance.now();
 		this[`${s}Time`] += (end - traces[s]);
 	},
 

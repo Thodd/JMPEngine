@@ -15,6 +15,11 @@ class Entity {
 
 		this._screen = null;
 
+		// screen internal information
+		this._isScheduledForRemoval = false;
+		this._isScheduledForAdding = false;
+
+		// lifetime of an entity
 		this.active = true;
 		this.visible = true;
 		this._isDestroyed = false;
@@ -34,7 +39,7 @@ class Entity {
 		// by default we render on layer 0
 		this.layer = 0;
 
-		// defaults to 1
+		// defaults to 1 during rendering
 		this.alpha = undefined;
 
 		// collision
@@ -45,7 +50,7 @@ class Entity {
 			h: 0
 		};
 
-		/**
+		/*
 		 * The collision type.
 		 * Once the Entity is added to a Screen, the Screen
 		 * takes care of tracking all Entities and their types.
@@ -82,18 +87,6 @@ class Entity {
 	getTypes() {
 		return this._types;
 	}
-
-	/**
-	 * "Added" hook.
-	 * Called everytime the entity is added to a World.
-	 */
-	added() {}
-
-	/**
-	 * "Removed" hook.
-	 * Called everytime the entity is removed to a World.
-	 */
-	removed() {}
 
 	/**
 	 * Destroys the Entity.

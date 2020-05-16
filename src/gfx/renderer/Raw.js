@@ -354,6 +354,8 @@ class Raw {
 			y1 < y2 + h2 &&
 			y1 + h1 > y2) {
 
+			// TODO: Can this be optimized by calculating the actual visible section of the source?
+
 			let imgData = sprCanvas._getImgDataFullSize();
 			this._copyDataExt(imgData, this._pixels, x, y, alpha);
 		}

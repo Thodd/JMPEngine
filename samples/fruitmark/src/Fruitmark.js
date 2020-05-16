@@ -18,6 +18,8 @@ class Fruit extends Entity {
 	constructor() {
 		super({});
 
+		this.speed = Math.round(60 / Engine.FPS);
+
 		this.layer = 0;
 
 		this.xDir = Helper.choose([-1, 1]);
@@ -35,8 +37,8 @@ class Fruit extends Entity {
 	}
 
 	update() {
-		this.x += this.xDir * 1;
-		this.y += this.yDir * 1;
+		this.x += this.xDir * this.speed;
+		this.y += this.yDir * this.speed;
 
 		if (this.x < 0 || this.x + 8 > screenWidth) {
 			this.xDir *= -1;
@@ -56,8 +58,9 @@ class Fruitmark extends Screen {
 		Scope.fruitmarkScreen = this;
 	}
 
-	init(renderMode, entityCount) {
+	init(renderMode, entityCount, fps) {
 		this.renderMode = renderMode;
+		Engine.FPS = fps;
 
 		for (let i = 0; i < entityCount; i++) {
 			this.add(new Fruit({}));
@@ -72,6 +75,16 @@ class Fruitmark extends Screen {
 		});
 		helpText.layer = 2;
 		this.add(helpText);
+
+		let infoText = new Text({
+			x: 2,
+			y: screenHeight - 9,
+			text: `RenderMode: ${renderMode}_${fps}   (${entityCount})`,
+			color: "#FF0085",
+			useKerning: true
+		});
+		infoText.layer = 2;
+		this.add(infoText);
 	}
 
 	setup() {
@@ -81,12 +94,14 @@ class Fruitmark extends Screen {
 	update() {
 		if (Keyboard.pressed(Keys.ESC)) {
 			this.getEntities().forEach(this.remove.bind(this));
+			Engine.FPS = 60;
 			Engine.screen = Scope.menuScreen;
 		}
 	}
 
 	render() {
 		GFX.get(1).rectf(0, 0, screenWidth, 12, "#332c50");
+		GFX.get(1).rectf(0, screenHeight - 12, screenWidth, 12, "#332c50");
 	}
 }
 

@@ -37,14 +37,7 @@ function keyUpHandlerImpl(evt) {
 	}
 }
 
-let initialized = false;
-
 function init() {
-	if (initialized) {
-		warn("already initialized!", "GFX");
-		return;
-	}
-
 	// adding the actual event listeners to the window object
 	window.addEventListener("keydown", function (e) {
 		keyDownHandlerImpl(e);
@@ -55,7 +48,6 @@ function init() {
 	}, true);
 
 	log("module initialized.", "Keyboard");
-
 	return _reset;
 }
 

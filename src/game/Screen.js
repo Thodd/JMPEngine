@@ -132,13 +132,20 @@ class Screen {
 	 */
 	add(e) {
 		// check if already scheduled for removal
-		let isScheduled = Helper.contains(e, this._toBeAdded);
+		let isScheduled = e._isScheduledForAdding;
 
 		if (!e._screen && !isScheduled && !e._isDestroyed) {
-			Helper.remove(e, this._toBeRemoved);
+			if (e._isScheduledForRemoval) {
+				Helper.remove(e, this._toBeRemoved);
+				e._isScheduledForRemoval = false;
+			}
 			this._toBeAdded.push(e);
+			e._isScheduledForAdding = true;
 
-			this._entityTypeStore.add(e);
+			// add to type mapping
+			if (e._types) {
+				this._entityTypeStore.add(e);
+			}
 		} else {
 			// error cases
 			if (e._screen) {
@@ -157,13 +164,18 @@ class Screen {
 	 */
 	remove(e) {
 		// check if already scheduled for adding
-		let isScheduled = Helper.contains(e, this._toBeRemoved);
+		let isScheduled = e._isScheduledForRemoval;
 
-		if (e._screen == this && !isScheduled) {
-			Helper.remove(e, this._toBeAdded);
+		if (e._screen == this && !e._isScheduledForRemoval) {
+			if (e._isScheduledForAdding) {
+				Helper.remove(e, this._toBeAdded);
+				e._isScheduledForAdding = false;
+			}
 			this._toBeRemoved.push(e);
-
-			this._entityTypeStore.remove(e);
+			e._isScheduledForRemoval = true;
+			if (e._types) {
+				this._entityTypeStore.remove(e);
+			}
 		} else {
 			if (e._screen != this) {
 				error(`Entity already added to ${e._screen}!`);
@@ -232,36 +244,43 @@ class Screen {
 	 * Updates the Screen itself and then the entities added to the Screen.
 	 */
 	_update() {
-		// Houskeeping (Safely adding & removing entities)
-		// [1] add scheduled entities
-		let lenA = this._toBeAdded.length;
-		for (let i = 0; i < lenA; i++) {
-			let ea = this._toBeAdded[i];
-			this._entities.push(ea);
-			ea._screen = this;
-			ea.added();
-		}
-		this._toBeAdded = [];
-
-		// [2] remove scheduled entities
-		let lenR = this._toBeRemoved.length;
-		for (let j = 0; j < lenR; j++) {
-			let er = this._toBeRemoved[j];
-			Helper.remove(er, this._entities);
-			er._screen = null;
-			er.removed();
-		}
-		this._toBeRemoved = [];
-
-		// [3] call update hook before the entities are updated
+		// [1] call update hook before the entities are updated
 		this.update();
 
-		// [4] update entities
+		// [2] update entities
 		this._entities.forEach(function(e) {
 			if (e && e.active && !e._isDestroyed) {
 				e.update();
 			}
 		});
+
+		// Houskeeping (Safely adding & removing entities)
+		// [3] add scheduled entities
+		let lenA = this._toBeAdded.length;
+		for (let i = 0; i < lenA; i++) {
+			let ea = this._toBeAdded[i];
+			this._entities.push(ea);
+			ea._screen = this;
+			// call added hook if given
+			if (ea.added) {
+				ea.added();
+			}
+		}
+		this._toBeAdded = [];
+
+		// [4] remove scheduled entities
+		// Entities are removed at the end of the frame, so that they are removed before a Screen change.
+		let lenR = this._toBeRemoved.length;
+		for (let j = 0; j < lenR; j++) {
+			let er = this._toBeRemoved[j];
+			Helper.remove(er, this._entities);
+			er._screen = null;
+			// call removed hook if given
+			if (er.removed) {
+				er.removed();
+			}
+		}
+		this._toBeRemoved = [];
 	}
 
 	/**

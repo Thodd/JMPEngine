@@ -18,6 +18,12 @@ let resetKeyboard = null;
 let currentScreen = null;
 let nextScreen = null;
 
+// gameloop variables
+let fps = 60;
+let timePerFrame = 1/fps;
+let dt = 0;
+let last = 0;
+
 /**
  * The game loop.
  * Takes care of:
@@ -48,82 +54,64 @@ const gameloop = () => {
 		PerformanceTrace.clear();
 	}
 
+	// main gameloop implementation is based on the "fixing your timestep" tutorial by "codeincomplete.com"
+	// and information taken from the article "Dewitters Gameloop":
+	// https://codeincomplete.com/articles/javascript-game-foundations-the-game-loop/
+	// https://dewitters.com/dewitters-gameloop/
+	let now = window.performance.now();
+	dt = dt + Math.min(1, (now - last) / 1000);
+	last = now;
 
+	// only do all this if we have a screen set
 	if (currentScreen) {
-		// resets the performance tracking at the beginning of the frame
-		PerformanceTrace.resetDrawCounters();
+		let dirtyUI = false;
+		while(dt > timePerFrame) {
+			dt = dt - timePerFrame;
 
-		// update
-		PerformanceTrace.start("update");
-		currentScreen._update();
-		PerformanceTrace.end("update");
+			// update
+			PerformanceTrace.start("update");
+			currentScreen._update();
+			PerformanceTrace.end("update");
 
-		// rendering
-		PerformanceTrace.start("render");
-		currentScreen._render();
-		PerformanceTrace.end("render");
+			dirtyUI = true;
 
-		PerformanceTrace.finalize();
-
-		resetKeyboard();
-	}
-
-	window.requestAnimationFrame(gameloop);
-};
-/*
-var now,
-    dt   = 0,
-    last = window.performance.now(),
-    step = 1/60;
-
-function gameloop() {
-	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
-	if (nextScreen) {
-		// end old screen
-		if (currentScreen) {
-			currentScreen.end();
+			resetKeyboard();
 		}
-		currentScreen = nextScreen;
 
-		// setup phase (GFX setup)
-		currentScreen._setup();
-		currentScreen.setup();
-		currentScreen._initialClear();
+		// So the dirty check is a simple variation on the above mentioned tutorial.
+		// So why don't we render every frame now (as proposed by codeincomplete)?
+		// and interpolate during rendering (as proposed by Koen Witters)?
 
-		// begin phase (game logic)
-		currentScreen.begin();
+		// It's based on the following assumptions:
+		// - every time we update, we also need to render (depending on the configured FPS)
+		// - requestAnimationFrame targets 60fps
+		// - The JMP Engine targets full-pixel only
+		// - The JMP Engine is a software renderer based on copying pixel buffer data
+		//   in a single/sync. JavaScript stack, so render-time should be regarded
+		//   with a similar perspective as update-time
 
-		nextScreen = null;
-	}
-  now = window.performance.now();
-  dt = dt + Math.min(1, (now - last) / 1000);
-  while(dt > step) {
-    dt = dt - step;
-    if (currentScreen) {
-		// resets the performance tracking at the beginning of the frame
-		PerformanceTrace.reset();
-
-		// update
-		PerformanceTrace.start("update");
-		currentScreen._update();
-		PerformanceTrace.end("update");
-
-		// rendering
-		PerformanceTrace.start("render");
-		currentScreen._render();
-		PerformanceTrace.end("render");
-
+		// From my experience, using a dirty check significantly decreases CPU usage and memory consumption.
+		// It's also most likely more energy efficient.
+		// However, even with full-pixels as a target (no sub-pixels or anti-aliasing), we could still use interpolation for
+		// rendering, e.g. a 2px movement during update, could still be rendered as two 1px movements during rendering.
+		// While interpolation would smooth out the 30fps mode, we still would need to do much more calculations
+		// per loop, and this is noticeable with a high entity count.
+		// I saw a noticeable performance decrease with roughly > 5000 entities in my tests.
+		if (dirtyUI) {
+			// rendering
+			PerformanceTrace.resetDrawCounters();
+			PerformanceTrace.start("render");
+			currentScreen._render(dt);
+			PerformanceTrace.end("render");
+		}
 		PerformanceTrace.finalize();
 
-		resetKeyboard();
 	}
-  }
 
+	// update as fast as the browser sees fit
+	requestAnimationFrame(gameloop);
+};
 
-  last = now;
-  requestAnimationFrame(gameloop);
-}
-*/
 /**
  * Imports the start Screen class defined in the Manifest.
  * Default to the base Screen class if none is given.
@@ -162,6 +150,20 @@ function getIntroScreen() {
 const Engine = {
 
 	/**
+	 * Changes the FPS of the gameloop.
+	 * Updates are executed at the given rate.
+	 */
+	set FPS(x) {
+		x = x || 60; // 0 is stupid...
+		fps = x;
+		timePerFrame = 1/x;
+	},
+
+	get FPS() {
+		return fps;
+	},
+
+	/**
 	 * Schedules a new screen for activation.
 	 * <b>Beware</b>: The next screen will only be activated at the beginning of the next frame.
 	 * @param {Screen} s the next screen which will be activated
@@ -189,10 +191,10 @@ const Engine = {
 	now: (res) => {
 		// resolution in milliseconds
 		if (res == "ms") {
-			return Date.now() - startTime;
+			return window.performance.now() - startTime;
 		}
 		// resolution in seconds
-		return (Date.now() - startTime) / 1000;
+		return (window.performance.now() - startTime) / 1000;
 	},
 
 	/**
@@ -227,9 +229,9 @@ const Engine = {
 
 		resetKeyboard = Keyboard.init();
 
-		startTime = Date.now();
-
 		// kickstart gameloop
+		Engine.FPS = Manifest.get("/fps");
+		startTime = last = window.performance.now()
 		gameloop();
 		log("Gameloop started.", "Engine");
 
