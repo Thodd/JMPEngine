@@ -17,6 +17,16 @@ class FrameCounter {
 	}
 
 	/**
+	 * Changes the max number of frames before isReady returns true.
+	 * <b>Beware</b>: Changing the max frames will reset the current frame count to 0!
+	 * @param {integer} m max number of frames
+	 */
+	setMaxFrames(m) {
+		this._maxFrames = m;
+		this.reset();
+	}
+
+	/**
 	 * Returns the number of loops.
 	 */
 	looped() {

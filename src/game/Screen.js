@@ -243,14 +243,14 @@ class Screen {
 	 * Internal update method.
 	 * Updates the Screen itself and then the entities added to the Screen.
 	 */
-	_update() {
+	_update(dt) {
 		// [1] call update hook before the entities are updated
-		this.update();
+		this.update(dt);
 
 		// [2] update entities
 		this._entities.forEach(function(e) {
 			if (e && e.active && !e._isDestroyed) {
-				e.update();
+				e.update(dt);
 			}
 		});
 
@@ -288,12 +288,12 @@ class Screen {
 	 * Overwrite this in your subclasses if needed.
 	 * The Screen's update method is called before the entities of the Screen are updated.
 	 */
-	update() {}
+	update(dt) {}
 
 	/**
 	 * Internal render method.
 	 */
-	_render() {
+	_render(dt) {
 		// [1] move (translate) camera and
 		// [2] clear layers
 		for (let i = 0; i < this._layers; i++) {
@@ -310,12 +310,12 @@ class Screen {
 		}
 
 		// [3] call render hook before the entities are rendered
-		this.render();
+		this.render(dt);
 
 		// [4] render entities
 		this._entities.forEach(function(e) {
 			if (e && e.visible && !e._isDestroyed) {
-				e.render();
+				e.render(dt);
 			}
 		});
 

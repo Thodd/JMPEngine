@@ -120,18 +120,14 @@ class Raw {
 	/**
 	 * GFX Module API
 	 */
-	clear(color) {
-		color = color || this.buffer.getClearColor();
-		if (color) {
-			this._canvasDOM.style.background = color;
-		}
+	clear() {
 		delete this._pixels;
 		this._pixels = this._ctx.createImageData(this.manifest.w, this.manifest.h);
 	}
 
-	clear_rect(color, /* x, y, w, h */) {
+	clear_rect(/* x, y, w, h */) {
 		// TODO: implement clearing of a rectangle
-		this.clear(color);
+		this.clear();
 	}
 
 	/**

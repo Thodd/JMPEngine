@@ -65,7 +65,7 @@ class Buffer {
 
 		// screen clearing
 		// the lowest layer is cleared with a color instead of transparent
-		this._clearColor = this.depth == 0 ? "#222222" : "transparent";
+		this.setClearColor(this.depth == 0 ? "#222222" : "transparent");
 		this._autoCleared = true;
 
 		if (shouldClear) {
@@ -116,6 +116,7 @@ class Buffer {
 	 */
 	setClearColor(c) {
 		this._clearColor = c || "transparent";
+		this._canvasDOM.style.background = this._clearColor;
 	}
 
 	/**

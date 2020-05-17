@@ -1,4 +1,5 @@
 import Tilemap from "../../../src/game/Tilemap.js";
+import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 /*
 	We render the tilemap with doubled width and height.
@@ -18,19 +19,25 @@ class BGRenderer extends Tilemap {
 	constructor() {
 		super({sheet: "BG", w: 32, h: 24, version: Tilemap.Version.B});
 
+		this.animationDelay = new FrameCounter(2);
+
 		this.each((t) => {
 			t.set(0);
 		});
 	}
 
 	update() {
-		this.x -= 0.3;
-		this.y -= 0.3;
 
-		if (this.x <= -256 || this.y <= -192) {
-			this.x = 0;
-			this.y = 0;
+		if (this.animationDelay.isReady()) {
+			this.x -= 1;
+			this.y -= 1;
+
+			if (this.x <= -256 || this.y <= -192) {
+				this.x = 0;
+				this.y = 0;
+			}
 		}
+
 	}
 }
 

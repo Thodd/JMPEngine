@@ -19,10 +19,11 @@ let currentScreen = null;
 let nextScreen = null;
 
 // gameloop variables
-let fps = 60;
-let timePerFrame = 1/fps;
-let dt = 0;
-let last = 0;
+let currentFPS = 0;
+let targetFPS = 60;                 // the targeted FPS
+let timePerFrame = 1/targetFPS;     // the duration of each frame to keep the target FPS
+let frameDeltaAcc = 0;              // accumulated delta time between frames
+let last = 0;                    // the last timestamp for the gameloop
 
 /**
  * The game loop.
@@ -54,23 +55,26 @@ const gameloop = () => {
 		PerformanceTrace.clear();
 	}
 
-	// main gameloop implementation is based on the "fixing your timestep" tutorial by "codeincomplete.com"
+	// gameloop implementation is based on the "fixing your timestep" tutorial by "codeincomplete.com"
 	// and information taken from the article "Dewitters Gameloop":
 	// https://codeincomplete.com/articles/javascript-game-foundations-the-game-loop/
 	// https://dewitters.com/dewitters-gameloop/
-	let now = window.performance.now();
-	dt = dt + Math.min(1, (now - last) / 1000);
-	last = now;
 
 	// only do all this if we have a screen set
 	if (currentScreen) {
 		let dirtyUI = false;
-		while(dt > timePerFrame) {
-			dt = dt - timePerFrame;
+
+		let now = window.performance.now();
+		let frameDelta = Math.min(1, (now - last) / 1000);
+		frameDeltaAcc += frameDelta;
+		last = now;
+
+		while(frameDeltaAcc > timePerFrame) {
+			frameDeltaAcc = frameDeltaAcc - timePerFrame;
 
 			// update
 			PerformanceTrace.start("update");
-			currentScreen._update();
+			currentScreen._update(frameDelta);
 			PerformanceTrace.end("update");
 
 			dirtyUI = true;
@@ -101,14 +105,13 @@ const gameloop = () => {
 			// rendering
 			PerformanceTrace.resetDrawCounters();
 			PerformanceTrace.start("render");
-			currentScreen._render(dt);
+			currentScreen._render(frameDelta);
 			PerformanceTrace.end("render");
 		}
 		PerformanceTrace.finalize();
 
 	}
 
-	// update as fast as the browser sees fit
 	requestAnimationFrame(gameloop);
 };
 
@@ -149,18 +152,33 @@ function getIntroScreen() {
  */
 const Engine = {
 
+	get FPS() {
+		return currentFPS;
+	},
+
 	/**
 	 * Changes the FPS of the gameloop.
 	 * Updates are executed at the given rate.
 	 */
-	set FPS(x) {
+	set targetFPS(x) {
 		x = x || 60; // 0 is stupid...
-		fps = x;
+		targetFPS = x;
 		timePerFrame = 1/x;
 	},
 
-	get FPS() {
-		return fps;
+	/**
+	 * Get the targeted FPS.
+	 */
+	get targetFPS() {
+		return targetFPS;
+	},
+
+	/**
+	 * The duration of a single frame in [ms].
+	 * Defined as <code>let timePerFrame = 1/targetFPS;</code>.
+	 */
+	getTimePerFrame() {
+		return timePerFrame;
 	},
 
 	/**
@@ -191,10 +209,10 @@ const Engine = {
 	now: (res) => {
 		// resolution in milliseconds
 		if (res == "ms") {
-			return window.performance.now() - startTime;
+			return last - startTime;
 		}
 		// resolution in seconds
-		return (window.performance.now() - startTime) / 1000;
+		return (last - startTime) / 1000;
 	},
 
 	/**
@@ -230,8 +248,9 @@ const Engine = {
 		resetKeyboard = Keyboard.init();
 
 		// kickstart gameloop
-		Engine.FPS = Manifest.get("/fps");
-		startTime = last = window.performance.now()
+		Engine.targetFPS = Manifest.get("/fps");
+		last = window.performance.now();
+		startTime = last;
 		gameloop();
 		log("Gameloop started.", "Engine");
 

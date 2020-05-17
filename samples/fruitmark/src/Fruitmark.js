@@ -18,12 +18,12 @@ class Fruit extends Entity {
 	constructor() {
 		super({});
 
-		this.speed = Math.round(60 / Engine.FPS);
+		this.speed = Math.round(60 / Engine.targetFPS);
 
 		this.layer = 0;
 
-		//this.scale.w = 2;
-		//this.scale.h = 2;
+		this.scale.w = 2;
+		this.scale.h = 2;
 
 		this.xDir = Helper.choose([-1, 1]);
 		this.yDir = Helper.choose([-1, 1]);
@@ -63,7 +63,7 @@ class Fruitmark extends Screen {
 
 	init(renderMode, entityCount, fps) {
 		this.renderMode = renderMode;
-		Engine.FPS = fps;
+		Engine.targetFPS = fps;
 
 		for (let i = 0; i < entityCount; i++) {
 			this.add(new Fruit({}));
@@ -97,7 +97,7 @@ class Fruitmark extends Screen {
 	update() {
 		if (Keyboard.pressed(Keys.ESC)) {
 			this.getEntities().forEach(this.remove.bind(this));
-			Engine.FPS = 60;
+			Engine.targetFPS = 60;
 			Engine.screen = Scope.menuScreen;
 		}
 	}

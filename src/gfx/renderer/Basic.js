@@ -67,19 +67,11 @@ class Basic {
 		}
 	}
 
-	clear(color) {
-		color = color || this.buffer.getClearColor();
-		if (color) {
-			this._canvasDOM.style.background = color;
-		}
+	clear() {
 		this._ctx.clearRect(0, 0, this.manifest.w, this.manifest.h);
 	}
 
-	clear_rect(color, x, y, w, h) {
-		if (color) {
-			this._canvasDOM.style.background = color;
-		}
-
+	clear_rect(x, y, w, h) {
 		// clear everything inside the given rectangle
 		// for w/h we default to the screen-size
 		this._ctx.clearRect(x, y, w || this.manifest.w, h || this.manifest.h);
@@ -223,6 +215,41 @@ class Basic {
 		this._ctx.moveTo(x0, y0);
 		this._ctx.lineTo(x1, y1);
 		this._ctx.lineTo(x2, y2);
+		this._ctx.closePath();
+		this._ctx.fillStyle = color || this._ctx.fillStyle;
+		this._ctx.fill();
+
+		PerformanceTrace.drawCalls++;
+	}
+
+	poly(points, x, y, color) {
+		let dx = x - this.buffer.camX;
+		let dy = y - this.buffer.camY;
+
+		this._ctx.beginPath();
+		this._ctx.moveTo(points[0].x + dx, points[0].y + dy);
+		for (let i = 1, len = points.length; i < len; i++) {
+			let p = points[i];
+			this._ctx.lineTo(p.x + dx, p.y + dy);
+		}
+		this._ctx.closePath();
+
+		this._ctx.strokeStyle = color || this._ctx.strokeStyle;
+		this._ctx.stroke();
+
+		PerformanceTrace.drawCalls++;
+	}
+
+	polyf(points, x, y, color) {
+		let dx = x - this.buffer.camX;
+		let dy = y - this.buffer.camY;
+
+		this._ctx.beginPath();
+		this._ctx.moveTo(points[0].x + dx, points[0].y + dy);
+		for (let i = 1, len = points.length; i < len; i++) {
+			let p = points[i];
+			this._ctx.lineTo(p.x + dx, p.y + dy);
+		}
 		this._ctx.closePath();
 		this._ctx.fillStyle = color || this._ctx.fillStyle;
 		this._ctx.fill();
