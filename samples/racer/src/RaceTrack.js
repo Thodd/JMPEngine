@@ -22,9 +22,9 @@ seglen=64
 */
 let segments = [];
 var resolution    = null;                    // scaling factor to provide resolution independence (computed)
-let roadWidth     = 2000;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+let roadWidth     = 1500;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
 let segmentLength = 100;                     // length of a single segment
-let rumbleLength  = 3;                       // number of segments per red/white rumble strip
+let rumbleLength  = 4;                       // number of segments per red/white rumble strip
 let trackLength   = null;                    // z length of entire track (computed)
 let lanes         = 3;                       // number of lanes
 let fieldOfView   = 100;                     // angle (degrees) for field of view
@@ -45,11 +45,11 @@ let offRoadDecel  = -maxSpeed/2;             // off road deceleration is somewhe
 let offRoadLimit  =  maxSpeed/4;
 
 const COLORS = {
-	SKY:  '#ffdb5d',
+	SKY:  'linear-gradient(rgb(0, 127, 193),rgb(255, 255, 255))', //'#007fc1',
 	TREE: '#005108',
 	FOG:  '#86a81f',
-	LIGHT:  { road: '#bfbfbf', grass: '#9ec725', rumble: '#909090', lane: '#ffffff'  },
-	DARK:   { road: '#bababa', grass: '#98bf23', rumble: '#9f9f9f'                   },
+	LIGHT:  { road: '#939393', grass: '#9ec725', rumble: '#FFFFFF', lane: '#ffffff'  },
+	DARK:   { road: '#909090', grass: '#98bf23', rumble: '#be2632'                   },
 	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
 	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
 };
@@ -281,7 +281,7 @@ const Layers = {
 		}
 
 		//Render.fog(ctx, 0, y1, width, y2-y1, fog);
-		if (fog > 1) {
+		if (fog < 1) {
 			let g = GFX.get(Layers.Fog);
 			let oldAlpha = g.alpha();
 			g.alpha(1-fog)
