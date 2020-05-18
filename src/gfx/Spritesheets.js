@@ -32,8 +32,8 @@ function process(sheet) {
 	let spriteWidth = sheet.w || rawSheet.width;
 	let spriteHeight = sheet.h || rawSheet.height;
 
-	let verticalSpritesCount = rawSheet.height / spriteWidth;
-	let horizontalSpritesCount = rawSheet.width / spriteHeight;
+	let verticalSpritesCount = rawSheet.height / spriteHeight;
+	let horizontalSpritesCount = rawSheet.width / spriteWidth;
 
 	for (let y = 0; y < verticalSpritesCount; y++) {
 		for (let x = 0; x < horizontalSpritesCount; x++) {

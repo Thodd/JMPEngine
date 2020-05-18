@@ -12,7 +12,14 @@ import M4th from "./M4th.js";
 let width = Manifest.get("/w");
 let height = Manifest.get("/h");
 let timePerFrame = Engine.getTimePerFrame();
-
+/*
+roadwidth=8
+camd=16
+camh=6
+drawdistance=34
+segments={}
+seglen=64
+*/
 let segments = [];
 var resolution    = null;                    // scaling factor to provide resolution independence (computed)
 let roadWidth     = 2000;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
@@ -21,7 +28,7 @@ let rumbleLength  = 3;                       // number of segments per red/white
 let trackLength   = null;                    // z length of entire track (computed)
 let lanes         = 3;                       // number of lanes
 let fieldOfView   = 100;                     // angle (degrees) for field of view
-let cameraHeight  = 1500;                    // z height of camera
+let cameraHeight  = 1000;                    // z height of camera
 let cameraDepth   = null;                    // z distance camera is from screen (computed)
 let drawDistance  = 300;                     // number of segments to draw
 let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
@@ -30,7 +37,7 @@ let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
 let maxSpeed      = (segmentLength*1.5)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-let centrifugal   = 0.3;
+let centrifugal   = 0.4;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
 let breaking      = -maxSpeed;               // deceleration rate when braking
 let decel         = -maxSpeed/5;             // 'natural' deceleration rate when neither accelerating, nor braking
@@ -42,7 +49,7 @@ const COLORS = {
 	TREE: '#005108',
 	FOG:  '#86a81f',
 	LIGHT:  { road: '#bfbfbf', grass: '#9ec725', rumble: '#909090', lane: '#ffffff'  },
-	DARK:   { road: '#bbbbbb', grass: '#98bf23', rumble: '#9f9f9f'                   },
+	DARK:   { road: '#bababa', grass: '#98bf23', rumble: '#9f9f9f'                   },
 	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
 	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
 };
@@ -107,8 +114,12 @@ const Layers = {
 
 		if (Keyboard.down(Keys.LEFT)) {
 			playerX = playerX - dx;
+			this.dir = "left";
 		} else if (Keyboard.down(Keys.RIGHT)) {
 			playerX = playerX + dx;
+			this.dir = "right";
+		} else {
+			this.dir = "idle";
 		}
 
 		playerX = playerX - (dx * speedPercent * playerSegment.curve * centrifugal);
@@ -241,8 +252,8 @@ const Layers = {
 		let r1 = this.calculateRumbleWidth(w1, lanes)/2;
 		let r2 = this.calculateRumbleWidth(w2, lanes)/2;
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/1.1;
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/1.1;
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/1.5;
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/1.5;
 
 		// for rendering grass we use a Basic Mode layer underneath the road
 		// this optimizes the performance on higher resolutions
@@ -329,9 +340,15 @@ const Layers = {
 			maxy = segment.p2.screen.y;
 		}
 
-		let carW = 43;
-		let carH = 23;
-		GFX.get(Layers.Car).spr_ext("car", 0, width/2 - carW/2, height - carH - 10, carW, carH);
+		let carW = 43; //43;
+		let carH = 23; //23;
+		let carID = 0;
+		if (this.dir == "left") {
+			carID = 4;
+		} else if (this.dir == "right") {
+			carID = 8;
+		}
+		GFX.get(Layers.Car).spr_ext("car", carID, width/2 - carW/2, height - carH - 10, carW, carH);
 
 		/*Render.player(g, width, height, resolution, roadWidth, sprites, speed/maxSpeed,
 			cameraDepth/playerZ,
