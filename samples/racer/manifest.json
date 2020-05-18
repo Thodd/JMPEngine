@@ -3,19 +3,19 @@
 
 	"startScreen": "./src/RaceTrack.js",
 
-	"w": 192,
-	"h": 144,
-	"scale": 2,
+	"w": 240,
+	"h": 180,
+	"scale": 2.5,
 	"fps": 60,
 	"hideCursor": true,
 	"skipIntro": true,
 
 	"assets": {
 		"spritesheets": {
-			"touringcar_orange": {
-				"url": "./img/touringcar_orange.png",
-				"w": 46,
-				"h": 25
+			"car": {
+				"url": "./img/car.png",
+				"w": 43,
+				"h": 23
 			}
 		}
 	}

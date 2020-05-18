@@ -21,7 +21,7 @@ let rumbleLength  = 3;                       // number of segments per red/white
 let trackLength   = null;                    // z length of entire track (computed)
 let lanes         = 3;                       // number of lanes
 let fieldOfView   = 100;                     // angle (degrees) for field of view
-let cameraHeight  = 1000;                    // z height of camera
+let cameraHeight  = 1600;                    // z height of camera
 let cameraDepth   = null;                    // z distance camera is from screen (computed)
 let drawDistance  = 300;                     // number of segments to draw
 let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
@@ -37,11 +37,11 @@ let offRoadDecel  = -maxSpeed/2;             // off road deceleration is somewhe
 let offRoadLimit  =  maxSpeed/4;
 
 const COLORS = {
-	SKY:  '#eed372',
+	SKY:  '#ffdb5d',
 	TREE: '#005108',
 	FOG:  '#86a81f',
-	LIGHT:  { road: '#929292', grass: '#9ec725', rumble: '#fffacb', lane: '#fffacb'  },
-	DARK:   { road: '#8d8d8d', grass: '#98bf23', rumble: '#c4595f'                   },
+	LIGHT:  { road: '#bfbfbf', grass: '#9ec725', rumble: '#ffffff', lane: '#ffffff'  },
+	DARK:   { road: '#bbbbbb', grass: '#98bf23', rumble: '#be2632'                   },
 	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
 	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
 };
@@ -161,11 +161,11 @@ const Layers = {
 	renderSegment(g, width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
-		let r1 = this.calculateRumbleWidth(w1, lanes) / 2;
-		let r2 = this.calculateRumbleWidth(w2, lanes) / 2;
+		let r1 = this.calculateRumbleWidth(w1, lanes)/1.5;
+		let r2 = this.calculateRumbleWidth(w2, lanes)/1.5;
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/2;
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/2;
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/1.2;
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/1.2;
 
 		// for rendering grass we use a Basic Mode layer underneath the road
 		// this optimizes the performance on higher resolutions
@@ -243,10 +243,9 @@ const Layers = {
 			maxy = segment.p2.screen.y;
 		}
 
-		let carW = 46;
-		let carH = 25;
-
-		GFX.get(Layers.Car).spr_ext("touringcar_orange", 4, width/2 - carW/2, height - carH - 10, carW, carH);
+		let carW = 43;
+		let carH = 23;
+		GFX.get(Layers.Car).spr_ext("car", 0, width/2 - carW/2, height - carH - 10, carW, carH);
 
 		/*Render.player(g, width, height, resolution, roadWidth, sprites, speed/maxSpeed,
 			cameraDepth/playerZ,
