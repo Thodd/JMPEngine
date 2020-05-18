@@ -16,12 +16,12 @@ let timePerFrame = Engine.getTimePerFrame();
 let segments = [];
 var resolution    = null;                    // scaling factor to provide resolution independence (computed)
 let roadWidth     = 2000;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
-let segmentLength = 200;                     // length of a single segment
+let segmentLength = 100;                     // length of a single segment
 let rumbleLength  = 3;                       // number of segments per red/white rumble strip
 let trackLength   = null;                    // z length of entire track (computed)
 let lanes         = 3;                       // number of lanes
 let fieldOfView   = 100;                     // angle (degrees) for field of view
-let cameraHeight  = 1600;                    // z height of camera
+let cameraHeight  = 1500;                    // z height of camera
 let cameraDepth   = null;                    // z distance camera is from screen (computed)
 let drawDistance  = 300;                     // number of segments to draw
 let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
@@ -30,6 +30,7 @@ let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
 let maxSpeed      = segmentLength/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+let centrifugal   = 0.3;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
 let breaking      = -maxSpeed;               // deceleration rate when braking
 let decel         = -maxSpeed/5;             // 'natural' deceleration rate when neither accelerating, nor braking
@@ -40,10 +41,15 @@ const COLORS = {
 	SKY:  '#ffdb5d',
 	TREE: '#005108',
 	FOG:  '#86a81f',
-	LIGHT:  { road: '#bfbfbf', grass: '#9ec725', rumble: '#ffffff', lane: '#ffffff'  },
-	DARK:   { road: '#bbbbbb', grass: '#98bf23', rumble: '#be2632'                   },
+	LIGHT:  { road: '#bfbfbf', grass: '#9ec725', rumble: '#909090', lane: '#ffffff'  },
+	DARK:   { road: '#bbbbbb', grass: '#98bf23', rumble: '#9f9f9f'                   },
 	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
 	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
+};
+
+const ROAD = {
+	LENGTH: { NONE: 0, SHORT:  25, MEDIUM:  50, LONG:  100 },
+	CURVE:  { NONE: 0, EASY:    2, MEDIUM:   4, HARD:    6 }
 };
 
 /**
@@ -95,13 +101,17 @@ const Layers = {
 		dt = M4th.limit(dt, 0, timePerFrame);
 		position = M4th.increase(position, dt * speed, trackLength);
 
-		var dx = dt * 2 * (speed/maxSpeed); // at top speed, should be able to cross from left to right (-1 to 1) in 1 second
+		let playerSegment = this.findSegment(position+playerZ);
+		let speedPercent  = speed/maxSpeed;
+		let dx            = dt * 2 * (speed/maxSpeed); // at top speed, should be able to cross from left to right (-1 to 1) in 1 second
 
 		if (Keyboard.down(Keys.LEFT)) {
 			playerX = playerX - dx;
 		} else if (Keyboard.down(Keys.RIGHT)) {
 			playerX = playerX + dx;
 		}
+
+		playerX = playerX - (dx * speedPercent * playerSegment.curve * centrifugal);
 
 		if (Keyboard.down(Keys.UP)) {
 			speed = M4th.accelerate(speed, accel, dt);
@@ -120,7 +130,7 @@ const Layers = {
 		speed   = M4th.limit(speed, -maxSpeed/4, maxSpeed); // or exceed maxSpeed
 	}
 
-	resetRoad() {
+	/*resetRoad() {
 		segments = [];
 		for(let n = 0 ; n < 500 ; n++) { // arbitrary road length
 			segments.push({
@@ -152,6 +162,73 @@ const Layers = {
 		}
 
 		trackLength = segments.length * segmentLength;
+	}*/
+
+	resetRoad() {
+		segments = [];
+
+		this.addStraight(ROAD.LENGTH.SHORT/4);
+		this.addSCurves();
+		this.addStraight(ROAD.LENGTH.LONG);
+		this.addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM);
+		this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+		this.addStraight();
+		this.addSCurves();
+		this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM);
+		this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+		this.addStraight();
+		this.addSCurves();
+		this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.EASY);
+
+		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
+		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
+		for(var n = 0 ; n < rumbleLength ; n++) {
+			segments[segments.length-1-n].color = COLORS.FINISH;
+		}
+
+		trackLength = segments.length * segmentLength;
+	}
+
+	addSegment(curve) {
+		let n = segments.length;
+		segments.push({
+			index: n,
+				p1: { world: { z:  n   *segmentLength }, camera: {}, screen: {} },
+				p2: { world: { z: (n+1)*segmentLength }, camera: {}, screen: {} },
+			curve: curve,
+			color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT
+		});
+	}
+
+	addRoad(enter, hold, leave, curve) {
+		for(let n = 0 ; n < enter ; n++) {
+			this.addSegment(M4th.easeIn(0, curve, n/enter));
+		}
+		for(let n = 0 ; n < hold  ; n++) {
+			this.addSegment(curve);
+		}
+		for(let n = 0 ; n < leave ; n++) {
+			this.addSegment(M4th.easeInOut(curve, 0, n/leave));
+		}
+	}
+
+	addStraight(num) {
+		num = num || ROAD.LENGTH.MEDIUM;
+		this.addRoad(num, num, num, 0);
+	}
+
+	addCurve(num, curve) {
+		num    = num    || ROAD.LENGTH.MEDIUM;
+		curve  = curve  || ROAD.CURVE.MEDIUM;
+		this.addRoad(num, num, num, curve);
+	}
+
+	addSCurves() {
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.EASY);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.MEDIUM);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.EASY);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.EASY);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.MEDIUM);
 	}
 
 	findSegment(z) {
@@ -161,19 +238,20 @@ const Layers = {
 	renderSegment(g, width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
-		let r1 = this.calculateRumbleWidth(w1, lanes)/1.5;
-		let r2 = this.calculateRumbleWidth(w2, lanes)/1.5;
+		let r1 = this.calculateRumbleWidth(w1, lanes)/2;
+		let r2 = this.calculateRumbleWidth(w2, lanes)/2;
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/1.2;
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/1.2;
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/1.1;
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/1.1;
 
 		// for rendering grass we use a Basic Mode layer underneath the road
 		// this optimizes the performance on higher resolutions
 		GFX.get(Layers.Grass).rectf(0, y2, width, y1 - y2, color.grass);
 
-		g.polyf(x1-w1,       y1, w1*2,  x2-w2,       y2, w2*2, color.road);
-		g.polyf(x1-w1-r1+1,  y1, r1,    x2-w2-r2+1,  y2, r2, color.rumble); // left
-		g.polyf(x1+w1-1,     y1, r1,    x2+w2-1,     y2, r2, color.rumble); // right
+		// x1, y1, width_1   x2, y2, width_2
+		g.polyf(x1-w1,       y1, w1*2,    x2-w2,       y2, w2*2, color.road);
+		g.polyf(x1-w1-r1+1,  y1, r1,      x2-w2-r2+1,  y2, r2, color.rumble); // left
+		g.polyf(x1+w1-1,     y1, r1+1,    x2+w2-1,     y2, r2+1, color.rumble); // right
 
 		// basic
 		// g.polyf([{x:x1-w1-r1+1, y:y1}, {x:x1-w1+1, y:y1}, {x:x2-w2+1, y:y2}, {x:x2-w2-r2+1, y:y2}], 0, 0, color.rumble);
@@ -192,7 +270,7 @@ const Layers = {
 		}
 
 		//Render.fog(ctx, 0, y1, width, y2-y1, fog);
-		if (fog < 1) {
+		if (fog > 1) {
 			let g = GFX.get(Layers.Fog);
 			let oldAlpha = g.alpha();
 			g.alpha(1-fog)
@@ -214,16 +292,24 @@ const Layers = {
 		GFX.get(Layers.UI).rectf(0, 0, width, 10, "#000000");
 
 		let baseSegment = this.findSegment(position);
+		let basePercent = M4th.percentRemaining(position, segmentLength);
 		let maxy        = height;
+
+		let x  = 0;
+		let dx = -(baseSegment.curve * basePercent);
+
 		let g = GFX.get(Layers.Road);
 
 		for(let n = 0 ; n < drawDistance ; n++) {
-			let segment = segments[(baseSegment.index + n) % segments.length];
+			let segment    = segments[(baseSegment.index + n) % segments.length];
 			segment.looped = segment.index < baseSegment.index;
 			segment.fog    = M4th.exponentialFog(n/drawDistance, fogDensity);
 
-			M4th.project(segment.p1, (playerX * roadWidth), cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
-			M4th.project(segment.p2, (playerX * roadWidth), cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+			M4th.project(segment.p1, (playerX * roadWidth) - x,      cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+			M4th.project(segment.p2, (playerX * roadWidth) - x - dx, cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+
+			x  = x + dx;
+			dx = dx + segment.curve;
 
 			if ((segment.p1.camera.z <= cameraDepth) || // behind us
 				(segment.p2.screen.y >= maxy)) {        // clip by (already rendered) segment
