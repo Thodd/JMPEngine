@@ -37,11 +37,11 @@ let offRoadDecel  = -maxSpeed/2;             // off road deceleration is somewhe
 let offRoadLimit  =  maxSpeed/4;
 
 const COLORS = {
-	SKY:  '#72D7EE',
+	SKY:  '#eed372',
 	TREE: '#005108',
-	FOG:  '#005108',
-	LIGHT:  { road: '#A2A2A2', grass: '#9ec725', rumble: '#FFFFFF', lane: '#FFFFFF'  },
-	DARK:   { road: '#9d9d9d', grass: '#98bf23', rumble: '#be2632'                   },
+	FOG:  '#86a81f',
+	LIGHT:  { road: '#929292', grass: '#9ec725', rumble: '#fffacb', lane: '#fffacb'  },
+	DARK:   { road: '#8d8d8d', grass: '#98bf23', rumble: '#c4595f'                   },
 	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
 	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
 };
@@ -54,6 +54,16 @@ const COLORS = {
  * 3: UI
  */
 
+const Layers = {
+	BG: 0,
+	Grass: 1,
+	Road: 2,
+	Things: 3,
+	Fog: 4,
+	Car: 5,
+	UI: 6
+};
+
  class RaceTrack extends Screen {
 	constructor() {
 		super();
@@ -65,7 +75,7 @@ const COLORS = {
 			color: "#FFFFFF",
 			useKerning: true
 		});
-		t.layer = 3;
+		t.layer = Layers.UI;
 		this.add(t);
 
 		// init
@@ -77,7 +87,8 @@ const COLORS = {
 	}
 
 	setup() {
-		GFX.getBuffer(0).setClearColor("#47c4ff");
+		GFX.getBuffer(Layers.BG).setClearColor(COLORS.SKY);
+		GFX.getBuffer(Layers.Road).setRenderMode(Buffer.RenderModes.RAW);
 	}
 
 	update(dt) {
@@ -150,19 +161,24 @@ const COLORS = {
 	renderSegment(g, width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
-		let r1 = this.calculateRumbleWidth(w1, lanes);
-		let r2 = this.calculateRumbleWidth(w2, lanes);
+		let r1 = this.calculateRumbleWidth(w1, lanes) / 2;
+		let r2 = this.calculateRumbleWidth(w2, lanes) / 2;
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes);
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes);
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/2;
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/2;
 
-		//ctx.fillStyle = color.grass;
-		//ctx.fillRect(0, y2, width, y1 - y2);
-		g.rectf(0, y2, width, y1 - y2, color.grass);
+		// for rendering grass we use a Basic Mode layer underneath the road
+		// this optimizes the performance on higher resolutions
+		GFX.get(Layers.Grass).rectf(0, y2, width, y1 - y2, color.grass);
 
-		g.polyf([{x:x1-w1-r1+1, y:y1}, {x:x1-w1+1, y:y1}, {x:x2-w2+1, y:y2}, {x:x2-w2-r2+1, y:y2}], 0, 0, color.rumble);
-		g.polyf([{x:x1+w1+r1-1, y:y1}, {x:x1+w1-1, y:y1}, {x:x2+w2-1, y:y2}, {x:x2+w2+r2-1, y:y2}], 0, 0, color.rumble);
-		g.polyf([{x:x1-w1,    y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2-w2,    y:y2}], 0, 0, color.road);
+		g.polyf(x1-w1,       y1, w1*2,  x2-w2,       y2, w2*2, color.road);
+		g.polyf(x1-w1-r1+1,  y1, r1,    x2-w2-r2+1,  y2, r2, color.rumble); // left
+		g.polyf(x1+w1-1,     y1, r1,    x2+w2-1,     y2, r2, color.rumble); // right
+
+		// basic
+		// g.polyf([{x:x1-w1-r1+1, y:y1}, {x:x1-w1+1, y:y1}, {x:x2-w2+1, y:y2}, {x:x2-w2-r2+1, y:y2}], 0, 0, color.rumble);
+		// g.polyf([{x:x1+w1+r1-1, y:y1}, {x:x1+w1-1, y:y1}, {x:x2+w2-1, y:y2}, {x:x2+w2+r2-1, y:y2}], 0, 0, color.rumble);
+		// g.polyf([{x:x1-w1,    y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2-w2,    y:y2}], 0, 0, color.road);
 
 		if (color.lane) {
 			lanew1 = w1*2/lanes;
@@ -170,12 +186,14 @@ const COLORS = {
 			lanex1 = x1 - w1 + lanew1;
 			lanex2 = x2 - w2 + lanew2;
 			for(lane = 1 ; lane < lanes ; lanex1 += lanew1, lanex2 += lanew2, lane++) {
-				g.polyf([{x:lanex1 - l1/2, y:y1}, {x:lanex1 + l1/2, y:y1}, {x:lanex2 + l2/2, y:y2}, {x:lanex2 - l2/2, y:y2}], 0, 0, color.lane);
+				//g.polyf([{x:lanex1 - l1/2, y:y1}, {x:lanex1 + l1/2, y:y1}, {x:lanex2 + l2/2, y:y2}, {x:lanex2 - l2/2, y:y2}], 0, 0, color.lane);
+				g.polyf(lanex1-l1/2, y1, l1*2,  lanex2+l2/2, y2, l2*2,  color.lane);
 			}
 		}
 
 		//Render.fog(ctx, 0, y1, width, y2-y1, fog);
 		if (fog < 1) {
+			let g = GFX.get(Layers.Fog);
 			let oldAlpha = g.alpha();
 			g.alpha(1-fog)
 			g.rectf(0, y1, width, y2-y1, COLORS.FOG);
@@ -192,11 +210,12 @@ const COLORS = {
 	}
 
 	render() {
-		GFX.get(0).rectf(0, 0, width, 10, "#000000");
+		// bg for text
+		GFX.get(Layers.UI).rectf(0, 0, width, 10, "#000000");
 
 		let baseSegment = this.findSegment(position);
 		let maxy        = height;
-		let g = GFX.get(1);
+		let g = GFX.get(Layers.Road);
 
 		for(let n = 0 ; n < drawDistance ; n++) {
 			let segment = segments[(baseSegment.index + n) % segments.length];
@@ -223,6 +242,11 @@ const COLORS = {
 
 			maxy = segment.p2.screen.y;
 		}
+
+		let carW = 46;
+		let carH = 25;
+
+		GFX.get(Layers.Car).spr_ext("touringcar_orange", 4, width/2 - carW/2, height - carH - 10, carW, carH);
 
 		/*Render.player(g, width, height, resolution, roadWidth, sprites, speed/maxSpeed,
 			cameraDepth/playerZ,

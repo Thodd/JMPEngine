@@ -3,9 +3,8 @@
 
 	"startScreen": "./src/RaceTrack.js",
 
-	"layers": 4,
-	"w": 320,
-	"h": 240,
+	"w": 192,
+	"h": 144,
 	"scale": 2,
 	"fps": 60,
 	"hideCursor": true,
@@ -15,8 +14,8 @@
 		"spritesheets": {
 			"touringcar_orange": {
 				"url": "./img/touringcar_orange.png",
-				"w": 92,
-				"h": 50
+				"w": 46,
+				"h": 25
 			}
 		}
 	}

@@ -279,7 +279,9 @@ class Raw {
 	}
 
 	rectf(x, y, w, h, color) {
-		fail("The function 'rectf()' is not implemented yet.", "Renderer.RAW");
+		for (let dy = y, dh = y+h; dy < dh; dy++) {
+			this.line(x, dy, x+w, dy, color);
+		}
 	}
 
 	circ(x, y, r, color) {
@@ -298,8 +300,50 @@ class Raw {
 		fail("The function 'trif()' is not implemented yet.", "Renderer.RAW");
 	}
 
+	poly() {}
+
+	polyf(x1, y1, w1,    x2, y2, w2,    c) {
+		let tx  = x2;
+		let dtx = (x2-x1) / Math.abs(y1-y2);
+		let tw  = w2;
+		let dtw = (w2-w1) / Math.abs(y1-y2);
+
+
+		for (let y = y2; y < y1; y++) {
+			this.line(tx,y,tx+tw,y,c)
+			tx -= dtx;
+			tw -= dtw;
+		}
+	}
+
 	line(x0, y0, x1, y1, color) {
-		fail("The function 'line()' is not implemented yet.", "Renderer.RAW");
+		x0 = n(x0);
+		y0 = n(y0);
+		x1 = n(x1);
+		let d = this._pixels;
+		if (typeof color == "string") {
+			color = ColorTools.parseColorString(color);
+		}
+
+		// only a horizontal line for now   -->   enough for racer sample
+		for (let x = x0; x < x1; x++) {
+
+			if (x < 0 || x >= this.manifest.w) {
+				// nothing to draw
+				continue;
+			}
+
+			let off = this._pxOff(x, y0);
+			// colors
+			d.data[off + 0] = color.r;
+			d.data[off + 1] = color.g;
+			d.data[off + 2] = color.b;
+
+			// alpha
+			d.data[off + 3] = 255;
+
+			PerformanceTrace.pixelsDrawn++;
+		}
 	}
 
 	/**
