@@ -22,13 +22,13 @@ seglen=64
 */
 let segments = [];
 var resolution    = null;                    // scaling factor to provide resolution independence (computed)
-let roadWidth     = 1500;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+let roadWidth     = 700;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
 let segmentLength = 100;                     // length of a single segment
 let rumbleLength  = 4;                       // number of segments per red/white rumble strip
 let trackLength   = null;                    // z length of entire track (computed)
-let lanes         = 3;                       // number of lanes
+let lanes         = 2;                       // number of lanes
 let fieldOfView   = 100;                     // angle (degrees) for field of view
-let cameraHeight  = 1000;                    // z height of camera
+let cameraHeight  = 700;                    // z height of camera
 let cameraDepth   = null;                    // z distance camera is from screen (computed)
 let drawDistance  = 300;                     // number of segments to draw
 let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
@@ -180,6 +180,28 @@ const Layers = {
 		}
 	}
 
+	resetRoad() {
+		segments = [];
+
+		this.addRoad(100, 100, 100, 0, 0);     //  0
+		this.addRoad(50, 200, 50, 0, -100);    // -100
+		this.addRoad(50, 50, 200, -3, 50);     // -50
+		this.addRoad(100, 100, 100, 0, -100);  // -150
+		this.addRoad(50, 50, 50, 2, 50);       // -100
+		this.addRoad(200, 200, 200, -2, 50);   // -50
+		this.addRoad(100, 100, 100, 0, 50);    //  0
+		this.addRoad(200, 200, 200, 3, 0);    //  0
+		//this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
+
+		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
+		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
+		for(var n = 0 ; n < rumbleLength ; n++) {
+			segments[segments.length-1-n].color = COLORS.FINISH;
+		}
+
+		trackLength = segments.length * segmentLength;
+	}
+
 	addStraight(num) {
 		num = num || ROAD.LENGTH.MEDIUM;
 		this.addRoad(num, num, num, 0, 0);
@@ -207,41 +229,6 @@ const Layers = {
 		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.NONE,     ROAD.HILL.LOW);
 	}
 
-	resetRoad() {
-		segments = [];
-
-		this.addHill(ROAD.LENGTH.LONG);
-		this.addStraight();
-		this.addSCurves();
-		this.addStraight(ROAD.LENGTH.MEDIUM);
-		this.addSCurves();
-		this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
-
-		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
-		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
-		for(var n = 0 ; n < rumbleLength ; n++) {
-			segments[segments.length-1-n].color = COLORS.FINISH;
-		}
-
-		trackLength = segments.length * segmentLength;
-	}
-
-	addLowRollingHills(num, height) {
-		num    = num    || ROAD.LENGTH.SHORT;
-		height = height || ROAD.HILL.LOW;
-		this.addRoad(num, num, num,  0,  height/2);
-		this.addRoad(num, num, num,  0, -height);
-		this.addRoad(num, num, num,  0,  height);
-		this.addRoad(num, num, num,  0,  0);
-		this.addRoad(num, num, num,  0,  height/2);
-		this.addRoad(num, num, num,  0,  0);
-	}
-
-	addDownhillToEnd(num) {
-		num = num || 200;
-		this.addRoad(num, num, num, -ROAD.CURVE.EASY, -this.lastY()/segmentLength);
-	}
-
 	findSegment(z) {
 		return segments[Math.floor(z/segmentLength) % segments.length];
 	}
@@ -252,8 +239,8 @@ const Layers = {
 		let r1 = this.calculateRumbleWidth(w1, lanes)/2;
 		let r2 = this.calculateRumbleWidth(w2, lanes)/2;
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes)/1.5;
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes)/1.5;
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes);
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes);
 
 		// for rendering grass we use a Basic Mode layer underneath the road
 		// this optimizes the performance on higher resolutions
@@ -276,7 +263,7 @@ const Layers = {
 			lanex2 = x2 - w2 + lanew2;
 			for(lane = 1 ; lane < lanes ; lanex1 += lanew1, lanex2 += lanew2, lane++) {
 				//g.polyf([{x:lanex1 - l1/2, y:y1}, {x:lanex1 + l1/2, y:y1}, {x:lanex2 + l2/2, y:y2}, {x:lanex2 - l2/2, y:y2}], 0, 0, color.lane);
-				g.polyf(lanex1-l1/2, y1, l1*2,  lanex2+l2/2, y2, l2*2,  color.lane);
+				g.polyf(lanex1-l1/2, y1, l1*2,  lanex2+l2/2, y2, Math.ceil(l2*2),  color.lane);
 			}
 		}
 
@@ -354,7 +341,7 @@ const Layers = {
 		} else if (this.dir == "right") {
 			carID = 8;
 		}
-		GFX.get(Layers.Car).spr_ext("car", carID, width/2 - carW/2, height - carH - 10, carW, carH);
+		GFX.get(Layers.Car).spr_ext("car", carID, width/2 - carW/2, height - carH - 5, carW, carH);
 
 		/*Render.player(g, width, height, resolution, roadWidth, sprites, speed/maxSpeed,
 			cameraDepth/playerZ,
