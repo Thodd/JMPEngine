@@ -35,10 +35,24 @@ const M4th = {
 		return result;
 	},
 
+	interpolate(a,b,percent) {
+		return a + (b-a)*percent;
+	},
+
 	limit: Helper.clamp,
 
 	percentRemaining(n, total) {
 		return (n%total)/total;
+	},
+
+	toInt(obj, def) {
+		if (obj !== null) {
+			var x = parseInt(obj, 10);
+			if (!isNaN(x)) {
+				return x;
+			}
+		}
+		return M4th.toInt(def, 0);
 	},
 
 	easeIn(a,b,percent) {

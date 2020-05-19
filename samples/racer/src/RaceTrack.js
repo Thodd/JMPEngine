@@ -36,7 +36,7 @@ let playerZ       = null;                    // player relative z distance from 
 let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
-let maxSpeed      = (segmentLength*1.5)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+let maxSpeed      = (segmentLength*2)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 let centrifugal   = 0.4;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
 let breaking      = -maxSpeed;               // deceleration rate when braking
@@ -56,6 +56,7 @@ const COLORS = {
 
 const ROAD = {
 	LENGTH: { NONE: 0, SHORT:  25, MEDIUM:  50, LONG:  100 },
+	HILL:   { NONE: 0, LOW:    20, MEDIUM:  40, HIGH:   60 },
 	CURVE:  { NONE: 0, EASY:    2, MEDIUM:   4, HARD:    6 }
 };
 
@@ -105,12 +106,13 @@ const Layers = {
 	}
 
 	update(dt) {
+		let playerSegment = this.findSegment(position + playerZ);
+		let speedPercent  = speed/maxSpeed;
+		let dx            = dt * 2 * (speed/maxSpeed); // at top speed, should be able to cross from left to right (-1 to 1) in 1 second
+
 		dt = M4th.limit(dt, 0, timePerFrame);
 		position = M4th.increase(position, dt * speed, trackLength);
 
-		let playerSegment = this.findSegment(position+playerZ);
-		let speedPercent  = speed/maxSpeed;
-		let dx            = dt * 2 * (speed/maxSpeed); // at top speed, should be able to cross from left to right (-1 to 1) in 1 second
 
 		if (Keyboard.down(Keys.LEFT)) {
 			playerX = playerX - dx;
@@ -137,59 +139,83 @@ const Layers = {
 			speed = M4th.accelerate(speed, offRoadDecel, dt);
 		}
 
-		playerX = M4th.limit(playerX, -2, 2);     // dont ever let player go too far out of bounds
+		playerX = M4th.limit(playerX, -4, 4);     // dont ever let player go too far out of bounds
 		speed   = M4th.limit(speed, -maxSpeed/4, maxSpeed); // or exceed maxSpeed
 	}
 
-	/*resetRoad() {
-		segments = [];
-		for(let n = 0 ; n < 500 ; n++) { // arbitrary road length
-			segments.push({
-				index: n,
-				p1: {
-					world: {
-						z:  n * segmentLength
-					},
-					camera: {},
-					screen: {}
-				},
-				p2: {
-					world: {
-						z: (n+1)*segmentLength
-					},
-					camera: {},
-					screen: {}
-				},
-				color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT
-			});
+	addSegment(curve, y) {
+		let n = segments.length;
+		segments.push({
+			index: n,
+				p1: { world: {y: this.lastY(), z: n * segmentLength },     camera: {}, screen: {} },
+				p2: { world: {y: y,            z: (n+1) * segmentLength }, camera: {}, screen: {} },
+			curve: curve,
+			color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT
+		});
+	}
+
+	// retrieve the y value (road-height) of the last added road segment
+	lastY() {
+		return (segments.length == 0) ? 0 : segments[segments.length-1].p2.world.y;
+	}
+
+	firstY() {
+		return segments.length == 0 ? 0 : segments[0].p2.world.y;
+	}
+
+	addRoad(enter, hold, leave, curve, y) {
+		y = y || 0;
+		let startY = this.lastY();
+		let endY = startY + (y * segmentLength);
+		let total = enter + hold + leave;
+
+		for(let n = 0 ; n < enter ; n++) {
+			this.addSegment(M4th.easeIn(0, curve, n/enter), M4th.easeInOut(startY, endY, n/total));
 		}
-
-		trackLength = segments.length * segmentLength;
-
-		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
-		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
-		for(let n = 0 ; n < rumbleLength ; n++) {
-			segments[segments.length-1-n].color = COLORS.FINISH;
+		for(let n = 0 ; n < hold  ; n++) {
+			this.addSegment(curve, M4th.easeInOut(startY, endY, (enter+n)/total));
 		}
+		for(let n = 0 ; n < leave ; n++) {
+			this.addSegment(M4th.easeInOut(curve, 0, n/leave), M4th.easeInOut(startY, endY, (enter+hold+n)/total));
+		}
+	}
 
-		trackLength = segments.length * segmentLength;
-	}*/
+	addStraight(num) {
+		num = num || ROAD.LENGTH.MEDIUM;
+		this.addRoad(num, num, num, 0, 0);
+	}
+
+	addCurve(num, curve) {
+		num    = num    || ROAD.LENGTH.MEDIUM;
+		curve  = curve  || ROAD.CURVE.MEDIUM;
+		height = height || ROAD.HILL.NONE;
+		this.addRoad(num, num, num, curve, height);
+	}
+
+	addHill(num, height) {
+		num    = num    || ROAD.LENGTH.MEDIUM;
+		height = height || ROAD.HILL.MEDIUM;
+		this.addRoad(num, num, num, 0, height);
+	}
+
+	addSCurves() {
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.EASY,      ROAD.HILL.NONE);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.MEDIUM,    ROAD.HILL.MEDIUM);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.EASY,     -ROAD.HILL.LOW);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.EASY,      ROAD.HILL.MEDIUM);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.MEDIUM,   -ROAD.HILL.MEDIUM);
+		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.NONE,     ROAD.HILL.LOW);
+	}
 
 	resetRoad() {
 		segments = [];
 
-		this.addStraight(ROAD.LENGTH.SHORT/4);
-		this.addSCurves();
-		this.addStraight(ROAD.LENGTH.LONG);
-		this.addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM);
-		this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+		this.addHill(ROAD.LENGTH.LONG);
 		this.addStraight();
 		this.addSCurves();
-		this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM);
-		this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
-		this.addStraight();
+		this.addStraight(ROAD.LENGTH.MEDIUM);
 		this.addSCurves();
-		this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.EASY);
+		this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
 
 		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
 		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
@@ -200,46 +226,20 @@ const Layers = {
 		trackLength = segments.length * segmentLength;
 	}
 
-	addSegment(curve) {
-		let n = segments.length;
-		segments.push({
-			index: n,
-				p1: { world: { z:  n   *segmentLength }, camera: {}, screen: {} },
-				p2: { world: { z: (n+1)*segmentLength }, camera: {}, screen: {} },
-			curve: curve,
-			color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT
-		});
+	addLowRollingHills(num, height) {
+		num    = num    || ROAD.LENGTH.SHORT;
+		height = height || ROAD.HILL.LOW;
+		this.addRoad(num, num, num,  0,  height/2);
+		this.addRoad(num, num, num,  0, -height);
+		this.addRoad(num, num, num,  0,  height);
+		this.addRoad(num, num, num,  0,  0);
+		this.addRoad(num, num, num,  0,  height/2);
+		this.addRoad(num, num, num,  0,  0);
 	}
 
-	addRoad(enter, hold, leave, curve) {
-		for(let n = 0 ; n < enter ; n++) {
-			this.addSegment(M4th.easeIn(0, curve, n/enter));
-		}
-		for(let n = 0 ; n < hold  ; n++) {
-			this.addSegment(curve);
-		}
-		for(let n = 0 ; n < leave ; n++) {
-			this.addSegment(M4th.easeInOut(curve, 0, n/leave));
-		}
-	}
-
-	addStraight(num) {
-		num = num || ROAD.LENGTH.MEDIUM;
-		this.addRoad(num, num, num, 0);
-	}
-
-	addCurve(num, curve) {
-		num    = num    || ROAD.LENGTH.MEDIUM;
-		curve  = curve  || ROAD.CURVE.MEDIUM;
-		this.addRoad(num, num, num, curve);
-	}
-
-	addSCurves() {
-		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.EASY);
-		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.MEDIUM);
-		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,   ROAD.CURVE.EASY);
-		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.EASY);
-		this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM,  -ROAD.CURVE.MEDIUM);
+	addDownhillToEnd(num) {
+		num = num || 200;
+		this.addRoad(num, num, num, -ROAD.CURVE.EASY, -this.lastY()/segmentLength);
 	}
 
 	findSegment(z) {
@@ -304,6 +304,11 @@ const Layers = {
 
 		let baseSegment = this.findSegment(position);
 		let basePercent = M4th.percentRemaining(position, segmentLength);
+
+		var playerSegment = this.findSegment(position + playerZ);
+		var playerPercent = M4th.percentRemaining(position + playerZ, segmentLength);
+		var playerY       = M4th.interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent)
+
 		let maxy        = height;
 
 		let x  = 0;
@@ -316,13 +321,14 @@ const Layers = {
 			segment.looped = segment.index < baseSegment.index;
 			segment.fog    = M4th.exponentialFog(n/drawDistance, fogDensity);
 
-			M4th.project(segment.p1, (playerX * roadWidth) - x,      cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
-			M4th.project(segment.p2, (playerX * roadWidth) - x - dx, cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+			M4th.project(segment.p1, (playerX * roadWidth) - x,      playerY + cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+			M4th.project(segment.p2, (playerX * roadWidth) - x - dx, playerY + cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
 
 			x  = x + dx;
 			dx = dx + segment.curve;
 
 			if ((segment.p1.camera.z <= cameraDepth) || // behind us
+				(segment.p2.screen.y >= segment.p1.screen.y) || // back face cull
 				(segment.p2.screen.y >= maxy)) {        // clip by (already rendered) segment
 				continue;
 			}

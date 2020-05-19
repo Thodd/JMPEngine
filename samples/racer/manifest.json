@@ -3,8 +3,8 @@
 
 	"startScreen": "./src/RaceTrack.js",
 
-	"w": 160,
-	"h": 144,
+	"w": 200,
+	"h": 125,
 	"scale": 3,
 	"fps": 60,
 	"hideCursor": true,
