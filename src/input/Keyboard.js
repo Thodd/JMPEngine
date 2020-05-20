@@ -43,7 +43,6 @@ function init() {
 		keyDownHandlerImpl(e);
 	}, true);
 	window.addEventListener("keyup", function (e) {
-		//e.preventDefault();
 		keyUpHandlerImpl(e);
 	}, true);
 

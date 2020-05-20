@@ -4,6 +4,7 @@ import GFX from "../../../src/gfx/GFX.js";
 import Buffer from "../../../src/gfx/Buffer.js";
 import Text from "../../../src/gfx/Text.js";
 import Engine from "../../../src/Engine.js";
+import { warn } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -37,10 +38,10 @@ let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
 let maxSpeed      = (segmentLength * 1.5)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-let centrifugal   = 0.4;
+let centrifugal   = 0.45;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
-let breaking      = -maxSpeed/3;               // deceleration rate when braking
-let decel         = -maxSpeed/2;             // 'natural' deceleration rate when neither accelerating, nor braking
+let breaking      = -maxSpeed;               // deceleration rate when braking
+let decel         = -maxSpeed/5;             // 'natural' deceleration rate when neither accelerating, nor braking
 let offRoadLimit  =  maxSpeed/8;
 
 const COLORS = {
@@ -81,15 +82,15 @@ const Layers = {
 	constructor() {
 		super();
 
-		let t = new Text({
-			text: `Racer Demo`,
+		this.title = new Text({
+			text: `Press Enter to start`,
 			x: 0,
 			y: 1,
 			color: "#FFFFFF",
 			useKerning: true
 		});
-		t.layer = Layers.UI;
-		this.add(t);
+		this.title.layer = Layers.UI;
+		this.add(this.title);
 
 		// init
 		cameraDepth = 1 / Math.tan((fieldOfView/2) * Math.PI/180);
@@ -105,15 +106,35 @@ const Layers = {
 	}
 
 	update(dt) {
+
+		if (!this.started) {
+			if (Keyboard.down(Keys.ENTER)) {
+				this.started = true;
+				this.startTime = performance.now();
+				this.title.visible = false;
+			}
+			return;
+		}
+
+		if (this.finished) {
+			return;
+		}
+
 		let playerSegment = this.findSegment(position + playerZ);
+
+		if (playerSegment.index >= 0 && playerSegment.looped) {
+			this.finished = true;
+			this.title.setText(`Finished in: ${((performance.now() - this.startTime) / 1000).toFixed(4)}s`);
+			this.title.visible = true;
+			return;
+		}
+
 		let speedPercent  = speed/maxSpeed;
 
 		let dx = dt * 1.5;
 
 		dt = M4th.limit(dt, 0, timePerFrame);
 		position = M4th.increase(position, dt * speed, trackLength);
-
-
 		if (Keyboard.down(Keys.LEFT)) {
 			playerX = playerX - dx;
 			this.dir = "left";
@@ -128,9 +149,10 @@ const Layers = {
 
 		if (Keyboard.down(Keys.UP)) {
 			speed = M4th.accelerate(speed, accel, dt);
-		} else if (Keyboard.down(Keys.DOWN)) {
+		} else if (Keyboard.down(Keys.DOWN) || Keyboard.down(Keys.SPACE)) {
 			speed = M4th.accelerate(speed, breaking, dt);
 		} else {
+			// natural deceleration
 			speed = M4th.accelerate(speed, decel, dt);
 			speed = M4th.limit(speed, 0, maxSpeed); // or exceed maxSpeed
 		}
@@ -140,7 +162,7 @@ const Layers = {
 		}
 
 		//playerX = M4th.limit(playerX, -4, 4);     // dont ever let player go too far out of bounds
-		speed   = M4th.limit(speed, -maxSpeed/8, maxSpeed); // or exceed maxSpeed
+		speed   = M4th.limit(speed, -maxSpeed/20, maxSpeed); // or exceed maxSpeed
 	}
 
 	addSegment(curve, y) {
@@ -183,14 +205,53 @@ const Layers = {
 	resetRoad() {
 		segments = [];
 
-		this.addRoad(50, 50, 50, 0, 0);     //  0
-		this.addRoad(50, 200, 50, 0, -100);    // -100
-		this.addRoad(50, 50, 50, -5, 50);     // -50
-		this.addRoad(100, 100, 100, 0, -100);  // -150
-		this.addRoad(50, 50, 50, 4, 50);       // -100
-		this.addRoad(50, 50, 50, -5, 50);   // -50
-		this.addRoad(100, 100, 100, 0, 50);    //  0
-		this.addRoad(100, 200, 100, 3, 0);    //  0
+		// straight and easy curve
+		this.addRoad(100,  75, 50, 0,  0);			//   0
+		this.addRoad(50, 100, 50, 2, 75);			//  75
+
+		// chicane
+		this.addRoad(50, 50, 50, -2,  50);			// 125
+		this.addRoad(50, 50, 50,  0, -25);			// 100
+		this.addRoad(50, 50, 50,  2,   0);			// 100
+
+		// sharp left
+		this.addRoad(100, 50, 100, -4, 50);			// 150
+
+		// climp (forest?)
+		this.addRoad(100, 100, 100,  0,  -40);		// 110
+		this.addRoad(100, 50, 50,   2,  -50);		//  60
+
+		this.addRoad(100, 100, 100, -2, +50);		// 110
+
+		// chicane
+		this.addRoad(100, 100, 50,  4, 25);			// 135
+		this.addRoad( 50, 100, 50, -4, 25);			// 160
+
+		// short straight
+		this.addRoad(100, 100, 100, 0, -70);		//  90
+
+		// easy right
+		this.addRoad(100, 100, 100, 4,  30);		// 120
+
+		// easy chicanes
+		this.addRoad(100,  50,  50,  -2,  -20);		// 100
+		this.addRoad(100,  50,  50,   2,  -20);		//  80
+		this.addRoad(50,   50,  50,   0,  -20);		//  60
+		this.addRoad(50,   50,  50,   2,  -10);		//  50
+		this.addRoad(50,   50,  50,  -2,  -10);		//  40
+		this.addRoad(100, 100,  50,   0,  -50);		// -10
+		this.addRoad(100, 100, 100,   4,   50);		//  40
+
+		// short straight
+		this.addRoad(50,   50,  50,  0,    0);		//  40
+
+		// last easy chicane
+		this.addRoad(50,   50,   50,  1,   -30);	//  10
+		this.addRoad(50,   50,   50,  -1,  -40);	// -20
+
+		// final stretch
+		this.addRoad(100,   100,   100,  0,  30);	//   0
+
 		//this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
 
 		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
@@ -287,7 +348,9 @@ const Layers = {
 
 	render() {
 		// bg for text
-		GFX.get(Layers.UI).rectf(0, 0, width, 10, "#000000");
+		if (!this.started || this.finished) {
+			GFX.get(Layers.UI).rectf(0, 0, width, 10, "#000000");
+		}
 
 		let baseSegment = this.findSegment(position);
 		let basePercent = M4th.percentRemaining(position, segmentLength);
@@ -306,7 +369,7 @@ const Layers = {
 		for(let n = 0 ; n < drawDistance ; n++) {
 			let segment    = segments[(baseSegment.index + n) % segments.length];
 			segment.looped = segment.index < baseSegment.index;
-			segment.fog    = M4th.exponentialFog(n/drawDistance, fogDensity);
+			segment.fog    = M4th.exponentialFog((n/1.5)/drawDistance, fogDensity);
 
 			M4th.project(segment.p1, (playerX * roadWidth) - x,      playerY + cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
 			M4th.project(segment.p2, (playerX * roadWidth) - x - dx, playerY + cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
