@@ -36,16 +36,15 @@ let playerZ       = null;                    // player relative z distance from 
 let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
-let maxSpeed      = (segmentLength*2)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+let maxSpeed      = (segmentLength * 1.5)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 let centrifugal   = 0.4;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
-let breaking      = -maxSpeed;               // deceleration rate when braking
-let decel         = -maxSpeed/5;             // 'natural' deceleration rate when neither accelerating, nor braking
-let offRoadDecel  = -maxSpeed/2;             // off road deceleration is somewhere in between
-let offRoadLimit  =  maxSpeed/4;
+let breaking      = -maxSpeed/3;               // deceleration rate when braking
+let decel         = -maxSpeed/2;             // 'natural' deceleration rate when neither accelerating, nor braking
+let offRoadLimit  =  maxSpeed/8;
 
 const COLORS = {
-	SKY:  'linear-gradient(rgb(0, 127, 193),rgb(255, 255, 255))', //'#007fc1',
+	SKY:  'linear-gradient(rgb(255, 188, 0), rgb(255, 255, 255))',
 	TREE: '#005108',
 	FOG:  '#86a81f',
 	LIGHT:  { road: '#939393', grass: '#9ec725', rumble: '#FFFFFF', lane: '#ffffff'  },
@@ -97,7 +96,7 @@ const Layers = {
 		playerZ = (cameraHeight * cameraDepth);
 		//resolution = height/480;
 
-		this.resetRoad(); // only rebuild road when necessary
+		this.resetRoad();
 	}
 
 	setup() {
@@ -108,7 +107,8 @@ const Layers = {
 	update(dt) {
 		let playerSegment = this.findSegment(position + playerZ);
 		let speedPercent  = speed/maxSpeed;
-		let dx            = dt * 2 * (speed/maxSpeed); // at top speed, should be able to cross from left to right (-1 to 1) in 1 second
+
+		let dx = dt * 1.5;
 
 		dt = M4th.limit(dt, 0, timePerFrame);
 		position = M4th.increase(position, dt * speed, trackLength);
@@ -135,12 +135,12 @@ const Layers = {
 			speed = M4th.limit(speed, 0, maxSpeed); // or exceed maxSpeed
 		}
 
-		if (((playerX < -1) || (playerX > 1)) && (speed > offRoadLimit)) {
-			speed = M4th.accelerate(speed, offRoadDecel, dt);
+		if (((playerX < -0.9) || (playerX > 0.9)) && (speed > offRoadLimit)) {
+			speed = M4th.accelerate(speed, -speed*2, dt);
 		}
 
-		playerX = M4th.limit(playerX, -4, 4);     // dont ever let player go too far out of bounds
-		speed   = M4th.limit(speed, -maxSpeed/4, maxSpeed); // or exceed maxSpeed
+		//playerX = M4th.limit(playerX, -4, 4);     // dont ever let player go too far out of bounds
+		speed   = M4th.limit(speed, -maxSpeed/8, maxSpeed); // or exceed maxSpeed
 	}
 
 	addSegment(curve, y) {
@@ -183,14 +183,14 @@ const Layers = {
 	resetRoad() {
 		segments = [];
 
-		this.addRoad(100, 100, 100, 0, 0);     //  0
+		this.addRoad(50, 50, 50, 0, 0);     //  0
 		this.addRoad(50, 200, 50, 0, -100);    // -100
-		this.addRoad(50, 50, 200, -3, 50);     // -50
+		this.addRoad(50, 50, 50, -5, 50);     // -50
 		this.addRoad(100, 100, 100, 0, -100);  // -150
-		this.addRoad(50, 50, 50, 2, 50);       // -100
-		this.addRoad(200, 200, 200, -2, 50);   // -50
+		this.addRoad(50, 50, 50, 4, 50);       // -100
+		this.addRoad(50, 50, 50, -5, 50);   // -50
 		this.addRoad(100, 100, 100, 0, 50);    //  0
-		this.addRoad(200, 200, 200, 3, 0);    //  0
+		this.addRoad(100, 200, 100, 3, 0);    //  0
 		//this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
 
 		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
