@@ -16,6 +16,11 @@
 				"url": "./img/car.png",
 				"w": 43,
 				"h": 23
+			},
+			"trees": {
+				"url": "./img/trees.png",
+				"w": 100,
+				"h": 100
 			}
 		}
 	}

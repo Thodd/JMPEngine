@@ -276,18 +276,39 @@ class Basic {
 		PerformanceTrace.drawCalls++;
 	}
 
+	/**
+	 * Renders a sprite at the given coordinates.
+	 * @param {string} sheet spritesheet name
+	 * @param {integer} id sprite id in the sheet
+	 * @param {integer} x x
+	 * @param {integer} y y
+	 * @param {string} color css color string
+	 */
 	spr(sheet, id, x, y, color) {
-		this.spr_ext(sheet, id, x, y, undefined, undefined, color, undefined);
+		this.spr_ext(sheet, id, undefined, undefined, x, y, undefined, undefined, color, undefined);
 	}
 
-	spr_ext(sheet, id, x, y, w, h, color, alpha) {
+	/**
+	 * Renders a sprite at the given coordinates.
+	 *
+	 * @param {string} sheet spritesheet name
+	 * @param {integer} id sprite id in the sheet
+	 * @param {integer} sw clipping width
+	 * @param {integer} sh clipping height
+	 * @param {integer} tx draw x
+	 * @param {integer} ty draw y
+	 * @param {integer} tw target width
+	 * @param {integer} th target height
+	 * @param {string} color css color string
+	 */
+	spr_ext(sheet, id, sw, sh, tx, ty, tw, th, color, alpha) {
 		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
-		if (this._isRectangleInView(x, y, w || sprCanvas.width, h || sprCanvas.height)) {
+		if (this._isRectangleInView(tx, ty, tw || sprCanvas.width, th || sprCanvas.height)) {
 
 			// shift x/y based on camera
-			x = x - this.buffer.camX;
-			y = y - this.buffer.camY;
+			tx = tx - this.buffer.camX;
+			ty = ty - this.buffer.camY;
 
 			let oldAlpha;
 			if (alpha !== undefined) {
@@ -302,13 +323,13 @@ class Basic {
 				// take the whole src sprite canvas as a base
 				0, // sx
 				0, // sy
-				sprCanvas.width, // sw
-				sprCanvas.height, // sh
+				sw || sprCanvas.width, // sw
+				sh || sprCanvas.height, // sh
 				// stretch it if w/h is given
-				x || 0,
-				y || 0,
-				w || sprCanvas.width, // default to canvas width
-				h || sprCanvas.height, // default to canvas height
+				tx || 0,
+				ty || 0,
+				tw || sprCanvas.width, // default to canvas width
+				th || sprCanvas.height, // default to canvas height
 			);
 
 			PerformanceTrace.drawCalls++;
@@ -317,7 +338,6 @@ class Basic {
 				this._ctx.globalAlpha = oldAlpha;
 			}
 		}
-
 	}
 
 	grid(id, x, y) {

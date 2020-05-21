@@ -355,7 +355,7 @@ class Raw {
 	 * @param {string} color css color string
 	 */
 	spr(sheet, id, x, y, color) {
-		this.spr_ext(sheet, id, x, y, undefined, undefined, color);
+		this.spr_ext(sheet, id, undefined, undefined, x, y, undefined, undefined, color);
 	}
 
 	/**
@@ -364,21 +364,23 @@ class Raw {
 	 *
 	 * @param {string} sheet spritesheet name
 	 * @param {integer} id sprite id in the sheet
-	 * @param {integer} x draw x
-	 * @param {integer} y draw y
-	 * @param {integer} w unsupported!
-	 * @param {integer} h unsupported!
+	 * @param {integer} sw clipping width - unsupported!
+	 * @param {integer} sh clipping height - unsupported!
+	 * @param {integer} tx draw x
+	 * @param {integer} ty draw y
+	 * @param {integer} tw target width - unsupported!
+	 * @param {integer} th target height - unsupported!
 	 * @param {string} color css color string
 	 */
-	spr_ext(sheet, id, x, y, w, h, color, alpha) {
-		x = n(x);
-		y = n(y);
+	spr_ext(sheet, id, sw, sh, tx, ty, tw, th, color, alpha) {
+		tx = n(tx);
+		ty = n(ty);
 
 		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
 		// sprite dimensions
-		let x1 = x;
-		let y1 = y;
+		let x1 = tx;
+		let y1 = ty;
 		let w1 = sprCanvas.width;
 		let h1 = sprCanvas.height;
 
@@ -397,7 +399,7 @@ class Raw {
 			// TODO: Can this be optimized by calculating the actual visible section of the source?
 
 			let imgData = sprCanvas._getImgDataFullSize();
-			this._copyDataExt(imgData, this._pixels, x, y, alpha);
+			this._copyDataExt(imgData, this._pixels, tx, ty, alpha);
 		}
 
 	}
