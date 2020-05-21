@@ -223,7 +223,7 @@ const Layers = {
 		this.addRoad(50, 100, 50, 2, 75);			//  75
 
 		// chicane
-		this.addRoad(50, 50, 50, -2,  50);			// 125
+		this.addRoad(100, 100, 100, -2,  50);		// 125
 		this.addRoad(50, 50, 50,  0, -25);			// 100
 		this.addRoad(50, 50, 50,  2,   0);			// 100
 
@@ -231,21 +231,21 @@ const Layers = {
 		this.addRoad(100, 50, 100, -4, 50);			// 150
 
 		// climp (forest?)
-		this.addRoad(100, 100, 100,  0,  -40);		// 110
+		this.addRoad(50, 50, 50,  0,  -40);			// 110
 		this.addRoad(100, 50, 50,   2,  -50);		//  60
 
 		this.addRoad(100, 100, 100, -2, +50);		// 110
 
 		// chicane
-		this.addRoad(100, 100, 50,  3.5, 25);			// 135
-		this.addRoad(20,   20, 20,  0,    0);			// 135 ---
-		this.addRoad(100, 100, 50, -3.5, 25);			// 160
+		this.addRoad(100, 100, 50, -3.5, 25);		// 135
+		this.addRoad(20,   20, 20,  0,    0);		// 135 ---
+		this.addRoad(100, 100, 50, 3.5, 25);		// 160
 
 		// short straight
 		this.addRoad(100, 100, 100, 0, -70);		//  90
 
-		// easy right
-		this.addRoad(100, 100, 50, 4,  30);		// 120
+		// slow left
+		this.addRoad(100, 70, 50, -3.5,  30);		// 120
 
 		// easy chicanes
 		this.addRoad(100,  50,  50,  -2,  -20);		// 100
@@ -264,7 +264,7 @@ const Layers = {
 		this.addRoad(50,   50,   50,  -1,  -40);	// -20
 
 		// final stretch
-		this.addRoad(50,   50,   50,   0,  30);	//   0
+		this.addRoad(50,   50,   50,   0,  30);		//   0
 
 		//this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
 
