@@ -218,7 +218,7 @@ const Layers = {
 	resetRoad() {
 		segments = [];
 
-		// straight and easy curve
+		//straight and easy curve
 		this.addRoad(100,  75, 50, 0,  0);			//   0
 		this.addRoad(50, 100, 50, 2, 75);			//  75
 
@@ -265,8 +265,6 @@ const Layers = {
 
 		// final stretch
 		this.addRoad(50,   50,   50,   0,  30);		//   0
-
-		//this.addRoad(200, 200, 200, 0, -this.lastY()/segmentLength);
 
 		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
 		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
@@ -440,17 +438,20 @@ const Layers = {
 					GFX.get(Layers.Things).spr_ext(sprite.sheet, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
 				}
 			}
-		}
 
-		let carW = 43; //43;
-		let carH = 23; //23;
-		let carID = 0;
-		if (this.dir == "left") {
-			carID = 4;
-		} else if (this.dir == "right") {
-			carID = 8;
+			// render player in between sprites
+			if (segment == playerSegment) {
+				let carW = 43;
+				let carH = 23;
+				let carID = 0;
+				if (this.dir == "left") {
+					carID = 4;
+				} else if (this.dir == "right") {
+					carID = 8;
+				}
+				GFX.get(Layers.Things).spr("car", carID, width/2 - carW/2, height - carH - 5);
+			}
 		}
-		GFX.get(Layers.Car).spr("car", carID, width/2 - carW/2, height - carH - 5);
 
 	}
 }
