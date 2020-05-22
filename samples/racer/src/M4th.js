@@ -55,6 +55,16 @@ const M4th = {
 		return M4th.toInt(def, 0);
 	},
 
+	collides(x1, w1, x2, w2) {
+		let w1_half = w1/2;
+		let w2_half = w2/2;
+		let min1 = x1 - w1_half;
+		let max1 = x1 + w1_half;
+		let min2 = x2 - w2_half;
+		let max2 = x2 + w2_half;
+		return !((max1 < min2) || (min1 > max2));
+	},
+
 	easeIn(a,b,percent) {
 		return a + (b-a)*Math.pow(percent,2);
 	},

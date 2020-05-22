@@ -4,7 +4,6 @@ import GFX from "../../../src/gfx/GFX.js";
 import Buffer from "../../../src/gfx/Buffer.js";
 import Text from "../../../src/gfx/Text.js";
 import Engine from "../../../src/Engine.js";
-import { warn } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -14,16 +13,8 @@ import Helper from "../../../src/utils/Helper.js";
 let width = Manifest.get("/w");
 let height = Manifest.get("/h");
 let timePerFrame = Engine.getTimePerFrame();
-/*
-roadwidth=8
-camd=16
-camh=6
-drawdistance=34
-segments={}
-seglen=64
-*/
+
 let segments = [];
-var resolution    = null;                    // scaling factor to provide resolution independence (computed)
 let roadWidth     = 700;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
 let segmentLength = 100;                     // length of a single segment
 let rumbleLength  = 4;                       // number of segments per red/white rumble strip
@@ -39,11 +30,14 @@ let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
 let maxSpeed      = (segmentLength * 1.5)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-let centrifugal   = 0.5;
+let centrifugal   = 0.50;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
 let breaking      = -maxSpeed;               // deceleration rate when braking
 let decel         = -maxSpeed/8;             // 'natural' deceleration rate when neither accelerating, nor braking
 let offRoadLimit  =  maxSpeed/8;
+
+const PLAYER_SCALE = 0.3 * (1/43);
+const playerW = 43 * PLAYER_SCALE;
 
 const COLORS = {
 	SKY:  'linear-gradient(rgb(255, 188, 0), rgb(255, 255, 255))',
@@ -106,36 +100,51 @@ const Layers = {
 		GFX.getBuffer(Layers.Road).setRenderMode(Buffer.RenderModes.RAW);
 	}
 
-	update(dt) {
-
+	checkGameStart() {
 		if (!this.started) {
 			if (Keyboard.down(Keys.ENTER)) {
 				this.started = true;
 				this.startTime = performance.now();
 				this.title.visible = false;
 			}
+		}
+	}
+
+	checkGameEnd() {
+		if (!this.finished) {
+			// find player segment first
+			let playerSegment = this.findSegment(position + playerZ);
+
+			// check end condition
+			if (playerSegment.index >= 0 && playerSegment.looped) {
+				this.finished = true;
+				this.title.setText(`Finished in: ${((performance.now() - this.startTime) / 1000).toFixed(4)}s`);
+				this.title.visible = true;
+				return;
+			}
+		}
+	}
+
+	update(dt) {
+
+		this.checkGameStart();
+		this.checkGameEnd();
+
+		if (!this.started || this.finished) {
 			return;
 		}
 
-		if (this.finished) {
-			return;
-		}
-
+		// find player segment first
 		let playerSegment = this.findSegment(position + playerZ);
 
-		if (playerSegment.index >= 0 && playerSegment.looped) {
-			this.finished = true;
-			this.title.setText(`Finished in: ${((performance.now() - this.startTime) / 1000).toFixed(4)}s`);
-			this.title.visible = true;
-			return;
-		}
-
 		let speedPercent  = speed/maxSpeed;
-
 		let dx = dt * 1.5;
 
+		// limit dt to max frame time for stable updates
 		dt = M4th.limit(dt, 0, timePerFrame);
-		position = M4th.increase(position, dt * speed, trackLength);
+
+		// check horizontal movement
+		// we can always move horizontally since it makes for a more fun arcade game
 		if (Keyboard.down(Keys.LEFT)) {
 			playerX = playerX - dx;
 			this.dir = "left";
@@ -146,24 +155,54 @@ const Layers = {
 			this.dir = "idle";
 		}
 
+		// Apply centrifugal force based on curve and the current speed:
+		// If the player has no speed we of course don't apply any additional force
 		playerX = playerX - (dx * speedPercent * playerSegment.curve * centrifugal);
 
+		// handle acceleration and deceleration
 		if (Keyboard.down(Keys.UP)) {
 			speed = M4th.accelerate(speed, accel, dt);
 		} else if (Keyboard.down(Keys.DOWN) || Keyboard.down(Keys.SPACE)) {
 			speed = M4th.accelerate(speed, breaking, dt);
+			speed = M4th.limit(speed, 0, maxSpeed);
 		} else {
-			// natural deceleration
+			// no pedal pressed: decelerate slowly
 			speed = M4th.accelerate(speed, decel, dt);
-			speed = M4th.limit(speed, 0, maxSpeed); // or exceed maxSpeed
+			speed = M4th.limit(speed, 0, maxSpeed);
 		}
 
+		for(let n = 0 ; n < playerSegment.sprites.length ; n++) {
+			let sprite  = playerSegment.sprites[n];
+
+			if (sprite.collidable) {
+				let sprW = sprite.w * sprite.scale;
+
+				if (M4th.collides(playerX, playerW, sprite.offset + sprW * (sprite.offset > 0 ? 1 : -1), sprW)) {
+					// bounce back
+					speed = -maxSpeed/4;
+					break;
+				}
+			}
+		}
+
+		// decelerate if the player is off the road
 		if (((playerX < -0.9) || (playerX > 0.9)) && (speed > offRoadLimit)) {
 			speed = M4th.accelerate(speed, -speed, dt);
 		}
 
-		//playerX = M4th.limit(playerX, -4, 4);     // dont ever let player go too far out of bounds
-		speed   = M4th.limit(speed, -maxSpeed/20, maxSpeed); // or exceed maxSpeed
+		// clamp speed
+		speed = M4th.limit(speed, -maxSpeed/5, maxSpeed);
+
+		// finally update the player position on the track
+		position = M4th.increase(position, dt * speed, trackLength);
+	}
+
+	collides(x1, w1, x2, w2) {
+		if (x1 < x2 + w2 &&
+			x1 + w1 > x2) {
+				return true;
+		}
+		return false;
 	}
 
 	addSegment(curve, y) {
@@ -177,14 +216,24 @@ const Layers = {
 			sprites: []
 		});
 
-		if (n%3 == 0) {
+		if (n%2 == 0) {
 			segments[n].sprites.push({
 				sheet: "trees",
-				offset: Helper.choose([-1, -1.25, - 1.5, -1.75, -2, -2.5, -3])
+				offset: Helper.choose([-1.25, - 1.5, -1.75, -2, -2.5, -3, -4]),
+				// for collision we only care about the horizontal dimensions of the sprite...
+				w: 100,
+				// ... for depth scaling however we also need the height
+				h: 100,
+				scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
+				collidable: true
 			});
 			segments[n].sprites.push({
 				sheet: "trees",
-				offset: Helper.choose([1, 1.25, 1.5, 1.75, 2, 2.5, 3])
+				offset: Helper.choose([1.25, 1.5, 1.75, 2, 2.5, 3, 4]),
+				w: 100,
+				h: 100,
+				scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
+				collidable: true
 			});
 		}
 	}
@@ -414,17 +463,15 @@ const Layers = {
 
 			for(let i = 0 ; i < segment.sprites.length ; i++) {
 
-				let wtf = 0.01;
-
 				let sprite      = segment.sprites[i];
-				let spriteWidth = 100;
-				let spriteHeight = 100;
+				let spriteWidth = sprite.w;
+				let spriteHeight = sprite.h;
 				let spriteScale = segment.p1.screen.scale;
 				let spriteX     = segment.p1.screen.x + (spriteScale * sprite.offset * roadWidth * width/2);
 				let spriteY     = segment.p1.screen.y;
 
-				let destW  = (spriteWidth * spriteScale * width/2) * (wtf * roadWidth);
-				let destH  = (spriteHeight * spriteScale * width/2) * (wtf * roadWidth);
+				let destW  = (spriteWidth * spriteScale * width) * (sprite.scale * roadWidth);
+				let destH  = (spriteHeight * spriteScale * width) * (sprite.scale * roadWidth);
 
 				let clipY = segment.clip;
 
