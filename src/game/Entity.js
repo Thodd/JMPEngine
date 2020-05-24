@@ -266,7 +266,7 @@ class Entity {
 
 			// sheet, id, layer, x, y, w, h, color
 			// width and height are undefined, because we want the default value from the actual sprite
-			g.spr_ext(sheet, id, undefined, undefined, dx, dy, dw, dh, color, alpha);
+			g.spr_ext(sheet, id, 0, 0, undefined, undefined, dx, dy, dw, dh, color, alpha);
 		}
 
 		if (Entity.RENDER_HITBOXES) {

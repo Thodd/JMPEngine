@@ -9,5 +9,15 @@
 	"scale": 2,
 	"fps": 60,
 	"hideCursor": false,
-	"skipIntro": true
+	"skipIntro": true,
+
+	"assets": {
+		"fonts": {
+			"vfr95_outline": {
+				"url": "./img/vfr95_outline.png",
+				"w": 8,
+				"h": 8
+			}
+		}
+	}
 }

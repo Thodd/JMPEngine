@@ -77,20 +77,21 @@ const Layers = {
 	constructor() {
 		super();
 
-		this.title = new Text({
-			text: `Press Enter to start`,
-			x: 0,
-			y: 1,
-			color: "#FFFFFF",
-			useKerning: true
-		});
-		this.title.layer = Layers.UI;
-		this.add(this.title);
+		// time tracking
+		this.timing = {
+			laps: 1,
+			start: 0,
+			current: 0,
+			minutes: "00",
+			seconds: "00",
+			millis: "00",
+			total: `00'00"00`,
+			laptimes: []
+		};
 
 		// init
 		cameraDepth = 1 / Math.tan((fieldOfView/2) * Math.PI/180);
 		playerZ = (cameraHeight * cameraDepth);
-		//resolution = height/480;
 
 		this.resetRoad();
 	}
@@ -104,35 +105,61 @@ const Layers = {
 		if (!this.started) {
 			if (Keyboard.down(Keys.ENTER)) {
 				this.started = true;
-				this.startTime = performance.now();
-				this.title.visible = false;
+				this.timing.start = performance.now();
 			}
 		}
 	}
 
-	checkGameEnd() {
+	clearCheckpoint() {
 		if (!this.finished) {
 			// find player segment first
 			let playerSegment = this.findSegment(position + playerZ);
 
-			// check end condition
-			if (playerSegment.index >= 0 && playerSegment.looped) {
-				this.finished = true;
-				this.title.setText(`Finished in: ${((performance.now() - this.startTime) / 1000).toFixed(4)}s`);
-				this.title.visible = true;
-				return;
+			// We check if the player has crossed 3 specific segments on the halfway point of the track.
+			// If so, we set a flag that the checkpoint was cleared and the next time the
+			// player passes the first 3 segments of the track we consider the lap completed.
+			// This checkpoint system prevents us from counting a lap multiple times when two update loops
+			// happen while the player is on the goal segment.
+			// This might happen if the player is driving slowly through the goal.
+			let checkpointMark = Math.floor(segments.length/2);
+
+			// checkpoint section
+			if (playerSegment.index >= checkpointMark && playerSegment.index <= checkpointMark+3) {
+				this.checkpointCleared = true;
+			}
+
+			// start/goal section
+			if (playerSegment.index >= 0 && playerSegment.index <= 3 && this.checkpointCleared) {
+				this.timing.laps++;
+				this.checkpointCleared = false;
 			}
 		}
+	}
+
+	trackTime() {
+		this.timing.current = performance.now();
+		let elapsedSeconds  = (this.timing.current - this.timing.start) / 1000;
+
+		let minutes = (elapsedSeconds / 60) >> 0;
+		let seconds = elapsedSeconds - (minutes * 60) >> 0;
+		let millis  = (elapsedSeconds % 1) * 100 >> 0;
+
+		this.timing.minutes = `${minutes}`.padStart(2, "0");
+		this.timing.seconds = `${seconds}`.padStart(2, "0");
+		this.timing.millis  = `${millis}`.padStart(2, "0");
+		this.timing.total   = `${this.timing.minutes}'${this.timing.seconds}"${this.timing.millis}`;
 	}
 
 	update(dt) {
 
 		this.checkGameStart();
-		this.checkGameEnd();
+		this.clearCheckpoint();
 
 		if (!this.started || this.finished) {
 			return;
 		}
+
+		this.trackTime();
 
 		// find player segment first
 		let playerSegment = this.findSegment(position + playerZ);
@@ -213,7 +240,9 @@ const Layers = {
 				p2: { world: {y: y,            z: (n+1) * segmentLength }, camera: {}, screen: {} },
 			curve: curve,
 			color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT,
-			sprites: []
+			sprites: [],
+			looped: false,
+			laps: 0,
 		});
 
 		if (n%2 == 0) {
@@ -407,11 +436,6 @@ const Layers = {
 	}
 
 	render() {
-		// bg for text
-		if (!this.started || this.finished) {
-			GFX.get(Layers.UI).rectf(0, 0, width, 10, "#000000");
-		}
-
 		let baseSegment = this.findSegment(position);
 		let basePercent = M4th.percentRemaining(position, segmentLength);
 
@@ -482,7 +506,7 @@ const Layers = {
 
 				var clipH = clipY ? Math.max(0, destY+destH-clipY) : 0;
 				if (clipH < destH) {
-					GFX.get(Layers.Things).spr_ext(sprite.sheet, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
+					GFX.get(Layers.Things).spr_ext(sprite.sheet, 0, 0, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
 				}
 			}
 
@@ -500,6 +524,41 @@ const Layers = {
 			}
 		}
 
+		/*********+ UI ***********/
+
+		let _gfx = GFX.get(Layers.UI);
+
+		// laps
+		_gfx.text("vfr95_outline", 2, height-10, `Lap:${this.timing.laps}/3`);
+
+		// timing
+		_gfx.text("vfr95_outline", 2, 2, `#1: ${this.timing.total}`);
+		// _gfx.alpha(0.4);
+		// _gfx.text("vfr95_outline", 2, 12, `#2: ${this.timing.total}`);
+		// _gfx.text("vfr95_outline", 2, 22, `#3: ${this.timing.total}`);
+		// _gfx.alpha(1);
+
+		// tacho and speed number
+		let speedPercent  = Math.max(0, speed/maxSpeed);
+		let tachoXoffset = width - 28;
+		// The countach has a max speed of 333km/h :O, though our car accelerates a bit faster than 100km/h in 3.6s
+		let kmhStr = `${Math.ceil(333*speedPercent)}`.padStart(3, "0");
+
+		_gfx.text("vfr95_outline", width - 34, height - 10, "km/h");
+
+		// fill tacho
+		let fill = Math.ceil(speedPercent * 60);
+		let tachoHeight = height - fill;
+		_gfx.text("vfr95_outline", tachoXoffset-1, tachoHeight - 22, kmhStr);
+		_gfx.alpha(0.7);
+		_gfx.spr_ext("tacho", 0, 0, 60 - fill, undefined, undefined, tachoXoffset, tachoHeight - 12);
+		_gfx.alpha(1);
+
+		// intro
+		if (!this.started) {
+			_gfx.rectf(0, height/2 - 10, width, 10, "#000000");
+			_gfx.text("vfr95_outline", 20, height/2 - 9, "Press ENTER to start!");
+		}
 	}
 }
 

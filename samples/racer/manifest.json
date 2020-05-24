@@ -17,10 +17,22 @@
 				"w": 43,
 				"h": 23
 			},
+			"tacho": {
+				"url": "./img/tacho.png",
+				"w": 22,
+				"h": 60
+			},
 			"trees": {
 				"url": "./img/trees.png",
 				"w": 100,
 				"h": 100
+			}
+		},
+		"fonts": {
+			"vfr95_outline": {
+				"url": "./img/vfr95_outline.png",
+				"w": 8,
+				"h": 8
 			}
 		}
 	}

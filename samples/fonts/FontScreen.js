@@ -69,21 +69,19 @@ with a 'leading' of 2.`;
 		 * Custom ASCII Bitmap Font Demo
 		 */
 		let customMsg = `
-This is a custom font.
-It's is 8x8 pixels in
-format and monospaced.
-Kerning values can be
-provided too!
-A custom font is not
-required to use ASCII
-ordering. This is use-
-full if you want to
-use special characters
-e.g. German Umlauts.
+This is a custom
+font. It's is 8x8
+pixels in format
+and monospaced.
+A custom font is
+not required to
+use ASCII ordering.
+This is usefull
+if you want to use
+non-ASCII symbols.
 `;
-		let customFont = new Text({text: customMsg, x: 5, y: 115, color: "#FF8500", leading: 2});
+		let customFont = new Text({font: "vfr95_outline", text: customMsg, x: 5, y: 115, color: "#FF8500", leading: 2});
 		this.add(customFont);
-
 
 		/**
 		 * Lorem Ipsum sample

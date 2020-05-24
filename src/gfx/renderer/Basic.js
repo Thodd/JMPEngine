@@ -285,7 +285,7 @@ class Basic {
 	 * @param {string} color css color string
 	 */
 	spr(sheet, id, x, y, color) {
-		this.spr_ext(sheet, id, undefined, undefined, x, y, undefined, undefined, color, undefined);
+		this.spr_ext(sheet, id, undefined, undefined, undefined, undefined, x, y, undefined, undefined, color, undefined);
 	}
 
 	/**
@@ -293,6 +293,8 @@ class Basic {
 	 *
 	 * @param {string} sheet spritesheet name
 	 * @param {integer} id sprite id in the sheet
+	 * @param {integer} sx clipping X
+	 * @param {integer} sy clipping Y
 	 * @param {integer} sw clipping width
 	 * @param {integer} sh clipping height
 	 * @param {integer} tx draw x
@@ -301,7 +303,7 @@ class Basic {
 	 * @param {integer} th target height
 	 * @param {string} color css color string
 	 */
-	spr_ext(sheet, id, sw, sh, tx, ty, tw, th, color, alpha) {
+	spr_ext(sheet, id, sx, sy, sw, sh, tx, ty, tw, th, color, alpha) {
 		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
 		if (this._isRectangleInView(tx, ty, tw || sprCanvas.width, th || sprCanvas.height)) {
@@ -321,8 +323,8 @@ class Basic {
 			this._ctx.drawImage(
 				sprCanvas,
 				// take the whole src sprite canvas as a base
-				0, // sx
-				0, // sy
+				sx || 0, // sx
+				sy || 0, // sy
 				sw || sprCanvas.width, // sw
 				sh || sprCanvas.height, // sh
 				// stretch it if w/h is given

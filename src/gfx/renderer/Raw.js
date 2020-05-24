@@ -355,7 +355,7 @@ class Raw {
 	 * @param {string} color css color string
 	 */
 	spr(sheet, id, x, y, color) {
-		this.spr_ext(sheet, id, undefined, undefined, x, y, undefined, undefined, color);
+		this.spr_ext(sheet, id, undefined, undefined, undefined, undefined, x, y, undefined, undefined, color);
 	}
 
 	/**
@@ -364,6 +364,8 @@ class Raw {
 	 *
 	 * @param {string} sheet spritesheet name
 	 * @param {integer} id sprite id in the sheet
+	 * @param {integer} sx clipping X - unsupported!
+	 * @param {integer} sy clipping Y - unsupported!
 	 * @param {integer} sw clipping width - unsupported!
 	 * @param {integer} sh clipping height - unsupported!
 	 * @param {integer} tx draw x
@@ -372,7 +374,7 @@ class Raw {
 	 * @param {integer} th target height - unsupported!
 	 * @param {string} color css color string
 	 */
-	spr_ext(sheet, id, sw, sh, tx, ty, tw, th, color, alpha) {
+	spr_ext(sheet, id, sx, sy, sw, sh, tx, ty, tw, th, color, alpha) {
 		tx = n(tx);
 		ty = n(ty);
 
