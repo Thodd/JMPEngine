@@ -33,6 +33,11 @@
 				"url": "./img/vfr95_outline.png",
 				"w": 8,
 				"h": 8
+			},
+			"vfr95_blue": {
+				"url": "./img/vfr95_blue.png",
+				"w": 8,
+				"h": 8
 			}
 		}
 	}

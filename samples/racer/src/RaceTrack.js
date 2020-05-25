@@ -79,7 +79,7 @@ const Layers = {
 
 		// time tracking
 		this.timing = {
-			laps: 1,
+			maxLaps: 3,
 			start: 0,
 			current: 0,
 			minutes: "00",
@@ -130,8 +130,24 @@ const Layers = {
 
 			// start/goal section
 			if (playerSegment.index >= 0 && playerSegment.index <= 3 && this.checkpointCleared) {
-				this.timing.laps++;
-				this.checkpointCleared = false;
+
+				// we finished the last lap
+				if (this.timing.laptimes.length+1 == this.timing.maxLaps) {
+					this.finished = true;
+				} else {
+					// reset the lap timer
+					this.timing.start = this.timing.current;
+
+					// track the lap time for the UI
+					this.timing.laptimes.unshift({
+						lap: this.timing.laptimes.length+1,
+						time: this.timing.total
+					});
+
+					// and of course we need to reset the checkpoint
+					this.checkpointCleared = false;
+				}
+
 			}
 		}
 	}
@@ -529,14 +545,17 @@ const Layers = {
 		let _gfx = GFX.get(Layers.UI);
 
 		// laps
-		_gfx.text("vfr95_outline", 2, height-10, `Lap:${this.timing.laps}/3`);
+		let laps = this.timing.laptimes.length + 1;
+		_gfx.text("vfr95_outline", 2, height-10, `Lap:${laps}/3`);
 
 		// timing
-		_gfx.text("vfr95_outline", 2, 2, `#1: ${this.timing.total}`);
-		// _gfx.alpha(0.4);
-		// _gfx.text("vfr95_outline", 2, 12, `#2: ${this.timing.total}`);
-		// _gfx.text("vfr95_outline", 2, 22, `#3: ${this.timing.total}`);
-		// _gfx.alpha(1);
+		_gfx.text("vfr95_blue", 2, 2, `#${laps}: ${this.timing.total}`);
+		for (let i = 0; i < this.timing.laptimes.length; i++) {
+			_gfx.alpha(1/(i+2));
+			let timing = this.timing.laptimes[i];
+			_gfx.text("vfr95_outline", 2, 12 + i * 10, `#${timing.lap}: ${timing.time}`);
+		}
+		_gfx.alpha(1);
 
 		// tacho and speed number
 		let speedPercent  = Math.max(0, speed/maxSpeed);
