@@ -173,6 +173,11 @@ const Layers = {
 
 	update(dt) {
 
+		// change camera to cockpit view  -->  TODO: F1 Cockpit or Wheel view?
+		if (Keyboard.pressed(Keys.C)) {
+			cameraHeight = 300;
+		}
+
 		this.checkGameStart();
 		this.clearCheckpoint();
 

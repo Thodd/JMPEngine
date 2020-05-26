@@ -121,8 +121,13 @@ class Raw {
 	 * GFX Module API
 	 */
 	clear() {
-		delete this._pixels;
-		this._pixels = this._ctx.createImageData(this.manifest.w, this.manifest.h);
+		// We only try to create the pixel buffers once and overwrite it with an empty array on clear
+		if (!this._pixels) {
+			this._pixels = this._ctx.createImageData(this.manifest.w, this.manifest.h);
+			this._clean = new Uint8Array(this._pixels.data.byteLength);
+		} else {
+			this._pixels.data.set(this._clean, 0);
+		}
 	}
 
 	clear_rect(/* x, y, w, h */) {
