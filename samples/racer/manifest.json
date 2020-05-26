@@ -26,6 +26,9 @@
 				"url": "./img/trees.png",
 				"w": 100,
 				"h": 100
+			},
+			"tunnel": {
+				"url": "./img/tunnel.png"
 			}
 		},
 		"fonts": {

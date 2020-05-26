@@ -9,6 +9,7 @@ import Keys from "../../../src/input/Keys.js";
 
 import M4th from "./M4th.js";
 import Helper from "../../../src/utils/Helper.js";
+import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 let width = Manifest.get("/w");
 let height = Manifest.get("/h");
@@ -45,6 +46,8 @@ const COLORS = {
 	FOG:  '#86a81f',
 	LIGHT:  { road: '#939393', grass: '#9ec725', rumble: '#FFFFFF', lane: '#ffffff'  },
 	DARK:   { road: '#909090', grass: '#98bf23', rumble: '#be2632'                   },
+	TUNNEL_LIGHT: { road: '#737373', grass: '#737373', rumble: '#DDDDDD', lane: '#DDDDDD'  },
+	TUNNEL_DARK:  { road: '#707070', grass: '#707070', rumble: '#7d1820'                   },
 	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
 	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
 };
@@ -92,6 +95,8 @@ const Layers = {
 		// init
 		cameraDepth = 1 / Math.tan((fieldOfView/2) * Math.PI/180);
 		playerZ = (cameraHeight * cameraDepth);
+
+		this.bounceTimer = new FrameCounter(10);
 
 		this.resetRoad();
 	}
@@ -177,14 +182,25 @@ const Layers = {
 
 		this.trackTime();
 
-		// find player segment first
-		let playerSegment = this.findSegment(position + playerZ);
-
-		let speedPercent  = speed/maxSpeed;
-		let dx = dt * 1.5;
-
 		// limit dt to max frame time for stable updates
 		dt = M4th.limit(dt, 0, timePerFrame);
+
+		// find player segment first
+		let playerSegment = this.findSegment(position + playerZ);
+		let dx = dt * 1.5;
+		let speedPercent  = speed/maxSpeed;
+
+		// check if we "animate" a bounce back onto the road
+		if (this.bounce) {
+			if (this.bounceTimer.isReady()) {
+				speed = 0;
+				this.bounce = false;
+				this.bounceTimer.reset();
+			}
+			playerX = playerX - dx * 3 * this.bounceDir;
+			position = M4th.increase(position, dt * speed, trackLength);
+			return;
+		}
 
 		// check horizontal movement
 		// we can always move horizontally since it makes for a more fun arcade game
@@ -214,27 +230,37 @@ const Layers = {
 			speed = M4th.limit(speed, 0, maxSpeed);
 		}
 
-		for(let n = 0 ; n < playerSegment.sprites.length ; n++) {
-			let sprite  = playerSegment.sprites[n];
-
-			if (sprite.collidable) {
-				let sprW = sprite.w * sprite.scale;
-
-				if (M4th.collides(playerX, playerW, sprite.offset + sprW * (sprite.offset > 0 ? 1 : -1), sprW)) {
-					// bounce back
-					speed = -maxSpeed/4;
-					break;
-				}
-			}
-		}
-
 		// decelerate if the player is off the road
 		if (((playerX < -0.9) || (playerX > 0.9)) && (speed > offRoadLimit)) {
 			speed = M4th.accelerate(speed, -speed, dt);
 		}
 
+
+		// collision detection
+		for(let n = 0 ; n < playerSegment.sprites.length ; n++) {
+			let sprite  = playerSegment.sprites[n];
+			let collisionDataLen = sprite.collisionData.length;
+
+			// there might be multiple collision sets
+			// e.g. for the sides of a tunnel
+			if (collisionDataLen > 0) {
+				for (let i = 0; i < collisionDataLen; i++) {
+					let collisionData = sprite.collisionData[i];
+					if (collisionData) {
+						if (M4th.collides(playerX, playerW, collisionData.x, collisionData.w)) {
+							// bounce back
+							this.bounce = true;
+							this.bounceDir = Math.sign(playerX);
+							speed = -maxSpeed/4;
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		// clamp speed
-		speed = M4th.limit(speed, -maxSpeed/5, maxSpeed);
+		speed = M4th.limit(speed, -maxSpeed/4, maxSpeed);
 
 		// finally update the player position on the track
 		position = M4th.increase(position, dt * speed, trackLength);
@@ -250,36 +276,71 @@ const Layers = {
 
 	addSegment(curve, y) {
 		let n = segments.length;
+		let alternate = Math.floor(n/rumbleLength)%2;
+
 		segments.push({
 			index: n,
 				p1: { world: {y: this.lastY(), z: n * segmentLength },     camera: {}, screen: {} },
 				p2: { world: {y: y,            z: (n+1) * segmentLength }, camera: {}, screen: {} },
 			curve: curve,
-			color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT,
+			color: alternate ? COLORS.DARK : COLORS.LIGHT,
 			sprites: [],
 			looped: false,
 			laps: 0,
 		});
 
-		if (n%2 == 0) {
+		// three tunnels
+		if ((n > 300 && n < 400) || (n > 500 && n < 700) || (n > 3700 && n < 4000)) {
+			segments[n].color = alternate ? COLORS.TUNNEL_DARK : COLORS.TUNNEL_LIGHT;
 			segments[n].sprites.push({
-				sheet: "trees",
-				offset: Helper.choose([-1.25, - 1.5, -1.75, -2, -2.5, -3, -4]),
+				sheet: "tunnel",
+				offset: -1,
 				// for collision we only care about the horizontal dimensions of the sprite...
-				w: 100,
+				w: 200,
 				// ... for depth scaling however we also need the height
-				h: 100,
-				scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
-				collidable: true
+				h: 130,
+				scale: 0.01,
+				collisionData: [{
+					x: -1.6,
+					w: 30 * 0.01
+				},
+				{
+					x: 1.6,
+					w: 30 * 0.01
+				}]
 			});
-			segments[n].sprites.push({
-				sheet: "trees",
-				offset: Helper.choose([1.25, 1.5, 1.75, 2, 2.5, 3, 4]),
-				w: 100,
-				h: 100,
-				scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
-				collidable: true
-			});
+		} else {
+			if (n%2 == 0) {
+				let sprLeft = {
+					sheet: "trees",
+					offset: Helper.choose([-1.25, - 1.5, -1.75, -2, -2.5, -3, -4]),
+					w: 100,
+					h: 100,
+					scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
+					collisionData: []
+				};
+				let sprScaledWidth = sprLeft.w * sprLeft.scale;
+				sprLeft.collisionData.push({
+					x: sprLeft.offset + sprScaledWidth * Math.sign(sprLeft.offset),
+					w: sprScaledWidth
+				});
+				segments[n].sprites.push(sprLeft);
+
+				let sprRight = {
+					sheet: "trees",
+					offset: Helper.choose([1.25, 1.5, 1.75, 2, 2.5, 3, 4]),
+					w: 100,
+					h: 100,
+					scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
+					collisionData: []
+				};
+				sprScaledWidth = sprRight.w * sprRight.scale;
+				sprRight.collisionData.push({
+					x: sprRight.offset + sprScaledWidth * Math.sign(sprRight.offset),
+					w: sprScaledWidth
+				});
+				segments[n].sprites.push(sprRight);
+			}
 		}
 	}
 
@@ -507,8 +568,15 @@ const Layers = {
 				let spriteWidth = sprite.w;
 				let spriteHeight = sprite.h;
 				let spriteScale = segment.p1.screen.scale;
-				let spriteX     = segment.p1.screen.x + (spriteScale * sprite.offset * roadWidth * width/2);
+				let spriteX;
+				if (sprite.sheet == "tunnel") {
+					spriteX = segment.p1.screen.x - (spriteScale * sprite.offset * roadWidth * width);
+				} else {
+					spriteX     = segment.p1.screen.x + (spriteScale * sprite.offset * roadWidth * width/2);
+				}
+
 				let spriteY     = segment.p1.screen.y;
+
 
 				let destW  = (spriteWidth * spriteScale * width) * (sprite.scale * roadWidth);
 				let destH  = (spriteHeight * spriteScale * width) * (sprite.scale * roadWidth);
