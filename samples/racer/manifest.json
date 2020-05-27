@@ -22,8 +22,8 @@
 				"w": 22,
 				"h": 60
 			},
-			"trees": {
-				"url": "./img/trees.png",
+			"sprites": {
+				"url": "./img/sprites.png",
 				"w": 100,
 				"h": 100
 			},

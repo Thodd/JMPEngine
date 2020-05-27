@@ -294,11 +294,45 @@ const Layers = {
 			laps: 0,
 		});
 
-		// three tunnels
-		if ((n > 300 && n < 400) || (n > 500 && n < 700) || (n > 3700 && n < 4000)) {
+		// spectators
+		if ((n >= 100 && n < 200) || (n >= 2000 && n < 2300) || (n >= 4000 && n < 4200)) {
+			if (n%10 == 0) {
+				let sprLeft = {
+					sheet: "sprites",
+					id: 3,
+					offset: Helper.choose([-1.25, - 1.5, -1.75, -2]),
+					w: 100,
+					h: 100,
+					scale: PLAYER_SCALE * 2,
+					collisionData: []
+				};
+				sprLeft.collisionData.push({
+					x: -2,
+					w: 1.2
+				});
+				segments[n].sprites.push(sprLeft);
+
+				let sprRight = {
+					sheet: "sprites",
+					id: 2,
+					offset: Helper.choose([1.25, 1.5, 1.75, 2]),
+					w: 100,
+					h: 100,
+					scale: PLAYER_SCALE * 2,
+					collisionData: []
+				};
+				sprRight.collisionData.push({
+					x: 2,
+					w: 1.2
+				});
+				segments[n].sprites.push(sprRight);
+			}
+		} else if ((n > 300 && n < 400) || (n > 500 && n < 700) || (n > 3700 && n < 4000)) {
+			// three tunnels
 			segments[n].color = alternate ? COLORS.TUNNEL_DARK : COLORS.TUNNEL_LIGHT;
 			segments[n].sprites.push({
 				sheet: "tunnel",
+				id: 0,
 				offset: -1,
 				// for collision we only care about the horizontal dimensions of the sprite...
 				w: 200,
@@ -315,9 +349,10 @@ const Layers = {
 				}]
 			});
 		} else {
-			if (n%2 == 0) {
+			if (n%3 == 0) {
 				let sprLeft = {
-					sheet: "trees",
+					sheet: "sprites",
+					id: Helper.choose([0, 0, 0, 1]),
 					offset: Helper.choose([-1.25, - 1.5, -1.75, -2, -2.5, -3, -4]),
 					w: 100,
 					h: 100,
@@ -332,7 +367,8 @@ const Layers = {
 				segments[n].sprites.push(sprLeft);
 
 				let sprRight = {
-					sheet: "trees",
+					sheet: "sprites",
+					id: Helper.choose([0, 0, 0, 1]),
 					offset: Helper.choose([1.25, 1.5, 1.75, 2, 2.5, 3, 4]),
 					w: 100,
 					h: 100,
@@ -595,7 +631,7 @@ const Layers = {
 
 				var clipH = clipY ? Math.max(0, destY+destH-clipY) : 0;
 				if (clipH < destH) {
-					GFX.get(Layers.Things).spr_ext(sprite.sheet, 0, 0, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
+					GFX.get(Layers.Things).spr_ext(sprite.sheet, sprite.id, 0, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
 				}
 			}
 
