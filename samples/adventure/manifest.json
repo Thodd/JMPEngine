@@ -3,8 +3,8 @@
 
 	"startScreen": "./src/WorldScreen.js",
 
-	"w": 160,
-	"h": 120,
+	"w": 150,
+	"h": 130,
 	"scale": 3,
 	"fps": 60,
 	"hideCursor": false,
@@ -12,10 +12,10 @@
 
 	"assets": {
 		"spritesheets": {
-			"player": {
-				"url": "./img/player.png",
-				"w": 24,
-				"h": 24
+			"characters": {
+				"url": "./img/characters.png",
+				"w": 10,
+				"h": 10
 			},
 			"tileset": {
 				"url": "./img/tileset.png",

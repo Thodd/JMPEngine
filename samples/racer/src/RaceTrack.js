@@ -348,8 +348,40 @@ const Layers = {
 					w: 30 * 0.01
 				}]
 			});
+		} else if (n%200 == 0) {
+			let sprLeft = {
+				sheet: "billboards",
+				id: 0,
+				offset: Helper.choose([-1.25, - 1.5, -1.75]),
+				w: 100,
+				h: 100,
+				scale: PLAYER_SCALE*2,
+				collisionData: []
+			};
+			let sprScaledWidth = sprLeft.w * sprLeft.scale;
+			sprLeft.collisionData.push({
+				x: sprLeft.offset + sprScaledWidth * Math.sign(sprLeft.offset),
+				w: sprScaledWidth
+			});
+			segments[n].sprites.push(sprLeft);
+		}  else if (n%350 == 0) {
+			let sprRight = {
+				sheet: "billboards",
+				id: 0,
+				offset: Helper.choose([1.25, 1.5, 1.75]),
+				w: 100,
+				h: 100,
+				scale: PLAYER_SCALE * 2,
+				collisionData: []
+			};
+			let sprScaledWidth = sprRight.w * sprRight.scale;
+			sprRight.collisionData.push({
+				x: sprRight.offset + sprScaledWidth * Math.sign(sprRight.offset),
+				w: sprScaledWidth
+			});
+			segments[n].sprites.push(sprRight);
 		} else {
-			if (n%3 == 0) {
+			if (n%5 == 0) {
 				let sprLeft = {
 					sheet: "sprites",
 					id: Helper.choose([0, 0, 0, 1]),

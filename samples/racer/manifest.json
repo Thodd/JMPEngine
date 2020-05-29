@@ -27,6 +27,11 @@
 				"w": 100,
 				"h": 100
 			},
+			"billboards": {
+				"url": "./img/billboards.png",
+				"w": 100,
+				"h": 100
+			},
 			"tunnel": {
 				"url": "./img/tunnel.png"
 			}

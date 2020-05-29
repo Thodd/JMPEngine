@@ -17,49 +17,35 @@ class WorldScreen extends Screen {
 		/**
 		 * Simple Entity with input handling
 		 */
-		let e = new Entity({x: 70, y: 50});
+		let e = new Entity({x: 70, y: 70});
 		e.layer = 2;
 
 		e.inputDelay = new FrameCounter(5);
 
 		e.setSprite({
-			sheet: "player",
-			color: "#FF8500",
-
+			sheet: "characters",
 			animations: {
 				default: "walk_down",
 
-				"walk_down": {
-					frames: [0, 1, 0, 2],
-					delay: 7
-				},
-				"idle_down": {
-					frames: [0]
+				"down": {
+					frames: [16, 17],
+					delay: 30
 				},
 
-				"walk_up": {
-					frames: [20, 21, 20, 22],
-					delay: 7
-				},
-				"idle_up": {
-					frames: [20]
+				"up": {
+					frames: [18, 19],
+					delay: 30
 				},
 
-				"walk_left": {
-					frames: [13, 14, 13, 15],
-					delay: 7
-				},
-				"idle_left": {
-					frames: [13]
+				"left": {
+					frames: [0, 1],
+					delay: 30
 				},
 
-				"walk_right": {
-					frames: [10, 11, 10, 12],
-					delay: 7
-				},
-				"idle_right": {
-					frames: [10]
-				},
+				"right": {
+					frames: [2, 3],
+					delay: 30
+				}
 			}
 		});
 
@@ -98,15 +84,13 @@ class WorldScreen extends Screen {
 			}
 
 			if (xDif != 0 || yDif != 0) {
-				this.x += xDif;
-				this.y += yDif;
-				this.playAnimation({name: `walk_${this._lastDir}`});
-			} else {
-				this.playAnimation({name: `idle_${this._lastDir}`});
+				this.x += xDif * 10;
+				this.y += yDif * 10;
 			}
+			this.playAnimation({name: `${this._lastDir}`});
 
 			that.cam.x = this.x - 70;
-			that.cam.y = this.y - 50;
+			that.cam.y = this.y - 70;
 
 			if (Keyboard.pressed(Keys.SPACE)) that.remove(this);
 		};
@@ -122,17 +106,17 @@ class WorldScreen extends Screen {
 		t.layer = 1;
 
 		for (let x = 0; x < 16; x++) {
-			t.set(x, 0, 32, "#FF0022");
-			t.set(x, 11, 32, "#FF0022");
+			t.set(x, 0, 32);
+			t.set(x, 11, 32);
 		}
 
 		for (let y = 0; y < 12; y++) {
-			t.set(0, y, 32, "#FF0022");
-			t.set(15, y, 32, "#FF0022");
+			t.set(0, y, 32);
+			t.set(15, y, 32);
 		}
 
-		t.set(1, 1, 32, "#FF0022");
-		t.get(6, 7).set(35, "#0000FF");
+		t.set(1, 1, 32);
+		t.get(6, 7).set(35);
 		t.set(6, 4, 33);
 
 		this.add(t);
