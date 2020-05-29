@@ -256,13 +256,14 @@ class Entity {
 			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
 			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
 			let color = anim.color || defaultSprite.color;
-			let alpha = anim.alpha || defaultSprite.alpha || this.alpha; // the entity's alpha is the last fallback
+			// the entity's alpha is the last fallback, else we consider the sprite to be opaque
+			let alpha = anim.alpha || defaultSprite.alpha || this.alpha || 1;
 
-			let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id);
+			let sheetObj = Spritesheets.getSheet(sheet);
 			let dx = this.x + (offsetX || 0) - this.scale.x;
 			let dy = this.y + (offsetY || 0) - this.scale.y;
-			let dw = sprCanvas.width * this.scale.w;
-			let dh = sprCanvas.height * this.scale.h;
+			let dw = sheetObj.w * this.scale.w;
+			let dh = sheetObj.h * this.scale.h;
 
 			// sheet, id, layer, x, y, w, h, color
 			// width and height are undefined, because we want the default value from the actual sprite

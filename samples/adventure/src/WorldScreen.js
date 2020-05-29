@@ -116,7 +116,7 @@ class WorldScreen extends Screen {
 		}
 
 		t.set(1, 1, 32);
-		t.get(6, 7).set(35);
+		t.get(6, 7).set(128);
 		t.set(6, 4, 33);
 
 		this.add(t);

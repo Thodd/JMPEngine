@@ -87,7 +87,7 @@ function _render(id, x, y, v, color) {
 	// everything except -1 means we have a tile
 	// -1 means the tile is only cleared
 	if (v != -1) {
-		let tileCanvas = Spritesheets.getCanvasFromSheet(grid.sheet.name, v, color);
+		let tileCanvas = Spritesheets.getColorizedCanvasFromSheet(grid.sheet.name, v, color);
 
 		grid.ctx.drawImage(tileCanvas, x * grid.sheet.w, y * grid.sheet.h);
 	}

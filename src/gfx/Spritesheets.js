@@ -10,7 +10,17 @@ let _manifest = null;
 function mixinImageDataGetter(spriteCanvas) {
 	spriteCanvas._getImgDataFullSize = function() {
 		if (!spriteCanvas._imgDataFullSize) {
-			let ctx = spriteCanvas.getContext("2d");
+			let ctx;
+			// convert images to canvas first, otherwise we can't get the image-data
+			if (spriteCanvas.nodeName && spriteCanvas.nodeName.toLowerCase() === "img") {
+				let can = document.createElement("canvas");
+				can.width = spriteCanvas.width;
+				can.height = spriteCanvas.height;
+				ctx = can.getContext("2d");
+				ctx.drawImage(spriteCanvas, 0, 0);
+				spriteCanvas = can;
+			}
+			ctx = spriteCanvas.getContext("2d");
 			spriteCanvas._imgDataFullSize = ctx.getImageData(0, 0, spriteCanvas.width, spriteCanvas.height);
 		}
 		return spriteCanvas._imgDataFullSize;
@@ -22,45 +32,55 @@ function mixinImageDataGetter(spriteCanvas) {
  */
 function process(sheet) {
 
-	// single sheet main values
-	sheet.sprites = []; // list of all sprites in the sheet
-	sheet._colorCache = {}; // initially an empty color cache
-
 	let rawSheet = sheet.raw;
+	mixinImageDataGetter(rawSheet,);
 
 	// defaults to the full raw image size
-	let spriteWidth = sheet.w || rawSheet.width;
-	let spriteHeight = sheet.h || rawSheet.height;
+	sheet.w = sheet.w || rawSheet.width;
+	sheet.h = sheet.h || rawSheet.height;
 
-	let verticalSpritesCount = rawSheet.height / spriteHeight;
-	let horizontalSpritesCount = rawSheet.width / spriteWidth;
+	// count how many sprites we have per row/column
+	sheet._verticalSpritesCount = rawSheet.height / sheet.h;
+	sheet._horizontalSpritesCount = rawSheet.width / sheet.w;
 
-	for (let y = 0; y < verticalSpritesCount; y++) {
-		for (let x = 0; x < horizontalSpritesCount; x++) {
-			let spriteCanvas = document.createElement("canvas");
-			spriteCanvas.width = spriteWidth;
-			spriteCanvas.height = spriteHeight;
+	/**
+	 * If a sheet is marked as "colorable: true", we split it into smaller sprites.
+	 * Later, during rendering, we can quickly access these single sprites and color them lazily.
+	 * This of course leads to higher memory consumption for bigger spritesheets,
+	 * but the runtime access is optimized.
+	 */
+	if (sheet.colorable) {
+		sheet._sprites = []; // list of all sprites in the sheet
+		sheet._colorCache = {}; // initially an empty color cache
 
-			let ctx = spriteCanvas.getContext("2d");
+		for (let y = 0, rows = sheet._verticalSpritesCount; y < rows; y++) {
+			for (let x = 0, cols = sheet._horizontalSpritesCount; x < cols; x++) {
+				let spriteCanvas = document.createElement("canvas");
+				spriteCanvas.width = sheet.w;
+				spriteCanvas.height = sheet.h;
 
-			// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-			ctx.drawImage(
-				rawSheet,
-				x * spriteWidth,
-				y * spriteHeight,
-				spriteWidth,
-				spriteHeight,
-				0,
-				0,
-				spriteWidth,
-				spriteHeight
-			);
+				let ctx = spriteCanvas.getContext("2d");
 
-			mixinImageDataGetter(spriteCanvas);
+				// ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+				ctx.drawImage(
+					rawSheet,
+					x * sheet.w,
+					y * sheet.h,
+					sheet.w,
+					sheet.h,
+					0,
+					0,
+					sheet.w,
+					sheet.h
+				);
 
-			sheet.sprites.push(spriteCanvas);
+				mixinImageDataGetter(spriteCanvas);
+
+				sheet._sprites.push(spriteCanvas);
+			}
 		}
 	}
+
 	log(`  > done: ${sheet.name}`, "Spritesheets.process");
 
 }
@@ -82,7 +102,7 @@ function getSheet(sheetName) {
  * @param {int} id the id of the sprite inside the given spritesheet
  * @param {string} color a hex color string, e.g. #FF0085
  */
-function getCanvasFromSheet(sheetName, id, color) {
+function getColorizedCanvasFromSheet(sheetName, id, color) {
 	// only retrieve manifest once to save some time (actually quite a lot of time if called at 60fps...)
 	if (!_manifest) {
 		_manifest = Manifest.get();
@@ -94,7 +114,7 @@ function getCanvasFromSheet(sheetName, id, color) {
 		fail(`Spritesheet '${sheetName}' does not exist!`, "Spritesheets");
 	}
 
-	let spriteSrcCanvas = sheet.sprites[id || 0]; // default version is not colorized
+	let spriteSrcCanvas = sheet._sprites[id || 0]; // default version is not colorized
 	if (!spriteSrcCanvas) {
 		fail(`Sprite-ID '${id}' does not exist in Spritesheet '${sheetName}'!`, "Spritesheets");
 	}
@@ -125,6 +145,6 @@ function getCanvasFromSheet(sheetName, id, color) {
 
 export default {
 	process,
-	getCanvasFromSheet,
+	getColorizedCanvasFromSheet,
 	getSheet
 };

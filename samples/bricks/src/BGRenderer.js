@@ -17,7 +17,7 @@ import FrameCounter from "../../../src/utils/FrameCounter.js";
 */
 class BGRenderer extends Tilemap {
 	constructor() {
-		super({sheet: "BG", w: 32, h: 24, version: Tilemap.Version.B});
+		super({sheet: "BG", w: 32, h: 24, version: Tilemap.Version.A});
 
 		this.animationDelay = new FrameCounter(2);
 

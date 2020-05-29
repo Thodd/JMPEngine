@@ -19,8 +19,6 @@ class Raw {
 		this.buffer = buffer;
 		this._canvasDOM = this.buffer.getCanvas();
 		this._ctx = this.buffer.getContext();
-
-		this.clear();
 	}
 
 	_release() {
@@ -35,7 +33,7 @@ class Raw {
 	}
 
 	_copyData(source, tx, ty) {
-		this._copyDataExt(source, this._pixels, tx, ty);
+		this._copyDataExt(source, this._pixels, 0, 0, undefined, undefined, tx, ty, undefined, undefined, undefined);
 	}
 
 	/**
@@ -47,7 +45,7 @@ class Raw {
 	 * @param {number} alpha the alpha channel for the given image-data.
 	 *                       The alpha value is multiplied with all alpha values in the source image-data.
 	 */
-	_copyDataExt(source, target, tx, ty, alpha) {
+	_copyDataExt(source, target, sx, sy, sw, sh, tx, ty, tw, th, alpha) {
 		// alpha = 1 is default
 		alpha = alpha || 1;
 
@@ -57,17 +55,18 @@ class Raw {
 		ty = Math.round(ty - this.buffer.camY);
 
 		// source data
+		// needed to calculate the pixel position inside the image-data
 		let _sw = source.width;
-		let _sh = source.height
+		//let _sh = source.height
 
 		// target data (typically the screen's imageData)
 		let _tw = target.width;
 		let _th = target.height;
 
 		let pos;
-		for (let y = 0; y < _sh; y++) {
-			for (let x = 0; x < _sw; x++) {
-				let off = (y * _sw + x) * 4;
+		for (let y = 0; y < sh; y++) {
+			for (let x = 0; x < sw; x++) {
+				let off = ((sy + y) * _sw + (sx + x)) * 4;
 
 				PerformanceTrace.pixelsDrawn++;
 
@@ -383,13 +382,35 @@ class Raw {
 		tx = n(tx);
 		ty = n(ty);
 
-		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
+		// get sheet config first
+		sheet = Spritesheets.getSheet(sheet);
+
+		let sprCanvas;
+		if (sheet.colorable) {
+			// A colorable sheet has different dimensions,
+			// since it has been split into many smaller sprites.
+			sprCanvas = Spritesheets.getColorizedCanvasFromSheet(sheet.name, id, color);
+			sx = 0;
+			sy = 0;
+			sw = sprCanvas.width
+			sh = sprCanvas.height;
+		} else {
+			sprCanvas = sheet.raw;
+
+			let baseX = id % sheet._horizontalSpritesCount;
+			let baseY = (id / sheet._horizontalSpritesCount) >> 0;
+
+			sx = sheet.w * baseX;
+			sy = sheet.h * baseY;
+			sw = sheet.w;
+			sh = sheet.h;
+		}
 
 		// sprite dimensions
 		let x1 = tx;
 		let y1 = ty;
-		let w1 = sprCanvas.width;
-		let h1 = sprCanvas.height;
+		let w1 = sw;
+		let h1 = sh;
 
 		// screen dimensions
 		let x2 = this.buffer.camX;
@@ -406,7 +427,7 @@ class Raw {
 			// TODO: Can this be optimized by calculating the actual visible section of the source?
 
 			let imgData = sprCanvas._getImgDataFullSize();
-			this._copyDataExt(imgData, this._pixels, tx, ty, alpha);
+			this._copyDataExt(imgData, this._pixels, sx, sy, sw, sh, tx, ty, tw, th, alpha);
 		}
 
 	}

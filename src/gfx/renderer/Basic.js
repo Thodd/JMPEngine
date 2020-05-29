@@ -304,9 +304,39 @@ class Basic {
 	 * @param {string} color css color string
 	 */
 	spr_ext(sheet, id, sx, sy, sw, sh, tx, ty, tw, th, color, alpha) {
-		let sprCanvas = Spritesheets.getCanvasFromSheet(sheet, id, color);
 
-		if (this._isRectangleInView(tx, ty, tw || sprCanvas.width, th || sprCanvas.height)) {
+		// get sheet config first
+		sheet = Spritesheets.getSheet(sheet);
+
+		let sprCanvas;
+		if (sheet.colorable) {
+			// A colorable sheet has different dimensions,
+			// since it has been split into many smaller sprites.
+			sprCanvas = Spritesheets.getColorizedCanvasFromSheet(sheet.name, id, color);
+			sx = sx || 0;
+			sy = sy || 0;
+			sw = sw || sprCanvas.width
+			sh = sh || sprCanvas.height;
+			tw = tw || sprCanvas.width;
+			th = th || sprCanvas.height
+		} else {
+			sprCanvas = sheet.raw;
+
+			let baseX = id % sheet._horizontalSpritesCount;
+			let baseY = (id / sheet._horizontalSpritesCount) >> 0;
+
+			sx = sx || 0;
+			sx = sheet.w * baseX + sx;
+			sy = sy || 0;
+			sy = sheet.h * baseY + sy;
+
+			sw = sw || sheet.w;
+			sh = sh || sheet.h;
+			tw = tw || sheet.w;
+			th = th || sheet.h;
+		}
+
+		if (this._isRectangleInView(tx, ty, tw, th)) {
 
 			// shift x/y based on camera
 			tx = tx - this.buffer.camX;
@@ -325,13 +355,13 @@ class Basic {
 				// take the whole src sprite canvas as a base
 				sx || 0, // sx
 				sy || 0, // sy
-				sw || sprCanvas.width, // sw
-				sh || sprCanvas.height, // sh
+				sw, // sw
+				sh, // sh
 				// stretch it if w/h is given
 				tx || 0,
 				ty || 0,
-				tw || sprCanvas.width, // default to canvas width
-				th || sprCanvas.height, // default to canvas height
+				tw, // default to canvas width
+				th, // default to canvas height
 			);
 
 			PerformanceTrace.drawCalls++;
