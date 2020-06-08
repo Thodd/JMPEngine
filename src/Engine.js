@@ -248,7 +248,8 @@ const Engine = {
 		resetKeyboard = Keyboard.init();
 
 		// kickstart gameloop
-		Engine.targetFPS = Manifest.get("/fps");
+		// initial FPS is 60
+		Engine.targetFPS = 60;
 		last = window.performance.now();
 		startTime = last;
 		gameloop();
@@ -272,6 +273,9 @@ const Engine = {
 
 		// after the intro is done and all assets are loaded we activate an instance of the defined start screen class
 		return Promise.all(parallel).then((results) => {
+			// set configured FPS before creating the Start Screen
+			Engine.targetFPS = Manifest.get("/fps");
+
 			let startScreenClass = results[2];
 			Engine.screen = new startScreenClass();
 		});

@@ -5,10 +5,10 @@
 
 	"w": 150,
 	"h": 130,
-	"scale": 3,
-	"fps": 60,
+	"scale": 4,
+	"fps": 30,
 	"hideCursor": false,
-	"skipIntro": false,
+	"skipIntro": true,
 
 	"assets": {
 		"spritesheets": {

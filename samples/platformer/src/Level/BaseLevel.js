@@ -111,6 +111,7 @@ class BaseLevel extends Screen {
 		// layer 0: background is rendered in BASIC mode
 		// layer 1 and 2: sprites and tiles are rendered in RAW mode
 		// layer 3: text is rendered in BASIC mode (and with fixed camera)
+		GFX.getBuffer(0).setRenderMode(Buffer.RenderModes.RAW);
 		GFX.getBuffer(1).setRenderMode(Buffer.RenderModes.RAW);
 		GFX.getBuffer(2).setRenderMode(Buffer.RenderModes.RAW);
 	}

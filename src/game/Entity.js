@@ -252,7 +252,7 @@ class Entity {
 
 			// retrieve render values
 			let sheet = anim.sheet || defaultSprite.sheet;
-			let id = anim.id != undefined ? anim.id : defaultSprite.id; // might be 0!
+			let id = anim.id != undefined ? anim.id : (defaultSprite.id || 0); // might be 0!
 			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
 			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
 			let color = anim.color || defaultSprite.color;

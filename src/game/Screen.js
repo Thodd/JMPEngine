@@ -87,7 +87,7 @@ class Screen {
 	 */
 	_setup() {
 		for (let i = 0; i < this._layers; i++) {
-			GFX.getBuffer(i).reset(false);
+			GFX.getBuffer(i).reset();
 		}
 	}
 
@@ -110,9 +110,7 @@ class Screen {
 	_initialClear(){
 		for (let i = 0; i < this._layers; i++) {
 			let b = GFX.getBuffer(i);
-			if (b.isAutoCleared()) {
-				b.getRenderer().clear();
-			}
+			b.getRenderer().clear();
 		}
 	}
 

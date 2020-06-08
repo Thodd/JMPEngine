@@ -40,7 +40,7 @@ class Buffer {
 		};
 
 		// create initial state
-		this.reset(true);
+		this.reset();
 	}
 
 	/**
@@ -51,10 +51,8 @@ class Buffer {
 	 * Buffers in RenderModes.RAW will also be reverted back to GFX.RenderModes.BASIC!
 	 * The correct point in time to change the RenderMode of a Buffer us during the setup-event of the Screen class.
 	 * You can simply call setRenderMode() with without any performance impact.
-	 *
-	 * @param {boolean} shouldClear whether the Buffer should be cleared after resetting to the inital state
 	 */
-	reset(shouldClear) {
+	reset() {
 		// default renderer is "Basic"
 		this.setRenderMode(Buffer.RenderModes.BASIC);
 
@@ -67,10 +65,6 @@ class Buffer {
 		// the lowest layer is cleared with a color instead of transparent
 		this.setClearColor(this.depth == 0 ? "#222222" : "transparent");
 		this._autoCleared = true;
-
-		if (shouldClear) {
-			this.renderer.clear();
-		}
 	}
 
 	/**
