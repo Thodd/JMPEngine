@@ -6,7 +6,7 @@
 	"w": 150,
 	"h": 130,
 	"scale": 4,
-	"fps": 30,
+	"fps": 60,
 	"hideCursor": false,
 	"skipIntro": true,
 

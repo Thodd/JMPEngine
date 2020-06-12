@@ -110,7 +110,7 @@ class Player extends BaseActor {
 	centerCamera() {
 		let s = this.getScreen();
 		s.cam.x = this.x - 7 * Constants.TILE_WIDTH;
-		s.cam.y = this.y - 7 * Constants.TILE_HEIGHT;
+		s.cam.y = this.y - 6 * Constants.TILE_HEIGHT;
 	}
 }
 

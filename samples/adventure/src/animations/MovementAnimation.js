@@ -5,7 +5,7 @@ class MovementAnimation extends BaseAnimation {
 	constructor(actor) {
 		super(actor);
 
-		this.speed = 2;
+		this.speed = 1;
 
 		this.reset();
 	}

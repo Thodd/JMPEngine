@@ -2,6 +2,7 @@ import Screen from "../../../src/game/Screen.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import Text from "../../../src/gfx/Text.js";
 import GFX from "../../../src/gfx/GFX.js";
+import Buffer from "../../../src/gfx/Buffer.js";
 import Helper from "../../../src/utils/Helper.js";
 import GameController from "./GameController.js";
 import Constants from "./Constants.js";
@@ -43,7 +44,7 @@ class WorldScreen extends Screen {
 	}
 
 	setup() {
-		GFX.getBuffer(0).setClearColor("#333333");
+		//GFX.getBuffer(1).setRenderMode(Buffer.RenderModes.RAW);
 		GFX.getBuffer(3).setCameraFixed(true);
 	}
 }
