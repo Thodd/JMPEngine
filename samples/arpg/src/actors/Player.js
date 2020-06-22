@@ -2,7 +2,7 @@ import Entity from "../../../../src/game/Entity.js";
 import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
 
-Entity.RENDER_HITBOXES = "#FF0085";
+//Entity.RENDER_HITBOXES = "#FF0085";
 
 class Player extends Entity {
 	constructor({x, y}) {
