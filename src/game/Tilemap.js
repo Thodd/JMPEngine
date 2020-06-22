@@ -19,13 +19,13 @@ const Version = {
 };
 
 class Tilemap extends Entity {
-	constructor({sheet, w=20, h=20, tileClass=Tile, version=Version.A}) {
+	constructor({sheet, x=0, y=0, w=20, h=20, tileClass=Tile, version=Version.A}) {
 
 		if (!sheet) {
 			fail(`The spritesheet ${sheet} does not exist! A Tilemap cannot be created without a spritesheet`, "Tilemap");
 		}
 
-		super();
+		super({x: x, y: y});
 
 		// tilemap version
 		this.version = version;
