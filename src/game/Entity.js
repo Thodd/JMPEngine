@@ -190,21 +190,17 @@ class Entity {
 	 * @param {object} config
 	 */
 	playAnimation(config) {
-		// check if the new animation is already playing
-		if (this._currentAnimation) {
-			if (this._currentAnimation.name == config.name) {
-				// if the reset flag is set, we reset the animation to frame 0
-				// by default the animation keeps on playing
-				if (config.reset) {
-					this._currentAnimation.currentFrame = 0;
-					// delay counter has to be reset too
-					this._currentAnimation.delayCounter.reset();
-				}
-			}
-		}
-
 		// new animation definition
 		this._currentAnimation = this._spriteConfig.animations[config.name];
+		this._currentAnimation.done = config.done;
+		if (this._currentAnimation && config.reset) {
+			this._currentAnimation.currentFrame = 0;
+			this._currentAnimation.id = this._currentAnimation.frames[0];
+			// delay counter has to be reset too
+			if (this._currentAnimation.delayCounter) {
+				this._currentAnimation.delayCounter.reset();
+			}
+		}
 	}
 
 	/**
@@ -221,6 +217,9 @@ class Entity {
 				anim.currentFrame++;
 				if (anim.currentFrame >= anim.frames.length) {
 					anim.currentFrame = 0;
+					if (this._currentAnimation.done) {
+						this._currentAnimation.done();
+					}
 				}
 				// update sprite
 				anim.id = anim.frames[anim.currentFrame];
@@ -240,7 +239,8 @@ class Entity {
 		// if animations are defined we advance the currently set one frame-by-frame
 		this._updateCurrentAnimation();
 
-		let g = GFX.get(this.layer);
+		let buff = GFX.getBuffer(this.layer);
+		let g = buff.getRenderer();
 
 		// only try to render if we have either an animation or a default sprite config
 		if (this._currentAnimation || this._spriteConfig) {
@@ -270,11 +270,17 @@ class Entity {
 			g.spr_ext(sheet, id, 0, 0, undefined, undefined, dx, dy, dw, dh, color, alpha);
 		}
 
-		if (Entity.RENDER_HITBOXES) {
-			g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top left
-			g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, Entity.RENDER_HITBOXES); // top right
-			g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, Entity.RENDER_HITBOXES); // bottom left
-			g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, Entity.RENDER_HITBOXES); // bottom right
+		// check if the hitbox should be rendered for debugging
+		let hitboxColor = Entity.RENDER_HITBOXES || this.RENDER_HITBOXES;
+		if (hitboxColor) {
+			if (buff.getRenderMode() == "RAW") {
+				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, hitboxColor); // top left
+				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, hitboxColor); // top right
+				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, hitboxColor); // bottom left
+				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, hitboxColor); // bottom right
+			} else {
+				g.rectf(this.x + this.hitbox.x, this.y + this.hitbox.y, this.hitbox.w, this.hitbox.h, hitboxColor);
+			}
 		}
 	}
 

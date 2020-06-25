@@ -1,6 +1,7 @@
 import Entity from "../../../../src/game/Entity.js";
 import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
+import SwordAttack from "./attacks/SwordAttack.js";
 
 //Entity.RENDER_HITBOXES = "#FF0085";
 
@@ -8,10 +9,16 @@ class Player extends Entity {
 	constructor({x, y}) {
 		super({x, y});
 
-		this.setSprite({
-			sheet: "chars",
+		//this.RENDER_HITBOXES = "#FFFFFF33";
 
-			offsetY: 0,
+		this.hitbox.w = 16;
+		this.hitbox.h = 16;
+
+		this.setSprite({
+			sheet: "player",
+
+			offsetX: -16,
+			offsetY: -16,
 
 			animations: {
 				default: "down",
@@ -23,6 +30,10 @@ class Player extends Entity {
 				"idle_down": {
 					frames: [0]
 				},
+				"slash_down": {
+					frames: [12, 13, 14, 14, 14],
+					delay: 1
+				},
 
 				"up": {
 					frames: [3, 4, 3, 5],
@@ -30,6 +41,10 @@ class Player extends Entity {
 				},
 				"idle_up": {
 					frames: [3]
+				},
+				"slash_up": {
+					frames: [15, 16, 17, 17, 17],
+					delay: 1
 				},
 
 				"left": {
@@ -39,6 +54,10 @@ class Player extends Entity {
 				"idle_left": {
 					frames: [6]
 				},
+				"slash_left": {
+					frames: [18, 19, 20, 20, 20],
+					delay: 1
+				},
 
 				"right": {
 					frames: [8, 9],
@@ -47,16 +66,48 @@ class Player extends Entity {
 				"idle_right": {
 					frames: [8]
 				},
+				"slash_right": {
+					frames: [21, 22, 23, 23, 23],
+					delay: 1
+				},
 			}
 		});
 
 		this.dir = "down";
 
-		this.hitbox.w = 16;
-		this.hitbox.h = 16;
+		this.swordAttack = new SwordAttack(this);
+	}
+
+	added() {
+		this.getScreen().add(this.swordAttack);
+	}
+
+	destroy() {
+		super.destroy();
+		// also clean up the sword attack
+		this.swordAttack.destroy();
 	}
 
 	update() {
+		if (this._isAttacking) {
+			return;
+		}
+
+		// attacking
+		if (Keyboard.pressed(Keys.S)) {
+			this._isAttacking = true;
+			this.playAnimation({
+				name: `slash_${this.dir}`,
+				reset: true,
+				done: () => {
+					this._isAttacking = false;
+					this.playAnimation({name: `idle_${this.dir}`});
+				}
+			});
+			return;
+		}
+
+		// walking
 		let dx = 0;
 		let dy = 0;
 		let dir = null;
@@ -90,6 +141,9 @@ class Player extends Entity {
 		} else {
 			this.playAnimation({name: `idle_${this.dir}`});
 		}
+
+		this.getScreen().cam.x = this.x - (160/2);
+		this.getScreen().cam.y = this.y - (144/2);
 	}
 }
 

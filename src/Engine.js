@@ -232,7 +232,7 @@ const Engine = {
 		await Manifest.init(manifest);
 
 		// GFX init creates all canvases upfront
-		GFX.init(placeAt);
+		GFX.init(placeAt, this);
 
 		// we wait for the "load" of the default font (and implicitly merge it into the Manifest)
 		// this way we can access simple font rendering before the rest of the assets are loaded

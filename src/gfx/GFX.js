@@ -4,6 +4,8 @@ import PerformanceTrace from "../utils/PerformanceTrace.js";
 
 import Buffer from "./Buffer.js";
 
+let _engine;
+
 /**
  * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
  */
@@ -79,6 +81,7 @@ avg. render-time   : ${(PerformanceTrace.avgRenderTime).toFixed(2)}ms
 avg. total-time    : ${(PerformanceTrace.avgUpdateTime + PerformanceTrace.avgRenderTime).toFixed(2)}ms
 draw-calls/frame   : ${PerformanceTrace.drawCalls}
 pixels-drawn/frame : ${PerformanceTrace.pixelsDrawn}
+entities           : ${_engine.screen.getEntities().length}
 </pre>
 `;
 		}, 500);
@@ -148,8 +151,10 @@ const GFX = {
 	 * Only called once.
 	 * Will be deleted afterwards.
 	 */
-	init: function init(containerID) {
+	init: function init(containerID, engine) {
 		let containerDOM;
+
+		_engine = engine;
 
 		// check container dom
 		if (typeof containerID == "string") {

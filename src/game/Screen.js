@@ -254,9 +254,12 @@ class Screen {
 
 		// Houskeeping (Safely adding & removing entities)
 		// [3] add scheduled entities
-		let lenA = this._toBeAdded.length;
+		// we make a snapshot of the currently adding entities, so we can add additional once during the added() hook
+		let curA = this._toBeAdded;
+		let lenA = curA.length;
+		this._toBeAdded = [];
 		for (let i = 0; i < lenA; i++) {
-			let ea = this._toBeAdded[i];
+			let ea = curA[i];
 			this._entities.push(ea);
 			ea._screen = this;
 			// call added hook if given
@@ -264,21 +267,22 @@ class Screen {
 				ea.added();
 			}
 		}
-		this._toBeAdded = [];
 
 		// [4] remove scheduled entities
 		// Entities are removed at the end of the frame, so that they are removed before a Screen change.
-		let lenR = this._toBeRemoved.length;
+		// we also make sure we can remove additional entities during the remove() hook
+		let curR = this._toBeRemoved;
+		let lenR = curR.length;
+		this._toBeRemoved = [];
 		for (let j = 0; j < lenR; j++) {
-			let er = this._toBeRemoved[j];
+			let er = curR[j];
 			Helper.remove(er, this._entities);
 			er._screen = null;
 			// call removed hook if given
 			if (er.removed) {
-				er.removed();
+				er.removed(this);
 			}
 		}
-		this._toBeRemoved = [];
 	}
 
 	/**

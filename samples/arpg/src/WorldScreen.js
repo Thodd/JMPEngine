@@ -30,7 +30,7 @@ class WorldScreen extends Screen {
 		/**
 		 * player
 		 */
-		this.player = new Player({x: 20, y: 20});
+		this.player = new Player({x: 100, y: 100});
 		this.add(this.player);
 
 
@@ -40,7 +40,7 @@ class WorldScreen extends Screen {
 
 	setup() {
 		//GFX.getBuffer(0).setRenderMode(Buffer.RenderModes.RAW);
-		GFX.getBuffer(2).setCameraFixed(true);
+		GFX.getBuffer(1).setCameraFixed(true);
 	}
 
 	addText() {
