@@ -11,15 +11,17 @@ let INSTANCE_COUNT = 0;
 /**
  * Entity Constructor
  */
-class Entity {
-	constructor({x=0, y=0}={}) {
+class Entity extends PIXI.Sprite {
+	constructor(x=0, y=0) {
+		super();
+
 		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;
 
-		// @PIXI empty default sprite
-		let _pixiSprite = this._pixiSprite = new PIXI.Sprite();
-		this._pixiSprite.visible = false;
+		// @PIXI by default we set this sprite to invisible
+		// not all Entities need to be rendered, some are just for updating
+		this.visible = false;
 
 		// screen internal information
 		this._isScheduledForRemoval = false;
@@ -32,33 +34,11 @@ class Entity {
 		// gfx
 		this._spriteConfig = null;
 
-		Object.defineProperties(this, {
-			x: {
-				set: (v) => {_pixiSprite.x = v;},
-				get: ( ) => {return _pixiSprite.x;}
-			},
-			y: {
-				set: (v) => {_pixiSprite.y = v;},
-				get: ( ) => {return _pixiSprite.y;}
-			}
-		});
-
 		this.x = x;
 		this.y = y;
 
-		// scale: (x,y) are the origin coordinates, w & h are the scaling factors for width and height
-		this.scale = {
-			x: 0,
-			y: 0,
-			w: 1,
-			h: 1
-		};
-
 		// by default we render on layer 0
 		this.layer = 0;
-
-		// defaults to 1 during rendering
-		this.alpha = undefined;
 
 		// collision
 		this.hitbox = {
@@ -80,10 +60,6 @@ class Entity {
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
-	}
-
-	getPixiSprite() {
-		return this._pixiSprite;
 	}
 
 	/**
@@ -119,10 +95,10 @@ class Entity {
 	 * Make sure to not reinsert it into the Screen again.
 	 */
 	destroy() {
+		// @PIXI: destroy pixi sprite
+		super.destroy();
 		if (!this._isDestroyed) {
 			this._screen.remove(this);
-			// @PIXI: destroy pixi sprite as well
-			this._pixiSprite.destroy();
 			this._isDestroyed = true;
 		}
 	}
@@ -179,10 +155,10 @@ class Entity {
 	 * The underlying PIXI sprite will configured according to this new sprite configuration.
 	 * @param {object} config
 	 */
-	setSprite(config) {
+	cfg(config) {
 		this._spriteConfig = Object.assign({}, config);
 
-		this._pixiSprite.visible = true;
+		this.visible = true;
 
 		let sheet = Spritesheets.getSheet(this._spriteConfig.sheet);
 
@@ -190,9 +166,7 @@ class Entity {
 			fail(`Unknown sheet '${this._spriteConfig.sheet}'!`, "Entity");
 		}
 
-		let tex = sheet.textures[0];
-
-		this._pixiSprite.texture = tex;
+		this.texture = sheet.textures[0];
 
 
 		// check if the new sprite def has animations
@@ -275,7 +249,7 @@ class Entity {
 	 * To keep the default rendering behavior intact,
 	 * call "super.render()" at the beginning of your custom render function.
 	 */
-	render() {
+	TODO_ANIMATION_UPDATE() {
 		// if animations are defined we advance the currently set one frame-by-frame
 		this._updateCurrentAnimation();
 

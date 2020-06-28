@@ -256,7 +256,7 @@ class Screen {
 
 		// [2] update entities
 		this._entities.forEach(function(e) {
-			if (e && e.active && !e._isDestroyed) {
+			if (e && e.update && e.active && !e._isDestroyed) {
 				e.update(dt);
 			}
 		});
@@ -274,7 +274,7 @@ class Screen {
 			ea._screen = this;
 
 			// @PIXI: Add entity sprite from the container of the Screen
-			this._pixiContainer.addChild(ea._pixiSprite);
+			this._pixiContainer.addChild(ea);
 
 			// call added hook if given
 			if (ea.added) {
@@ -294,7 +294,7 @@ class Screen {
 			er._screen = null;
 
 			// @PIXI: remove entity's sprite from the container of the Screen
-			this._pixiContainer.removeChild(er._pixiSprite);
+			this._pixiContainer.removeChild(er);
 
 			// call removed hook if given
 			if (er.removed) {
