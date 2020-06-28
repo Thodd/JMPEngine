@@ -76,6 +76,8 @@ class Player extends Entity {
 		this.dir = "down";
 
 		this.swordAttack = new SwordAttack(this);
+
+		//this.blink = new FrameCounter(3);
 	}
 
 	added() {
@@ -89,6 +91,12 @@ class Player extends Entity {
 	}
 
 	update() {
+		// if (this.blink.isReady()) {
+		// 	this.visible = false;
+		// } else {
+		// 	this.visible = true;
+		// }
+
 		if (this._isAttacking) {
 			return;
 		}
@@ -142,8 +150,8 @@ class Player extends Entity {
 			this.playAnimation({name: `idle_${this.dir}`});
 		}
 
-		this.getScreen().cam.x = this.x - (160/2);
-		this.getScreen().cam.y = this.y - (144/2);
+		this.getScreen().cam.x = this.x - (this._screen.getWidth()/2);
+		this.getScreen().cam.y = this.y - (this._screen.getHeight()/2);
 	}
 }
 

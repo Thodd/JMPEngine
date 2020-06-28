@@ -79,6 +79,24 @@ class Screen {
 	}
 
 	/**
+	 * Returns the width of the Screen as defined in the manifest.json.
+	 * Equivalent to <code>Manifest.get("/w")</code>
+	 * @public
+	 */
+	getWidth() {
+		return this.width;
+	}
+
+	/**
+	 * Returns the height of the Screen as defined in the manifest.json.
+	 * Equivalent to <code>Manifest.get("/h")</code>
+	 * @public
+	 */
+	getHeight() {
+		return this.height;
+	}
+
+	/**
 	 * Internal setup function.
 	 * Resets all buffers back to the initial state.
 	 * This is done so each Screen can start in a fresh GFX state.

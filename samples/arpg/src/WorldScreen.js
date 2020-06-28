@@ -6,6 +6,7 @@ import Helper from "../../../src/utils/Helper.js";
 
 import Constants from "./Constants.js";
 import Player from "./actors/Player.js";
+//import Buffer from "../../../src/gfx/Buffer.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -17,7 +18,8 @@ class WorldScreen extends Screen {
 		let tm = new Tilemap({
 			sheet: "tileset",
 			w: Constants.MAP_WIDTH,
-			h: Constants.MAP_HEIGHT
+			h: Constants.MAP_HEIGHT,
+			//version: "B"
 		});
 		tm.layer = 0;
 
@@ -55,7 +57,7 @@ class WorldScreen extends Screen {
 	render() {
 		// HUD BG
 		let g = GFX.get(1);
-		g.rectf(0, 0, 160, 16, "#fdf0d1");
+		g.rectf(0, 0, this.getWidth(), Constants.TILE_HEIGHT, "#fdf0d1");
 	}
 
 }

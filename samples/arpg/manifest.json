@@ -3,8 +3,8 @@
 
 	"startScreen": "./src/WorldScreen.js",
 
-	"w": 160,
-	"h": 144,
+	"w": 224,
+	"h": 192,
 	"scale": 2,
 	"fps": 60,
 	"hideCursor": false,
