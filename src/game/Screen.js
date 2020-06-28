@@ -1,9 +1,9 @@
-import Manifest from "../Manifest.js";
+import Manifest from "../assets/Manifest.js";
 import Helper from "../utils/Helper.js";
-import GFX from "../gfx/GFX.js";
 import Collision from "./Collision.js";
 import EntityTypeStore from "./EntityTypeStore.js";
 import { error } from "../utils/Log.js";
+import PIXI from "../utils/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
 
@@ -40,8 +40,8 @@ class Screen {
 		this._toBeAdded = [];
 		this._toBeRemoved = [];
 
-		// create layers
-		this._layers = Manifest.get("/layers");
+		// @PIXI: create pixi render container to hold all sprites
+		this._pixiContainer = new PIXI.Container();
 
 		// dimensions
 		this.width = Manifest.get("/w");
@@ -103,11 +103,7 @@ class Screen {
 	 * If the setup() hook is correctly implemented, the game implementation can set
 	 * camera values, clear-colors etc. before the _initalClear().
 	 */
-	_setup() {
-		for (let i = 0; i < this._layers; i++) {
-			GFX.getBuffer(i).reset();
-		}
-	}
+	_setup() {}
 
 	/**
 	 * Setup Hook.
@@ -125,12 +121,7 @@ class Screen {
 	 * Clears the buffers initially.
 	 * Called every Screen activation.
 	 */
-	_initialClear(){
-		for (let i = 0; i < this._layers; i++) {
-			let b = GFX.getBuffer(i);
-			b.getRenderer().clear();
-		}
-	}
+	_initialClear(){}
 
 	/**
 	 * Begin Hook.
@@ -271,6 +262,7 @@ class Screen {
 		});
 
 		// Houskeeping (Safely adding & removing entities)
+
 		// [3] add scheduled entities
 		// we make a snapshot of the currently adding entities, so we can add additional once during the added() hook
 		let curA = this._toBeAdded;
@@ -280,6 +272,10 @@ class Screen {
 			let ea = curA[i];
 			this._entities.push(ea);
 			ea._screen = this;
+
+			// @PIXI: Add entity sprite from the container of the Screen
+			this._pixiContainer.addChild(ea._pixiSprite);
+
 			// call added hook if given
 			if (ea.added) {
 				ea.added();
@@ -296,6 +292,10 @@ class Screen {
 			let er = curR[j];
 			Helper.remove(er, this._entities);
 			er._screen = null;
+
+			// @PIXI: remove entity's sprite from the container of the Screen
+			this._pixiContainer.removeChild(er._pixiSprite);
+
 			// call removed hook if given
 			if (er.removed) {
 				er.removed(this);
@@ -308,50 +308,7 @@ class Screen {
 	 * Overwrite this in your subclasses if needed.
 	 * The Screen's update method is called before the entities of the Screen are updated.
 	 */
-	update(dt) {}
-
-	/**
-	 * Internal render method.
-	 */
-	_render(dt) {
-		// [1] move (translate) camera and
-		// [2] clear layers
-		for (let i = 0; i < this._layers; i++) {
-			let buffer = GFX.getBuffer(i);
-
-			// push Screen camera state to the Buffers
-			if (!buffer.isCameraFixed()) {
-				buffer.cam(-this.cam.x, -this.cam.y);
-			}
-
-			if (buffer.isAutoCleared()) {
-				GFX.get(i).clear();
-			}
-		}
-
-		// [3] call render hook before the entities are rendered
-		this.render(dt);
-
-		// [4] render entities
-		this._entities.forEach(function(e) {
-			if (e && e.visible && !e._isDestroyed) {
-				e.render(dt);
-			}
-		});
-
-		// [5] flush buffer of each layer
-		for (let i = 0; i < this._layers; i++) {
-			// flush buffers: only has effect for buffers with GFX.RenderModes.RAW
-			GFX.get(i).flush();
-		}
-	}
-
-	/**
-	 * Render Hook.
-	 * Overwrite this in your subclasses if needed.
-	 * The Screen's render method is called before the entities of the Screen are rendered.
-	 */
-	render() {}
+	update() {}
 
 	/**
 	 * End Hook.

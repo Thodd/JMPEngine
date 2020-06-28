@@ -1,6 +1,6 @@
 import { log, warn, fail } from "../utils/Log.js";
 import Spritesheets from "./Spritesheets.js";
-import Manifest from "../Manifest.js";
+import Manifest from "../assets/Manifest.js";
 
 let manifestObject = null;
 

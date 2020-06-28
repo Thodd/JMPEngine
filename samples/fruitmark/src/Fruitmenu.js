@@ -4,7 +4,7 @@ import Text from "../../../src/gfx/Text.js";
 import Manifest from "../../../src/Manifest.js";
 import Engine from "../../../src/Engine.js";
 import Fruitmark from "./Fruitmark.js";
-import Buffer from "../../../src/gfx/Buffer.js";
+
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -20,94 +20,28 @@ class Fruitmenu extends Screen {
 
 		this.options = [
 			{
-				title: "RenderMode: BASIC_60  ( 1000)",
-				renderMode: Buffer.RenderModes.BASIC,
+				title: "Entities: 1000",
 				entityCount: 1000,
-				fps: 60
 			},
 			{
-				title: "RenderMode: BASIC_60  ( 2000)",
-				renderMode: Buffer.RenderModes.BASIC,
+				title: "Entities: 2000",
 				entityCount: 2000,
-				fps: 60
 			},
 			{
-				title: "RenderMode: BASIC_60  ( 5000)",
-				renderMode: Buffer.RenderModes.BASIC,
+				title: "Entities: 5000",
 				entityCount: 5000,
-				fps: 60
 			},
 			{
-				title: "RenderMode: RAW_60    ( 1000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 1000,
-				fps: 60
-			},
-			{
-				title: "RenderMode: RAW_60    ( 2000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 2000,
-				fps: 60
-			},
-			{
-				title: "RenderMode: RAW_60    ( 5000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 5000,
-				fps: 60
-			},
-			{
-				title: "RenderMode: RAW_60    (10000)",
-				renderMode: Buffer.RenderModes.RAW,
+				title: "Entities: 10000",
 				entityCount: 10000,
-				fps: 60
 			},
 			{
-				title: "RenderMode: BASIC_30  ( 1000)",
-				renderMode: Buffer.RenderModes.BASIC,
-				entityCount: 1000,
-				fps: 30
+				title: "Entities: 15000",
+				entityCount: 15000,
 			},
 			{
-				title: "RenderMode: BASIC_30  ( 2000)",
-				renderMode: Buffer.RenderModes.BASIC,
-				entityCount: 2000,
-				fps: 30
-			},
-			{
-				title: "RenderMode: BASIC_30  ( 5000)",
-				renderMode: Buffer.RenderModes.BASIC,
-				entityCount: 5000,
-				fps: 30
-			},
-			{
-				title: "RenderMode: RAW_30    ( 1000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 1000,
-				fps: 30
-			},
-			{
-				title: "RenderMode: RAW_30    ( 2000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 2000,
-				fps: 30
-			},
-			{
-				title: "RenderMode: RAW_30    ( 5000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 5000,
-				fps: 30
-			},
-			{
-				title: "RenderMode: RAW_30    (10000)",
-				renderMode: Buffer.RenderModes.RAW,
-				entityCount: 10000,
-				fps: 30
-			},
-			{
-				title: "RenderMode: RAW_30    (20000)",
-				renderMode: Buffer.RenderModes.RAW,
+				title: "Entities: 20000",
 				entityCount: 20000,
-				fps: 30
 			}
 		];
 
@@ -148,7 +82,7 @@ class Fruitmenu extends Screen {
 			if (!Scope.fruitmarkScreen) {
 				Scope.fruitmarkScreen = new Fruitmark();
 			}
-			Scope.fruitmarkScreen.init(opt.renderMode, opt.entityCount, opt.fps);
+			Scope.fruitmarkScreen.init(opt.entityCount);
 
 			Engine.screen = Scope.fruitmarkScreen;
 			return;

@@ -1,0 +1,92 @@
+<html>
+	<head>
+		<title>ARPG</title>
+		<link href="../demo.css" rel="stylesheet"></link>
+		<!-- <style>
+			canvas {
+				width: 640px;
+				height: 480px;
+				image-rendering: pixelated;
+			}
+		</style> -->
+
+		<!-- PIXI.js rendering library -->
+		<script src="../../libs/pixi.min.js"></script>
+
+		<!-- JMP Game Engine bootstrap -->
+		<script src="../../src/jmp-bootstrap.js"
+				type="module"
+				data-jmp-manifest="./manifest.json"
+				data-jmp-container="content">
+		</script>
+
+	</head>
+	<body>
+		<div class="jmpDemoPanelOuter">
+			<div class="jmpDemoPanelInner">
+				<div id="content"></div>
+			</div>
+		</div>
+	</body>
+	<!-- <script>
+const width = 320;
+const height = 240;
+const app = new PIXI.Application({width:width, height:height, resolution: 1});
+document.body.appendChild(app.view);
+
+let bol = false;
+
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+// create a texture from an image path
+app.loader.add("player", "./img/player.png");
+
+app.loader.load((loader, resources) => {
+	const texture = PIXI.Texture.from("player");
+	const texture2 = new PIXI.Texture(texture, new PIXI.Rectangle(0, 0, 48, 48));
+	const texture3 = new PIXI.Texture(texture, new PIXI.Rectangle(48, 0, 48, 48));
+
+	// create a new Sprite using the texture
+	let sprites = [];
+	for (let i = 0; i < 1; i++) {
+		const dude = new PIXI.Sprite(texture2);
+		dude.anchor.set(0.5);
+		dude.x = Math.floor(Math.random() * width);
+		dude.y = Math.floor(Math.random() * height);
+		dude.xdir = Math.random() > 0.5 ? -1 : 1;
+		dude.ydir = Math.random() > 0.5 ? -1 : 1;
+		sprites.push(dude);
+
+		dude.on("added", () => {
+			console.log("added");
+		});
+
+		dude.on("removed", () => {
+			console.log("removed");
+		});
+
+		console.log("beforeAddChild");
+		app.stage.addChild(dude);
+		console.log("afterAddChild");
+	}
+	let len = sprites.length;
+
+	app.ticker.add(() => {
+		for (let i = 0; i < len; i++) {
+			let d = sprites[i];
+
+			if (d.x >= width || d.x <= 0) {
+				d.xdir *= -1;
+			}
+			if (d.y >= height || d.y <= 0) {
+				d.ydir *= -1;
+			}
+
+			d.x += d.xdir;
+			d.y += d.ydir;
+			//sprites[i].rotation += 0.1;
+		}
+	});
+});
+	</script> -->
+</html>

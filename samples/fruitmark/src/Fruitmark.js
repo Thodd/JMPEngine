@@ -61,10 +61,7 @@ class Fruitmark extends Screen {
 		Scope.fruitmarkScreen = this;
 	}
 
-	init(renderMode, entityCount, fps) {
-		this.renderMode = renderMode;
-		Engine.targetFPS = fps;
-
+	init(entityCount) {
 		for (let i = 0; i < entityCount; i++) {
 			this.add(new Fruit({}));
 		}
@@ -82,7 +79,7 @@ class Fruitmark extends Screen {
 		let infoText = new Text({
 			x: 2,
 			y: screenHeight - 9,
-			text: `RenderMode: ${renderMode}_${fps}   (${entityCount})`,
+			text: `Entities: ${entityCount}`,
 			color: "#FF0085",
 			useKerning: true
 		});

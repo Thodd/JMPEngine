@@ -1,5 +1,5 @@
 import { fail, warn } from "../utils/Log.js";
-import Manifest from "../Manifest.js";
+import Manifest from "../assets/Manifest.js";
 
 import Basic from "./renderer/Basic.js";
 import Raw from "./renderer/Raw.js";

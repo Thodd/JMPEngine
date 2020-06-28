@@ -1,8 +1,10 @@
 import GFX from "../gfx/GFX.js";
-import Spritesheets from "../gfx/Spritesheets.js";
+import Spritesheets from "../assets/Spritesheets.js";
 import { warn, error, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
+
+import PIXI from "../utils/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
 
@@ -15,19 +17,35 @@ class Entity {
 
 		this._screen = null;
 
+		// @PIXI empty default sprite
+		let _pixiSprite = this._pixiSprite = new PIXI.Sprite();
+		this._pixiSprite.visible = false;
+
 		// screen internal information
 		this._isScheduledForRemoval = false;
 		this._isScheduledForAdding = false;
 
 		// lifetime of an entity
 		this.active = true;
-		this.visible = true;
 		this._isDestroyed = false;
 
 		// gfx
 		this._spriteConfig = null;
+
+		Object.defineProperties(this, {
+			x: {
+				set: (v) => {_pixiSprite.x = v;},
+				get: ( ) => {return _pixiSprite.x;}
+			},
+			y: {
+				set: (v) => {_pixiSprite.y = v;},
+				get: ( ) => {return _pixiSprite.y;}
+			}
+		});
+
 		this.x = x;
 		this.y = y;
+
 		// scale: (x,y) are the origin coordinates, w & h are the scaling factors for width and height
 		this.scale = {
 			x: 0,
@@ -64,6 +82,10 @@ class Entity {
 		return `${this.constructor.name} (${this._ID})`;
 	}
 
+	getPixiSprite() {
+		return this._pixiSprite;
+	}
+
 	/**
 	 * Returns the Screen instance to which this Entity is added.
 	 * If the Entity is not added to a Screen, <code>null</code> is returned.
@@ -91,12 +113,16 @@ class Entity {
 	/**
 	 * Destroys the Entity.
 	 * Entity is safely removed from the world.
+	 * The "removed" hook is always called afterwards.
 	 *
-	 * The "removed" hook always called afterwards!
+	 * A destroyed Entity is unusable!
+	 * Make sure to not reinsert it into the Screen again.
 	 */
 	destroy() {
 		if (!this._isDestroyed) {
 			this._screen.remove(this);
+			// @PIXI: destroy pixi sprite as well
+			this._pixiSprite.destroy();
 			this._isDestroyed = true;
 		}
 	}
@@ -150,10 +176,24 @@ class Entity {
 
 	/**
 	 * Sets a new sprite definition, including animations.
+	 * The underlying PIXI sprite will configured according to this new sprite configuration.
 	 * @param {object} config
 	 */
 	setSprite(config) {
 		this._spriteConfig = Object.assign({}, config);
+
+		this._pixiSprite.visible = true;
+
+		let sheet = Spritesheets.getSheet(this._spriteConfig.sheet);
+
+		if (!sheet) {
+			fail(`Unknown sheet '${this._spriteConfig.sheet}'!`, "Entity");
+		}
+
+		let tex = sheet.textures[0];
+
+		this._pixiSprite.texture = tex;
+
 
 		// check if the new sprite def has animations
 		// if not we asume a valid single sprite definition

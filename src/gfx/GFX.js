@@ -1,25 +1,25 @@
 import { log, error, fail } from "../utils/Log.js";
-import Manifest from "../Manifest.js";
-import PerformanceTrace from "../utils/PerformanceTrace.js";
-
-import Buffer from "./Buffer.js";
+import Manifest from "../assets/Manifest.js";
 
 let _engine;
 
 /**
  * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
  */
-function setupCSS() {
+function setupCSS(containerID) {
 	const head = document.getElementsByTagName('head')[0];
 
 	const style = document.createElement('style');
 	style.type = 'text/css';
 
-	const css = `
-		.jmpCanvas {
-			position: absolute;
+	let w = Manifest.get("/w");
+	let h = Manifest.get("/h");
+	let scale = Manifest.get("/scale");
 
-			transform: translateZ(0px);
+	const css = `
+		#${containerID} canvas {
+			width: ${w * scale}px;
+			height: ${h * scale}px;
 
 			image-rendering: pixelated;
 			image-rendering: -webkit-crisp-edges;
@@ -41,50 +41,21 @@ function setupCSS() {
 	log("CSS created.", "GFX");
 }
 
-/**
- * Creates the rendering surface
- */
-function setupBuffers(containerDOM) {
-	let layerCount = Manifest.get("/layers");
-	let w = Manifest.get("/w");
-	let h = Manifest.get("/h");
-	let scale = Manifest.get("/scale");
-
-	// wrap layers in a div
-	let _wrapperDiv = document.createElement("div");
-	_wrapperDiv.classList.add("jmpWrapper");
-	_wrapperDiv.style.width = w * scale;
-	_wrapperDiv.style.height = h * scale;
-
-	for (let i = 0; i < layerCount; i++) {
-		let layer = new Buffer(w, h, scale, i);
-		_buffers.push(layer);
-		_wrapperDiv.appendChild(layer.getCanvas());
-	}
-
-	containerDOM.appendChild(_wrapperDiv);
-
-	log("Canvases created.", "GFX");
-}
-
 function setupDebugUI() {
 	let up = new URLSearchParams(window.location.search);
 	if (up.get("debug")) {
-		let d = document.createElement("div");
-		d.style.fontFamily = "monospace";
-		document.body.appendChild(d);
+		let dbg = document.createElement("div");
+		dbg.id = "__debugUI";
+		dbg.innerHTML = "<div id='__debugUI_stats'></div>";
+		document.body.appendChild(dbg);
+
+		let entities = document.createElement("div");
+		entities.style.fontFamily = "monospace";
 		setInterval(() => {
-			d.innerHTML = `
-<pre>
-avg. update-time   : ${(PerformanceTrace.avgUpdateTime).toFixed(2)}ms
-avg. render-time   : ${(PerformanceTrace.avgRenderTime).toFixed(2)}ms
-avg. total-time    : ${(PerformanceTrace.avgUpdateTime + PerformanceTrace.avgRenderTime).toFixed(2)}ms
-draw-calls/frame   : ${PerformanceTrace.drawCalls}
-pixels-drawn/frame : ${PerformanceTrace.pixelsDrawn}
-entities           : ${_engine.screen.getEntities().length}
-</pre>
-`;
+			entities.innerHTML = `entities: ${_engine.screen.getEntities().length}`;
 		}, 500);
+		dbg.appendChild(entities);
+
 	}
 }
 
@@ -101,39 +72,10 @@ const palette = [
 	"#a3ce27", "#005784", "#31a2f2", "#b2dcef"
 ];
 
-const _buffers = [];
-
-/**
- * Hack for Visual Code to have Code Completion on Renderers.
- * Can this be done any better?
- * @typedef {import('./renderer/Basic').default} Basic
- * @typedef {import('./renderer/Raw').default} Raw
- */
-
 /**
  * GFX Facade
  */
 const GFX = {
-	/**
-	 * Returns the Renderer instance for the managed Buffer on the given layer.
-	 *
-	 * @param {integer} i the layer
-	 * @return {Basic|Raw} the renderer of the Buffer on the given layer
-	 */
-	get: function(i) {
-		return _buffers[i].renderer;
-	},
-
-	/**
-	 * Returns the Buffer on the given layer.
-	 *
-	 * @param {integer} i the layer
-	 * @return {Buffer} the buffer instance on the given layer
-	 */
-	getBuffer(i) {
-		return _buffers[i];
-	},
-
 	/**
 	 * Returns the color at index 'i' in the defined palette.
 	 * The index 'i' is looped in the available range of colors in the palette.
@@ -162,6 +104,7 @@ const GFX = {
 		} else if (typeof containerID == "object") {
 			// assume we have a dom node already
 			containerDOM = containerID;
+			containerID = containerDOM.id;
 		}
 
 		if (!containerDOM) {
@@ -170,9 +113,10 @@ const GFX = {
 
 		log("Initializing GFX module ... ", "GFX");
 
-		setupCSS();
+		// @PIXI: add view to the container DOM
+		containerDOM.appendChild(_engine.getPixiApp().view);
 
-		setupBuffers(containerDOM);
+		setupCSS(containerID);
 
 		setupDebugUI();
 

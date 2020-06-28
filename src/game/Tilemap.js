@@ -1,4 +1,4 @@
-import Manifest from "../Manifest.js";
+import Manifest from "../assets/Manifest.js";
 import Entity from "./Entity.js";
 import Grid from "../gfx/Grid.js";
 import { fail } from "../utils/Log.js";

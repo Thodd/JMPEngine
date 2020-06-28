@@ -1,14 +1,19 @@
 import domReady from "./utils/domReady.js";
 import { log } from "./utils/Log.js";
-import PerformanceTrace from "./utils/PerformanceTrace.js";
-import Manifest from "./Manifest.js";
+import Manifest from "./assets/Manifest.js";
 import AssetLoader from "./assets/AssetLoader.js";
 import GFX from "./gfx/GFX.js";
-import Fonts from "./gfx/Fonts.js";
-import Grid from "./gfx/Grid.js";
 import Keyboard from "./input/Keyboard.js";
 import Screen from "./game/Screen.js";
 import IntroScreen from "./game/intro/IntroScreen.js";
+
+// @Stats: Simple performance tracking
+import Stats from "../libs/stats.module.js";
+
+// @PIXI include PIXI.js
+import { getPixiApp } from "./utils/PIXIWrapper.js";
+
+let pixiApp;
 
 let startTime = 0;
 
@@ -18,12 +23,16 @@ let resetKeyboard = null;
 let currentScreen = null;
 let nextScreen = null;
 
-// gameloop variables
-let currentFPS = 0;
-let targetFPS = 60;                 // the targeted FPS
-let timePerFrame = 1/targetFPS;     // the duration of each frame to keep the target FPS
-let frameDeltaAcc = 0;              // accumulated delta time between frames
-let last = 0;                    // the last timestamp for the gameloop
+// timing
+let last;
+
+// performance stats
+var stats;
+function setupStats() {
+	stats = new Stats();
+	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+	document.getElementById("__debugUI_stats").appendChild( stats.dom );
+}
 
 /**
  * The game loop.
@@ -33,6 +42,7 @@ let last = 0;                    // the last timestamp for the gameloop
  * 3. Switching Screens and calling lifecycle Hooks
  */
 const gameloop = () => {
+	stats.begin();
 	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
 	if (nextScreen) {
 		// end old screen
@@ -42,77 +52,24 @@ const gameloop = () => {
 		currentScreen = nextScreen;
 
 		// setup phase (GFX setup)
-		currentScreen._setup();
 		currentScreen.setup();
-		currentScreen._initialClear();
 
 		// begin phase (game logic)
 		currentScreen.begin();
 
+		// @PIXI: Switch out pixi container for rendering the next screen
+		pixiApp.stage = currentScreen._pixiContainer;
+
 		nextScreen = null;
-
-		// new performance trace for each screen
-		PerformanceTrace.clear();
 	}
-
-	// gameloop implementation is based on the "fixing your timestep" tutorial by "codeincomplete.com"
-	// and information taken from the article "Dewitters Gameloop":
-	// https://codeincomplete.com/articles/javascript-game-foundations-the-game-loop/
-	// https://dewitters.com/dewitters-gameloop/
 
 	// only do all this if we have a screen set
 	if (currentScreen) {
-		let dirtyUI = false;
+		currentScreen._update();
 
-		let now = window.performance.now();
-		let frameDelta = Math.min(1, (now - last) / 1000);
-		frameDeltaAcc += frameDelta;
-		last = now;
-
-		while(frameDeltaAcc > timePerFrame) {
-			frameDeltaAcc = frameDeltaAcc - timePerFrame;
-
-			// update
-			PerformanceTrace.start("update");
-			currentScreen._update(frameDelta);
-			PerformanceTrace.end("update");
-
-			dirtyUI = true;
-
-			resetKeyboard();
-		}
-
-		// So the dirty check is a simple variation on the above mentioned tutorial.
-		// So why don't we render every frame now (as proposed by codeincomplete)?
-		// and interpolate during rendering (as proposed by Koen Witters)?
-
-		// It's based on the following assumptions:
-		// - every time we update, we also need to render (depending on the configured FPS)
-		// - requestAnimationFrame targets 60fps
-		// - The JMP Engine targets full-pixel only
-		// - The JMP Engine is a software renderer based on copying pixel buffer data
-		//   in a single/sync. JavaScript stack, so render-time should be regarded
-		//   with a similar perspective as update-time
-
-		// From my experience, using a dirty check significantly decreases CPU usage and memory consumption.
-		// It's also most likely more energy efficient.
-		// However, even with full-pixels as a target (no sub-pixels or anti-aliasing), we could still use interpolation for
-		// rendering, e.g. a 2px movement during update, could still be rendered as two 1px movements during rendering.
-		// While interpolation would smooth out the 30fps mode, we still would need to do much more calculations
-		// per loop, and this is noticeable with a high entity count.
-		// I saw a noticeable performance decrease with roughly > 5000 entities in my tests.
-		if (dirtyUI) {
-			// rendering
-			PerformanceTrace.resetDrawCounters();
-			PerformanceTrace.start("render");
-			currentScreen._render(frameDelta);
-			PerformanceTrace.end("render");
-		}
-		PerformanceTrace.finalize();
-
+		resetKeyboard();
 	}
-
-	requestAnimationFrame(gameloop);
+	stats.end();
 };
 
 /**
@@ -152,33 +109,8 @@ function getIntroScreen() {
  */
 const Engine = {
 
-	get FPS() {
-		return currentFPS;
-	},
-
-	/**
-	 * Changes the FPS of the gameloop.
-	 * Updates are executed at the given rate.
-	 */
-	set targetFPS(x) {
-		x = x || 60; // 0 is stupid...
-		targetFPS = x;
-		timePerFrame = 1/x;
-	},
-
-	/**
-	 * Get the targeted FPS.
-	 */
-	get targetFPS() {
-		return targetFPS;
-	},
-
-	/**
-	 * The duration of a single frame in [ms].
-	 * Defined as <code>let timePerFrame = 1/targetFPS;</code>.
-	 */
-	getTimePerFrame() {
-		return timePerFrame;
+	getPixiApp() {
+		return pixiApp;
 	},
 
 	/**
@@ -231,28 +163,27 @@ const Engine = {
 		// retrieve manifest
 		await Manifest.init(manifest);
 
-		// GFX init creates all canvases upfront
-		GFX.init(placeAt, this);
-
-		// we wait for the "load" of the default font (and implicitly merge it into the Manifest)
-		// this way we can access simple font rendering before the rest of the assets are loaded
-		await AssetLoader.load({
-			"fonts": {
-				"font0": Fonts.DEFAULT_JMP_FONT0
-			}
+		//@PIXI
+		log("Initializing PIXI.js", "Engine");
+		pixiApp = getPixiApp({
+			width: Manifest.get("/w"),
+			height: Manifest.get("/h"),
+			backgroundColor: Manifest.get("/bg") || 0x272d37
 		});
 
-		// TODO: refactor grid into Tilemap class
-		Grid.init();
+		// GFX init creates all canvases upfront
+		GFX.init(placeAt, this);
+		setupStats();
 
 		resetKeyboard = Keyboard.init();
 
-		// kickstart gameloop
-		// initial FPS is 60
-		Engine.targetFPS = 60;
+		// take initial timing
 		last = window.performance.now();
 		startTime = last;
-		gameloop();
+
+		// kickstart gameloop
+		pixiApp.ticker.add(gameloop);
+
 		log("Gameloop started.", "Engine");
 
 		// Now we do some parallel stuff while the intro screen is showing.
@@ -273,9 +204,6 @@ const Engine = {
 
 		// after the intro is done and all assets are loaded we activate an instance of the defined start screen class
 		return Promise.all(parallel).then((results) => {
-			// set configured FPS before creating the Start Screen
-			Engine.targetFPS = Manifest.get("/fps");
-
 			let startScreenClass = results[2];
 			Engine.screen = new startScreenClass();
 		});

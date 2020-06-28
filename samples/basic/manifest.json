@@ -1,0 +1,31 @@
+{
+	"title": "ARPG",
+
+	"startScreen": "./src/WorldScreen.js",
+
+	"w": 224,
+	"h": 192,
+
+	"scale": 2,
+
+	"bg": "0x272d37",
+
+	"hideCursor": false,
+
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"player": {
+				"url": "./img/player.png",
+				"w": 48,
+				"h": 48
+			},
+			"tileset": {
+				"url": "./img/tileset16.png",
+				"w": 16,
+				"h": 16
+			}
+		}
+	}
+}

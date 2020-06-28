@@ -1,4 +1,4 @@
-import Manifest from "../../Manifest.js";
+import Manifest from "../../assets/Manifest.js";
 import Screen from "../Screen.js";
 import GFX from "../../gfx/GFX.js";
 import FrameCounter from "../../utils/FrameCounter.js";
