@@ -11,17 +11,21 @@ let INSTANCE_COUNT = 0;
 /**
  * Entity Constructor
  */
-class Entity extends PIXI.Sprite {
+class Entity {
 	constructor(x=0, y=0) {
-		super();
+		this.x = x;
+		this.y = y;
 
 		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;
 
-		// @PIXI by default we set this sprite to invisible
+		// @PIXI
+		this._pixiSprite = new PIXI.Sprite();
+
+		// by default we set this sprite to invisible
 		// not all Entities need to be rendered, some are just for updating
-		this.visible = false;
+		this._pixiSprite.visible = false;
 
 		// screen internal information
 		this._isScheduledForRemoval = false;
@@ -33,9 +37,6 @@ class Entity extends PIXI.Sprite {
 
 		// gfx
 		this._spriteConfig = null;
-
-		this.x = x;
-		this.y = y;
 
 		// by default we render on layer 0
 		this.layer = 0;
@@ -60,6 +61,10 @@ class Entity extends PIXI.Sprite {
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
+	}
+
+	getPixiSprite() {
+		return this._pixiSprite;
 	}
 
 	/**
@@ -95,9 +100,10 @@ class Entity extends PIXI.Sprite {
 	 * Make sure to not reinsert it into the Screen again.
 	 */
 	destroy() {
-		// @PIXI: destroy pixi sprite
-		super.destroy();
 		if (!this._isDestroyed) {
+			// @PIXI: destroy pixi sprite
+			this._pixiSprite.destroy();
+
 			this._screen.remove(this);
 			this._isDestroyed = true;
 		}
@@ -158,15 +164,39 @@ class Entity extends PIXI.Sprite {
 	cfg(config) {
 		this._spriteConfig = Object.assign({}, config);
 
-		this.visible = true;
+		let newTexture;
 
-		let sheet = Spritesheets.getSheet(this._spriteConfig.sheet);
+		if (config.sheet) {
+			// sprite given via sheet
+			let sheet = Spritesheets.getSheet(this._spriteConfig.sheet);
 
-		if (!sheet) {
-			fail(`Unknown sheet '${this._spriteConfig.sheet}'!`, "Entity");
+			if (!sheet) {
+				fail(`Unknown sheet '${this._spriteConfig.sheet}'!`, "Entity");
+			}
+
+			// @PIXI: get texture from sheet
+			newTexture = sheet.textures[0];
+		} else if (config.texture) {
+			// @PIXI: sprite given via texture
+			newTexture = config.texture;
+		} else if (config.replaceWith) {
+			// @PIXI-TODO: How does destroy work?
+			// When replacing do we need to remove it from the stage?
+
+			// Also IMPORTANT: add "replaceWith" DisplayObject to the screen stage!
+
+			// also make sure to destroy the original sprite!
+			// this._pixiSprite.destroy();
+
+			// @PIXI: replace the original sprite with another PIXI.DisplayObject
+			this._pixiSprite = config.replaceWith;
 		}
 
-		this.texture = sheet.textures[0];
+		// @PIXI: set the texture for the pixi sprite & make it visible
+		if (newTexture) {
+			this._pixiSprite.texture = newTexture;
+			this._pixiSprite.visible = true;
+		}
 
 
 		// check if the new sprite def has animations

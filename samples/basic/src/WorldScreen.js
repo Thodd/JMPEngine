@@ -42,23 +42,30 @@ class WorldScreen extends Screen {
 		let sheet = Spritesheets.getSheet("tileset");
 
 		ctx.drawImage(sheet.orgTexture.baseTexture.resource.source, 16, 0, 16, 16, 0, 0, 16, 16);
-		document.body.appendChild(c);
+		document.body.appendChild(c); // debug
 
 		let test = new Entity();
-		test.texture = PIXI.Texture.from(c);
-		test.visible = true;
+		test.cfg({
+			texture: PIXI.Texture.from(c)
+		});
 		test.x = 20;
 		test.y = 20;
 
 		this.add(test);
 
 		// primitives
+		let gfxEntity = new Entity();
 		let g = new PIXI.Graphics();
 		g.x = 10;
 		g.y = 10;
 		g.lineStyle(1, 0xFF0085, 0.5);
 		g.drawRect(0, 0, 16, 16);
-		this.add(g);
+
+		gfxEntity.cfg({
+			replaceWith: g
+		});
+
+		this.add(gfxEntity);
 
 		// stress test
 		let w = this.getWidth();
@@ -69,7 +76,6 @@ class WorldScreen extends Screen {
 			e.cfg({
 				sheet: "player",
 				id: 0,
-				pixiConfig: {}
 			});
 			e.x = Math.floor(Math.random() * w);
 			e.y = Math.floor(Math.random() * h);
@@ -78,7 +84,7 @@ class WorldScreen extends Screen {
 
 			this.add(e);
 
-			e.anchor.set(0.5);
+			e._pixiSprite.anchor.set(0.5);
 			//e.height *= 2;
 			//e.width *= 2;
 

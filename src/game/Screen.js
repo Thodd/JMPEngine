@@ -255,13 +255,31 @@ class Screen {
 		this.update(dt);
 
 		// [2] update entities
-		this._entities.forEach(function(e) {
+		let len = this._entities.length;
+
+		for (let i = 0; i < len; i++) {
+			let e = this._entities[i];
+
+			// TODO: deactivate entity outside view?
+			// e.activationRadius = 10  -->  active inside  camera + 10px  all around
+
+			// TODO: set out of view entities to invisible?
+			// e.visible == true, e.visible == false  -->  do what the flag says
+			// e.visible == "auto"                    -->  set pixiSprite to visible/invisible  if  entity is inside/outside viewport
+
 			if (e && e.update && e.active && !e._isDestroyed) {
 				e.update(dt);
 			}
-		});
+		}
 
-		// Houskeeping (Safely adding & removing entities)
+		// @PIXI: update PIXI.Sprite/PIXI.DisplayObject position based on Camera position at end of frame
+		for (let i = 0; i < len; i++) {
+			let e = this._entities[i];
+			e._pixiSprite.x = e.x;
+			e._pixiSprite.y = e.y;
+		}
+
+		// ---------- Houskeeping (Safely adding & removing entities) ----------
 
 		// [3] add scheduled entities
 		// we make a snapshot of the currently adding entities, so we can add additional once during the added() hook
@@ -274,7 +292,7 @@ class Screen {
 			ea._screen = this;
 
 			// @PIXI: Add entity sprite from the container of the Screen
-			this._pixiContainer.addChild(ea);
+			this._pixiContainer.addChild(ea._pixiSprite);
 
 			// call added hook if given
 			if (ea.added) {
@@ -294,7 +312,7 @@ class Screen {
 			er._screen = null;
 
 			// @PIXI: remove entity's sprite from the container of the Screen
-			this._pixiContainer.removeChild(er);
+			this._pixiContainer.removeChild(er._pixiSprite);
 
 			// call removed hook if given
 			if (er.removed) {
