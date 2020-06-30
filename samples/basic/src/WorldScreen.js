@@ -4,17 +4,20 @@ import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import PIXI from "../../../src/utils/PIXIWrapper.js";
 import Spritesheets from "../../../src/assets/Spritesheets.js";
+import { log } from "../../../src/utils/Log.js";
 
 class WorldScreen extends Screen {
 	constructor() {
 		super();
 
-		this._pixiContainer.x = 10;
-
 		let e = new Entity();
-		e.cfg({
+		e.configVisuals({
 			sheet: "player",
-			id: 0
+			id: 0,
+			offset: {
+				x: 16,
+				y: 16
+			}
 		});
 
 		this.add(e);
@@ -22,16 +25,23 @@ class WorldScreen extends Screen {
 		e.update = function () {
 			let s = this.getScreen();
 
+			if (Keyboard.pressed(Keys.SPACE)) {
+				log(`x: ${s.cam.x}, y: ${s.cam.y}`);
+			}
+
 			if (Keyboard.down(Keys.DOWN)) {
 				this.y++;
 			} else if (Keyboard.down(Keys.UP)) {
 				this.y--;
 			}
-			if (Keyboard.down(Keys.LEFT)) {
-				this.x--;
-			} else if (Keyboard.down(Keys.RIGHT)) {
+			if (Keyboard.down(Keys.RIGHT)) {
 				this.x++;
+			} else if (Keyboard.down(Keys.LEFT)) {
+				this.x--;
 			}
+
+			s.cam.x = this.x - s.getWidth()/2;
+			s.cam.y = this.y - s.getHeight()/2;
 		}
 
 		// canvas test
@@ -45,7 +55,7 @@ class WorldScreen extends Screen {
 		document.body.appendChild(c); // debug
 
 		let test = new Entity();
-		test.cfg({
+		test.configVisuals({
 			texture: PIXI.Texture.from(c)
 		});
 		test.x = 20;
@@ -56,12 +66,12 @@ class WorldScreen extends Screen {
 		// primitives
 		let gfxEntity = new Entity();
 		let g = new PIXI.Graphics();
-		g.x = 10;
-		g.y = 10;
-		g.lineStyle(1, 0xFF0085, 0.5);
-		g.drawRect(0, 0, 16, 16);
+		g.x = 0;
+		g.y = 0;
+		g.lineStyle(1, 0xFF0085, 1);
+		g.drawRect(1, 0, this.getWidth()-1, this.getHeight()-1);
 
-		gfxEntity.cfg({
+		gfxEntity.configVisuals({
 			replaceWith: g
 		});
 
@@ -73,9 +83,10 @@ class WorldScreen extends Screen {
 
 		for (let i = 0; i < 10; i++) {
 			let e = new Entity();
-			e.cfg({
+			e.configVisuals({
 				sheet: "player",
 				id: 0,
+				offset: {x:16, y:16}
 			});
 			e.x = Math.floor(Math.random() * w);
 			e.y = Math.floor(Math.random() * h);
@@ -84,15 +95,15 @@ class WorldScreen extends Screen {
 
 			this.add(e);
 
-			e._pixiSprite.anchor.set(0.5);
+			//e._pixiSprite.anchor.set(0.5);
 			//e.height *= 2;
 			//e.width *= 2;
 
 			e.update = function () {
-				if (this.x >= w || this.x <= 0) {
+				if (this.x >= w-16 || this.x <= 0) {
 					this.xdir *= -1;
 				}
-				if (this.y >= h || this.y <= 0) {
+				if (this.y >= h-16 || this.y <= 0) {
 					this.ydir *= -1;
 				}
 

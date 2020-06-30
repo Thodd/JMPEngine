@@ -57,6 +57,12 @@ class Screen {
 		 * During rendering this will be respected for correctly shifting entities around.
 		 */
 		this.cam = {
+			activate() {
+				this._active = true;
+			},
+			deactivate() {
+				this._active = false;
+			},
 			set x (x) {
 				_camX = x * -1;
 			},
@@ -70,6 +76,7 @@ class Screen {
 				return -1 * _camY;
 			}
 		};
+		this.cam.activate();
 
 		this._entityTypeStore = new EntityTypeStore();
 	}
@@ -260,8 +267,14 @@ class Screen {
 		for (let i = 0; i < len; i++) {
 			let e = this._entities[i];
 
+			// TODO: trigger animation update
+			// we do this at the beginning of the frame, because if we do it at the end of the frame,
+			// you could change the animation during the update step and "loose" a frame on the defined frame delay.
+
+
 			// TODO: deactivate entity outside view?
 			// e.activationRadius = 10  -->  active inside  camera + 10px  all around
+
 
 			// TODO: set out of view entities to invisible?
 			// e.visible == true, e.visible == false  -->  do what the flag says
@@ -272,16 +285,30 @@ class Screen {
 			}
 		}
 
-		// @PIXI: update PIXI.Sprite/PIXI.DisplayObject position based on Camera position at end of frame
+		// [3] Update render positions based on the screen's camera and the currently set offset
+		// We do this after the update loop, because only then can we be sure that the Entity's x/y is final.
+		// Sadly we cannot circumvent this second loop, however it runs without any impact for 10000+ entities and scales linearly, so...
+
+		// We retrieve the cam x/y before the loop, so we don't call the defined getter's for all entities.
+		let camX = this.cam._active ? this.cam.x : 0;
+		let camY = this.cam._active ? this.cam.y : 0;
+
 		for (let i = 0; i < len; i++) {
 			let e = this._entities[i];
-			e._pixiSprite.x = e.x;
-			e._pixiSprite.y = e.y;
+
+			// @PIXI: we shift the render position for all PIXI.Sprite/PIXI.DisplayObjects
+			// this is nothing PIXI can do out of the box, at least not easily in a pixel-perfect manner...
+
+			// TODO: respect the offset for the current animation frame!
+
+			e._pixiSprite.x = e.x - e._spriteConfig.offset.x - camX;
+			e._pixiSprite.y = e.y - e._spriteConfig.offset.y - camY;
+
 		}
 
 		// ---------- Houskeeping (Safely adding & removing entities) ----------
 
-		// [3] add scheduled entities
+		// [4] add scheduled entities
 		// we make a snapshot of the currently adding entities, so we can add additional once during the added() hook
 		let curA = this._toBeAdded;
 		let lenA = curA.length;
@@ -300,7 +327,7 @@ class Screen {
 			}
 		}
 
-		// [4] remove scheduled entities
+		// [5] remove scheduled entities
 		// Entities are removed at the end of the frame, so that they are removed before a Screen change.
 		// we also make sure we can remove additional entities during the remove() hook
 		let curR = this._toBeRemoved;

@@ -7,9 +7,14 @@ body {
 }
 
 #content {
-	border: 1px solid #DDDDDD;
+	background: #000000;
+	border: 1px solid #525252;
 	padding: 3px;
 	display: inline-block;
+}
+
+#content canvas {
+	border: 1px solid #525252;
 }
 
 .jmpDemoPanelOuter {

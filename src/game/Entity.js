@@ -36,7 +36,12 @@ class Entity {
 		this._isDestroyed = false;
 
 		// gfx
-		this._spriteConfig = null;
+		this._spriteConfig = {
+			offset: {
+				x: 0,
+				y: 0
+			}
+		};
 
 		// by default we render on layer 0
 		this.layer = 0;
@@ -161,9 +166,13 @@ class Entity {
 	 * The underlying PIXI sprite will configured according to this new sprite configuration.
 	 * @param {object} config
 	 */
-	cfg(config) {
-		this._spriteConfig = Object.assign({}, config);
+	configVisuals(config) {
+		// we merge the new config with at least an empty offset object
+		this._spriteConfig = Object.assign({
+			offset: {x: 0, y: 0}
+		}, config);
 
+		// Figure out what the new texture should be
 		let newTexture;
 
 		if (config.sheet) {
@@ -180,13 +189,12 @@ class Entity {
 			// @PIXI: sprite given via texture
 			newTexture = config.texture;
 		} else if (config.replaceWith) {
+			// @PIXI: also make sure to destroy the original sprite!
 			// @PIXI-TODO: How does destroy work?
 			// When replacing do we need to remove it from the stage?
+			this._pixiSprite.destroy();
 
 			// Also IMPORTANT: add "replaceWith" DisplayObject to the screen stage!
-
-			// also make sure to destroy the original sprite!
-			// this._pixiSprite.destroy();
 
 			// @PIXI: replace the original sprite with another PIXI.DisplayObject
 			this._pixiSprite = config.replaceWith;
