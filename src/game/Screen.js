@@ -2,7 +2,7 @@ import Manifest from "../assets/Manifest.js";
 import Helper from "../utils/Helper.js";
 import Collision from "./Collision.js";
 import EntityTypeStore from "./EntityTypeStore.js";
-import { error } from "../utils/Log.js";
+import { error, fail } from "../utils/Log.js";
 import PIXI from "../utils/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
@@ -39,6 +39,7 @@ class Screen {
 		this._entities = [];
 		this._toBeAdded = [];
 		this._toBeRemoved = [];
+		this._layerChanges = [];
 
 		// @PIXI: create pixi render container to hold all sprites
 		this._pixiContainer = new PIXI.Container();
@@ -46,6 +47,18 @@ class Screen {
 		// track dimensions for easier access
 		this.width = Manifest.get("/w");
 		this.height = Manifest.get("/h");
+
+		// @PIXI: create multiple "layers" by defining PIXI.Containers
+		// the developer can decide how many layers are needed
+		// this allows for performant layer changes for entities
+		// more complex layering use cases need to be addressed directly on PIXI level
+		this._layers = [];
+		let l = Manifest.get("/layers"); // defaults to 5
+		for (let i = 0; i < l; i++) {
+			let pixiLayer = new PIXI.Container();
+			this._pixiContainer.addChild(pixiLayer);
+			this._layers.push(pixiLayer);
+		}
 
 		/**
 		 * The camera of the screen.
@@ -249,7 +262,9 @@ class Screen {
 	 * @param {*} e
 	 * @param {*} tolerance
 	 */
-	isEntityInView(e, tolerance) {
+	isEntityInView(e, /* tolerance */) {
+		// TODO: implement tolerance for containment check
+
 		let gfx;
 
 		// @PIXI: Sanity check for sprites
@@ -302,10 +317,10 @@ class Screen {
 	 * Updates the Screen itself and then the entities.
 	 */
 	_update(dt) {
-		// [1] call update hook before the entities are updated
+		// Phase [1]: Screen update hook
 		this.update(dt);
 
-		// [2] update entities
+		// Phase [2]: update entities
 		let len = this._entities.length;
 
 		for (let i = 0; i < len; i++) {
@@ -321,8 +336,10 @@ class Screen {
 			}
 		}
 
+		// Phase [3]: Housekeeping
 		this._houseKeeping();
 
+		// Phase [4]: Updating rendering information
 		this._updateRenderInfos();
 	}
 
@@ -342,7 +359,12 @@ class Screen {
 			ea._screen = this;
 
 			// @PIXI: Add entity sprite from the container of the Screen
-			this._pixiContainer.addChild(ea._pixiSprite);
+			let layer = this._layers[ea.layer];
+			if (!layer) {
+				fail(`Layer '${ea.layer}' does not exist!`, this);
+			} else {
+				layer.addChild(ea._pixiSprite);
+			}
 
 			// call added hook if given
 			if (ea.added) {

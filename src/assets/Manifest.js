@@ -8,7 +8,7 @@ const DEFAULTS = {
 	w: 160,
 	h: 144,
 	scale: 2,
-	layers: 8,
+	layers: 5,
 	fps: 60,
 	startScreen: null,
 	hideCursor: false,

@@ -20,6 +20,7 @@ class WorldScreen extends Screen {
 			}
 		});
 		e.isPlayer = true;
+		e.layer = 4;
 
 		this.add(e);
 
@@ -58,6 +59,7 @@ class WorldScreen extends Screen {
 		document.body.appendChild(c); // debug
 
 		let test = new Entity();
+		test.layer = 3;
 		test.isCanvasTest = true;
 		test.configVisuals({
 			texture: PIXI.Texture.from(c)

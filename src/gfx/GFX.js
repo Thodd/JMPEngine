@@ -54,6 +54,7 @@ function setupDebugUI() {
 		setInterval(() => {
 			if (_engine.screen) {
 				entities.innerHTML = `
+				layers: ${_engine.screen._layers.length}<br/>
 				total entities: ${_engine.screen.getEntities().length}<br/>
 				rendered: ${_engine.screen._entitiesVisible}
 				`;
