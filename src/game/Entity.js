@@ -23,9 +23,13 @@ class Entity {
 		// @PIXI
 		this._pixiSprite = new PIXI.Sprite();
 
-		// by default we set this sprite to invisible
-		// not all Entities need to be rendered, some are just for updating
+		// By default we set this sprite to invisible.
+		// Not all Entities need to be rendered, some are just for updating.
+		// Relevant entities will be made visible by configuring the sprite.
 		this._pixiSprite.visible = false;
+
+		// visibility mode for automatic culling
+		this.autoVisibility = false;
 
 		// screen internal information
 		this._isScheduledForRemoval = false;
@@ -344,36 +348,12 @@ class Entity {
 	 * @param {integer} w w to check, defaults to this.hitbox.w
 	 * @param {integer} h h to check, defaults to this.hitbox.h
 	 */
-	isInView(x, y, w, h) {
-		// sprite dimensions
-		let x1 = (x != undefined) ? x : this.x;
-		let y1 = (y != undefined) ? y : this.y;
-		let w1 = w || this.hitbox.w;
-		let h1 = h || this.hitbox.h;
-
-		// Screen dimensions
-		// The camera position depends on the layer the Entity is on:
-		// If the Buffer for that layer has a fixed camera,
-		// the last Screen camera state is not pushed to this specific layer!
-		let layerCam = GFX.getBuffer(this.layer).getCam();
-		let x2 = layerCam.x;
-		let y2 = layerCam.y;
-		let w2 = this._screen.width;
-		let h2 = this._screen.height;
-
-		// check if sprite is in view
-		// While the calculation has some overhead it still reduces the number of draw calls.
-		// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
-		// Browsers still seem to be very bad at ignoring offscreen render calls...
-		if (x1 < x2 + w2 &&
-			x1 + w1 > x2 &&
-			y1 < y2 + h2 &&
-			y1 + h1 > y2) {
-				return true;
+	isInView(tolerance) {
+		if (this._screen) {
+			this._screen.isEntityInView(this, tolerance);
 		}
-
-		return false;
 	}
+
 }
 
 Entity.RENDER_HITBOXES = false;

@@ -52,7 +52,12 @@ function setupDebugUI() {
 		let entities = document.createElement("div");
 		entities.style.fontFamily = "monospace";
 		setInterval(() => {
-			entities.innerHTML = `entities: ${_engine.screen.getEntities().length}`;
+			if (_engine.screen) {
+				entities.innerHTML = `
+				total entities: ${_engine.screen.getEntities().length}<br/>
+				rendered: ${_engine.screen._entitiesVisible}
+				`;
+			}
 		}, 500);
 		dbg.appendChild(entities);
 

@@ -43,13 +43,9 @@ class Screen {
 		// @PIXI: create pixi render container to hold all sprites
 		this._pixiContainer = new PIXI.Container();
 
-		// dimensions
+		// track dimensions for easier access
 		this.width = Manifest.get("/w");
 		this.height = Manifest.get("/h");
-
-		// the public camera interface
-		let _camX = 0;
-		let _camY = 0;
 
 		/**
 		 * The camera of the screen.
@@ -63,18 +59,8 @@ class Screen {
 			deactivate() {
 				this._active = false;
 			},
-			set x (x) {
-				_camX = x * -1;
-			},
-			get x() {
-				return -1 * _camX;
-			},
-			set y (y) {
-				_camY = y * -1;
-			},
-			get y() {
-				return -1 * _camY;
-			}
+			x: 0,
+			y: 0
 		};
 		this.cam.activate();
 
@@ -254,8 +240,66 @@ class Screen {
 	}
 
 	/**
+	 * Checks if the given entity is visually(!) inside the view of the camera.
+	 * Hitboxes are not checked!
+	 *
+	 * Should be enough for most use-cases and is internally used to mark entities outside the view
+	 * as visible=false before rendering.
+	 *
+	 * @param {*} e
+	 * @param {*} tolerance
+	 */
+	isEntityInView(e, tolerance) {
+		let gfx;
+
+		// @PIXI: Sanity check for sprites
+		if (e._pixiSprite.isSprite) {
+			// for PIXI.Sprite instances we need to check if the texture is valid
+			gfx = e._pixiSprite.texture && e._pixiSprite.texture.valid ? e._pixiSprite.texture : undefined;
+		} else {
+			// we assume that the developer has replaced the original default PIXI.Sprite
+			// with a valid renderable PIXI.DisplayObject, e.g. a PIXI.Graphics instance
+			gfx = e._pixiSprite;
+		}
+
+		if (gfx) {
+			// @PIXI: we now try to figure out what the actual render dimensions are inside the world coordinate system
+			// with respect to the anchor point and sprite offsets
+			// Important: not all PIXI.DisplayObject subclasses have an anchor, so we default to 0, e.g. PIXI.Graphics.
+			let anchorX = e._pixiSprite.anchor && e._pixiSprite.anchor.x || 0;
+			let anchorY = e._pixiSprite.anchor && e._pixiSprite.anchor.y || 0;
+
+			let w1 = gfx.width;
+			let h1 = gfx.height;
+			// we shift the world x/y by the defined offset
+			// additionally we have to substract the anchor x/y times the width or height
+			let x1 = (e.x + e._spriteConfig.offset.x) - anchorX * w1;
+			let y1 = (e.y + e._spriteConfig.offset.y) - anchorY * h1;
+
+			// Screen dimensions
+			let x2 = this.cam.x;
+			let y2 = this.cam.y;
+			let w2 = this.width;
+			let h2 = this.height;
+
+			// check if sprite is in view
+			// While the calculation has some overhead it still reduces the number of draw calls.
+			// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
+			if (x1 < x2 + w2 &&
+				x1 + w1 > x2 &&
+				y1 < y2 + h2 &&
+				y1 + h1 > y2) {
+					return true;
+			}
+		}
+
+		// no overlap or no texture
+		return false;
+	}
+
+	/**
 	 * Internal update method.
-	 * Updates the Screen itself and then the entities added to the Screen.
+	 * Updates the Screen itself and then the entities.
 	 */
 	_update(dt) {
 		// [1] call update hook before the entities are updated
@@ -268,48 +312,27 @@ class Screen {
 			let e = this._entities[i];
 
 			// TODO: trigger animation update
-			// we do this at the beginning of the frame, because if we do it at the end of the frame,
-			// you could change the animation during the update step and "loose" a frame on the defined frame delay.
-
-
-			// TODO: deactivate entity outside view?
-			// e.activationRadius = 10  -->  active inside  camera + 10px  all around
-
-
-			// TODO: set out of view entities to invisible?
-			// e.visible == true, e.visible == false  -->  do what the flag says
-			// e.visible == "auto"                    -->  set pixiSprite to visible/invisible  if  entity is inside/outside viewport
+			// Updating the animation is technically a rendering information, yet we should do this at the beginning of the frame.
+			// If we would do it at the end of the frame, one might change the animation during the update step and "lose" a frame
+			// on the defined frame delay, as the current frame would be counted...
 
 			if (e && e.update && e.active && !e._isDestroyed) {
 				e.update(dt);
 			}
 		}
 
-		// [3] Update render positions based on the screen's camera and the currently set offset
-		// We do this after the update loop, because only then can we be sure that the Entity's x/y is final.
-		// Sadly we cannot circumvent this second loop, however it runs without any impact for 10000+ entities and scales linearly, so...
+		this._houseKeeping();
 
-		// We retrieve the cam x/y before the loop, so we don't call the defined getter's for all entities.
-		let camX = this.cam._active ? this.cam.x : 0;
-		let camY = this.cam._active ? this.cam.y : 0;
+		this._updateRenderInfos();
+	}
 
-		for (let i = 0; i < len; i++) {
-			let e = this._entities[i];
-
-			// @PIXI: we shift the render position for all PIXI.Sprite/PIXI.DisplayObjects
-			// this is nothing PIXI can do out of the box, at least not easily in a pixel-perfect manner...
-
-			// TODO: respect the offset for the current animation frame!
-
-			e._pixiSprite.x = e.x - e._spriteConfig.offset.x - camX;
-			e._pixiSprite.y = e.y - e._spriteConfig.offset.y - camY;
-
-		}
-
-		// ---------- Houskeeping (Safely adding & removing entities) ----------
-
-		// [4] add scheduled entities
-		// we make a snapshot of the currently adding entities, so we can add additional once during the added() hook
+	/**
+	 * Safely adds and removes entities after the logic update loop.
+	 */
+	_houseKeeping() {
+		// add scheduled entities
+		// we make a snapshot of the currently adding entities,
+		// so we can schedule additional entities during the added() hook and they get added at the beginning of the next frame
 		let curA = this._toBeAdded;
 		let lenA = curA.length;
 		this._toBeAdded = [];
@@ -327,8 +350,10 @@ class Screen {
 			}
 		}
 
-		// [5] remove scheduled entities
-		// Entities are removed at the end of the frame, so that they are removed before a Screen change.
+		// remove scheduled entities
+		// Entities are removed after the logic-updates but before the render-updates,
+		// this way we can already exclude removed entities from the rendering.
+		// Additionally we can make sure these entities are already removed before a Screen change.
 		// we also make sure we can remove additional entities during the remove() hook
 		let curR = this._toBeRemoved;
 		let lenR = curR.length;
@@ -345,6 +370,52 @@ class Screen {
 			if (er.removed) {
 				er.removed(this);
 			}
+		}
+	}
+
+	/**
+	 * Rendering Updates based on the current camera position and other stuff
+	 * We do this after the logic-update loop and the house-keeping, because:
+	 *   - only then can we be sure that the Entity's x/y is final
+	 *   - added entities are correctly positioned    [and]    removed entities are completely ignored
+	 *
+	 * Sadly we cannot circumvent this second loop, however it runs without much impact for 10000+ entities.
+	 * And it scales linearly, so...
+	 */
+	_updateRenderInfos() {
+		// get new entities count, might be lesser or greater than the starting count
+		let len = this._entities.length;
+
+		// check if camera is active
+		let camX = this.cam._active ? this.cam.x : 0;
+		let camY = this.cam._active ? this.cam.y : 0;
+
+		// track the # of visible entities
+		this._entitiesVisible = 0;
+
+		for (let i = 0; i < len; i++) {
+			let e = this._entities[i];
+
+			// automatic culling: Only if it's turned on.
+			if (e.autoVisibility) {
+				let entityInsideView = this.isEntityInView(e);
+				e._pixiSprite.visible = entityInsideView;
+				this._entitiesVisible += +entityInsideView;
+			} else {
+				this._entitiesVisible += +e._pixiSprite.visible;
+			}
+
+			// TODO: deactivate entity outside view?
+			// e.activationRadius = 10  -->  active inside  camera + 10px  all around
+
+
+			// @PIXI: we shift the render position for all PIXI.Sprite/PIXI.DisplayObjects
+			// this is nothing PIXI can do out of the box, at least not easily in a pixel-perfect manner...
+
+			// TODO: respect the offset for the current animation frame!
+			// TODO: currently only the default offset is respected
+			e._pixiSprite.x = e.x + e._spriteConfig.offset.x - camX;
+			e._pixiSprite.y = e.y + e._spriteConfig.offset.y - camY;
 		}
 	}
 

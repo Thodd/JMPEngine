@@ -15,10 +15,11 @@ class WorldScreen extends Screen {
 			sheet: "player",
 			id: 0,
 			offset: {
-				x: 16,
-				y: 16
+				x: -16,
+				y: -16
 			}
 		});
+		e.isPlayer = true;
 
 		this.add(e);
 
@@ -40,9 +41,11 @@ class WorldScreen extends Screen {
 				this.x--;
 			}
 
-			s.cam.x = this.x - s.getWidth()/2;
-			s.cam.y = this.y - s.getHeight()/2;
+			s.centerCameraAround(this);
 		}
+
+		// initial camera position
+		this.centerCameraAround(e);
 
 		// canvas test
 		let c = document.createElement("canvas");
@@ -55,16 +58,24 @@ class WorldScreen extends Screen {
 		document.body.appendChild(c); // debug
 
 		let test = new Entity();
+		test.isCanvasTest = true;
 		test.configVisuals({
 			texture: PIXI.Texture.from(c)
 		});
+		test.autoVisibility = true;
 		test.x = 20;
 		test.y = 20;
 
 		this.add(test);
 
+		// no visuals
+		let noVisuals = new Entity();
+		noVisuals.isNoVisuals = true;
+		this.add(noVisuals);
+
 		// primitives
 		let gfxEntity = new Entity();
+		gfxEntity.isGraphics = true;
 		let g = new PIXI.Graphics();
 		g.x = 0;
 		g.y = 0;
@@ -86,18 +97,20 @@ class WorldScreen extends Screen {
 			e.configVisuals({
 				sheet: "player",
 				id: 0,
-				offset: {x:16, y:16}
+				offset: {x:8, y:8}
 			});
-			e.x = Math.floor(Math.random() * w);
-			e.y = Math.floor(Math.random() * h);
+			//e.autoVisibility = true;
+			e.isDude = true;
+			e.x = Math.max(Math.floor(Math.random() * w) - 16, 16);
+			e.y = Math.max(Math.floor(Math.random() * h) - 16, 16);
 			e.xdir = Math.random() > 0.5 ? -1 : 1;
 			e.ydir = Math.random() > 0.5 ? -1 : 1;
 
 			this.add(e);
 
-			//e._pixiSprite.anchor.set(0.5);
-			//e.height *= 2;
-			//e.width *= 2;
+			e._pixiSprite.anchor.set(0.5);
+			// e._pixiSprite.height *= 2;
+			// e._pixiSprite.width *= 2;
 
 			e.update = function () {
 				if (this.x >= w-16 || this.x <= 0) {
@@ -109,9 +122,14 @@ class WorldScreen extends Screen {
 
 				this.x += this.xdir;
 				this.y += this.ydir;
-				//this.rotation += 0.1;
+				this._pixiSprite.rotation += 0.1;
 			};
 		}
+	}
+
+	centerCameraAround(e) {
+		this.cam.x = e.x - this.width/2;
+		this.cam.y = e.y - this.height/2;
 	}
 }
 
