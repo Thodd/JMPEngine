@@ -1,5 +1,5 @@
 import { log, warn, fail, exposeOnWindow } from "../utils/Log.js";
-import PIXI from "../utils/PIXIWrapper.js";
+import PIXI from "../core/PIXIWrapper.js";
 
 /**
  * Defaults for the Screen.

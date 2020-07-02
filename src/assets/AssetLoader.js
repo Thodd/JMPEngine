@@ -1,7 +1,7 @@
 import { log } from "../utils/Log.js";
 import Manifest from "./Manifest.js";
 
-import PIXI from "../utils/PIXIWrapper.js";
+import PIXI from "../core/PIXIWrapper.js";
 
 import Spritesheets from "./Spritesheets.js";
 

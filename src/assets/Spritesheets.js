@@ -1,8 +1,8 @@
 import { log } from "../utils/Log.js";
 
-import PIXI from "../utils/PIXIWrapper.js";
+import PIXI from "../core/PIXIWrapper.js";
 
-const sheets = {};
+const _sheets = {};
 
 /**
  * Creates a new Canvas for all sprites in the sheet.
@@ -13,8 +13,8 @@ function process(allSheets, pixiResources) {
 	for (let sheetName in allSheets) {
 		let sheetDef = allSheets[sheetName];
 
-		// track sheets internally (don't modify allSheets!)
-		let sheet = sheets[sheetName] = {
+		// track _sheets internally (don't modify allSheets!)
+		let sheet = _sheets[sheetName] = {
 			name: sheetName,
 			orgTexture: pixiResources[sheetName].texture,
 			textures: []
@@ -57,7 +57,7 @@ function process(allSheets, pixiResources) {
  * @param {string} sheet
  */
 function getSheet(sheetName) {
-	return sheets[sheetName];
+	return _sheets[sheetName];
 }
 
 export default {

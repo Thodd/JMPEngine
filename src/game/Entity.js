@@ -1,10 +1,9 @@
-import GFX from "../gfx/GFX.js";
 import Spritesheets from "../assets/Spritesheets.js";
 import { warn, error, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
 
-import PIXI from "../utils/PIXIWrapper.js";
+import PIXI from "../core/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
 
@@ -294,7 +293,7 @@ class Entity {
 	TODO_ANIMATION_UPDATE() {
 		// if animations are defined we advance the currently set one frame-by-frame
 		this._updateCurrentAnimation();
-
+		let GFX = {};
 		let buff = GFX.getBuffer(this.layer);
 		let g = buff.getRenderer();
 

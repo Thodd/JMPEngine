@@ -3,7 +3,8 @@ import Helper from "../utils/Helper.js";
 import Collision from "./Collision.js";
 import EntityTypeStore from "./EntityTypeStore.js";
 import { error, fail } from "../utils/Log.js";
-import PIXI from "../utils/PIXIWrapper.js";
+
+import PIXI from "../core/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
 
@@ -17,11 +18,9 @@ let INSTANCE_COUNT = 0;
  * [+] = public:            These functions can safely be overwriten
  * [-] = private:           <b>Don't overwrite these functions!</b>
  *
- * [+] constructor          (called once)                  -> game logic
+ * [+] constructor          (called once)                  -> Initial creation. Don't do game logic here, just create dependet entities etc.
  *
- * [-] _setup               (called every activation)      -> Buffer.reset(false), no screen clearing (see below)
- * [+] setup                (called every activation)      -> Setup Buffers, e.g. change render-mode
- * [-] _initialClear        (called every activation)      -> clear the Buffers, some might be excluded to to "autoclear=false"
+ * [+] setup                (called every activation)      -> General setup hook
  * [+] begin                (called every activation)      -> game logic, recurring things which need to be done before any other game logic
  *
  * [+] update               (called each frame)            -> update hook for the Screen (game logic)
@@ -103,15 +102,6 @@ class Screen {
 	}
 
 	/**
-	 * Internal setup function.
-	 * Resets all buffers back to the initial state.
-	 * This is done so each Screen can start in a fresh GFX state.
-	 * If the setup() hook is correctly implemented, the game implementation can set
-	 * camera values, clear-colors etc. before the _initalClear().
-	 */
-	_setup() {}
-
-	/**
 	 * Setup Hook.
 	 * Called at the very beginning of each Screen activation.
 	 *
@@ -122,12 +112,6 @@ class Screen {
 	 * - Fixing the camera to a static position
 	 */
 	setup() {}
-
-	/**
-	 * Clears the buffers initially.
-	 * Called every Screen activation.
-	 */
-	_initialClear(){}
 
 	/**
 	 * Begin Hook.
@@ -436,8 +420,15 @@ class Screen {
 
 			// TODO: respect the offset for the current animation frame!
 			// TODO: currently only the default offset is respected
-			e._pixiSprite.x = e.x + e._spriteConfig.offset.x - camX;
-			e._pixiSprite.y = e.y + e._spriteConfig.offset.y - camY;
+
+			// Tilemaps have their own sprite replacement logic and are always stuck to the camera
+			if (e.isTilemap) {
+				e._updateRenderInfos();
+			} else {
+				// shift normal entities
+				e._pixiSprite.x = e.x + e._spriteConfig.offset.x - camX;
+				e._pixiSprite.y = e.y + e._spriteConfig.offset.y - camY;
+			}
 		}
 	}
 

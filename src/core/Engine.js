@@ -1,17 +1,16 @@
-import domReady from "./utils/domReady.js";
-import { log } from "./utils/Log.js";
-import Manifest from "./assets/Manifest.js";
-import AssetLoader from "./assets/AssetLoader.js";
-import GFX from "./gfx/GFX.js";
-import Keyboard from "./input/Keyboard.js";
-import Screen from "./game/Screen.js";
-import IntroScreen from "./game/intro/IntroScreen.js";
+import domReady from "../utils/domReady.js";
+import { log, fail } from "../utils/Log.js";
+import Manifest from "../assets/Manifest.js";
+import AssetLoader from "../assets/AssetLoader.js";
+import Keyboard from "../input/Keyboard.js";
+import Screen from "../game/Screen.js";
+import IntroScreen from "../game/intro/IntroScreen.js";
 
 // @Stats: Simple performance tracking
-import Stats from "../libs/stats.module.js";
+import Stats from "../../libs/stats.module.js";
 
 // @PIXI include PIXI.js
-import { getPixiApp } from "./utils/PIXIWrapper.js";
+import { getPixiApp } from "./PIXIWrapper.js";
 
 let pixiApp;
 
@@ -51,7 +50,7 @@ const gameloop = () => {
 		}
 		currentScreen = nextScreen;
 
-		// setup phase (GFX setup)
+		// setup phase
 		currentScreen.setup();
 
 		// begin phase (game logic)
@@ -102,6 +101,92 @@ function getIntroScreen() {
 		intro = is.wait();
 	}
 	return intro;
+}
+
+function initDOM(containerID) {
+	let containerDOM;
+	if (typeof containerID == "string") {
+		containerDOM = document.getElementById(containerID);
+	} else if (typeof containerID == "object") {
+		// assume we have a dom node already
+		containerDOM = containerID;
+		containerID = containerDOM.id;
+	}
+
+	if (!containerDOM) {
+		fail("Container DOM ID is not valid!", "GFX");
+	}
+
+	// @PIXI: add view to the container DOM
+	containerDOM.appendChild(Engine.getPixiApp().view);
+
+	setupCSS(containerID);
+	setupDebugUI();
+}
+
+/**
+ * Setup some simple CSS stylings programmatically so we don't need an extra stylesheet.
+ */
+function setupCSS(containerID) {
+	const head = document.getElementsByTagName('head')[0];
+
+	const style = document.createElement('style');
+	style.type = 'text/css';
+
+	let w = Manifest.get("/w");
+	let h = Manifest.get("/h");
+	let scale = Manifest.get("/scale");
+
+	const css = `
+		#${containerID} canvas {
+			width: ${w * scale}px;
+			height: ${h * scale}px;
+
+			image-rendering: pixelated;
+			image-rendering: -webkit-crisp-edges;
+			image-rendering: -moz-crisp-edges;
+		}
+
+		.jmpWrapper {
+			/*border-top: 2px solid #000000;
+			border-left: 2px solid #000000;
+			border-right: 2px solid #ffffff;
+			border-bottom: 2px solid #ffffff;*/
+		}
+	`;
+
+	style.appendChild(document.createTextNode(css));
+
+	head.appendChild(style);
+
+	log("CSS created.", "GFX");
+}
+
+/**
+ * Setup debug UI if debug flag is set
+ */
+function setupDebugUI() {
+	let up = new URLSearchParams(window.location.search);
+	if (up.get("debug")) {
+		let dbg = document.createElement("div");
+		dbg.id = "__debugUI";
+		dbg.innerHTML = "<div id='__debugUI_stats'></div>";
+		document.body.appendChild(dbg);
+
+		let entities = document.createElement("div");
+		entities.style.fontFamily = "monospace";
+		setInterval(() => {
+			if (Engine.screen) {
+				entities.innerHTML = `
+				layers: ${Engine.screen._layers.length}<br/>
+				total entities: ${Engine.screen.getEntities().length}<br/>
+				rendered: ${Engine.screen._entitiesVisible}
+				`;
+			}
+		}, 500);
+		dbg.appendChild(entities);
+
+	}
 }
 
 /**
@@ -171,11 +256,15 @@ const Engine = {
 			backgroundColor: Manifest.get("/bg") || 0x272d37
 		});
 
-		// GFX init creates all canvases upfront
-		GFX.init(placeAt, this);
+		// DOM, CSS, Debug init
+		initDOM(placeAt);
+
+		// performance
 		setupStats();
 
+		// input handlint
 		resetKeyboard = Keyboard.init();
+		// TODO: mouse support
 
 		// take initial timing
 		last = window.performance.now();

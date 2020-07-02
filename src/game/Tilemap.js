@@ -1,34 +1,29 @@
+import { fail, log } from "../utils/Log.js";
 import Manifest from "../assets/Manifest.js";
+import Spritesheets from "../assets/Spritesheets.js";
 import Entity from "./Entity.js";
-import Grid from "../gfx/Grid.js";
-import { fail } from "../utils/Log.js";
 import Tile from "./Tile.js";
-import GFX from "../gfx/GFX.js";
-import Spritesheets from "../gfx/Spritesheets.js";
+
+import PIXI from "../core/PIXIWrapper.js";
+import Keyboard from "../input/Keyboard.js";
+import Keys from "../input/Keys.js";
 
 let TILEMAP_COUNT = 0;
 
-/**
- * Version A: renders every frame only the visible part of the map, based on the camera offset
- * Version B: renders everything to a big canvas on tile change,
- *            the big canvas is then rendered partially to the screen -> Only one render call
- */
-const Version = {
-	"A": "A",
-	"B": "B"
-};
-
 class Tilemap extends Entity {
-	constructor({sheet, x=0, y=0, w=20, h=20, tileClass=Tile, version=Version.A}) {
+	constructor({sheet, x=0, y=0, w=20, h=20, tileClass=Tile}) {
 
 		if (!sheet) {
-			fail(`The spritesheet ${sheet} does not exist! A Tilemap cannot be created without a spritesheet`, "Tilemap");
+			fail(`The spritesheet ${sheet} does not exist! A Tilemap Entity cannot be created without a spritesheet!`, "Tilemap");
 		}
 
-		super({x: x, y: y});
+		super(x, y);
 
-		// tilemap version
-		this.version = version;
+		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn't be much of an issue
+		this._pixiSprite.destroy();
+
+		// create a continer for all single tile sprites
+		this._pixiSprite = new PIXI.Container();
 
 		// sheet from which we will render the tiles
 		this._sheet = Spritesheets.getSheet(sheet);
@@ -37,7 +32,8 @@ class Tilemap extends Entity {
 		this._name = `tilemap_${TILEMAP_COUNT}`;
 		TILEMAP_COUNT++;
 
-		this._isTilemap = true;
+		// flag to quickly check if the Entity is a Tilemap, no need for instanceof
+		this.isTilemap = true;
 
 		// dimensions
 		this._mapWidth = w;
@@ -47,23 +43,27 @@ class Tilemap extends Entity {
 		this._screenWidthInTiles = Math.floor(Manifest.get("/w") / this._tileWidth);
 		this._screenHeightInTiles = Math.floor(Manifest.get("/h") / this._tileHeight);
 
-		// register map on low-level API
-		if (this.version == Version.B) {
-			Grid.create({
-				id: this._name,
-				sheet: sheet,
-				w: this._mapWidth,
-				h: this._mapHeight
-			});
-		}
-
-		// create tile instances
+		// create tile instances (can be quite a lot depending on the width and height of the map!)
 		this._field = [];
 		for (let x = 0; x < this._mapWidth; x++) {
 			this._field[x] = [];
 			for (let y = 0; y < this._mapHeight; y++) {
 				this._field[x][y] = new tileClass({tilemap: this, x: x, y: y});
 			}
+		}
+
+		// Create a pool of enough PIXI.Sprite instances to cover the whole screen.
+		// We cull the unused sprites during the render info update once we calculate which tile need to be rendered.
+		// So the performance impact should be negligible.
+		this._sprites = [];
+		// We add +2 to both the width and height so we can render partial sprites on the edges,
+		// since the camera is seldom placed on coordinates divisible by the tile width/height.
+		let maxNumberOfSprites = (this._screenHeightInTiles + 2) * (this._screenWidthInTiles + 2);
+		for (let i = 0; i < maxNumberOfSprites; i++) {
+			let spr = new PIXI.Sprite();
+			spr.visible = false; // might be changed during render info update
+			this._sprites.push(spr);
+			this._pixiSprite.addChild(spr);
 		}
 	}
 
@@ -99,36 +99,23 @@ class Tilemap extends Entity {
 	 * @param {number} y The y coordinate which should be set
 	 * @param {number} [id] The tile ID which should be set to (x,y); If none is given, the tile is cleared (tileID = -1).
 	 */
-	set(x, y, id=-1, color) {
+	set(x, y, id=-1) {
 		let tile = this.get(x, y);
-		tile.set(id, color);
+		tile.set(id);
 	}
 
 	/**
-	 * Rerenders the given tile.
+	 * Updates the render information of the Tilemap.
+	 * Calculates which tiles are visible on screen based on the camera position.
+	 *
+	 * The rendering is pretty fast since the calculation for the visible tiles is quick and
+	 * we only need to update the textures and positions of a fixed set of sprites.
+	 *
+	 * Additionally we have a very limited memory consumption and startup performance since we don't
+	 * need to prerender a big map. So the Tilemap rendering is independet from the actual map size.
+	 * Cool.
 	 */
-	_rerenderTile(t) {
-		if (this.version == Version.A) {
-			fail(`_renderTile(${t && t.id}) is not supported!`, "Tilemap.vA");
-		}
-		Grid.set(this._name, t.x, t.y, t.id, t.color);
-	}
-
-	render() {
-		if (this.version == Version.A) {
-			this._renderA();
-		} else {
-			// Version B
-			GFX.get(this.layer).grid(this._name, this.x, this.y);
-		}
-	}
-
-	/**
-	 * Renders the Tilemap.
-	 * Only tiles which fits the screen and is inside the camera viewport will be rendered.
-	 * Enables animated tiles.
-	 */
-	_renderA() {
+	_updateRenderInfos() {
 		// calculate minimum X/Y offsets based on camera position
 		let baseX = this.x;
 		let baseY = this.y;
@@ -160,35 +147,51 @@ class Tilemap extends Entity {
 
 		// This log is only for debugging, since it's quite hard to judge which parts of a tilemap are currently rendered
 		// Press (CTRL + ENTER) for logging.
-		// if (Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
-		// 	log(`origin: (${colStart},${rowStart})`, "Tilemap.vA");
-		// 	log(`end:    (${colMax},${rowMax})`, "Tilemap.vA");
-		// }
+		if (Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
+			log(`origin: (${colStart},${rowStart})`, "Tilemap");
+			log(`end:    (${colMax},${rowMax})`, "Tilemap");
+		}
 
 		// if the col/row origin are outside the map's boundaries, there is nothing to draw
 		if (colStart >= this._mapWidth || colMax < 0 || rowStart >= this._mapHeight || rowMax < 0) {
 			return;
 		}
 
-		let g = GFX.get(this.layer);
+		// Cull all sprites in the pool:
+		// It looks like an overhead, but honestly I don't have a better idea right now...
+		let len = this._sprites.length;
+		for (let i = 0; i < len; i++) {
+			let spr = this._sprites[i];
+			spr.visible = false;
+		}
 
 		// Only draw the tiles which are inside the camera (and inside the map range)
+		let i = 0;
 		for (let col = colStart; col < colMax; col++) {
 			for (let row = rowStart; row < rowMax; row++) {
 				let t = this._field[col][row];
 
-				// we only need to render the tiles which have a value other than -1
-				// Oppesd to Tilemap.v1, invisible tiles do not have to be tracked on a the backbuffer canvas
+				// we only need to update the tiles which have a value other than -1
+				// -1 is considered invisible
 				if (t && t.id >= 0) {
-					let drawX = col * this._tileWidth;
-					let drawY = row * this._tileHeight;
-					g.spr(this._sheet.name, t.id, baseX + drawX, baseY + drawY, t.color);
+					let spr = this._sprites[i];
+
+					// calculate drawing coordinates for the tile
+					let drawX = baseX + (col * this._tileWidth) - camX;
+					let drawY = baseY + (row * this._tileHeight) - camY;
+
+					// set the correct texture and position the sprite
+					spr.texture = this._sheet.textures[t.id];
+					spr.visible = true;
+					spr.x = drawX;
+					spr.y = drawY;
+
+					// next sprite in the pool
+					i++;
 				}
 			}
 		}
 	}
 }
-
-Tilemap.Version = Version;
 
 export default Tilemap;

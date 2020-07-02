@@ -2,14 +2,37 @@ import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
-import PIXI from "../../../src/utils/PIXIWrapper.js";
 import Spritesheets from "../../../src/assets/Spritesheets.js";
 import { log } from "../../../src/utils/Log.js";
+import Helper from "../../../src/utils/Helper.js";
+
+import PIXI from "../../../src/core/PIXIWrapper.js";
+
+import Tilemap from "../../../src/game/Tilemap.js";
+import Tile from "../../../src/game/Tile.js";
 
 class WorldScreen extends Screen {
 	constructor() {
 		super();
 
+		// tilemap
+		let t = new Tilemap({
+			sheet: "tileset",
+			w: 20,
+			h: 20,
+			// adhoc tile class with random ID  ->  JavaScript is actually pretty awesome :)
+			tileClass: class Tile2 extends Tile {
+				constructor(cfg) {
+					super(cfg);
+					this.id = Helper.choose([0, 0, 0, 0, 0, 0, 1, 3, 5, 6, 7]);
+				}
+			}
+		});
+		this.add(t);
+
+
+
+		// entity with input handling e.g. player
 		let e = new Entity();
 		e.configVisuals({
 			sheet: "player",
@@ -19,7 +42,7 @@ class WorldScreen extends Screen {
 				y: -16
 			}
 		});
-		e.isPlayer = true;
+		e.isPlayer = true; // debug
 		e.layer = 4;
 
 		this.add(e);
@@ -48,19 +71,21 @@ class WorldScreen extends Screen {
 		// initial camera position
 		this.centerCameraAround(e);
 
-		// canvas test
+
+
+		// render something to a canvas and add it as a texture again
 		let c = document.createElement("canvas");
 		c.width = 16;
 		c.height = 16;
 		let ctx = c.getContext("2d");
 		let sheet = Spritesheets.getSheet("tileset");
 
-		ctx.drawImage(sheet.orgTexture.baseTexture.resource.source, 16, 0, 16, 16, 0, 0, 16, 16);
+		ctx.drawImage(sheet.orgTexture.baseTexture.resource.source, 64, 32, 16, 16, 0, 0, 16, 16);
 		document.body.appendChild(c); // debug
 
 		let test = new Entity();
 		test.layer = 3;
-		test.isCanvasTest = true;
+		test.isCanvasTest = true; // debug
 		test.configVisuals({
 			texture: PIXI.Texture.from(c)
 		});
@@ -70,14 +95,18 @@ class WorldScreen extends Screen {
 
 		this.add(test);
 
-		// no visuals
+
+
+		// Entity with no visuals
 		let noVisuals = new Entity();
-		noVisuals.isNoVisuals = true;
+		noVisuals.isNoVisuals = true; // debug
 		this.add(noVisuals);
 
-		// primitives
+
+
+		// primitives on PIXI.Graphics
 		let gfxEntity = new Entity();
-		gfxEntity.isGraphics = true;
+		gfxEntity.isGraphics = true; // debug
 		let g = new PIXI.Graphics();
 		g.x = 0;
 		g.y = 0;
@@ -90,7 +119,10 @@ class WorldScreen extends Screen {
 
 		this.add(gfxEntity);
 
-		// stress test
+
+
+		// Random entity with game logic
+		// change the # to build a stress test... kindof like a "bunnymark" :)
 		let w = this.getWidth();
 		let h = this.getHeight();
 
@@ -102,7 +134,7 @@ class WorldScreen extends Screen {
 				offset: {x:8, y:8}
 			});
 			//e.autoVisibility = true;
-			e.isDude = true;
+			e.isDude = true; // debug
 			e.x = Math.max(Math.floor(Math.random() * w) - 16, 16);
 			e.y = Math.max(Math.floor(Math.random() * h) - 16, 16);
 			e.xdir = Math.random() > 0.5 ? -1 : 1;
@@ -129,6 +161,10 @@ class WorldScreen extends Screen {
 		}
 	}
 
+	/**
+	 * Convenience function to center the camera around the given entity
+	 * @param {*} e
+	 */
 	centerCameraAround(e) {
 		this.cam.x = e.x - this.width/2;
 		this.cam.y = e.y - this.height/2;
