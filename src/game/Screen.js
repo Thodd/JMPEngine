@@ -310,10 +310,12 @@ class Screen {
 		for (let i = 0; i < len; i++) {
 			let e = this._entities[i];
 
-			// TODO: trigger animation update
-			// Updating the animation is technically a rendering information, yet we should do this at the beginning of the frame.
+			// Updating the animation is technically a rendering information, yet we do this at the beginning of the frame during the update loop.
 			// If we would do it at the end of the frame, one might change the animation during the update step and "lose" a frame
-			// on the defined frame delay, as the current frame would be counted...
+			// on the defined frame delay, as the current frame would be counted too.
+			if (e._currentAnimation) {
+				e._updateCurrentAnimation();
+			}
 
 			if (e && e.update && e.active && !e._isDestroyed) {
 				e.update(dt);
@@ -396,7 +398,7 @@ class Screen {
 		let camX = this.cam._active ? this.cam.x : 0;
 		let camY = this.cam._active ? this.cam.y : 0;
 
-		// track the # of visible entities
+		// track the # of visible entities for debugging
 		this._entitiesVisible = 0;
 
 		for (let i = 0; i < len; i++) {
@@ -414,17 +416,13 @@ class Screen {
 			// TODO: deactivate entity outside view?
 			// e.activationRadius = 10  -->  active inside  camera + 10px  all around
 
-
 			// @PIXI: we shift the render position for all PIXI.Sprite/PIXI.DisplayObjects
 			// this is nothing PIXI can do out of the box, at least not easily in a pixel-perfect manner...
-
-			// TODO: respect the offset for the current animation frame!
-			// TODO: currently only the default offset is respected
-
-			// Tilemaps have their own sprite replacement logic and are always stuck to the camera
 			if (e.isTilemap) {
+				// Tilemaps have their own sprite replacement logic and are always stuck to the camera
 				e._updateRenderInfos();
 			} else {
+				// TODO: respect the offset for the current animation frame! Currently only the default offset is respected.
 				// shift normal entities
 				e._pixiSprite.x = e.x + e._spriteConfig.offset.x - camX;
 				e._pixiSprite.y = e.y + e._spriteConfig.offset.y - camY;

@@ -5,9 +5,13 @@
 
 	"w": 224,
 	"h": 192,
+
 	"scale": 2,
-	"fps": 60,
+
+	"bg": "0x272d37",
+
 	"hideCursor": false,
+
 	"skipIntro": true,
 
 	"assets": {

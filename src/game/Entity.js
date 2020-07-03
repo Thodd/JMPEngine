@@ -1,5 +1,5 @@
 import Spritesheets from "../assets/Spritesheets.js";
-import { warn, error, fail } from "../utils/Log.js";
+import { warn, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
 
@@ -169,7 +169,7 @@ class Entity {
 	 * The underlying PIXI sprite will configured according to this new sprite configuration.
 	 * @param {object} config
 	 */
-	configVisuals(config) {
+	configSprite(config) {
 		// we merge the new config with at least an empty offset object
 		this._spriteConfig = Object.assign({
 			offset: {x: 0, y: 0}
@@ -203,7 +203,8 @@ class Entity {
 			this._pixiSprite = config.replaceWith;
 		}
 
-		// @PIXI: set the texture for the pixi sprite & make it visible
+		// @PIXI: set the default texture for the pixi sprite & make it visible
+		// might be overwritten by an animation definition below
 		if (newTexture) {
 			this._pixiSprite.texture = newTexture;
 			this._pixiSprite.visible = true;
@@ -213,15 +214,26 @@ class Entity {
 		// check if the new sprite def has animations
 		// if not we asume a valid single sprite definition
 		if (this._spriteConfig && this._spriteConfig.animations) {
-			let animationsDef = this._spriteConfig.animations;
-			if (!animationsDef.default) {
-				error(`Sprite definition of ${this} does not contain a default animation!`);
+			let animationsMap = this._spriteConfig.animations;
+
+			// sanity checks
+			if (!animationsMap.default) {
+				fail(`Sprite definition of ${this} does not contain a default animation!`, "Entity");
+			}
+			if (!animationsMap[animationsMap.default]) {
+				fail(`There is no 'default' animation of name '${animationsMap.default}', ${this}!`, "Entity");
 			}
 
 			// process new animations
-			for (let animName in this._spriteConfig.animations) {
+			for (let animName in animationsMap) {
+				// we skip the "default" definition here, since it's just the name of another animation
 				if (animName != "default") {
-					let anim = this._spriteConfig.animations[animName];
+					let anim = animationsMap[animName];
+
+					if (!anim.sheet && !this._spriteConfig.sheet) {
+						fail(`No spritesheet specified for ${this} or its animation of name '${animName}'!`, "Entity");
+					}
+
 					// set processing values, e.g. FrameCounter
 					anim.name = animName;
 					anim.currentFrame = 0;
@@ -236,7 +248,7 @@ class Entity {
 			}
 
 			// initialize default animation
-			this.playAnimation({name: this._spriteConfig.animations.default});
+			this.playAnimation({name: animationsMap.default});
 		}
 	}
 
@@ -247,14 +259,19 @@ class Entity {
 	playAnimation(config) {
 		// new animation definition
 		this._currentAnimation = this._spriteConfig.animations[config.name];
-		this._currentAnimation.done = config.done;
-		if (this._currentAnimation && config.reset) {
-			this._currentAnimation.currentFrame = 0;
-			this._currentAnimation.id = this._currentAnimation.frames[0];
-			// delay counter has to be reset too
-			if (this._currentAnimation.delayCounter) {
-				this._currentAnimation.delayCounter.reset();
+
+		if (this._currentAnimation) {
+			this._currentAnimation.done = config.done;
+			if (this._currentAnimation && config.reset) {
+				this._currentAnimation.currentFrame = 0;
+				this._currentAnimation.id = this._currentAnimation.frames[0];
+				// delay counter has to be reset too
+				if (this._currentAnimation.delayCounter) {
+					this._currentAnimation.delayCounter.reset();
+				}
 			}
+		} else {
+			fail(`Cannot play unknown animation '${config.name}'`, "Entity");
 		}
 	}
 
@@ -279,63 +296,16 @@ class Entity {
 				// update sprite
 				anim.id = anim.frames[anim.currentFrame];
 			}
-		}
-	}
 
-	/**
-	 * Render hook.
-	 * Called once after every update loop.
-	 *
-	 * IMPORTANT:
-	 * To keep the default rendering behavior intact,
-	 * call "super.render()" at the beginning of your custom render function.
-	 */
-	TODO_ANIMATION_UPDATE() {
-		// if animations are defined we advance the currently set one frame-by-frame
-		this._updateCurrentAnimation();
-		let GFX = {};
-		let buff = GFX.getBuffer(this.layer);
-		let g = buff.getRenderer();
+			// IMPORTANT:
+			// We again retrieve the currently set animation here,
+			// because the done() callback might have changed the animation!
+			// Otherwise we might show the first key-frame of a now outdated animation for one frame
+			anim = this._currentAnimation;
 
-		// only try to render if we have either an animation or a default sprite config
-		if (this._currentAnimation || this._spriteConfig) {
-
-			// three possible render value locations with the following priority
-			// 1. Animation, 2. Default Sprite, 3. None (empty object)
-			let anim = this._currentAnimation || {};
-			let defaultSprite = this._spriteConfig || {};
-
-			// retrieve render values
-			let sheet = anim.sheet || defaultSprite.sheet;
-			let id = anim.id != undefined ? anim.id : (defaultSprite.id || 0); // might be 0!
-			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
-			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
-			let color = anim.color || defaultSprite.color;
-			// the entity's alpha is the last fallback, else we consider the sprite to be opaque
-			let alpha = anim.alpha || defaultSprite.alpha || this.alpha || 1;
-
-			let sheetObj = Spritesheets.getSheet(sheet);
-			let dx = this.x + (offsetX || 0) - this.scale.x;
-			let dy = this.y + (offsetY || 0) - this.scale.y;
-			let dw = sheetObj.w * this.scale.w;
-			let dh = sheetObj.h * this.scale.h;
-
-			// sheet, id, layer, x, y, w, h, color
-			// width and height are undefined, because we want the default value from the actual sprite
-			g.spr_ext(sheet, id, 0, 0, undefined, undefined, dx, dy, dw, dh, color, alpha);
-		}
-
-		// check if the hitbox should be rendered for debugging
-		let hitboxColor = Entity.RENDER_HITBOXES || this.RENDER_HITBOXES;
-		if (hitboxColor) {
-			if (buff.getRenderMode() == "RAW") {
-				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, hitboxColor); // top left
-				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, hitboxColor); // top right
-				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, hitboxColor); // bottom left
-				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, hitboxColor); // bottom right
-			} else {
-				g.rectf(this.x + this.hitbox.x, this.y + this.hitbox.y, this.hitbox.w, this.hitbox.h, hitboxColor);
-			}
+			// @PIXI: update texture based on current key-frame, we made sure a sheet exists upon animation definition
+			let sheetObj = Spritesheets.getSheet(anim.sheet || this._spriteConfig.sheet);
+			this._pixiSprite.texture = sheetObj.textures[anim.id];
 		}
 	}
 

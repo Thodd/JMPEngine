@@ -7,6 +7,7 @@ body {
 }
 
 #content {
+	margin-top: 60px; /* spacing for performance stats */
 	background: #000000;
 	border: 1px solid #525252;
 	padding: 3px;

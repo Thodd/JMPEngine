@@ -1,12 +1,9 @@
 import Screen from "../../../src/game/Screen.js";
 import Tilemap from "../../../src/game/Tilemap.js";
-import Text from "../../../src/gfx/Text.js";
-import GFX from "../../../src/gfx/GFX.js";
 import Helper from "../../../src/utils/Helper.js";
 
 import Constants from "./Constants.js";
 import Player from "./actors/Player.js";
-//import Buffer from "../../../src/gfx/Buffer.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -18,13 +15,12 @@ class WorldScreen extends Screen {
 		let tm = new Tilemap({
 			sheet: "tileset",
 			w: Constants.MAP_WIDTH,
-			h: Constants.MAP_HEIGHT,
-			//version: "B"
+			h: Constants.MAP_HEIGHT
 		});
 		tm.layer = 0;
 
 		tm.each((tile) => {
-			tile.set(Helper.choose([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 163, 7, 8]));
+			tile.set(Helper.choose([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 243, 6, 7]));
 		});
 
 		this.add(tm);
@@ -32,33 +28,20 @@ class WorldScreen extends Screen {
 		/**
 		 * player
 		 */
-		this.player = new Player({x: 100, y: 100});
+		this.player = new Player(0, 0);
 		this.add(this.player);
 
-
-
-		this.addText();
-	}
-
-	setup() {
-		//GFX.getBuffer(0).setRenderMode(Buffer.RenderModes.RAW);
-		GFX.getBuffer(1).setCameraFixed(true);
+		//this.addText();
 	}
 
 	addText() {
 		// text sample
-		let textShadow = new Text({text: "ARPG", x: 4, y: 4, color: "#000000", useKerning: true});
-		textShadow.layer = 1;
-		this.add(textShadow);
+		// let textShadow = new Text({text: "ARPG", x: 4, y: 4, color: "#000000", useKerning: true});
+		// textShadow.layer = 1;
+		// this.add(textShadow);
 	}
 
 	update() {}
-
-	render() {
-		// HUD BG
-		let g = GFX.get(1);
-		g.rectf(0, 0, this.getWidth(), Constants.TILE_HEIGHT, "#fdf0d1");
-	}
 
 }
 

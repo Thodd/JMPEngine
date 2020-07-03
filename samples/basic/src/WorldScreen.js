@@ -34,7 +34,7 @@ class WorldScreen extends Screen {
 
 		// entity with input handling e.g. player
 		let e = new Entity();
-		e.configVisuals({
+		e.configSprite({
 			sheet: "player",
 			id: 0,
 			offset: {
@@ -86,7 +86,7 @@ class WorldScreen extends Screen {
 		let test = new Entity();
 		test.layer = 3;
 		test.isCanvasTest = true; // debug
-		test.configVisuals({
+		test.configSprite({
 			texture: PIXI.Texture.from(c)
 		});
 		test.autoVisibility = true;
@@ -113,7 +113,7 @@ class WorldScreen extends Screen {
 		g.lineStyle(1, 0xFF0085, 1);
 		g.drawRect(1, 0, this.getWidth()-1, this.getHeight()-1);
 
-		gfxEntity.configVisuals({
+		gfxEntity.configSprite({
 			replaceWith: g
 		});
 
@@ -128,7 +128,7 @@ class WorldScreen extends Screen {
 
 		for (let i = 0; i < 10; i++) {
 			let e = new Entity();
-			e.configVisuals({
+			e.configSprite({
 				sheet: "player",
 				id: 0,
 				offset: {x:8, y:8}

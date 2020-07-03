@@ -1,5 +1,5 @@
 {
-	"title": "ARPG",
+	"title": "Kitchensink",
 
 	"startScreen": "./src/WorldScreen.js",
 
