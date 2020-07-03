@@ -1,5 +1,5 @@
-import { log, warn, fail, exposeOnWindow } from "./utils/Log.js";
-import loadJSON from "./assets/plugins/JSONLoader.js";
+import { log, warn, fail, exposeOnWindow } from "../utils/Log.js";
+import PIXI from "../core/PIXIWrapper.js";
 
 /**
  * Defaults for the Screen.
@@ -8,7 +8,7 @@ const DEFAULTS = {
 	w: 160,
 	h: 144,
 	scale: 2,
-	layers: 8,
+	layers: 5,
 	fps: 60,
 	startScreen: null,
 	hideCursor: false,
@@ -19,6 +19,17 @@ const DEFAULTS = {
 let initialized;
 let _manifestObject;
 let _baseURL = window.location; // default base
+
+// @PIXI: we just use a PIXI.Loader to load our manifest.json, wrapped in a promise for await-syntax
+async function loadJSON(cfg) {
+	return new Promise((res) => {
+		let loader = new PIXI.Loader();
+		loader.add("manifest", cfg.url);
+		loader.load((l, resources) => {
+			res(resources["manifest"].data);
+		});
+	});
+}
 
 /**
  * Initialises the manifest.
@@ -33,7 +44,7 @@ async function init(manifest) {
 		initialized = Promise.resolve().then(async function() {
 			if (typeof manifest === "string") {
 				log(`Loading Manifest from '${manifest}' ...`, "Manifest");
-				_manifestObject = await loadJSON.load({
+				_manifestObject = await loadJSON({
 					url: manifest
 				});
 
@@ -78,6 +89,15 @@ function assignDefaults() {
  */
 function resolve(url) {
 	return new URL(url, _baseURL);
+}
+
+/**
+ * Returns the base URL.
+ * Relative to the manfifest.json.
+ * @returns {URL} the base URL instance
+ */
+function getBaseUrl() {
+	return _baseURL;
 }
 
 function _splitPath(path) {
@@ -139,6 +159,7 @@ export default {
 	DEFAULTS,
 	init,
 	resolve,
+	getBaseUrl,
 	get,
 	set
 };

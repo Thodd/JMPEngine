@@ -1,8 +1,9 @@
-import GFX from "../gfx/GFX.js";
-import Spritesheets from "../gfx/Spritesheets.js";
-import { warn, error, fail } from "../utils/Log.js";
+import Spritesheets from "../assets/Spritesheets.js";
+import { warn, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
+
+import PIXI from "../core/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
 
@@ -10,10 +11,24 @@ let INSTANCE_COUNT = 0;
  * Entity Constructor
  */
 class Entity {
-	constructor({x=0, y=0}={}) {
+	constructor(x=0, y=0) {
+		this.x = x;
+		this.y = y;
+
 		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;
+
+		// @PIXI
+		this._pixiSprite = new PIXI.Sprite();
+
+		// By default we set this sprite to invisible.
+		// Not all Entities need to be rendered, some are just for updating.
+		// Relevant entities will be made visible by configuring the sprite.
+		this._pixiSprite.visible = false;
+
+		// visibility mode for automatic culling
+		this.autoVisibility = false;
 
 		// screen internal information
 		this._isScheduledForRemoval = false;
@@ -21,26 +36,18 @@ class Entity {
 
 		// lifetime of an entity
 		this.active = true;
-		this.visible = true;
 		this._isDestroyed = false;
 
 		// gfx
-		this._spriteConfig = null;
-		this.x = x;
-		this.y = y;
-		// scale: (x,y) are the origin coordinates, w & h are the scaling factors for width and height
-		this.scale = {
-			x: 0,
-			y: 0,
-			w: 1,
-			h: 1
+		this._spriteConfig = {
+			offset: {
+				x: 0,
+				y: 0
+			}
 		};
 
 		// by default we render on layer 0
 		this.layer = 0;
-
-		// defaults to 1 during rendering
-		this.alpha = undefined;
 
 		// collision
 		this.hitbox = {
@@ -62,6 +69,10 @@ class Entity {
 
 	toString() {
 		return `${this.constructor.name} (${this._ID})`;
+	}
+
+	getPixiSprite() {
+		return this._pixiSprite;
 	}
 
 	/**
@@ -91,11 +102,16 @@ class Entity {
 	/**
 	 * Destroys the Entity.
 	 * Entity is safely removed from the world.
+	 * The "removed" hook is always called afterwards.
 	 *
-	 * The "removed" hook always called afterwards!
+	 * A destroyed Entity is unusable!
+	 * Make sure to not reinsert it into the Screen again.
 	 */
 	destroy() {
 		if (!this._isDestroyed) {
+			// @PIXI: destroy pixi sprite
+			this._pixiSprite.destroy();
+
 			this._screen.remove(this);
 			this._isDestroyed = true;
 		}
@@ -150,23 +166,74 @@ class Entity {
 
 	/**
 	 * Sets a new sprite definition, including animations.
+	 * The underlying PIXI sprite will configured according to this new sprite configuration.
 	 * @param {object} config
 	 */
-	setSprite(config) {
-		this._spriteConfig = Object.assign({}, config);
+	configSprite(config) {
+		// we merge the new config with at least an empty offset object
+		this._spriteConfig = Object.assign({
+			offset: {x: 0, y: 0}
+		}, config);
+
+		// Figure out what the new texture should be
+		let newTexture;
+
+		if (config.sheet) {
+			// sprite given via sheet
+			let sheet = Spritesheets.getSheet(this._spriteConfig.sheet);
+
+			if (!sheet) {
+				fail(`Unknown sheet '${this._spriteConfig.sheet}'!`, "Entity");
+			}
+
+			// @PIXI: get texture from sheet
+			newTexture = sheet.textures[0];
+		} else if (config.texture) {
+			// @PIXI: sprite given via texture
+			newTexture = config.texture;
+		} else if (config.replaceWith) {
+			// @PIXI: also make sure to destroy the original sprite!
+			// @PIXI-TODO: How does destroy work?
+			// When replacing do we need to remove it from the stage?
+			this._pixiSprite.destroy();
+
+			// Also IMPORTANT: add "replaceWith" DisplayObject to the screen stage!
+
+			// @PIXI: replace the original sprite with another PIXI.DisplayObject
+			this._pixiSprite = config.replaceWith;
+		}
+
+		// @PIXI: set the default texture for the pixi sprite & make it visible
+		// might be overwritten by an animation definition below
+		if (newTexture) {
+			this._pixiSprite.texture = newTexture;
+			this._pixiSprite.visible = true;
+		}
+
 
 		// check if the new sprite def has animations
 		// if not we asume a valid single sprite definition
 		if (this._spriteConfig && this._spriteConfig.animations) {
-			let animationsDef = this._spriteConfig.animations;
-			if (!animationsDef.default) {
-				error(`Sprite definition of ${this} does not contain a default animation!`);
+			let animationsMap = this._spriteConfig.animations;
+
+			// sanity checks
+			if (!animationsMap.default) {
+				fail(`Sprite definition of ${this} does not contain a default animation!`, "Entity");
+			}
+			if (!animationsMap[animationsMap.default]) {
+				fail(`There is no 'default' animation of name '${animationsMap.default}', ${this}!`, "Entity");
 			}
 
 			// process new animations
-			for (let animName in this._spriteConfig.animations) {
+			for (let animName in animationsMap) {
+				// we skip the "default" definition here, since it's just the name of another animation
 				if (animName != "default") {
-					let anim = this._spriteConfig.animations[animName];
+					let anim = animationsMap[animName];
+
+					if (!anim.sheet && !this._spriteConfig.sheet) {
+						fail(`No spritesheet specified for ${this} or its animation of name '${animName}'!`, "Entity");
+					}
+
 					// set processing values, e.g. FrameCounter
 					anim.name = animName;
 					anim.currentFrame = 0;
@@ -181,7 +248,7 @@ class Entity {
 			}
 
 			// initialize default animation
-			this.playAnimation({name: this._spriteConfig.animations.default});
+			this.playAnimation({name: animationsMap.default});
 		}
 	}
 
@@ -192,14 +259,19 @@ class Entity {
 	playAnimation(config) {
 		// new animation definition
 		this._currentAnimation = this._spriteConfig.animations[config.name];
-		this._currentAnimation.done = config.done;
-		if (this._currentAnimation && config.reset) {
-			this._currentAnimation.currentFrame = 0;
-			this._currentAnimation.id = this._currentAnimation.frames[0];
-			// delay counter has to be reset too
-			if (this._currentAnimation.delayCounter) {
-				this._currentAnimation.delayCounter.reset();
+
+		if (this._currentAnimation) {
+			this._currentAnimation.done = config.done;
+			if (this._currentAnimation && config.reset) {
+				this._currentAnimation.currentFrame = 0;
+				this._currentAnimation.id = this._currentAnimation.frames[0];
+				// delay counter has to be reset too
+				if (this._currentAnimation.delayCounter) {
+					this._currentAnimation.delayCounter.reset();
+				}
 			}
+		} else {
+			fail(`Cannot play unknown animation '${config.name}'`, "Entity");
 		}
 	}
 
@@ -224,63 +296,16 @@ class Entity {
 				// update sprite
 				anim.id = anim.frames[anim.currentFrame];
 			}
-		}
-	}
 
-	/**
-	 * Render hook.
-	 * Called once after every update loop.
-	 *
-	 * IMPORTANT:
-	 * To keep the default rendering behavior intact,
-	 * call "super.render()" at the beginning of your custom render function.
-	 */
-	render() {
-		// if animations are defined we advance the currently set one frame-by-frame
-		this._updateCurrentAnimation();
+			// IMPORTANT:
+			// We again retrieve the currently set animation here,
+			// because the done() callback might have changed the animation!
+			// Otherwise we might show the first key-frame of a now outdated animation for one frame
+			anim = this._currentAnimation;
 
-		let buff = GFX.getBuffer(this.layer);
-		let g = buff.getRenderer();
-
-		// only try to render if we have either an animation or a default sprite config
-		if (this._currentAnimation || this._spriteConfig) {
-
-			// three possible render value locations with the following priority
-			// 1. Animation, 2. Default Sprite, 3. None (empty object)
-			let anim = this._currentAnimation || {};
-			let defaultSprite = this._spriteConfig || {};
-
-			// retrieve render values
-			let sheet = anim.sheet || defaultSprite.sheet;
-			let id = anim.id != undefined ? anim.id : (defaultSprite.id || 0); // might be 0!
-			let offsetX = anim.offsetX != undefined ? anim.offsetX : defaultSprite.offsetX; // might be 0!
-			let offsetY = anim.offsetY != undefined ? anim.offsetY : defaultSprite.offsetY; // might be 0!
-			let color = anim.color || defaultSprite.color;
-			// the entity's alpha is the last fallback, else we consider the sprite to be opaque
-			let alpha = anim.alpha || defaultSprite.alpha || this.alpha || 1;
-
-			let sheetObj = Spritesheets.getSheet(sheet);
-			let dx = this.x + (offsetX || 0) - this.scale.x;
-			let dy = this.y + (offsetY || 0) - this.scale.y;
-			let dw = sheetObj.w * this.scale.w;
-			let dh = sheetObj.h * this.scale.h;
-
-			// sheet, id, layer, x, y, w, h, color
-			// width and height are undefined, because we want the default value from the actual sprite
-			g.spr_ext(sheet, id, 0, 0, undefined, undefined, dx, dy, dw, dh, color, alpha);
-		}
-
-		// check if the hitbox should be rendered for debugging
-		let hitboxColor = Entity.RENDER_HITBOXES || this.RENDER_HITBOXES;
-		if (hitboxColor) {
-			if (buff.getRenderMode() == "RAW") {
-				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y, hitboxColor); // top left
-				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y, hitboxColor); // top right
-				g.pxSet(this.x + this.hitbox.x, this.y + this.hitbox.y + this.hitbox.h - 1, hitboxColor); // bottom left
-				g.pxSet(this.x + this.hitbox.x + this.hitbox.w - 1, this.y + this.hitbox.y + this.hitbox.h -1, hitboxColor); // bottom right
-			} else {
-				g.rectf(this.x + this.hitbox.x, this.y + this.hitbox.y, this.hitbox.w, this.hitbox.h, hitboxColor);
-			}
+			// @PIXI: update texture based on current key-frame, we made sure a sheet exists upon animation definition
+			let sheetObj = Spritesheets.getSheet(anim.sheet || this._spriteConfig.sheet);
+			this._pixiSprite.texture = sheetObj.textures[anim.id];
 		}
 	}
 
@@ -292,36 +317,12 @@ class Entity {
 	 * @param {integer} w w to check, defaults to this.hitbox.w
 	 * @param {integer} h h to check, defaults to this.hitbox.h
 	 */
-	isInView(x, y, w, h) {
-		// sprite dimensions
-		let x1 = (x != undefined) ? x : this.x;
-		let y1 = (y != undefined) ? y : this.y;
-		let w1 = w || this.hitbox.w;
-		let h1 = h || this.hitbox.h;
-
-		// Screen dimensions
-		// The camera position depends on the layer the Entity is on:
-		// If the Buffer for that layer has a fixed camera,
-		// the last Screen camera state is not pushed to this specific layer!
-		let layerCam = GFX.getBuffer(this.layer).getCam();
-		let x2 = layerCam.x;
-		let y2 = layerCam.y;
-		let w2 = this._screen.width;
-		let h2 = this._screen.height;
-
-		// check if sprite is in view
-		// While the calculation has some overhead it still reduces the number of draw calls.
-		// With a lot of Entities this is significantly faster than "drawing" offscreen sprites.
-		// Browsers still seem to be very bad at ignoring offscreen render calls...
-		if (x1 < x2 + w2 &&
-			x1 + w1 > x2 &&
-			y1 < y2 + h2 &&
-			y1 + h1 > y2) {
-				return true;
+	isInView(tolerance) {
+		if (this._screen) {
+			this._screen.isEntityInView(this, tolerance);
 		}
-
-		return false;
 	}
+
 }
 
 Entity.RENDER_HITBOXES = false;

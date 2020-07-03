@@ -2,7 +2,7 @@ import { warn, fail } from "../utils/Log.js";
 import GFX from "./GFX.js";
 import Buffer from "./Buffer.js";
 import Entity from "../game/Entity.js";
-import Manifest from "../Manifest.js";
+import Manifest from "../assets/Manifest.js";
 
 class Text extends Entity {
 	constructor({text, x, y, font="font0", color="#FFFFFF", leading=0, useKerning=false}) {

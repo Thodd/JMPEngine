@@ -6,19 +6,21 @@ import SwordAttack from "./attacks/SwordAttack.js";
 //Entity.RENDER_HITBOXES = "#FF0085";
 
 class Player extends Entity {
-	constructor({x, y}) {
-		super({x, y});
+	constructor(x, y) {
+		super(x, y);
 
 		//this.RENDER_HITBOXES = "#FFFFFF33";
 
 		this.hitbox.w = 16;
 		this.hitbox.h = 16;
 
-		this.setSprite({
+		this.configSprite({
 			sheet: "player",
 
-			offsetX: -16,
-			offsetY: -16,
+			offset: {
+				x: -16,
+				y: -16
+			},
 
 			animations: {
 				default: "down",
@@ -150,8 +152,9 @@ class Player extends Entity {
 			this.playAnimation({name: `idle_${this.dir}`});
 		}
 
-		this.getScreen().cam.x = this.x - (this._screen.getWidth()/2);
-		this.getScreen().cam.y = this.y - (this._screen.getHeight()/2);
+		let screen = this.getScreen();
+		screen.cam.x = this.x - (screen.getWidth()/2);
+		screen.cam.y = this.y - (screen.getHeight()/2);
 	}
 }
 

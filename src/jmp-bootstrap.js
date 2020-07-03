@@ -1,5 +1,5 @@
 import domReady from "./utils/domReady.js";
-import Engine from "./Engine.js";
+import Engine from "./core/Engine.js";
 
 domReady().then(() => {
 
