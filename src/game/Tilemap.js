@@ -152,18 +152,15 @@ class Tilemap extends Entity {
 			log(`end:    (${colMax},${rowMax})`, "Tilemap");
 		}
 
-		// if the col/row origin are outside the map's boundaries, there is nothing to draw
+		// @PIXI: if the col/row origin are outside the map's boundaries, there is nothing to draw
+		// and we can set the whole Tilemap to invisible
 		if (colStart >= this._mapWidth || colMax < 0 || rowStart >= this._mapHeight || rowMax < 0) {
+			this._pixiSprite.visible = false;
 			return;
 		}
 
-		// Cull all sprites in the pool:
-		// It looks like an overhead, but honestly I don't have a better idea right now...
-		let len = this._sprites.length;
-		for (let i = 0; i < len; i++) {
-			let spr = this._sprites[i];
-			spr.visible = false;
-		}
+		// @PIXI: make Tilemap visible in case it was previously made invisible!
+		this._pixiSprite.visible = true;
 
 		// Only draw the tiles which are inside the camera (and inside the map range)
 		let i = 0;
@@ -191,6 +188,15 @@ class Tilemap extends Entity {
 				}
 			}
 		}
+
+		// Cull all left over sprites in the pool, otherwise we get glitched out sprites.
+		// If you are at the border of the Tilemap we don't need all sprites.
+		let len = this._sprites.length;
+		for (; i < len; i++) {
+			let spr = this._sprites[i];
+			spr.visible = false;
+		}
+
 	}
 }
 
