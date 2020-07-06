@@ -7,7 +7,7 @@ class FrameCounter {
 
 	isReady() {
 		if (this._frames == this._maxFrames) {
-			this.reset();
+			this._frames = 0;
 			this._looped++;
 			return true;
 		} else {
@@ -23,7 +23,7 @@ class FrameCounter {
 	 */
 	setMaxFrames(m) {
 		this._maxFrames = m;
-		this.reset();
+		this._frames = 0;
 	}
 
 	/**

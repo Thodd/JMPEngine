@@ -12,8 +12,6 @@ class SwordAttack extends Entity {
 		super();
 		this.player = player;
 
-		this.RENDER_HITBOX = 0xFF0085;
-
 		this.updateHitbox({
 			w: 16,
 			h: 16

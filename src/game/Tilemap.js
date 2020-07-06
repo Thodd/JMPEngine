@@ -1,4 +1,4 @@
-import { fail, log } from "../utils/Log.js";
+import { fail, warn, log } from "../utils/Log.js";
 import Manifest from "../assets/Manifest.js";
 import Spritesheets from "../assets/Spritesheets.js";
 import Entity from "./Entity.js";
@@ -65,6 +65,14 @@ class Tilemap extends Entity {
 			this._sprites.push(spr);
 			this._pixiSprite.addChild(spr);
 		}
+	}
+
+	/**
+	 * You cannot define a hitbox for a Tilemap.
+	 * Collision is detected on a per tile basis.
+	 */
+	updateHitbox() {
+		warn("A Tilemap does not have a hitbox. Collision detection is handled per tile!", "Tilemap");
 	}
 
 	/**

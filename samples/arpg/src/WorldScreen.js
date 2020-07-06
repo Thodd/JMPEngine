@@ -1,4 +1,5 @@
 import Screen from "../../../src/game/Screen.js";
+import Entity from "../../../src/game/Entity.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import Helper from "../../../src/utils/Helper.js";
 
@@ -8,6 +9,8 @@ import Player from "./actors/Player.js";
 class WorldScreen extends Screen {
 	constructor() {
 		super();
+
+		Entity.RENDER_HITBOX = 0x85FF00
 
 		/**
 		 * Tilemap demo
@@ -28,10 +31,17 @@ class WorldScreen extends Screen {
 		/**
 		 * player
 		 */
-		this.player = new Player(0, 0);
+		this.player = new Player(this.width / 2, this.height / 2);
 		this.add(this.player);
 
+		this.centerCameraAround(this.player);
+
 		//this.addText();
+	}
+
+	centerCameraAround(e){
+		this.cam.x = e.x - (this.width / 2);
+		this.cam.y = e.y - (this.height / 2);
 	}
 
 	addText() {

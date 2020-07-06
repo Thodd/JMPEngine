@@ -7,11 +7,11 @@ class Player extends Entity {
 	constructor(x, y) {
 		super(x, y);
 
-		this.RENDER_HITBOX = 0xFF0085;
-
 		this.updateHitbox({
-			w: 16,
-			h: 16
+			x: 3,
+			y: 6,
+			w: 10,
+			h: 10
 		});
 
 		this.configSprite({
@@ -27,50 +27,50 @@ class Player extends Entity {
 
 				"down": {
 					frames: [0, 1, 0, 2],
-					delay: 8
+					dt: 8
 				},
 				"idle_down": {
 					frames: [0]
 				},
 				"slash_down": {
-					frames: [12, 13, 14, 14, 14],
-					delay: 1
+					frames: [12, 13, {id: 14, dt: 3}],
+					dt: 1
 				},
 
 				"up": {
 					frames: [3, 4, 3, 5],
-					delay: 8
+					dt: 8
 				},
 				"idle_up": {
 					frames: [3]
 				},
 				"slash_up": {
-					frames: [15, 16, 17, 17, 17],
-					delay: 1
+					frames: [15, 16, {id: 17, dt: 3}],
+					dt: 1
 				},
 
 				"left": {
 					frames: [6, 7],
-					delay: 8
+					dt: 8
 				},
 				"idle_left": {
 					frames: [6]
 				},
 				"slash_left": {
-					frames: [18, 19, 20, 20, 20],
-					delay: 1
+					frames: [18, 19, {id: 20, dt: 3}],
+					dt: 1
 				},
 
 				"right": {
 					frames: [8, 9],
-					delay: 8
+					dt: 8
 				},
 				"idle_right": {
 					frames: [8]
 				},
 				"slash_right": {
-					frames: [21, 22, 23, 23, 23],
-					delay: 1
+					frames: [21, 22, {id: 23, dt: 3}],
+					dt: 1
 				},
 			}
 		});
@@ -158,10 +158,9 @@ class Player extends Entity {
 			this.playAnimation({name: `idle_${this.dir}`});
 		}
 
-		let screen = this.getScreen();
-		screen.cam.x = this.x - (screen.getWidth()/2);
-		screen.cam.y = this.y - (screen.getHeight()/2);
+		this.getScreen().centerCameraAround(this);
 	}
+
 }
 
 export default Player;

@@ -67,6 +67,12 @@ class Entity {
 		 * Default is null, so we have no collision.
 		 */
 		this._types = null;
+
+		/**
+		 * Animation variables
+		 */
+		this._currentAnimation = null;
+		this._animationTimer = new FrameCounter(0);
 	}
 
 	toString() {
@@ -101,6 +107,14 @@ class Entity {
 		return this._types;
 	}
 
+	/**
+	 * Updates the Hitbox dimensions.
+	 *
+	 * Note, concerning debugging:
+	 * If the debug option Entity.RENDER_HITBOX or this.RENDER_HITBOX is set, a PIXI.Graphics object is
+	 * created for rendering the hitbox. Please keep this in mind with respect to render performance.
+	 * @param {object} cfg Hitbox dimensions (x, y, w, h)
+	 */
 	updateHitbox(cfg) {
 		this._hitbox.x = cfg.x || this._hitbox.x;
 		this._hitbox.y = cfg.y || this._hitbox.y;
@@ -118,11 +132,11 @@ class Entity {
 			// x/y offset
 			this._hitbox._gfx.x = this.x + this._hitbox.x;
 			this._hitbox._gfx.y = this.y + this._hitbox.y;
-			// draw filled rect
-			//this._hitbox._gfx.beginFill(hbColor, 0.3);
+			// draw filled rect + border
+			this._hitbox._gfx.beginFill(hbColor, 0.3);
 			this._hitbox._gfx.lineStyle(1, hbColor, 1);
 			this._hitbox._gfx.drawRect(1, 0, this._hitbox.w-1, this._hitbox.h-1);
-			//this._hitbox._gfx.endFill();
+			this._hitbox._gfx.endFill();
 		}
 	}
 
@@ -265,16 +279,15 @@ class Entity {
 						fail(`No spritesheet specified for ${this} or its animation of name '${animName}'!`, "Entity");
 					}
 
-					// set processing values, e.g. FrameCounter
+					// set default processing values
 					anim.name = animName;
 					anim.currentFrame = 0;
 					anim.id = anim.frames[0]; // initially visible frame is 0
+					anim.dt = anim.dt || 0;
 
 					// if no delay is given, we assume a the animation is a "freeze-frame", e.g. an idle-frame
-					// so we don't need a delay-counter here to save some performance
-					if (anim.delay != undefined) {
-						anim.delayCounter = new FrameCounter(anim.delay);
-					}
+					//anim.delayCounter = new FrameCounter(anim.dt);
+					this._animationTimer.setMaxFrames(anim.dt);
 				}
 			}
 
@@ -298,11 +311,14 @@ class Entity {
 
 			if (this._currentAnimation && config.reset) {
 				this._currentAnimation.currentFrame = 0;
-				this._currentAnimation.id = this._currentAnimation.frames[0];
+
+				// frameData can be an object or a number
+				let frameData = this._currentAnimation.frames[0];
+				this._currentAnimation.id = frameData.id != undefined ? frameData.id : frameData;
+
 				// delay counter has to be reset too
-				if (this._currentAnimation.delayCounter) {
-					this._currentAnimation.delayCounter.reset();
-				}
+				// this happens by setting its max-frames to the dt value defined in either the frame-data or the animation definition
+				this._animationTimer.setMaxFrames(frameData.dt || this._currentAnimation.dt);
 			}
 		} else {
 			fail(`Cannot play unknown animation '${config.name}'`, "Entity");
@@ -318,7 +334,7 @@ class Entity {
 			// animation frame only needs to be updated if a delay-counter was defined
 			// if an animation has NO delay set, we asume it is not animated at all
 			// a delay of 0 is valid, since it means the frame is advanced every Engine render frame!
-			if (anim.delayCounter && anim.delayCounter.isReady()) {
+			if (this._animationTimer.isReady()) {
 				// advance frame counter
 				anim.currentFrame++;
 				if (anim.currentFrame >= anim.frames.length) {
@@ -331,8 +347,11 @@ class Entity {
 						this._currentAnimation.change();
 					}
 				}
-				// update sprite
-				anim.id = anim.frames[anim.currentFrame];
+
+				// change animation id and rest the frame-counter to the next frame dt (if defined)
+				let frameData = anim.frames[anim.currentFrame];
+				anim.id = frameData.id != undefined ? frameData.id : frameData;
+				this._animationTimer.setMaxFrames(frameData.dt || anim.dt);
 			}
 
 			// IMPORTANT:
