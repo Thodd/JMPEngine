@@ -404,6 +404,12 @@ class Screen {
 		for (let i = 0; i < len; i++) {
 			let e = this._entities[i];
 
+			// Debugging: add hitbox to the pixi container if defined
+			if (e._hitbox._gfx && !e._hitbox._gfx.parent) {
+				let layer = this._layers[e.layer];
+				layer.addChild(e._hitbox._gfx);
+			}
+
 			// automatic culling: Only if it's turned on.
 			if (e.autoVisibility) {
 				let entityInsideView = this.isEntityInView(e);
@@ -426,6 +432,12 @@ class Screen {
 				// shift normal entities
 				e._pixiSprite.x = e.x + e._spriteConfig.offset.x - camX;
 				e._pixiSprite.y = e.y + e._spriteConfig.offset.y - camY;
+
+				// if a hitbox is defined we also move it along with the camera
+				if (e._hitbox._gfx) {
+					e._hitbox._gfx.x = e.x + e._hitbox.x - camX;
+					e._hitbox._gfx.y = e.y + e._hitbox.y - camY;
+				}
 			}
 		}
 	}

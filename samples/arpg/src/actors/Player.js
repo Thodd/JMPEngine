@@ -3,16 +3,16 @@ import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
 import SwordAttack from "./attacks/SwordAttack.js";
 
-//Entity.RENDER_HITBOXES = "#FF0085";
-
 class Player extends Entity {
 	constructor(x, y) {
 		super(x, y);
 
-		//this.RENDER_HITBOXES = "#FFFFFF33";
+		this.RENDER_HITBOX = 0xFF0085;
 
-		this.hitbox.w = 16;
-		this.hitbox.h = 16;
+		this.updateHitbox({
+			w: 16,
+			h: 16
+		});
 
 		this.configSprite({
 			sheet: "player",
@@ -106,9 +106,15 @@ class Player extends Entity {
 		// attacking
 		if (Keyboard.pressed(Keys.S)) {
 			this._isAttacking = true;
+
+			this.swordAttack.reset(this.dir);
+
 			this.playAnimation({
 				name: `slash_${this.dir}`,
 				reset: true,
+				change: () => {
+					this.swordAttack.nextPosition();
+				},
 				done: () => {
 					this._isAttacking = false;
 					this.playAnimation({name: `idle_${this.dir}`});

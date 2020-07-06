@@ -12,10 +12,10 @@ function checkTilemapCollision(e1, e2, x, y) {
 	// because otherwise the width/height of the hitbox would (correctly) end up in a different Tile
 	// for the grid collision the width/height of the hitbox is counted in pixels, the offset of the
 	// hit box being the first pixel to count (basically starting from 0)
-	let left = x + e.hitbox.x;
-	let right = x + e.hitbox.x + e.hitbox.w - 1;
-	let top = y + e.hitbox.y;
-	let bottom = y + e.hitbox.y + e.hitbox.h - 1;
+	let left = x + e._hitbox.x;
+	let right = x + e._hitbox.x + e._hitbox.w - 1;
+	let top = y + e._hitbox.y;
+	let bottom = y + e._hitbox.y + e._hitbox.h - 1;
 
 	let dummyTile = {isBlocking: false};
 
@@ -61,17 +61,17 @@ export default {
 		}
 
 		// entity1 is placed at (x, y), it is the entity performing the check
-		let x1 = x + e1.hitbox.x;
-		let y1 = y + e1.hitbox.y;
+		let x1 = x + e1._hitbox.x;
+		let y1 = y + e1._hitbox.y;
 
 		// entity2 is not offsetted, but still the hitbox offset is regarded
-		let x2 = e2.x + e2.hitbox.x;
-		let y2 = e2.y + e2.hitbox.y;
+		let x2 = e2.x + e2._hitbox.x;
+		let y2 = e2.y + e2._hitbox.y;
 
-		if (x1 < x2 + e2.hitbox.w &&
-			x1 + e1.hitbox.w > x2 &&
-			y1 < y2 + e2.hitbox.h &&
-			y1 + e1.hitbox.h > y2) {
+		if (x1 < x2 + e2._hitbox.w &&
+			x1 + e1._hitbox.w > x2 &&
+			y1 < y2 + e2._hitbox.h &&
+			y1 + e1._hitbox.h > y2) {
 				return true;
 		}
 		return false;

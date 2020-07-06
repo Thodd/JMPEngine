@@ -49,8 +49,10 @@ class Entity {
 		// by default we render on layer 0
 		this.layer = 0;
 
-		// collision
-		this.hitbox = {
+		// collision hitbox, by default it's empty so the Entity does not collide with anything
+		// the _gfx property holds the @PIXI.Graphics instance which is needed fir debug rendering.
+		this._hitbox = {
+			_gfx: null,
 			x: 0,
 			y: 0,
 			w: 0,
@@ -99,6 +101,31 @@ class Entity {
 		return this._types;
 	}
 
+	updateHitbox(cfg) {
+		this._hitbox.x = cfg.x || this._hitbox.x;
+		this._hitbox.y = cfg.y || this._hitbox.y;
+		this._hitbox.w = cfg.w || this._hitbox.w;
+		this._hitbox.h = cfg.h || this._hitbox.h;
+
+		let hbColor = this.RENDER_HITBOX || Entity.RENDER_HITBOX;
+		if (hbColor) {
+			// create a hitbox graphics object if needed or clear existing one
+			if (!this._hitbox._gfx) {
+				this._hitbox._gfx = new PIXI.Graphics();
+			} else {
+				this._hitbox._gfx.clear();
+			}
+			// x/y offset
+			this._hitbox._gfx.x = this.x + this._hitbox.x;
+			this._hitbox._gfx.y = this.y + this._hitbox.y;
+			// draw filled rect
+			//this._hitbox._gfx.beginFill(hbColor, 0.3);
+			this._hitbox._gfx.lineStyle(1, hbColor, 1);
+			this._hitbox._gfx.drawRect(1, 0, this._hitbox.w-1, this._hitbox.h-1);
+			//this._hitbox._gfx.endFill();
+		}
+	}
+
 	/**
 	 * Destroys the Entity.
 	 * Entity is safely removed from the world.
@@ -110,7 +137,11 @@ class Entity {
 	destroy() {
 		if (!this._isDestroyed) {
 			// @PIXI: destroy pixi sprite
-			this._pixiSprite.destroy();
+			this._pixiSprite.destroy(true);
+
+			if (this._hitbox._gfx) {
+				this._hitbox._gfx.destroy(true);
+			}
 
 			this._screen.remove(this);
 			this._isDestroyed = true;
@@ -261,7 +292,10 @@ class Entity {
 		this._currentAnimation = this._spriteConfig.animations[config.name];
 
 		if (this._currentAnimation) {
+			// register new handlers if given
 			this._currentAnimation.done = config.done;
+			this._currentAnimation.change = config.change;
+
 			if (this._currentAnimation && config.reset) {
 				this._currentAnimation.currentFrame = 0;
 				this._currentAnimation.id = this._currentAnimation.frames[0];
@@ -292,6 +326,10 @@ class Entity {
 					if (this._currentAnimation.done) {
 						this._currentAnimation.done();
 					}
+				} else {
+					if (this._currentAnimation.change) {
+						this._currentAnimation.change();
+					}
 				}
 				// update sprite
 				anim.id = anim.frames[anim.currentFrame];
@@ -310,12 +348,9 @@ class Entity {
 	}
 
 	/**
-	 * Checks if the entity is inside the view with respect to its hitbox.
+	 * Checks if the entity is inside the view with respect to its defined sprite.
 	 *
-	 * @param {Number} x x to check, defaults to this.x
-	 * @param {Number} y y to check, defaults to this.y
-	 * @param {integer} w w to check, defaults to this.hitbox.w
-	 * @param {integer} h h to check, defaults to this.hitbox.h
+	 * @param {integer} the tolerance aroung the camera borders
 	 */
 	isInView(tolerance) {
 		if (this._screen) {

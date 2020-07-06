@@ -1,5 +1,5 @@
 {
-	"title": "Kitchensink",
+	"title": "Basic",
 
 	"startScreen": "./src/WorldScreen.js",
 

@@ -1,8 +1,10 @@
 import Entity from "../../../../../src/game/Entity.js";
-import FrameCounter from "../../../../../src/utils/FrameCounter.js";
 
 const allPositions = {
-	down: [{ x: 16, y: 0 }, { x: 16, y: 16 }, { x: 0, y: 16 }]
+	up:    [{ x:  16, y:   0 }, { x:  16, y: -16 }, { x:   0, y: -16 }],
+	down:  [{ x: -16, y:   0 }, { x: -16, y:  16 }, { x:   0, y:  16 }],
+	left:  [{ x:   0, y: -16 }, { x: -16, y: -16 }, { x: -16, y:   0 }],
+	right: [{ x:   0, y: -16 }, { x: +16, y: -16 }, { x:  16, y:   0 }]
 }
 
 class SwordAttack extends Entity {
@@ -10,19 +12,36 @@ class SwordAttack extends Entity {
 		super();
 		this.player = player;
 
-		//this.RENDER_HITBOXES = "#FF008533";
+		this.RENDER_HITBOX = 0xFF0085;
 
-		this.hitbox.w = 16;
-		this.hitbox.h = 16;
+		this.updateHitbox({
+			w: 16,
+			h: 16
+		});
 
 		this.cfg = {positions: allPositions.down, index: 0};
 	}
 
 	nextPosition() {
-		this.cfg.index++;
+		if (this.cfg.index < 3) {
+			this.cfg.index++;
+		} else {
+			this.cfg.index = 0;
+		}
 		let posData = this.cfg.positions[this.cfg.index];
-		this.x = this.player.x + posData.x;
-		this.y = this.player.y + posData.y;
+		if (posData) {
+			this.x = this.player.x + posData.x;
+			this.y = this.player.y + posData.y;
+		}
+	}
+
+	reset(dir) {
+		this.cfg = {
+			positions: allPositions[dir],
+			index: 0
+		};
+		this.x = this.player.x + this.cfg.positions[0].x;
+		this.y = this.player.y + this.cfg.positions[0].y;
 	}
 }
 
