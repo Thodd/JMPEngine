@@ -59,15 +59,30 @@ class Screen {
 			this._layers.push(pixiLayer);
 		}
 
+		// data object for storing layer information
+		this._layerInfo = {};
+
+		// @PIXI: One additional layer for debugging (unusable by the game itself)
+		this._debugLayer = new PIXI.Container();
+		this._pixiContainer.addChild(this._debugLayer);
+
 		/**
 		 * The camera of the screen.
 		 * Change the x/y coordinates to move the camera around.
 		 * During rendering this will be respected for correctly shifting entities around.
 		 */
 		this.cam = {
+			/**
+			 * Globally activate the camera system (default).
+			 * Affects all layers.
+			 */
 			activate() {
 				this._active = true;
 			},
+			/**
+			 * Globally deactivate the camera system.
+			 * Affects all layers.
+			 */
 			deactivate() {
 				this._active = false;
 			},
@@ -99,6 +114,19 @@ class Screen {
 	 */
 	getHeight() {
 		return this.height;
+	}
+
+	/**
+	 * Sets whether the camera should be fixed for the given layer.
+	 * Layers with a fixed camera are not subject to a position change of the Screens camera.
+	 * This is useful for HUDs etc.
+	 *
+	 * @param {integer} i Layer index
+	 * @param {boolean} b whether the camera should be fixed or not
+	 */
+	setCameraFixedForLayer(i, b) {
+		this._layerInfo[i] = this._layerInfo[i] || {};
+		this._layerInfo[i].fixedCamera = b;
 	}
 
 	/**
@@ -347,7 +375,7 @@ class Screen {
 			// @PIXI: Add entity sprite from the container of the Screen
 			let layer = this._layers[ea.layer];
 			if (!layer) {
-				fail(`Layer '${ea.layer}' does not exist!`, this);
+				fail(`Layer '${ea.layer}' does not exist. The game is initialized with layers 0 to ${this._layers.length-1}!`, this);
 			} else {
 				layer.addChild(ea._pixiSprite);
 			}
@@ -394,7 +422,7 @@ class Screen {
 		// get new entities count, might be lesser or greater than the starting count
 		let len = this._entities.length;
 
-		// check if camera is active
+		// check if camera is active in general
 		let camX = this.cam._active ? this.cam.x : 0;
 		let camY = this.cam._active ? this.cam.y : 0;
 
@@ -404,10 +432,10 @@ class Screen {
 		for (let i = 0; i < len; i++) {
 			let e = this._entities[i];
 
-			// Debugging: add hitbox to the pixi container if defined
+			// Debugging: add hitbox to the pixi container if defined (and not yet added)
+			// (topmost debug layer, so they are always visible!)
 			if (e._hitbox._gfx && !e._hitbox._gfx.parent) {
-				let layer = this._layers[e.layer];
-				layer.addChild(e._hitbox._gfx);
+				this._debugLayer.addChild(e._hitbox._gfx);
 			}
 
 			// automatic culling: Only if it's turned on.
@@ -428,15 +456,20 @@ class Screen {
 				// Tilemaps have their own sprite replacement logic and are always stuck to the camera
 				e._updateRenderInfos();
 			} else {
+				// check if the entity is on a layer with a fixed camera
+				let cameraFixed = this._layerInfo[e.layer] && this._layerInfo[e.layer].fixedCamera;
+				let cx = !cameraFixed ? camX : 0;
+				let cy = !cameraFixed ? camY : 0;
+
 				// TODO: respect the offset for the current animation frame! Currently only the default offset is respected.
 				// shift normal entities
-				e._pixiSprite.x = e.x + e._spriteConfig.offset.x - camX;
-				e._pixiSprite.y = e.y + e._spriteConfig.offset.y - camY;
+				e._pixiSprite.x = e.x + e._spriteConfig.offset.x - cx;
+				e._pixiSprite.y = e.y + e._spriteConfig.offset.y - cy;
 
 				// Debugging: if a hitbox is defined we also move it along with the camera
 				if (e._hitbox._gfx) {
-					e._hitbox._gfx.x = e.x + e._hitbox.x - camX;
-					e._hitbox._gfx.y = e.y + e._hitbox.y - camY;
+					e._hitbox._gfx.x = e.x + e._hitbox.x - cx;
+					e._hitbox._gfx.y = e.y + e._hitbox.y - cy;
 				}
 			}
 		}
