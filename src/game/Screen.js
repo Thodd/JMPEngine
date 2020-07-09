@@ -246,11 +246,15 @@ class Screen {
 				let entries = [...entitySet];
 				for (let j = 0; j < entries.length; j++) {
 					let e2 = entries[j];
-					if (Collision.checkAtPosition(e, e2, x, y)) {
-						if (returnAll) {
-							result.push(e2);
-						} else {
-							return e2;
+					// only perform check for collidable entities
+					// we can save some function calls this way, which is relevant for a big amount of entities
+					if (e._hitbox._collidable) {
+						if (Collision.checkAtPosition(e, e2, x, y)) {
+							if (returnAll) {
+								result.push(e2);
+							} else {
+								return e2;
+							}
 						}
 					}
 				}
@@ -432,16 +436,24 @@ class Screen {
 		for (let i = 0; i < len; i++) {
 			let e = this._entities[i];
 
-			// Debugging: add hitbox to the pixi container if defined (and not yet added)
-			// (topmost debug layer, so they are always visible!)
-			if (e._hitbox._gfx && !e._hitbox._gfx.parent) {
-				this._debugLayer.addChild(e._hitbox._gfx);
+			if (e._hitbox._gfx) {
+				// the visibility of the hitbox depends on the "collidability" of the entity itself
+				e._hitbox._gfx.visible = e._hitbox._collidable;
+
+				// Debugging: add hitbox to the pixi container if defined (and not yet added)
+				// (topmost debug layer, so they are always visible!)
+				if (!e._hitbox._gfx.parent) {
+					this._debugLayer.addChild(e._hitbox._gfx);
+				}
 			}
 
 			// automatic culling: Only if it's turned on.
 			if (e.autoVisibility) {
 				let entityInsideView = this.isEntityInView(e);
 				e._pixiSprite.visible = entityInsideView;
+				if (e._hitbox._gfx) { // also hide/show hitbox
+					e._hitbox._gfx.visible = entityInsideView;
+				}
 				this._entitiesVisible += +entityInsideView;
 			} else {
 				this._entitiesVisible += +e._pixiSprite.visible;

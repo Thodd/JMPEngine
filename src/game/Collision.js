@@ -53,9 +53,14 @@ export default {
 	 * @param {int} y
 	 */
 	checkAtPosition: function (e1, e2, x, y) {
+		// at least one entity is not collidable so we can quickly mark this check as false
+		if (!e1._hitbox._collidable || !e2._hitbox._collidable) {
+			return false;
+		}
+
 		if (e1._isTilemap && e2._isTilemap) {
 			warn("Two Tilemaps cannot be checked for collision against eachother.", "Collision");
-			return;
+			return false;
 		} else if (e1._isTilemap || e2._isTilemap) {
 			return checkTilemapCollision(e1, e2, x, y);
 		}

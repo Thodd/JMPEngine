@@ -116,6 +116,9 @@ class Player extends Entity {
 					this.swordAttack.nextPosition();
 				},
 				done: () => {
+					// make sure the sword hitbox is not active anymore
+					this.swordAttack.setCollidable(false);
+					// reactivate movement of player
 					this._isAttacking = false;
 					this.playAnimation({name: `idle_${this.dir}`});
 				}

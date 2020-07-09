@@ -53,6 +53,7 @@ class Entity {
 		// the _gfx property holds the @PIXI.Graphics instance which is needed fir debug rendering.
 		this._hitbox = {
 			_gfx: null,
+			_collidable: false,
 			x: 0,
 			y: 0,
 			w: 0,
@@ -108,39 +109,6 @@ class Entity {
 	}
 
 	/**
-	 * Updates the Hitbox dimensions.
-	 *
-	 * Note, concerning debugging:
-	 * If the debug option Entity.RENDER_HITBOX or this.RENDER_HITBOX is set, a PIXI.Graphics object is
-	 * created for rendering the hitbox. Please keep this in mind with respect to render performance.
-	 * @param {object} cfg Hitbox dimensions (x, y, w, h)
-	 */
-	updateHitbox(cfg) {
-		this._hitbox.x = cfg.x || this._hitbox.x;
-		this._hitbox.y = cfg.y || this._hitbox.y;
-		this._hitbox.w = cfg.w || this._hitbox.w;
-		this._hitbox.h = cfg.h || this._hitbox.h;
-
-		let hbColor = this.RENDER_HITBOX || Entity.RENDER_HITBOX;
-		if (hbColor) {
-			// create a hitbox graphics object if needed or clear existing one
-			if (!this._hitbox._gfx) {
-				this._hitbox._gfx = new PIXI.Graphics();
-			} else {
-				this._hitbox._gfx.clear();
-			}
-			// x/y offset
-			this._hitbox._gfx.x = this.x + this._hitbox.x;
-			this._hitbox._gfx.y = this.y + this._hitbox.y;
-			// draw filled rect + border
-			this._hitbox._gfx.beginFill(hbColor, 0.3);
-			this._hitbox._gfx.lineStyle(1, hbColor, 1);
-			this._hitbox._gfx.drawRect(1, 0, this._hitbox.w-1, this._hitbox.h-1);
-			this._hitbox._gfx.endFill();
-		}
-	}
-
-	/**
 	 * Destroys the Entity.
 	 * Entity is safely removed from the world.
 	 * The "removed" hook is always called afterwards.
@@ -170,8 +138,55 @@ class Entity {
 	update() {}
 
 	/**
-	 * Returns if this Entity instance collides with the Entity e
-	 * when this instance is placed at an optional position (x/y).
+	 * Updates the Hitbox dimensions.
+	 *
+	 * Note, concerning debugging:
+	 * If the debug option Entity.RENDER_HITBOX or this.RENDER_HITBOX is set, a PIXI.Graphics object is
+	 * created for rendering the hitbox. Please keep this in mind with respect to render performance.
+	 * @param {object} cfg Hitbox dimensions (x, y, w, h)
+	 */
+	updateHitbox(cfg) {
+		this._hitbox._collidable = true;
+		this._hitbox.x = cfg.x || this._hitbox.x;
+		this._hitbox.y = cfg.y || this._hitbox.y;
+		this._hitbox.w = cfg.w || this._hitbox.w;
+		this._hitbox.h = cfg.h || this._hitbox.h;
+
+		let hbColor = this.RENDER_HITBOX || Entity.RENDER_HITBOX;
+		if (hbColor) {
+			// create a hitbox graphics object if needed or clear existing one
+			if (!this._hitbox._gfx) {
+				this._hitbox._gfx = new PIXI.Graphics();
+			} else {
+				this._hitbox._gfx.clear();
+			}
+			// x/y offset
+			this._hitbox._gfx.x = this.x + this._hitbox.x;
+			this._hitbox._gfx.y = this.y + this._hitbox.y;
+			// draw filled rect + border
+			this._hitbox._gfx.beginFill(hbColor, 0.3);
+			this._hitbox._gfx.lineStyle(1, hbColor, 1);
+			this._hitbox._gfx.drawRect(1, 0, this._hitbox.w-1, this._hitbox.h-1);
+			this._hitbox._gfx.endFill();
+		}
+	}
+
+	/**
+	 * Sets whether the entity shall partake in collision detection based
+	 * on itshitbox definition.
+	 *
+	 * @param {boolean} b whether the entity shall partake in collision detection
+	 */
+	setCollidable(b) {
+		this._hitbox._collidable = b;
+	}
+
+	/**
+	 * Returns if 'this' Entity instance collides with the given Entity 'e'.
+	 * Optionally you can provide a position.
+	 * This entity instance is then virtually placed at this position for a collision check.
+	 * This is helpful if you want to make preemptive collision checks before actually moving
+	 * the entity to the given position.
 	 *
 	 * @param {Entity} e
 	 * @param {Number} [x]
@@ -203,9 +218,13 @@ class Entity {
 	 */
 	collidesWithTypes(types, returnAll=false, x, y) {
 		if (this._screen) {
-			return this._screen._collidesWithType(this, types, returnAll, x || this.x, y || this.y);
+			if (this._hitbox._collidable) {
+				return this._screen._collidesWithType(this, types, returnAll, x || this.x, y || this.y);
+			} else {
+				warn("No collision check performed. Entity is not marked as collidable. Call setCollidable(true).", this);
+			}
 		} else {
-			warn("No collision check performed. The entity is not added to a Screen.");
+			warn("No collision check performed. The entity is not added to a Screen.", this);
 		}
 	}
 

@@ -18,6 +18,8 @@ class SwordAttack extends Entity {
 		});
 
 		this.cfg = {positions: allPositions.down, index: 0};
+
+		this.setCollidable(false);
 	}
 
 	nextPosition() {
@@ -40,6 +42,9 @@ class SwordAttack extends Entity {
 		};
 		this.x = this.player.x + this.cfg.positions[0].x;
 		this.y = this.player.y + this.cfg.positions[0].y;
+
+		// reminder: also enables the debug rendering of the hitbox
+		this.setCollidable(true);
 	}
 }
 

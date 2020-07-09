@@ -11,9 +11,11 @@ import PIXI from "../../../src/core/PIXIWrapper.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import Tile from "../../../src/game/Tile.js";
 
-class WorldScreen extends Screen {
+class BasicScreen extends Screen {
 	constructor() {
 		super();
+
+		Entity.RENDER_HITBOX = 0xFF0000;
 
 		// tilemap
 		let t = new Tilemap({
@@ -45,9 +47,19 @@ class WorldScreen extends Screen {
 		e.isPlayer = true; // debug
 		e.layer = 4;
 
+		e.updateHitbox({
+			x:0, y:0,
+			w: 16, h: 16
+		});
+
 		this.add(e);
 
 		e.update = function () {
+
+			if (this.collidesWithTypes(["enemy", "skull"])) {
+				log("collision!");
+			}
+
 			let s = this.getScreen();
 
 			if (Keyboard.pressed(Keys.SPACE)) {
@@ -93,6 +105,12 @@ class WorldScreen extends Screen {
 		test.x = 20;
 		test.y = 20;
 
+		test.updateHitbox({
+			x:0, y:0,
+			w: 16, h: 16
+		});
+		test.setTypes(["skull"]);
+
 		this.add(test);
 
 
@@ -133,6 +151,13 @@ class WorldScreen extends Screen {
 				id: 0,
 				offset: {x:8, y:8}
 			});
+
+			e.updateHitbox({
+				x:0, y:0,
+				w: 16, h: 16
+			});
+			e.setTypes(["enemy"]);
+
 			//e.autoVisibility = true;
 			e.isDude = true; // debug
 			e.x = Math.max(Math.floor(Math.random() * w) - 16, 16);
@@ -171,4 +196,4 @@ class WorldScreen extends Screen {
 	}
 }
 
-export default WorldScreen;
+export default BasicScreen;
