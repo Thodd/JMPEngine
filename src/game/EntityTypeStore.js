@@ -1,3 +1,10 @@
+/**
+ * Tracks the entities with respect to their types.
+ * Used for fast access during collision detection.
+ * Only one instance per Screen!
+ *
+ * @private
+ */
 class EntityTypeStore {
 	constructor() {
 		this._typeMap = new Map();
@@ -18,10 +25,10 @@ class EntityTypeStore {
 		}
 	}
 
-	remove(e) {
+	remove(e, oldTypes) {
 		// add entity to all type sets
-		if (e._types) {
-			e._types.forEach((t) => {
+		if (oldTypes) {
+			oldTypes.forEach((t) => {
 				let entities = this._typeMap.get(t);
 				if (entities) {
 					entities.delete(e);

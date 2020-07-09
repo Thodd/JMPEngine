@@ -97,10 +97,11 @@ class Entity {
 			fail("${this}: setType() only accepts an array of types strings!");
 		}
 
+		let oldTypes = a._types;
 		this._types = a;
 
 		if (this._screen) {
-			this._screen._updateTypes(this);
+			this._screen._updateTypes(this, oldTypes);
 		}
 	}
 

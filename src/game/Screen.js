@@ -220,8 +220,8 @@ class Screen {
 	 * Updates the given Entitys collision types in the EntityTypeStore.
 	 * @param {Entity} e
 	 */
-	_updateTypes(e) {
-		this._entityTypeStore.remove(e);
+	_updateTypes(e, oldTypes) {
+		this._entityTypeStore.remove(e, oldTypes);
 		this._entityTypeStore.add(e);
 	}
 
