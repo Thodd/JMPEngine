@@ -130,6 +130,7 @@ function _process(fontName, fontDef) {
 		fail(`The spritesheet '${fontDef.spritesheet}' defined for font '${fontName}' does not exist!`, "Fonts");
 	}
 
+
 	// default font object
 	let font = _fonts[fontName] = {
 		name: fontName,

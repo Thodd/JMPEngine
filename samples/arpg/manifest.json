@@ -26,15 +26,15 @@
 				"w": 16,
 				"h": 16
 			},
-			"vfr95_blue": {
-				"url": "./img/vfr95_blue.png",
+			"vfr95_base": {
+				"url": "./img/vfr95_base.png",
 				"w": 8,
 				"h": 8
 			}
 		},
 		"fonts": {
-			"vfr95_blue": {
-				"spritesheet": "vfr95_blue"
+			"vfr95_base": {
+				"spritesheet": "vfr95_base"
 			}
 		}
 	}
