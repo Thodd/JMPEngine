@@ -37,6 +37,7 @@ function process(allSheets, pixiResources) {
 
 			for (let y = 0; y < rows; y++) {
 				for (let x = 0; x < cols; x++) {
+					// calculate the rectangle surrounding a single sprite in the sheet and retrieving a PIXI.Texture for it
 					let frame = new PIXI.Rectangle(x * sheet.w, y * sheet.h, sheet.w, sheet.h);
 					let tex = new PIXI.Texture(sheet.orgTexture, frame);
 					// @PIXI: set the default scale mode to nearest so we have a nice crisp pixel-look :)

@@ -47,7 +47,7 @@ class Entity {
 		};
 
 		// by default we render on layer 0
-		this.layer = 0;
+		this._layer = 0;
 
 		// collision hitbox, by default it's empty so the Entity does not collide with anything
 		// the _gfx property holds the @PIXI.Graphics instance which is needed fir debug rendering.
@@ -90,6 +90,17 @@ class Entity {
 	 */
 	getScreen() {
 		return this._screen;
+	}
+
+	set layer(v) {
+		if (this._screen) {
+			this._screen._changeLayer(this, this._layer, v);
+		}
+		this._layer = v;
+	}
+
+	get layer() {
+		return this._layer;
 	}
 
 	setTypes(a) {

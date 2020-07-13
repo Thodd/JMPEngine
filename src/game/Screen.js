@@ -226,6 +226,25 @@ class Screen {
 	}
 
 	/**
+	 * Changes the layer of the given entity instance from the given old to the new layer.
+	 *
+	 * @param {Entity} e the entity for which the layer will be changed
+	 * @param {integer} oldLayer
+	 * @param {integer} newLayer
+	 */
+	_changeLayer(e, oldLayer, newLayer) {
+		let ol = this._layers[oldLayer];
+		let nl = this._layers[newLayer];
+
+		if (!ol || !nl) {
+			fail(`Layer change from '${oldLayer}' to '${newLayer}' not possible. The game is initialized with layers 0 to ${this._layers.length-1}!`, this);
+		}
+
+		ol.removeChild(e);
+		nl.addChild(e);
+	}
+
+	/**
 	 * Checks if the given Entity collides with any other Entity of the given types.
 	 * @param {Entity} e
 	 * @param {string[]} types
@@ -376,7 +395,7 @@ class Screen {
 			this._entities.push(ea);
 			ea._screen = this;
 
-			// @PIXI: Add entity sprite from the container of the Screen
+			// @PIXI: Add entity sprite from the container of the Screen (in case it was not already added)
 			let layer = this._layers[ea.layer];
 			if (!layer) {
 				fail(`Layer '${ea.layer}' does not exist. The game is initialized with layers 0 to ${this._layers.length-1}!`, this);
