@@ -2,7 +2,7 @@ import Manifest from "../../../src/Manifest.js";
 import Screen from "../../../src/game/Screen.js";
 import GFX from "../../../src/gfx/GFX.js";
 import Buffer from "../../../src/gfx/Buffer.js";
-import Text from "../../../src/gfx/Text.js";
+import BitmapText from "../../../src/gfx/BitmapText.js";
 import Engine from "../../../src/Engine.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";

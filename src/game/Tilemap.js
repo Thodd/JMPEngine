@@ -68,6 +68,21 @@ class Tilemap extends Entity {
 	}
 
 	/**
+	 * Not supported for Tilemaps.
+	 */
+	configSprite() {
+		warn("configSprite is not supported for Tilemaps. Please use 'Tilemap.setTilesheet()'.", "Tilemap");
+	}
+
+	/**
+	 * Not yet implemented.
+	 */
+	setTilesheet() {
+		// TODO: Implement tilesheet change at runtime
+		warn("'setTilesheet()' is not yet implemented.", "Tilemap");
+	}
+
+	/**
 	 * You cannot define a hitbox for a Tilemap.
 	 * Collision is detected on a per tile basis.
 	 */

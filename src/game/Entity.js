@@ -251,7 +251,7 @@ class Entity {
 			offset: {x: 0, y: 0}
 		}, config);
 
-		// Figure out what the new texture should be
+		// Figure out what the new BitmapTexture should be
 		let newTexture;
 
 		if (config.sheet) {

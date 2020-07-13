@@ -1,7 +1,7 @@
 import GFX from "../../../src/gfx/GFX.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
-import Text from "../../../src/gfx/Text.js";
+import BitmapText from "../../../src/gfx/BitmapText.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
@@ -61,9 +61,9 @@ class GameScreen extends Screen {
 
 		// Scoring
 		this.scoringTexts = {
-			points: new Text({text: "0", x: 75, y: 49}),
-			level:  new Text({text: "0", x: 75, y: 89}),
-			lines:  new Text({text: "0", x: 75, y: 129})
+			points: new BitmapText({text: "0", x: 75, y: 49}),
+			level:  new BitmapText({text: "0", x: 75, y: 89}),
+			lines:  new BitmapText({text: "0", x: 75, y: 129})
 		}
 		this.scoringTexts.lines.layer = 4;
 		this.scoringTexts.points.layer = 4;
@@ -319,7 +319,7 @@ class GameScreen extends Screen {
 
 		// GAME OVER! text
 		// Ok, I got a bit lazy here and just hacked this together...
-		let t = new Text({text: "GAME OVER!", x: offX+5, y: offY+5, color: "#FF3333"});
+		let t = new BitmapText({text: "GAME OVER!", x: offX+5, y: offY+5, color: "#FF3333"});
 		t.layer = 5;
 
 		t.sad = true;
@@ -342,7 +342,7 @@ class GameScreen extends Screen {
 		this.add(t);
 
 		// continue text
-		let c = new Text({text: "Press ESC\n  key to\ncontinue!", x: offX+9, y: offY+28, leading: 2, useKerning: true});
+		let c = new BitmapText({text: "Press ESC\n  key to\ncontinue!", x: offX+9, y: offY+28, leading: 2, useKerning: true});
 		c.layer = 5;
 		this.add(c);
 	}

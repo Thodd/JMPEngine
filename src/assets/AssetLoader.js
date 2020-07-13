@@ -4,6 +4,7 @@ import Manifest from "./Manifest.js";
 import PIXI from "../core/PIXIWrapper.js";
 
 import Spritesheets from "./Spritesheets.js";
+import Fonts from "./Fonts.js";
 
 /**
  * Loads all assets defined in the given <code>assetsMap</code>.
@@ -17,7 +18,7 @@ async function load(assetsMap) {
 	if (sheets.length > 0) {
 		let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
 
-		for (var sheetName of sheets) {
+		for (let sheetName of sheets) {
 			loader.add(sheetName, assetsMap.spritesheets[sheetName].url);
 		}
 
@@ -26,6 +27,10 @@ async function load(assetsMap) {
 
 				// process spritesheets
 				Spritesheets.process(assetsMap.spritesheets, resources);
+
+				// process fonts (build char table, kerning, ...)
+				let allFonts = assetsMap.fonts;
+				Fonts.process(allFonts);
 
 				resolve();
 			});

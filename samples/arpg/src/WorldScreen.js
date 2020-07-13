@@ -2,6 +2,7 @@ import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import Helper from "../../../src/utils/Helper.js";
+import BitmapText from "../../../src/gfx/BitmapText.js";
 
 import Constants from "./Constants.js";
 import Player from "./actors/Player.js";
@@ -59,12 +60,13 @@ class WorldScreen extends Screen {
 	}
 
 	addText() {
-		// text sample
+		// background
 		let g = new PIXI.Graphics();
 		g.beginFill(0xfdf0d1);
 		g.drawRect(0, 0, this.width, 16);
 		g.endFill();
 		let e = new Entity();
+		e.active = false; // no update needed
 		e.layer = LAYERS.UI;
 		e.configSprite({
 			replaceWith: g
@@ -72,9 +74,14 @@ class WorldScreen extends Screen {
 
 		this.add(e);
 
-		// let textShadow = new Text({text: "ARPG", x: 4, y: 4, color: "#000000", useKerning: true});
-		// textShadow.layer = 1;
-		// this.add(textShadow);
+		let textShadow = new BitmapText({
+			font: "vfr95_blue",
+			text: `Sample Text`,
+			x: 4,
+			y: 4
+		});
+		textShadow.layer = LAYERS.UI;
+		this.add(textShadow);
 	}
 
 	update() {}

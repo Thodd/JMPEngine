@@ -1,5 +1,5 @@
-import { log } from "../utils/Log.js";
-import ColorTools from "../gfx/ColorTools.js";
+import { log, warn, fail } from "../utils/Log.js";
+import Spritesheets from "./Spritesheets.js";
 
 // supported characters (ASCII order)
 const _chars = ` !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_\`abcdefghijklmnopqrstuvwxyz{|}`;
@@ -102,32 +102,67 @@ Object.assign(DEFAULT_JMP_FONT0.kerning, {
 	"ti": -2,
 
 	"xt": -1,
-})
+});
+
+// map of all available fonts
+const _fonts = {};
 
 /**
- * Creates the Font tileset for the given font.
+ * Processes all fonts defined in the manifest.
+ * @param {object} allFonts the map of all fonts defined in the manifest
  */
-function process(font) {
-	font.chars = {};
+function process(allFonts) {
+	for (let fontName in allFonts) {
+		_process(fontName, allFonts[fontName]);
+	}
+}
 
-	let charOrder = font.charOrder || _chars;
+/**
+ * Creates the character- and kerning-table for the given font
+ */
+function _process(fontName, fontDef) {
 
-	let len = charOrder.length;
+	// get the sheet which is used to render the font
+	let sheet = Spritesheets.getSheet(fontDef.spritesheet);
 
-	for (let x = 0; x < len; x++) {
-		let charCanvas = document.createElement("canvas");
-		charCanvas.width = font.w;
-		charCanvas.height = font.h;
-		let ctx = charCanvas.getContext("2d");
-		ctx.drawImage(font.raw, x * font.w, 0, font.w, font.h, 0, 0, font.w, font.h);
-		// map for the char colors
-		// IMPORTANT: the font file has a couple of empty spaces for additions in the future
-		// these empty spaces will be written to the "undefined" slot of the font.chars map
-		font.chars[charOrder[x]] = {
-			default: charCanvas
+	// sanity check
+	if (!sheet) {
+		fail(`The spritesheet '${fontDef.spritesheet}' defined for font '${fontName}' does not exist!`, "Fonts");
+	}
+
+	// default font object
+	let font = _fonts[fontName] = {
+		name: fontName,
+		w: sheet.w,
+		h: sheet.h,
+		charOrder: fontDef.charOrder || _chars, // default ASCII char order as fallback
+		chars: {},
+		kerning: false,
+		/**
+		 * Convenience function to get the texture for the given char.
+		 * @param {string} c single char
+		 */
+		getChar: function(c) {
+			let char = this.chars[c];
+			if (!char) {
+				warn(`Unknown character ${c} for font ${this.name}. Character 0 will be rendered.`, "Fonts");
+				char = this.chars[0];
+			}
+			return char;
+		}
+	};
+
+
+	// fill the char map based on the given order (or defaulted to ASCII)
+	let len = font.charOrder.length;
+	for (let i = 0; i < len; i++) {
+		let char = font.charOrder[i];
+		font.chars[char] = {
+			texture: sheet.textures[i]
 		};
 	}
-	log(`  > [1] ${font.name}: character splitting`, "Fonts.process");
+
+	log(`  > [1] ${font.name}: character map built`, "Fonts.process");
 
 	// now we process build up the kerning table
 	// we split this per character, so the look-ahead during during rendering can be sped up
@@ -150,30 +185,20 @@ function process(font) {
 			font._kerningTree[c0][c1] = font.kerning[pair];
 		}
 
-		log(`  > [2] ${font.name}: building kerning table`, "Fonts.process");
+		log(`  > [2] ${font.name}: kerning table built`, "Fonts.process");
 	}
 }
 
-/**
- * Gets the given char in the wanted color.
- * The colored char canvas is cached.
- */
-function getChar(font, c, color) {
-	let char = font.chars[c];
-	if (color) {
-		if (!char[color]) {
-			char[color] = ColorTools.colorizeCanvas(char.default, color);
-		}
-		return char[color];
-	} else {
-		// no color tinting given, then we return the default
-		// typically used for already colored fonts
-		return char.default;
+function getFont(name) {
+	let font = _fonts[name];
+	if (!font) {
+		fail(`Font of name '${name}' does not exist!`, "fonts");
 	}
+	return font;
 }
 
 export default {
 	DEFAULT_JMP_FONT0,
 	process,
-	getChar
+	getFont
 };

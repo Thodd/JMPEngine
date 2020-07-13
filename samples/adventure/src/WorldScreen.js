@@ -1,6 +1,6 @@
 import Screen from "../../../src/game/Screen.js";
 import Tilemap from "../../../src/game/Tilemap.js";
-import Text from "../../../src/gfx/Text.js";
+import BitmapText from "../../../src/gfx/BitmapText.js";
 import GFX from "../../../src/gfx/GFX.js";
 import Buffer from "../../../src/gfx/Buffer.js";
 import Helper from "../../../src/utils/Helper.js";
@@ -30,11 +30,11 @@ class WorldScreen extends Screen {
 		this.add(tm);
 
 		// text sample
-		let textShadow = new Text({text: "JMP Adventure", x: 1, y: 122, color: "#000000", useKerning: true});
+		let textShadow = new BitmapText({text: "JMP Adventure", x: 1, y: 122, color: "#000000", useKerning: true});
 		textShadow.layer = 3;
 		this.add(textShadow);
 
-		let textColored = new Text({text: "JMP Adventure", x: 0, y: 121, color: "#FFFFFF", useKerning: true});
+		let textColored = new BitmapText({text: "JMP Adventure", x: 0, y: 121, color: "#FFFFFF", useKerning: true});
 		textColored.layer = 3;
 		this.add(textColored);
 	}

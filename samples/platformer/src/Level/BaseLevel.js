@@ -1,7 +1,7 @@
 import Screen from "../../../../src/game/Screen.js";
 import Entity from "../../../../src/game/Entity.js";
 import Tilemap from "../../../../src/game/Tilemap.js";
-import Text from "../../../../src/gfx/Text.js";
+import BitmapText from "../../../../src/gfx/BitmapText.js";
 import RNG from "../../../../src/utils/RNG.js";
 import Helper from "../../../../src/utils/Helper.js";
 import Player from "../Actors/Player.js";
@@ -94,11 +94,11 @@ class BaseLevel extends Screen {
 		this.cam.x = player.x - 70;
 
 		// text demo
-		let textBG = new Text({text: "Platformer Demo", x: 2, y: 2, color: "#000000", useKerning: true});
+		let textBG = new BitmapText({text: "Platformer Demo", x: 2, y: 2, color: "#000000", useKerning: true});
 		textBG.layer = 3;
 		this.add(textBG);
 
-		let textFG = new Text({text: "Platformer Demo", x: 1, y: 1, useKerning: true});
+		let textFG = new BitmapText({text: "Platformer Demo", x: 1, y: 1, useKerning: true});
 		textFG.layer = 3;
 		this.add(textFG);
 	}

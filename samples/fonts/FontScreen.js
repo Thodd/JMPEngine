@@ -1,7 +1,7 @@
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import GFX from "../../../src/gfx/GFX.js";
-import Text from "../../src/gfx/Text.js";
+import BitmapText from "../../src/gfx/BitmapText.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class FontScreen extends Screen {
@@ -58,10 +58,10 @@ It supports kerning.
 The sample is rendered
 with a 'leading' of 2.`;
 
-		let multilineTextShadow = new Text({text: multilineMessage, x: 6, y: 61, color: "#000000", leading: 2, useKerning: true});
+		let multilineTextShadow = new BitmapText({text: multilineMessage, x: 6, y: 61, color: "#000000", leading: 2, useKerning: true});
 		this.add(multilineTextShadow);
 
-		let multilineTextColored = new Text({text: multilineMessage, x: 5, y: 60, color: "#FF0085", leading: 2, useKerning: true});
+		let multilineTextColored = new BitmapText({text: multilineMessage, x: 5, y: 60, color: "#FF0085", leading: 2, useKerning: true});
 		this.add(multilineTextColored);
 
 
@@ -80,7 +80,7 @@ This is usefull
 if you want to use
 non-ASCII symbols.
 `;
-		let customFont = new Text({font: "vfr95_outline", text: customMsg, x: 5, y: 115, color: "#FF8500", leading: 2});
+		let customFont = new BitmapText({font: "vfr95_outline", text: customMsg, x: 5, y: 115, color: "#FF8500", leading: 2});
 		this.add(customFont);
 
 		/**
@@ -92,7 +92,7 @@ is a kerning & leading
 test.
 Rendering longer texts
 will take some time when
-instantiating a new Text
+instantiating a new BitmapText
 Entity.
 The rendertime during a
 single frame however
@@ -111,10 +111,10 @@ abcdefghijklm
 nopqrstuvwxyz
 {|}
 `
-		let loremFontShadow = new Text({text: lorem, x: 165, y: 8, color: "#000000", leading: 2, useKerning: true});
+		let loremFontShadow = new BitmapText({text: lorem, x: 165, y: 8, color: "#000000", leading: 2, useKerning: true});
 		this.add(loremFontShadow);
 
-		let loremFontColor = new Text({text: lorem, x: 164, y: 7, leading: 2, useKerning: true});
+		let loremFontColor = new BitmapText({text: lorem, x: 164, y: 7, leading: 2, useKerning: true});
 		this.add(loremFontColor);
 	}
 

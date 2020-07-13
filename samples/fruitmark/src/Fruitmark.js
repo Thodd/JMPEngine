@@ -7,7 +7,7 @@ import GFX from "../../../src/gfx/GFX.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import Engine from "../../../src/Engine.js";
-import Text from "../../../src/gfx/Text.js";
+import BitmapText from "../../../src/gfx/BitmapText.js";
 
 import Scope from "./Scope.js";
 
@@ -66,7 +66,7 @@ class Fruitmark extends Screen {
 			this.add(new Fruit({}));
 		}
 
-		let helpText = new Text({
+		let helpText = new BitmapText({
 			x: 2,
 			y: 2,
 			text: "Press 'ESC' to go back",
@@ -76,7 +76,7 @@ class Fruitmark extends Screen {
 		helpText.layer = 2;
 		this.add(helpText);
 
-		let infoText = new Text({
+		let infoText = new BitmapText({
 			x: 2,
 			y: screenHeight - 9,
 			text: `Entities: ${entityCount}`,

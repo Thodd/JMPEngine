@@ -45,7 +45,6 @@ function process(allSheets, pixiResources) {
 					sheet.textures.push(tex);
 				}
 			}
-
 		}
 
 		log(`  > done: ${sheet.name}`, "Spritesheets.process");
