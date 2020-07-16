@@ -5,17 +5,73 @@ import Keys from "../../../src/input/Keys.js";
 import Spritesheets from "../../../src/assets/Spritesheets.js";
 import { log } from "../../../src/utils/Log.js";
 import Helper from "../../../src/utils/Helper.js";
+import BitmapText from "../../../src/gfx/BitmapText.js";
 
 import PIXI from "../../../src/core/PIXIWrapper.js";
 
 import Tilemap from "../../../src/game/Tilemap.js";
 import Tile from "../../../src/game/Tile.js";
+import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class BasicScreen extends Screen {
 	constructor() {
 		super();
 
-		Entity.RENDER_HITBOX = 0xFF0000;
+		// Text + animation
+		let animatedText = new BitmapText({
+			font: "vfr95_blue",
+			text: "Cool! Animated BitmapText..."
+		});
+		animatedText.layer = 3;
+
+		animatedText.col = 0;
+		animatedText.count = 0;
+		animatedText.step = 0.1;
+
+		// we delay the color changing for 4 frames,
+		// otherwise the rainbow effect is too fast to appreciate ;)
+		// 60 color changes per second is pretty fast for the human eye...
+		let animationDelay = new FrameCounter(4);
+
+		animatedText.update = function() {
+			// rotate a character just for fun
+			// let char1 = this.getSpriteForChar(1);
+			// char1.anchor.set(0.5);
+			// char1.x = 12;
+			// char1.y = 4;
+			// char1.rotation += 0.1;
+
+			// sine wace animation
+			for (let i = 0; i < this._text.length; i++) {
+				let char = this.getSpriteForChar(i);
+
+				// black shadow ("#000000")
+				char.x = 4 + (i * 8);
+				char.y = -26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count);
+			}
+			this.count += this.step;
+
+			if (animationDelay.isReady()) {
+				this.col++;
+			}
+		};
+
+		this.add(animatedText);
+
+
+
+		// static text
+		let staticText = new BitmapText({
+			x: 0,
+			y: -8,
+			font: "vfr95_blue",
+			text: "Press ALT to toggle char layer"
+		});
+		staticText.layer = 3;
+
+		this.add(staticText);
+
+
 
 		// tilemap
 		let t = new Tilemap({
@@ -46,6 +102,7 @@ class BasicScreen extends Screen {
 		});
 		e.isPlayer = true; // debug
 		e.layer = 4;
+		e.RENDER_HITBOX = 0xFF0000;
 
 		e.updateHitbox({
 			x:0, y:0,
@@ -56,7 +113,7 @@ class BasicScreen extends Screen {
 
 		e.update = function () {
 
-			if (this.collidesWithTypes(["enemy", "skull"])) {
+			if (this.collidesWithTypes(["skull"])) {
 				log("collision!");
 			}
 
@@ -64,6 +121,10 @@ class BasicScreen extends Screen {
 
 			if (Keyboard.pressed(Keys.SPACE)) {
 				log(`x: ${s.cam.x}, y: ${s.cam.y}`);
+			}
+
+			if (Keyboard.pressed(Keys.ALT)) {
+				this.layer = this.layer == 4 ? 0 : 4;
 			}
 
 			if (Keyboard.down(Keys.DOWN)) {
@@ -98,6 +159,7 @@ class BasicScreen extends Screen {
 		let test = new Entity();
 		test.layer = 3;
 		test.isCanvasTest = true; // debug
+		test.RENDER_HITBOX = 0xFF0000;
 		test.configSprite({
 			texture: PIXI.Texture.from(c)
 		});

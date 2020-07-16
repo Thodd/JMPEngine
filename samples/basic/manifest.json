@@ -25,6 +25,16 @@
 				"url": "./img/tileset16.png",
 				"w": 16,
 				"h": 16
+			},
+			"vfr95_blue": {
+				"url": "./img/vfr95_blue.png",
+				"w": 8,
+				"h": 8
+			}
+		},
+		"fonts": {
+			"vfr95_blue": {
+				"spritesheet": "vfr95_blue"
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import Fonts from "../assets/Fonts.js";
 import PIXI from "../core/PIXIWrapper.js";
 
 class Text extends Entity {
-	constructor({text, x, y, font="font0", color="#FFFFFF", leading=0, kerning=false}) {
+	constructor({text, x, y, font="font0", color=null, leading=0, kerning=false}) {
 		super(x, y);
 		this._text = null;
 		this.leading = leading;
@@ -98,7 +98,7 @@ class Text extends Entity {
 					charSprite.texture = charDef.texture;
 
 					// @PIXI: Tint the char if a global color was set
-					if (this._color != undefined) {
+					if (this._color != null) {
 						charSprite.tint = this._color;
 					}
 
@@ -113,6 +113,10 @@ class Text extends Entity {
 
 			}
 		}
+	}
+
+	getText() {
+		return this._text;
 	}
 
 	/**

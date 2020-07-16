@@ -94,7 +94,7 @@ class Entity {
 
 	set layer(v) {
 		if (this._screen) {
-			this._screen._changeLayer(this, this._layer, v);
+			this._screen._changeLayer(this, v);
 		}
 		this._layer = v;
 	}

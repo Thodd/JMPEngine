@@ -229,19 +229,16 @@ class Screen {
 	 * Changes the layer of the given entity instance from the given old to the new layer.
 	 *
 	 * @param {Entity} e the entity for which the layer will be changed
-	 * @param {integer} oldLayer
 	 * @param {integer} newLayer
 	 */
-	_changeLayer(e, oldLayer, newLayer) {
-		let ol = this._layers[oldLayer];
+	_changeLayer(e, newLayer) {
 		let nl = this._layers[newLayer];
 
-		if (!ol || !nl) {
-			fail(`Layer change from '${oldLayer}' to '${newLayer}' not possible. The game is initialized with layers 0 to ${this._layers.length-1}!`, this);
+		if (!nl) {
+			fail(`Layer change to '${newLayer}' not possible. The game is initialized with layers 0 to ${this._layers.length-1}!`, this);
 		}
 
-		ol.removeChild(e);
-		nl.addChild(e);
+		nl.addChild(e._pixiSprite);
 	}
 
 	/**
