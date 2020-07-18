@@ -16,10 +16,10 @@ async function load(assetsMap) {
 	let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
 
 	// json data
-	let json = Object.keys(assetsMap.json);
+	let json = Object.keys(assetsMap.json || {});
 
 	// sheets
-	let sheets = Object.keys(assetsMap.spritesheets);
+	let sheets = Object.keys(assetsMap.spritesheets || {});
 
 	if (sheets.length > 0) {
 

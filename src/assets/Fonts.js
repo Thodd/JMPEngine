@@ -111,7 +111,7 @@ const _fonts = {};
  * Processes all fonts defined in the manifest.
  * @param {object} allFonts the map of all fonts defined in the manifest
  */
-function process(allFonts) {
+function process(allFonts={}, pixiResources) {
 	for (let fontName in allFonts) {
 		_process(fontName, allFonts[fontName]);
 	}
