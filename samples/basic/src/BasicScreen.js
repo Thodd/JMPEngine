@@ -64,7 +64,7 @@ class BasicScreen extends Screen {
 		let staticText = new BitmapText({
 			x: 0,
 			y: -8,
-			font: "vfr95_blue",
+			font: "font0",
 			text: "Press ALT to toggle char layer"
 		});
 		staticText.layer = 3;

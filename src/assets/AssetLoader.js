@@ -13,10 +13,19 @@ import Fonts from "./Fonts.js";
  */
 async function load(assetsMap) {
 
+	let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
+
+	// json data
+	let json = Object.keys(assetsMap.json);
+
+	// sheets
 	let sheets = Object.keys(assetsMap.spritesheets);
 
 	if (sheets.length > 0) {
-		let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
+
+		for (let jsonName of json) {
+			loader.add(jsonName, assetsMap.json[jsonName].url);
+		}
 
 		for (let sheetName of sheets) {
 			loader.add(sheetName, assetsMap.spritesheets[sheetName].url);
@@ -29,8 +38,7 @@ async function load(assetsMap) {
 				Spritesheets.process(assetsMap.spritesheets, resources);
 
 				// process fonts (build char table, kerning, ...)
-				let allFonts = assetsMap.fonts;
-				Fonts.process(allFonts);
+				Fonts.process(assetsMap.fonts, resources);
 
 				resolve();
 			});

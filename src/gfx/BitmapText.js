@@ -46,6 +46,7 @@ class Text extends Entity {
 
 	/**
 	 * Set the text of this BitmapText entity and additionally creates PIXI.Sprite instances if needed.
+	 * If kerning is activated all characters are positions based on the kerning table of the font.
 	 * @param {string} text
 	 */
 	setText(text) {
