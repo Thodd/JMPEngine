@@ -1,7 +1,7 @@
 {
-	"title": "Basic",
+	"title": "KitchenSink",
 
-	"startScreen": "./src/BasicScreen.js",
+	"startScreen": "./src/KitchenSink.js",
 
 	"w": 224,
 	"h": 192,
@@ -15,6 +15,7 @@
 	"skipIntro": true,
 
 	"assets": {
+
 		"spritesheets": {
 			"player": {
 				"url": "./img/player.png",
@@ -30,26 +31,17 @@
 				"url": "./fnt/vfr95_blue.png",
 				"w": 8,
 				"h": 8
-			},
-			"font0": {
-				"url": "./fnt/font0.png",
-				"w": 8,
-				"h": 8
 			}
 		},
-		"json": {
-			"font0_kerning": {
-				"url": "./fnt/font0.json"
-			}
-		},
+
 		"fonts": {
 			"vfr95_blue": {
 				"spritesheet": "vfr95_blue"
 			},
 			"font0": {
-				"spritesheet": "font0",
-				"fontdata": "font0_kerning"
+				"url": "./fnt/font0.json"
 			}
 		}
+
 	}
 }

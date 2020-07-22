@@ -7,7 +7,7 @@ import PIXI from "../core/PIXIWrapper.js";
 const DEFAULTS = {
 	w: 160,
 	h: 144,
-	scale: 2,
+	scale: 1,
 	layers: 7,
 	fps: 60,
 	startScreen: null,
@@ -79,7 +79,8 @@ function assignDefaults() {
 	_manifestObject = Object.assign(DEFAULTS, _manifestObject);
 	_manifestObject.assets = Object.assign({
 		spritesheets: {},
-		fonts: {}
+		fonts: {},
+		json: {}
 	}, _manifestObject.assets);
 }
 

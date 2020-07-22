@@ -13,14 +13,14 @@ import Tilemap from "../../../src/game/Tilemap.js";
 import Tile from "../../../src/game/Tile.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
-class BasicScreen extends Screen {
+class KitchenSink extends Screen {
 	constructor() {
 		super();
 
 		// Text + animation
 		let animatedText = new BitmapText({
 			font: "vfr95_blue",
-			text: "Cool! Animated BitmapText..."
+			text: "KitchenSink! Animated BitmapText..."
 		});
 		animatedText.layer = 3;
 
@@ -206,7 +206,7 @@ class BasicScreen extends Screen {
 		let w = this.getWidth();
 		let h = this.getHeight();
 
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 2; i++) {
 			let e = new Entity();
 			e.configSprite({
 				sheet: "player",
@@ -258,4 +258,4 @@ class BasicScreen extends Screen {
 	}
 }
 
-export default BasicScreen;
+export default KitchenSink;

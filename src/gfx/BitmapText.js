@@ -125,6 +125,14 @@ class Text extends Entity {
 	 * in the set text.
 	 *
 	 * Note: excluding line-breaks (\n\r) or (\n).
+	 *
+	 * <b>IMPORTANT</b>:
+	 * Don't change the parent/PIXI.Container of this PIXI.Sprite!
+	 * It will be reused for ALL texts which are set to this BitmapText entity.
+	 *
+	 * PS: I trust you on this!
+	 * PSS: I'll know if you mess this up! And then I'll be disappointed >:|
+	 *
 	 * @param {integer} i the index in the set text
 	 */
 	getSpriteForChar(i) {
@@ -133,6 +141,20 @@ class Text extends Entity {
 		}
 
 		return this._spritePool[i];
+	}
+
+	/**
+	 * Returns the list of all PIXI.Sprites used to render the currently set text.
+	 *
+	 * <b>IMPORTANT</b>:
+	 * Don't change the parent/PIXI.Container of these PIXI.Sprite(s)!
+	 * They will be reused for ALL texts which are set to this BitmapText entity.
+	 *
+	 * PS: I trust you on this!
+	 * PSS: I'll know if you mess this up! And then I'll be disappointed >:|
+	 */
+	getAllCharSprites() {
+		return this._spritePool.slice(0, this._maxChars);
 	}
 
 	/**

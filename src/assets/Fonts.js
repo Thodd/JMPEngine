@@ -113,7 +113,13 @@ const _fonts = {};
  */
 function process(allFonts={}, pixiResources) {
 	for (let fontName in allFonts) {
-		_process(fontName, allFonts[fontName]);
+		let fontDef = allFonts[fontName];
+
+		// // check for font data given via json file
+		// if (fontDef.fontdata) {
+		// 	let fontData =
+		// }
+		_process(fontName, fontDef);
 	}
 }
 

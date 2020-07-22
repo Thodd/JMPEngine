@@ -6,9 +6,6 @@ import Keyboard from "../input/Keyboard.js";
 import Screen from "../game/Screen.js";
 import IntroScreen from "../game/intro/IntroScreen.js";
 
-// @Stats: Simple performance tracking
-import Stats from "../../libs/stats.module.js";
-
 // @PIXI include PIXI.js
 import { getPixiApp } from "./PIXIWrapper.js";
 
@@ -25,12 +22,21 @@ let nextScreen = null;
 // timing
 let last;
 
+// debug flag
+let _debugMode = false;
+
 // performance stats
-var stats;
-function setupStats() {
-	stats = new Stats();
-	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-	document.getElementById("__debugUI_stats").appendChild( stats.dom );
+let stats;
+async function setupStats() {
+	if (_debugMode) {
+		// @Stats: Simple performance tracking
+		let StatsModule = await import("../../libs/stats.module.js");
+		stats = new StatsModule.default();
+		stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		document.getElementById("__debugUI_stats").appendChild( stats.dom );
+	} else {
+		return Promise.resolve();
+	}
 }
 
 /**
@@ -41,7 +47,12 @@ function setupStats() {
  * 3. Switching Screens and calling lifecycle Hooks
  */
 const gameloop = () => {
-	stats.begin();
+	// start perf trace
+	if (_debugMode) {
+		stats.begin();
+	}
+
+
 	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
 	if (nextScreen) {
 		// end old screen
@@ -68,7 +79,12 @@ const gameloop = () => {
 
 		resetKeyboard();
 	}
-	stats.end();
+
+
+	// end perf trace
+	if (_debugMode) {
+		stats.end();
+	}
 };
 
 /**
@@ -166,8 +182,7 @@ function setupCSS(containerID) {
  * Setup debug UI if debug flag is set
  */
 function setupDebugUI() {
-	let up = new URLSearchParams(window.location.search);
-	if (up.get("debug")) {
+	if (_debugMode) {
 		let dbg = document.createElement("div");
 		dbg.id = "__debugUI";
 		dbg.innerHTML = "<div id='__debugUI_stats'></div>";
@@ -245,6 +260,10 @@ const Engine = {
 		log("Starting Engine. Waiting for DOM ...", "Engine");
 		await domReady();
 
+		// url params for debugging
+		let urlParams = new URLSearchParams(window.location.search);
+		_debugMode = urlParams.get("debug");
+
 		// retrieve manifest
 		await Manifest.init(manifest);
 
@@ -260,7 +279,7 @@ const Engine = {
 		initDOM(placeAt);
 
 		// performance
-		setupStats();
+		await setupStats();
 
 		// input handlint
 		resetKeyboard = Keyboard.init();
