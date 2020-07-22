@@ -20,7 +20,7 @@ class KitchenSink extends Screen {
 		// Text + animation
 		let animatedText = new BitmapText({
 			font: "vfr95_blue",
-			text: "KitchenSink! Animated BitmapText..."
+			text: "Cool! Animated BitmapText..."
 		});
 		animatedText.layer = 3;
 
@@ -46,7 +46,7 @@ class KitchenSink extends Screen {
 				let char = this.getSpriteForChar(i);
 
 				// black shadow ("#000000")
-				char.x = 4 + (i * 8);
+				char.x = 0 + (i * 8);
 				char.y = -26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count);
 			}
 			this.count += this.step;
@@ -91,7 +91,7 @@ class KitchenSink extends Screen {
 
 
 		// entity with input handling e.g. player
-		let e = new Entity();
+		let e = new Entity(112, 20);
 		e.configSprite({
 			sheet: "player",
 			id: 0,
