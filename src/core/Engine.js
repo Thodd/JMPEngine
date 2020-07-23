@@ -34,8 +34,6 @@ async function setupStats() {
 		stats = new StatsModule.default();
 		stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 		document.getElementById("__debugUI_stats").appendChild( stats.dom );
-	} else {
-		return Promise.resolve();
 	}
 }
 

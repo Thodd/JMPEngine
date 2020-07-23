@@ -82,21 +82,53 @@ class Text extends Entity {
 				spr.visible = false;
 			}
 
-			// set characters line by line
+			// positioning and kerning values
+			let font = this._font;
+			let kerningTree = font._kerningTree;
 			let nextSprite = 0;
-			let yOff = 0;
+			let yOffset = 0;
 
+			// iterate all lines
 			for (let i = 0; i < lines.length; i++) {
-				let line = lines[i];
 
-				for (let x = 0; x < line.length; x++) {
+				let line = lines[i];
+				let lineLength = line.length;
+
+				let kerningValueAcc = 0;
+				let x = 0;
+				let shift = 0;
+
+				// loop through all characters per line
+				while (x < lineLength) {
 					let char = line[x];
-					let charDef = this._font.getChar(char);
+					let charDef = font.getChar(char);
 					let charSprite = this._spritePool[nextSprite];
 
-					charSprite.x = x * this._font.w;
-					charSprite.y = yOff;
+					// set characters
+					charSprite.x = shift + kerningValueAcc;
+					charSprite.y = yOffset;
 					charSprite.texture = charDef.texture;
+
+					// kerning lookahead for next character
+					if (kerningTree) {
+						let lookahead = line[x+1];
+						if (lookahead != null) {
+							if ((kerningTree[char] && kerningTree[char][lookahead] != null)) {
+								kerningValueAcc += kerningTree[char][lookahead];
+							} else {
+								// fallback if there is no kerning pair defined
+								kerningValueAcc += kerningTree["default"] || 0;
+							}
+						}
+					}
+
+					// apply spacing value if defined
+					if (kerningTree && char == " ") {
+						shift += kerningTree["spacing"] || font.w;
+					} else {
+						// default character shift for monospaced fonts
+						shift += font.w;
+					}
 
 					// @PIXI: Tint the char if a global color was set
 					if (this._color != null) {
@@ -108,9 +140,13 @@ class Text extends Entity {
 
 					// keep track of the used sprites from the pool
 					nextSprite++;
+
+					// next character in line
+					x++;
 				}
 
-				yOff += (this._font.h + this.leading);
+				// shift next line down (and additionally space it by the given leading amount)
+				yOffset += (font.h + this.leading);
 
 			}
 		}

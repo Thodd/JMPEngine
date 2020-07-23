@@ -111,14 +111,9 @@ const _fonts = {};
  * Processes all fonts defined in the manifest.
  * @param {object} allFonts the map of all fonts defined in the manifest
  */
-function process(allFonts={}, pixiResources) {
+function process(allFonts={}) {
 	for (let fontName in allFonts) {
 		let fontDef = allFonts[fontName];
-
-		// // check for font data given via json file
-		// if (fontDef.fontdata) {
-		// 	let fontData =
-		// }
 		_process(fontName, fontDef);
 	}
 }
@@ -140,11 +135,12 @@ function _process(fontName, fontDef) {
 	// default font object
 	let font = _fonts[fontName] = {
 		name: fontName,
-		w: sheet.w,
-		h: sheet.h,
+		w: fontDef.w || sheet.w,
+		h: fontDef.h || sheet.h,
 		charOrder: fontDef.charOrder || _chars, // default ASCII char order as fallback
 		chars: {},
-		kerning: false,
+		kerning: fontDef.kerning,
+		_kerningTree: null,
 		/**
 		 * Convenience function to get the texture for the given char.
 		 * @param {string} c single char
@@ -169,7 +165,7 @@ function _process(fontName, fontDef) {
 		};
 	}
 
-	log(`  > [1] ${font.name}: character map built`, "Fonts.process");
+	log(`  > [1] ${font.name}: character map built.`, "Fonts.process");
 
 	// now we process build up the kerning table
 	// we split this per character, so the look-ahead during during rendering can be sped up
@@ -179,9 +175,11 @@ function _process(fontName, fontDef) {
 
 		for (let pair in font.kerning) {
 
-			// special handling of spacing for fonts with kerning is handled
-			if (pair == "spacing") {
-				font._kerningTree["spacing"] = font.kerning[pair];
+			// fonts can define:
+			// 1. a spacing value
+			// 2. a default kerning value
+			if (pair == "spacing" || pair == "default") {
+				font._kerningTree[pair] = font.kerning[pair];
 				continue;
 			}
 
@@ -192,7 +190,9 @@ function _process(fontName, fontDef) {
 			font._kerningTree[c0][c1] = font.kerning[pair];
 		}
 
-		log(`  > [2] ${font.name}: kerning table built`, "Fonts.process");
+		log(`  > [2] ${font.name}: kerning table built.`, "Fonts.process");
+	} else {
+		log(`  > [2] ${font.name}: no kerning table defined. Font is monospaced: ${font.h}x${font.w}.`, "Fonts.process");
 	}
 }
 
