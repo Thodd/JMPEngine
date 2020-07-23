@@ -2,7 +2,7 @@ import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import Helper from "../../../src/utils/Helper.js";
-import BitmapText from "../../../src/gfx/BitmapText.js";
+import BitmapText from "../../../src/game/BitmapText.js";
 
 import Constants from "./Constants.js";
 import Player from "./actors/Player.js";

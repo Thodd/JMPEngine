@@ -5,11 +5,10 @@ import Fonts from "../assets/Fonts.js";
 import PIXI from "../core/PIXIWrapper.js";
 
 class Text extends Entity {
-	constructor({text, x, y, font="font0", color=null, leading=0, kerning=false}) {
+	constructor({text, x, y, font="font0", color=null, leading=0}) {
 		super(x, y);
 		this._text = null;
 		this.leading = leading;
-		this.kerning = kerning;
 
 		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn't be much of an issue
 		this._pixiSprite.destroy();
@@ -82,9 +81,11 @@ class Text extends Entity {
 				spr.visible = false;
 			}
 
-			// positioning and kerning values
+			// shorthand vars
 			let font = this._font;
 			let kerningTree = font._kerningTree;
+
+			// loop var
 			let nextSprite = 0;
 			let yOffset = 0;
 

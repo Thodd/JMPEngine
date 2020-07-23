@@ -5,7 +5,7 @@ import Keys from "../../../src/input/Keys.js";
 import Spritesheets from "../../../src/assets/Spritesheets.js";
 import { log } from "../../../src/utils/Log.js";
 import Helper from "../../../src/utils/Helper.js";
-import BitmapText from "../../../src/gfx/BitmapText.js";
+import BitmapText from "../../../src/game/BitmapText.js";
 
 import PIXI from "../../../src/core/PIXIWrapper.js";
 
@@ -34,14 +34,7 @@ class KitchenSink extends Screen {
 		let animationDelay = new FrameCounter(4);
 
 		animatedText.update = function() {
-			// rotate a character just for fun
-			// let char1 = this.getSpriteForChar(1);
-			// char1.anchor.set(0.5);
-			// char1.x = 12;
-			// char1.y = 4;
-			// char1.rotation += 0.1;
-
-			// sine wace animation
+			// sine wave animation
 			for (let i = 0; i < this._text.length; i++) {
 				let char = this.getSpriteForChar(i);
 

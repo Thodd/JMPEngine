@@ -1,7 +1,7 @@
 import { log, warn, fail } from "../utils/Log.js";
 import Spritesheets from "./Spritesheets.js";
 
-// supported characters (ASCII order)
+// default characters (ASCII order)
 const _chars = ` !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_\`abcdefghijklmnopqrstuvwxyz{|}`;
 
 // Default Font

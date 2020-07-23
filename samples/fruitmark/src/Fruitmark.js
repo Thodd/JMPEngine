@@ -7,7 +7,7 @@ import GFX from "../../../src/gfx/GFX.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import Engine from "../../../src/Engine.js";
-import BitmapText from "../../../src/gfx/BitmapText.js";
+import BitmapText from "../../../src/game/BitmapText.js";
 
 import Scope from "./Scope.js";
 

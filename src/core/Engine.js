@@ -1,5 +1,5 @@
 import domReady from "../utils/domReady.js";
-import { log, fail } from "../utils/Log.js";
+import { log, error, fail } from "../utils/Log.js";
 import Manifest from "../assets/Manifest.js";
 import AssetLoader from "../assets/AssetLoader.js";
 import Keyboard from "../input/Keyboard.js";
@@ -7,7 +7,7 @@ import Screen from "../game/Screen.js";
 import IntroScreen from "../game/intro/IntroScreen.js";
 
 // @PIXI include PIXI.js
-import { getPixiApp } from "./PIXIWrapper.js";
+import { detectPIXI, getPixiApp } from "./PIXIWrapper.js";
 
 let pixiApp;
 
@@ -128,7 +128,7 @@ function initDOM(containerID) {
 	}
 
 	if (!containerDOM) {
-		fail("Container DOM ID is not valid!", "GFX");
+		fail("Container DOM ID is not valid!", "Engine");
 	}
 
 	// @PIXI: add view to the container DOM
@@ -173,7 +173,7 @@ function setupCSS(containerID) {
 
 	head.appendChild(style);
 
-	log("CSS created.", "GFX");
+	log("CSS created.", "Engine");
 }
 
 /**
@@ -257,6 +257,13 @@ const Engine = {
 	async start({ placeAt, manifest }) {
 		log("Starting Engine. Waiting for DOM ...", "Engine");
 		await domReady();
+
+		// if PIXI is not globally available we can't proceed :(
+		log("Detecting PIXI.js ...", "Engine");
+		if (!detectPIXI()) {
+			error("Aborted.", "Engine");
+			return;
+		}
 
 		// url params for debugging
 		let urlParams = new URLSearchParams(window.location.search);

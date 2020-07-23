@@ -1,44 +1,39 @@
 import Screen from "../../../src/game/Screen.js";
-import Entity from "../../../src/game/Entity.js";
-import GFX from "../../../src/gfx/GFX.js";
-import BitmapText from "../../src/gfx/BitmapText.js";
+import BitmapText from "../../src/game/BitmapText.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class FontScreen extends Screen {
 	constructor() {
 		super();
 
-		/**
-		 * Low-Level Text Rendering Demo
-		 */
+		// sample palette from: https://colorhunt.co/palette/196113
+		let palette = [0x0c3d5e,0x0f4c75,0x3282b8,0xbbe1fa,0xffffff,0xbbe1fa,0x3282b8,0x0f4c75,0x0c3d5e];
 
-		// create a new Entity which will use the low-level text API to render an animated colored text
-		let animatedText = new Entity();
+		// Text + animation
+		let animatedText = new BitmapText({
+			font: "vfr95_outline",
+			text: "!! Animated Text !!"
+		});
+
 		animatedText.col = 0;
 		animatedText.count = 0;
 		animatedText.step = 0.1;
-		animatedText.msg = ">JMP Text Render Demo<";
 
 		// we delay the color changing for 4 frames,
 		// otherwise the rainbow effect is too fast to appreciate ;)
 		// 60 color changes per second is pretty fast for the human eye...
 		let animationDelay = new FrameCounter(4);
 
-		// We define a custom render function on the Entity
-		// so we can use the low-level GFX API to render a pixel-perfect
-		// colored and animated Text
-		//GFX.getBuffer(0).setRenderMode(GFX.RenderModes.RAW);
-		//GFX.getBuffer(1).setRenderMode(GFX.RenderModes.RAW);
-
-		animatedText.render = function() {
-			for (let i = 0; i < this.msg.length; i++) {
-				let char = this.msg[i];
+		animatedText.update = function() {
+			// sine wave animation
+			for (let i = 0; i < this._text.length; i++) {
+				let char = this.getSpriteForChar(i);
 
 				// black shadow ("#000000")
-				GFX.get(1).text("font0", 4 + (i * 7), 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, "#000000");
+				char.x = 4 + (i * 8);
+				char.y = 26 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count);
 
-				// colored text using predefined color palette
-				GFX.get(1).text("font0", 3 + (i * 7), 25 + Math.cos(i/3 + this.count) * Math.max(0, 20 - this.count), char, GFX.pal((this.col + i) % 15));
+				char.tint = palette[(this.col + i) % (palette.length)];
 			}
 			this.count += this.step;
 
@@ -46,6 +41,7 @@ class FontScreen extends Screen {
 				this.col++;
 			}
 		};
+
 		this.add(animatedText);
 
 
@@ -58,10 +54,7 @@ It supports kerning.
 The sample is rendered
 with a 'leading' of 2.`;
 
-		let multilineTextShadow = new BitmapText({text: multilineMessage, x: 6, y: 61, color: "#000000", leading: 2, useKerning: true});
-		this.add(multilineTextShadow);
-
-		let multilineTextColored = new BitmapText({text: multilineMessage, x: 5, y: 60, color: "#FF0085", leading: 2, useKerning: true});
+		let multilineTextColored = new BitmapText({text: multilineMessage, x: 5, y: 60, color: 0xFF0085, leading: 2});
 		this.add(multilineTextColored);
 
 
@@ -76,11 +69,11 @@ and monospaced.
 A custom font is
 not required to
 use ASCII ordering.
-This is usefull
+This is useful
 if you want to use
 non-ASCII symbols.
 `;
-		let customFont = new BitmapText({font: "vfr95_outline", text: customMsg, x: 5, y: 115, color: "#FF8500", leading: 2});
+		let customFont = new BitmapText({font: "vfr95_outline", text: customMsg, x: 5, y: 115, color: 0xFF8500, leading: 2});
 		this.add(customFont);
 
 		/**
@@ -111,15 +104,8 @@ abcdefghijklm
 nopqrstuvwxyz
 {|}
 `
-		let loremFontShadow = new BitmapText({text: lorem, x: 165, y: 8, color: "#000000", leading: 2, useKerning: true});
-		this.add(loremFontShadow);
-
-		let loremFontColor = new BitmapText({text: lorem, x: 164, y: 7, leading: 2, useKerning: true});
+		let loremFontColor = new BitmapText({text: lorem, x: 164, y: 7, leading: 2});
 		this.add(loremFontColor);
-	}
-
-	setup() {
-		GFX.getBuffer(0).setClearColor("#333333");
 	}
 
 }

@@ -14,6 +14,8 @@ import JSONCache from "./JSONCache.js";
  */
 async function load(assetsMap) {
 
+	log("Loading assets ...", "AssetLoader");
+
 	let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
 
 	// shorthands
@@ -119,6 +121,8 @@ async function load(assetsMap) {
 			// process fonts (build char table, kerning, ...)
 			Fonts.process(assetsMap.fonts, sheetResources);
 		}
+
+		log("All assets loaded and processed.", "AssetLoader");
 	});
 }
 

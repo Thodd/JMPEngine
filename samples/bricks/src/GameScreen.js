@@ -1,7 +1,7 @@
 import GFX from "../../../src/gfx/GFX.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
-import BitmapText from "../../../src/gfx/BitmapText.js";
+import BitmapText from "../../../src/game/BitmapText.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";

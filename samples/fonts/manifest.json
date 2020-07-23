@@ -3,7 +3,7 @@
 
 	"startScreen" : "./FontScreen.js",
 
-	"layers": 2,
+	"layers": 3,
 	"w": 320,
 	"h": 240,
 	"scale": 2,
@@ -12,11 +12,19 @@
 	"skipIntro": true,
 
 	"assets": {
-		"fonts": {
+		"spritesheets": {
 			"vfr95_outline": {
-				"url": "./img/vfr95_outline.png",
+				"url": "./fnt/vfr95_outline.png",
 				"w": 8,
 				"h": 8
+			}
+		},
+		"fonts": {
+			"vfr95_outline": {
+				"spritesheet": "vfr95_outline"
+			},
+			"font0": {
+				"url": "./fnt/font0.json"
 			}
 		}
 	}
