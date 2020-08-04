@@ -81,19 +81,16 @@ non-ASCII symbols.
 		 */
 		let lorem =
 `The following paragraph
-is a kerning & leading
+is a kerning & leading (3)
 test.
-Rendering longer texts
-will take some time when
-instantiating a new BitmapText
-Entity.
-The rendertime during a
-single frame however
-is pretty short, as an
-offscreen buffer is
-used for pre-rendering.
 
-  Character Order:
+[Lady Windermere]:
+* taking her husband's
+hand to Lord Augustus *
+"Ah, you're marrying a
+very good woman!".
+
+     Character Order:
 --------------------
 !"#$%&'()*+,-./
 0123456789:;<=>?@
@@ -104,7 +101,7 @@ abcdefghijklm
 nopqrstuvwxyz
 {|}
 `
-		let loremFontColor = new BitmapText({text: lorem, x: 164, y: 7, leading: 2});
+		let loremFontColor = new BitmapText({text: lorem, x: 164, y: 7, leading: 3});
 		this.add(loremFontColor);
 	}
 

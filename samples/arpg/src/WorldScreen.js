@@ -75,7 +75,7 @@ class WorldScreen extends Screen {
 		this.add(e);
 
 		let textShadow = new BitmapText({
-			font: "vfr95_base",
+			font: "font0",
 			text: `UI goes here!`,
 			color: 0x333333,
 			x: 4,

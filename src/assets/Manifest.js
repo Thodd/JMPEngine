@@ -77,11 +77,6 @@ function assignDefaults() {
 	// assign good default values for the manifest,
 	// no matter from what source we got it
 	_manifestObject = Object.assign(DEFAULTS, _manifestObject);
-	_manifestObject.assets = Object.assign({
-		spritesheets: {},
-		fonts: {},
-		json: {}
-	}, _manifestObject.assets);
 }
 
 /**

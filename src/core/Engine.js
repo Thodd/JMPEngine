@@ -2,6 +2,7 @@ import domReady from "../utils/domReady.js";
 import { log, error, fail } from "../utils/Log.js";
 import Manifest from "../assets/Manifest.js";
 import AssetLoader from "../assets/AssetLoader.js";
+import BuiltInAssets from "../assets/BuiltInAssets.js";
 import Keyboard from "../input/Keyboard.js";
 import Screen from "../game/Screen.js";
 import IntroScreen from "../game/intro/IntroScreen.js";
@@ -298,6 +299,9 @@ const Engine = {
 		pixiApp.ticker.add(gameloop);
 
 		log("Gameloop started.", "Engine");
+
+		// preload built-in assets e.g. font0
+		await AssetLoader.load(BuiltInAssets);
 
 		// Now we do some parallel stuff while the intro screen is showing.
 		// All of which involves additional resource requests:

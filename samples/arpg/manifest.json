@@ -25,17 +25,8 @@
 				"url": "./img/tileset16.png",
 				"w": 16,
 				"h": 16
-			},
-			"vfr95_base": {
-				"url": "./img/vfr95_base.png",
-				"w": 8,
-				"h": 8
 			}
 		},
-		"fonts": {
-			"vfr95_base": {
-				"spritesheet": "vfr95_base"
-			}
-		}
+		"fonts": {}
 	}
 }

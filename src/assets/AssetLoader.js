@@ -19,9 +19,9 @@ async function load(assetsMap) {
 	let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
 
 	// shorthands
-	let allSheets = assetsMap.spritesheets;
-	let allJson = assetsMap.json;
-	let allFonts = assetsMap.fonts;
+	let allSheets = assetsMap.spritesheets || {};
+	let allJson = assetsMap.json || {};
+	let allFonts = assetsMap.fonts || {};
 
 
 	// 1. first we check if we got font definitions which require an additional json file beforehand

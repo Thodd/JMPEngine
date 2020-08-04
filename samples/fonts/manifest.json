@@ -22,9 +22,6 @@
 		"fonts": {
 			"vfr95_outline": {
 				"spritesheet": "vfr95_outline"
-			},
-			"font0": {
-				"url": "./fnt/font0.json"
 			}
 		}
 	}

@@ -37,9 +37,6 @@
 		"fonts": {
 			"vfr95_blue": {
 				"spritesheet": "vfr95_blue"
-			},
-			"font0": {
-				"url": "./fnt/font0.json"
 			}
 		}
 
