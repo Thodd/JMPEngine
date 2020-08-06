@@ -174,7 +174,8 @@ class Text extends Entity {
 	 */
 	getSpriteForChar(i) {
 		if (i < 0 || i >= this._maxChars) {
-			fail(`The character index '${i}' is out of range for the BitmapText instance.`, "BitmapText");
+			//warn(`The character index '${i}' is out of range for the BitmapText instance.`, "BitmapText");
+			return undefined;
 		}
 
 		return this._spritePool[i];

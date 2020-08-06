@@ -84,6 +84,20 @@ class Entity {
 		return this._pixiSprite;
 	}
 
+	set visible(v) {
+		if (this._pixiSprite) {
+			this._pixiSprite.visible = v;
+			// deactivate autovisibility if it's set explicitly!
+			this.autoVisibility = false;
+		}
+	}
+
+	get visible() {
+		if (this._pixiSprite) {
+			return this._pixiSprite.visible;
+		}
+	}
+
 	/**
 	 * Returns the Screen instance to which this Entity is added.
 	 * If the Entity is not added to a Screen, <code>null</code> is returned.

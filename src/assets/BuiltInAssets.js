@@ -13,6 +13,11 @@ assets.spritesheets["font0"] = {
 	"w": 8,
 	"h": 8
 };
+assets.spritesheets["font1"] = {
+	"url": "data:image/png;base64,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",
+	"w": 8,
+	"h": 8
+};
 
 // --------------- fonts ---------------
 // font0 - font-definition including kerning
@@ -24,7 +29,11 @@ assets.fonts["font0"] = {
 		"default": -1
 	}
 };
+assets.fonts["font1"] = {
+	"spritesheet": "font1"
+};
 
+// font 0 kerning values
 let kerningPairs = assets.fonts["font0"]["kerning"];
 
 // slim characters
