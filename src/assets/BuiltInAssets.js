@@ -28,7 +28,8 @@ assets.fonts["font0"] = {
 let kerningPairs = assets.fonts["font0"]["kerning"];
 
 // slim characters
-let kern = {
+let slimKerns = {
+	" ": 0,
 	"!": -2,
 	".": -4,
 	":": -3,
@@ -43,6 +44,7 @@ let kern = {
 	")": -2,
 	"<": -3,
 	">": -3,
+	"@": +1,
 
 	"1": -3,
 
@@ -57,11 +59,25 @@ let kern = {
 	"s": -2,
 	"t": -2,
 	"x": -2,
-	"z": -2
+	"z": -2,
+
+	// upper case
+	"A": 0,
+	"B": 0,
+	"C": 0,
+	"D": 0,
+	"E": 0,
+	"G": 0,
+	"H": 0,
+	"O": 0,
+	"Q": 0,
+	"R": 0,
+	"U": 0,
+	"Z": 0
 };
-Object.keys(kern).forEach((smallChar) => {
+Object.keys(slimKerns).forEach((smallChar) => {
 	for (let char of assets.fonts["font0"]["charOrder"]) {
-		kerningPairs[`${smallChar}${char}`] = kern[smallChar];
+		kerningPairs[`${smallChar}${char}`] = slimKerns[smallChar];
 	}
 });
 
@@ -73,5 +89,15 @@ kerningPairs["rj"] = -3;
 kerningPairs["fj"] = -4;
 kerningPairs["pj"] = -2;
 kerningPairs["vj"] = -2;
+
+kerningPairs["Pa"] = -2;
+
+kerningPairs["Ta"] = -2;
+kerningPairs["Td"] = -2;
+kerningPairs["Te"] = -2;
+kerningPairs["Tg"] = -2;
+kerningPairs["To"] = -2;
+kerningPairs["Tq"] = -2;
+kerningPairs["Ts"] = -2;
 
 export default assets;
