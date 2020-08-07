@@ -7,8 +7,6 @@ class IntroScreen extends Screen {
 	constructor(){
 		super();
 
-		// 0x272d37
-
 		this.endCounter = new FrameCounter(180);
 		this.endPromise = new Promise((resolve) => {
 			this.finish = resolve;
@@ -18,7 +16,7 @@ class IntroScreen extends Screen {
 		let w = Manifest.get("/w");
 
 		// slashes 1 + 2
-		this.showSlashes1 = new FrameCounter(20);
+		this.showSlashes = new FrameCounter(20);
 		this.slashes1 = new BitmapText({
 			x: (w - 11 * 8)/2,
 			y: h/2 - 14,
@@ -29,7 +27,6 @@ class IntroScreen extends Screen {
 		this.slashes1.visible = false;
 		this.add(this.slashes1);
 
-		this.showSlashes2 = new FrameCounter(70);
 		this.slashes2 = new BitmapText({
 			x: (w - 15 * 8)/2,
 			y: h/2 + 6,
@@ -42,7 +39,6 @@ class IntroScreen extends Screen {
 
 
 		// Text + animation
-		this.showText = new FrameCounter(40);
 		this.startTextAnimation = new FrameCounter(90);
 		let msg = "JMP.px Engine";
 
@@ -87,15 +83,9 @@ class IntroScreen extends Screen {
 	update() {
 		super.update();
 
-		if (this.showSlashes1.isReady()) {
+		if (this.showSlashes.isReady()) {
 			this.slashes1.visible = true;
-		}
-
-		if (this.showText.isReady()) {
 			this.animatedText.visible = true;
-		}
-
-		if (this.showSlashes2.isReady()) {
 			this.slashes2.visible = true;
 		}
 
@@ -106,6 +96,12 @@ class IntroScreen extends Screen {
 		if (this.endCounter.isReady()) {
 			this.finish();
 		}
+	}
+
+	end() {
+		this.slashes1.destroy();
+		this.slashes2.destroy();
+		this.animatedText.destroy();
 	}
 
 	wait() {

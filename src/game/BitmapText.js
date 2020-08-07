@@ -1,4 +1,4 @@
-import { warn, fail } from "../utils/Log.js";
+import { warn } from "../utils/Log.js";
 import Entity from "../game/Entity.js";
 import Fonts from "../assets/Fonts.js";
 

@@ -7,6 +7,8 @@ import Keyboard from "../input/Keyboard.js";
 import Screen from "../game/Screen.js";
 import IntroScreen from "../game/intro/IntroScreen.js";
 
+const DEFAULT_BG_COLOR = 0x272d37;
+
 // @PIXI include PIXI.js
 import { detectPIXI, getPixiApp } from "./PIXIWrapper.js";
 
@@ -278,7 +280,7 @@ const Engine = {
 		pixiApp = getPixiApp({
 			width: Manifest.get("/w"),
 			height: Manifest.get("/h"),
-			backgroundColor: Manifest.get("/bg") || 0x272d37
+			backgroundColor: DEFAULT_BG_COLOR
 		});
 
 		// DOM, CSS, Debug init
@@ -321,6 +323,9 @@ const Engine = {
 
 		// after the intro is done and all assets are loaded we activate an instance of the defined start screen class
 		return Promise.all(parallel).then((results) => {
+			// set configured BG Color before showing the StartScreen
+			pixiApp.renderer.backgroundColor = Manifest.get("/bg") || DEFAULT_BG_COLOR;
+
 			let startScreenClass = results[2];
 			Engine.screen = new startScreenClass();
 		});
