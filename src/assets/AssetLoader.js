@@ -25,10 +25,10 @@ async function load(assetsMap) {
 
 
 	// 1. first we check if we got font definitions which require an additional json file beforehand
-	let allFontNames = Object.keys(assetsMap.fonts);
+	let allFontNames = Object.keys(allFonts);
 	let fontJsonFiles = [];
 	for (let fontName of allFontNames) {
-		let fontDef = assetsMap.fonts[fontName];
+		let fontDef = allFonts[fontName];
 		// url in the font definition means we need to load that json file
 		if (fontDef.url) {
 			// place the font json file url into the json section of the manifest: "/assets/json/..."
@@ -92,12 +92,12 @@ async function load(assetsMap) {
 
 		// sheets are loaded after json files: we might need to wait for some font data
 		let sheetLoading = new Promise((resolve) => {
-			let sheets = Object.keys(assetsMap.spritesheets || {});
+			let sheets = Object.keys(allSheets || {});
 
 			if (sheets.length > 0) {
 
 				for (let sheetName of sheets) {
-					loader.add(sheetName, assetsMap.spritesheets[sheetName].url);
+					loader.add(sheetName, allSheets[sheetName].url);
 				}
 
 				loader.load((loader, resources) => {
@@ -116,10 +116,10 @@ async function load(assetsMap) {
 		// if no sheets have been loaded we don't need to process anything and we also cannot have any fonts
 		if (sheetResources) {
 			// process spritesheets
-			Spritesheets.process(assetsMap.spritesheets, sheetResources);
+			Spritesheets.process(allSheets, sheetResources);
 
 			// process fonts (build char table, kerning, ...)
-			Fonts.process(assetsMap.fonts, sheetResources);
+			Fonts.process(allFonts, sheetResources);
 		}
 
 		log("All assets loaded and processed.", "AssetLoader");

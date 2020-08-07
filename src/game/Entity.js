@@ -1,5 +1,5 @@
 import Spritesheets from "../assets/Spritesheets.js";
-import { warn, fail } from "../utils/Log.js";
+import { warn, error, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
 
@@ -268,7 +268,7 @@ class Entity {
 		// Figure out what the new BitmapTexture should be
 		let newTexture;
 
-		if (config.sheet) {
+		if (this._spriteConfig.sheet) {
 			// sprite given via sheet
 			let sheet = Spritesheets.getSheet(this._spriteConfig.sheet);
 
@@ -276,12 +276,12 @@ class Entity {
 				fail(`Unknown sheet '${this._spriteConfig.sheet}'!`, "Entity");
 			}
 
-			// @PIXI: get texture from sheet
-			newTexture = sheet.textures[0];
-		} else if (config.texture) {
+			// @PIXI: get texture from sheet (defaults to 0)
+			newTexture = sheet.textures[this._spriteConfig.id || 0];
+		} else if (this._spriteConfig.texture) {
 			// @PIXI: sprite given via texture
-			newTexture = config.texture;
-		} else if (config.replaceWith) {
+			newTexture = this._spriteConfig.texture;
+		} else if (this._spriteConfig.replaceWith) {
 			// @PIXI: also make sure to destroy the original sprite!
 			// @PIXI-TODO: How does destroy work?
 			// When replacing do we need to remove it from the stage?
@@ -290,7 +290,7 @@ class Entity {
 			// Also IMPORTANT: add "replaceWith" DisplayObject to the screen stage!
 
 			// @PIXI: replace the original sprite with another PIXI.DisplayObject
-			this._pixiSprite = config.replaceWith;
+			this._pixiSprite = this._spriteConfig.replaceWith;
 		}
 
 		// @PIXI: set the default texture for the pixi sprite & make it visible

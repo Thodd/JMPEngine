@@ -1,13 +1,14 @@
-import Manifest from "../../../src/Manifest.js";
-import Screen from "../../../src/game/Screen.js";
-import Entity from "../../../src/game/Entity.js";
+import Engine from "../../../src/core/Engine.js";
+import Manifest from "../../../src/assets/Manifest.js";
 import RNG from "../../../src/utils/RNG.js";
 import Helper from "../../../src/utils/Helper.js";
-import GFX from "../../../src/gfx/GFX.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
-import Engine from "../../../src/Engine.js";
+import Screen from "../../../src/game/Screen.js";
+import Entity from "../../../src/game/Entity.js";
 import BitmapText from "../../../src/game/BitmapText.js";
+
+import PIXI from "../../../src/core/PIXIWrapper.js";
 
 import Scope from "./Scope.js";
 
@@ -16,25 +17,20 @@ const screenHeight = Manifest.get("/h");
 
 class Fruit extends Entity {
 	constructor() {
-		super({});
+		super();
 
-		this.speed = Math.round(60 / Engine.targetFPS);
+		this.speed = 1;
 
 		this.layer = 0;
-
-		this.scale.w = 2;
-		this.scale.h = 2;
 
 		this.xDir = Helper.choose([-1, 1]);
 		this.yDir = Helper.choose([-1, 1]);
 
-		this.setSprite({
+		this.configSprite({
 			sheet: "fruits",
 			id: RNG.randomInteger(0, 6)
 		});
-	}
 
-	added() {
 		this.x = Math.max(0, Math.floor(Math.random() * screenWidth) - 8);
 		this.y = Math.max(0, Math.floor(Math.random() * screenHeight) - 8);
 	}
@@ -53,6 +49,21 @@ class Fruit extends Entity {
 	}
 }
 
+const _fruits = [];
+const FruitPool = {
+	getFruits: function(i) {
+		if (i > _fruits.length) {
+			let diff = i - _fruits.length;
+
+			for (let i = 0; i < diff; i++) {
+				_fruits.push(new Fruit());
+			}
+		}
+
+		return _fruits.slice(0, i);
+	}
+}
+
 class Fruitmark extends Screen {
 	constructor() {
 		super();
@@ -62,46 +73,75 @@ class Fruitmark extends Screen {
 	}
 
 	init(entityCount) {
-		for (let i = 0; i < entityCount; i++) {
-			this.add(new Fruit({}));
+		let fruits = FruitPool.getFruits(entityCount);
+		for (let f of fruits) {
+			this.add(f);
 		}
 
-		let helpText = new BitmapText({
-			x: 2,
-			y: 2,
-			text: "Press 'ESC' to go back",
-			color: "#FF0085",
-			useKerning: true
-		});
-		helpText.layer = 2;
-		this.add(helpText);
+		//bg 1
+		if (!this.bg1) {
+			let bg1box = new PIXI.Graphics();
+			bg1box.beginFill(0x4b5667);
+			bg1box.drawRect(0, 0, screenWidth, 13);
 
-		let infoText = new BitmapText({
-			x: 2,
-			y: screenHeight - 9,
-			text: `Entities: ${entityCount}`,
-			color: "#FF0085",
-			useKerning: true
-		});
-		infoText.layer = 2;
-		this.add(infoText);
-	}
+			this.bg1 = new Entity();
+			this.bg1.configSprite({
+				replaceWith: bg1box
+			});
+		}
 
-	setup() {
-		GFX.getBuffer(0).setRenderMode(this.renderMode);
+		this.add(this.bg1);
+
+		// help text
+		if (!this.helpText) {
+			this.helpText = new BitmapText({
+				x: 2,
+				y: 2,
+				font: "font1",
+				text: "Press 'ESC' to go back",
+				color: 0xFF0085
+			});
+			this.helpText.layer = 2;
+		}
+
+		this.add(this.helpText);
+
+		//bg 2
+		if (!this.bg2) {
+			let bg2box = new PIXI.Graphics();
+			bg2box.beginFill(0x4b5667);
+			bg2box.drawRect(0, 0, screenWidth, 13);
+
+			this.bg2 = new Entity();
+			this.bg2.y = screenHeight - 12;
+			this.bg2.configSprite({
+				replaceWith: bg2box
+			});
+		}
+		this.add(this.bg2);
+
+		// info text
+		if (!this.infoText) {
+			this.infoText = new BitmapText({
+				x: 2,
+				y: screenHeight - 10,
+				font: "font1",
+				text: "",
+				color: 0xFF0085
+			});
+			this.infoText.layer = 2;
+		}
+		this.infoText.setText(`Entities: ${entityCount}`);
+		this.add(this.infoText);
 	}
 
 	update() {
 		if (Keyboard.pressed(Keys.ESC)) {
+			// Remove all entities... of course this get's slower the more entities you remove.
+			// Yet it's ignorable for 10000 simultaneously removed entities.
 			this.getEntities().forEach(this.remove.bind(this));
-			Engine.targetFPS = 60;
 			Engine.screen = Scope.menuScreen;
 		}
-	}
-
-	render() {
-		GFX.get(1).rectf(0, 0, screenWidth, 12, "#332c50");
-		GFX.get(1).rectf(0, screenHeight - 12, screenWidth, 12, "#332c50");
 	}
 }
 

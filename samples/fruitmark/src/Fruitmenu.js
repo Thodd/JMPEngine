@@ -1,14 +1,15 @@
 import Screen from "../../../src/game/Screen.js";
-import GFX from "../../../src/gfx/GFX.js";
 import BitmapText from "../../../src/game/BitmapText.js";
-import Manifest from "../../../src/Manifest.js";
-import Engine from "../../../src/Engine.js";
+import Manifest from "../../../src/assets/Manifest.js";
+import Engine from "../../../src/core/Engine.js";
 import Fruitmark from "./Fruitmark.js";
 
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
 import Scope from "./Scope.js";
+import Entity from "../../../src/game/Entity.js";
+import PIXI from "../../../src/core/PIXIWrapper.js";
 class Fruitmenu extends Screen {
 	constructor() {
 		super();
@@ -20,15 +21,15 @@ class Fruitmenu extends Screen {
 
 		this.options = [
 			{
-				title: "Entities: 1000",
+				title: "Entities:  1000",
 				entityCount: 1000,
 			},
 			{
-				title: "Entities: 2000",
+				title: "Entities:  2000",
 				entityCount: 2000,
 			},
 			{
-				title: "Entities: 5000",
+				title: "Entities:  5000",
 				entityCount: 5000,
 			},
 			{
@@ -45,24 +46,32 @@ class Fruitmenu extends Screen {
 			}
 		];
 
+		// offset for positioning in the middle of the screen
 		this.yOffset = Math.round((Manifest.get("/h") - this.options.length * 15) / 2);
 
-		this.createTexts();
-	}
+		// menu marker
+		let markerBox = new PIXI.Graphics();
+		markerBox.beginFill(0x4b5667);
+		markerBox.drawRect(0, 0, 130, 14);
 
-	setup() {
-		GFX.getBuffer(0).setClearColor("#332c50");
+		this.menuMarker = new Entity();
+		this.menuMarker.configSprite({
+			replaceWith: markerBox
+		});
+
+		this.add(this.menuMarker);
+
+		this.createTexts();
 	}
 
 	createTexts() {
 		this.options.forEach((o, i) => {
 			let t = new BitmapText({
-				x: 30,
+				x: 70,
 				y: this.yOffset + i * 15,
 				text: o.title,
-				leading: 2,
-				useKerning: true,
-				color: "#FF0085"
+				font: "font1",
+				color: 0xFF0085
 			});
 			t.layer = 1;
 			this.add(t);
@@ -93,10 +102,13 @@ class Fruitmenu extends Screen {
 		} else if (this.currentOption >= this.options.length) {
 			this.currentOption = 0;
 		}
+
+		this.menuMarker.x = 64;
+		this.menuMarker.y = this.yOffset + this.currentOption * 15 - 3;
 	}
 
 	render() {
-		GFX.get(0).rectf(25, this.yOffset + this.currentOption * 15 - 3, 210, 13, "#FFFFFF");
+		//GFX.get(0).rectf(25, this.yOffset + this.currentOption * 15 - 3, 210, 13, "#FFFFFF");
 	}
 }
 

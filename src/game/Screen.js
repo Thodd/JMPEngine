@@ -203,7 +203,7 @@ class Screen {
 			}
 		} else {
 			if (e._screen != this) {
-				error(`Entity already added to ${e._screen}!`);
+				error(`Entity already added to another Screen: ${e._screen}!`);
 			} else if (isScheduled) {
 				error(`Entity already scheduled for removal from ${this}!`);
 			} else if (e._isDestroyed) {
@@ -395,7 +395,7 @@ class Screen {
 			// @PIXI: Add entity sprite from the container of the Screen (in case it was not already added)
 			let layer = this._layers[ea.layer];
 			if (!layer) {
-				fail(`Layer '${ea.layer}' does not exist. The game is initialized with layers 0 to ${this._layers.length-1}!`, this);
+				fail(`Layer '${ea.layer}' does not exist :(\nThe game is initialized with layers 0 to ${this._layers.length-1}!`, this);
 			} else {
 				layer.addChild(ea._pixiSprite);
 			}
@@ -420,7 +420,12 @@ class Screen {
 			er._screen = null;
 
 			// @PIXI: remove entity's sprite from the container of the Screen
-			this._pixiContainer.removeChild(er._pixiSprite);
+			let layer = this._layers[er.layer];
+			if (!layer) {
+				fail(`Layer '${er.layer}' does not exist :(\nThe game is initialized with layers 0 to ${this._layers.length-1}!`, this);
+			} else {
+				layer.removeChild(er._pixiSprite);
+			}
 
 			// call removed hook if given
 			if (er.removed) {
