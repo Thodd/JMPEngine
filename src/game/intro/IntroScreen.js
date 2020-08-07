@@ -99,6 +99,7 @@ class IntroScreen extends Screen {
 	}
 
 	end() {
+		// clean up
 		this.slashes1.destroy();
 		this.slashes2.destroy();
 		this.animatedText.destroy();

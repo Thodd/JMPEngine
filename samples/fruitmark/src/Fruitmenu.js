@@ -107,9 +107,6 @@ class Fruitmenu extends Screen {
 		this.menuMarker.y = this.yOffset + this.currentOption * 15 - 3;
 	}
 
-	render() {
-		//GFX.get(0).rectf(25, this.yOffset + this.currentOption * 15 - 3, 210, 13, "#FFFFFF");
-	}
 }
 
 export default Fruitmenu;

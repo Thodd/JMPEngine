@@ -144,11 +144,15 @@ class Entity {
 	 */
 	destroy() {
 		if (!this._isDestroyed) {
-			// @PIXI: destroy pixi sprite
-			this._pixiSprite.destroy(true);
+			// @PIXI: destroy pixi sprite & it's children if any
+			this._pixiSprite.destroy({
+				children: true
+			});
 
 			if (this._hitbox._gfx) {
-				this._hitbox._gfx.destroy(true);
+				this._hitbox._gfx.destroy({
+					children: true
+				});
 			}
 
 			this._screen.remove(this);
