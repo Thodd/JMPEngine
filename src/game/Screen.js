@@ -144,7 +144,7 @@ class Screen {
 	/**
 	 * Begin Hook.
 	 * Called every time the Screen is activated as the currently shown <code>Engine.screen</code>.
-	 * The begin() hook is called before update() and render().
+	 * The begin() hook is called before update().
 	 * It is called one frame after the Screen was set to <code>Engine.screen</code>.
 	 *
 	 * The begin hook is called <b>after</b> the end hook of the last <code>Engine.screen</code> was called.

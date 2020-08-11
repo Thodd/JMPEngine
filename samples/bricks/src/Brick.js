@@ -1,5 +1,5 @@
 import Entity from "../../../src/game/Entity.js";
-import Spritesheets from "../../../src/gfx/Spritesheets.js";
+import Spritesheets from "../../../src/assets/Spritesheets.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class Brick extends Entity {
@@ -20,22 +20,22 @@ class Brick extends Entity {
 
 		this.piece = piece;
 
-		this.setSprite({
+		this.configSprite({
 			sheet: "bricks",
 			//id: color,
 			animations: {
 				default: "normal",
 				"normal": {
-					frames: [color],
-					alpha: ghost ? 0.3 : 1
+					frames: [color]
 				},
 				"dying": {
 					frames: [color, 42],
-					alpha: ghost ? 0.3 : 1,
-					delay: 4
+					dt: 4
 				}
 			}
 		});
+
+		this._pixiSprite.alpha = ghost ? 0.3 : 1;
 
 		this.renderOrigin = renderOrigin;
 

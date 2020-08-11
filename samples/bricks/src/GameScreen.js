@@ -1,4 +1,3 @@
-import GFX from "../../../src/gfx/GFX.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import BitmapText from "../../../src/game/BitmapText.js";
@@ -6,17 +5,15 @@ import FrameCounter from "../../../src/utils/FrameCounter.js";
 import { error } from "../../../src/utils/Log.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
-
-import Manifest from "../../../src/Manifest.js";
+import Fonts from "../../../src/assets/Fonts.js";
 
 import Score from "./Score.js";
 import Well from "./Well.js";
 import Piece from "./Piece.js";
 import PieceBag from "./PieceBag.js";
 import BGRenderer from "./BGRenderer.js";
-import Engine from "../../../src/Engine.js";
+import Engine from "../../../src/core/Engine.js";
 import LevelSelectScreen from "./LevelSelectScreen.js";
-import Buffer from "../../../src/gfx/Buffer.js";
 
 class GameScreen extends Screen {
 	constructor() {
@@ -39,11 +36,6 @@ class GameScreen extends Screen {
 		this.spawnPiece();
 	}
 
-	setup() {
-		GFX.getBuffer(0).setClearColor("#38a8f2");
-		//GFX.getBuffer(2).setRenderMode(Buffer.RenderModes.RAW);
-	}
-
 	/**
 	 * Creates the BG animation
 	 */
@@ -54,24 +46,20 @@ class GameScreen extends Screen {
 		let ui = new Entity();
 		ui.layer = 2;
 		//ui.alpha = 0.5;
-		ui.setSprite({
+		ui.configSprite({
 			sheet: "UI"
 		});
 		this.add(ui);
 
 		// Scoring
 		this.scoringTexts = {
-			points: new BitmapText({text: "0", x: 75, y: 49}),
-			level:  new BitmapText({text: "0", x: 75, y: 89}),
-			lines:  new BitmapText({text: "0", x: 75, y: 129})
+			points: new BitmapText({text: "0", x: 75, y: 49, color: 0xFF8500}),
+			level:  new BitmapText({text: "0", x: 75, y: 89, color: 0xFF8500}),
+			lines:  new BitmapText({text: "0", x: 75, y: 129, color: 0xFF8500})
 		}
 		this.scoringTexts.lines.layer = 4;
 		this.scoringTexts.points.layer = 4;
 		this.scoringTexts.level.layer = 4;
-
-		this.scoringTexts.lines.color = "#FF8500";
-		this.scoringTexts.points.color = "#FF8500";
-		this.scoringTexts.level.color = "#FF8500";
 
 		this.add(this.scoringTexts.lines);
 		this.add(this.scoringTexts.points);
@@ -295,7 +283,7 @@ class GameScreen extends Screen {
 	 */
 	updateScoringUI() {
 		// calculate text shift to the left
-		let fontWidth = Manifest.get("/assets/fonts/font0/w");
+		let fontWidth = Fonts.getFont("font0").w;
 
 		function shiftAndSet(e, text) {
 			e.x = 76 - (Math.max(text.length - 1, 0) * fontWidth);
@@ -310,16 +298,16 @@ class GameScreen extends Screen {
 	createGameOverlay() {
 		// GameOver overlay
 		let offX = 104, offY = 50;
-		let gameOverUI = new Entity({x: offX, y: offY});
+		let gameOverUI = new Entity(offX, offY);
 		gameOverUI.layer = 4;
-		gameOverUI.setSprite({
+		gameOverUI.configSprite({
 			sheet: "GameOver"
 		});
 		this.add(gameOverUI);
 
 		// GAME OVER! text
 		// Ok, I got a bit lazy here and just hacked this together...
-		let t = new BitmapText({text: "GAME OVER!", x: offX+5, y: offY+5, color: "#FF3333"});
+		let t = new BitmapText({text: "GAME OVER!", x: offX+5, y: offY+5, color: 0xFF3333});
 		t.layer = 5;
 
 		t.sad = true;
@@ -342,25 +330,9 @@ class GameScreen extends Screen {
 		this.add(t);
 
 		// continue text
-		let c = new BitmapText({text: "Press ESC\n  key to\ncontinue!", x: offX+9, y: offY+28, leading: 2, useKerning: true});
+		let c = new BitmapText({text: "Press ESC\n   key to\n continue!", x: offX+9, y: offY+28, leading: 2});
 		c.layer = 5;
 		this.add(c);
-	}
-
-	render() {
-		super.render();
-
-		// debug rendering of current piece origin
-		/*
-		let sheet = Spritesheets.getSheet("bricks");
-		let p = Well.getCurrentPiece();
-		let originX = sheet.w * (Well.ORIGIN_X + p.well_x);
-		let originY = sheet.h * (Well.ORIGIN_Y + p.well_y);
-		GFX.get(2).px(originX,     originY,     "#ffffff");
-		GFX.get(2).px(originX + 1, originY,     "#ffffff");
-		GFX.get(2).px(originX    , originY + 1, "#ffffff");
-		GFX.get(2).px(originX + 1, originY + 1, "#ffffff");
-		*/
 	}
 }
 

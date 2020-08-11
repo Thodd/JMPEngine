@@ -5,9 +5,8 @@ import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 import { clamp } from "../../../src/utils/Helper.js";
 import Score from "./Score.js";
-import Engine from "../../../src/Engine.js";
+import Engine from "../../../src/core/Engine.js";
 import GameScreen from "./GameScreen.js";
-import GFX from "../../../src/gfx/GFX.js";
 
 class LevelSelectScreen extends Screen {
 	constructor() {
@@ -15,14 +14,14 @@ class LevelSelectScreen extends Screen {
 
 		this.add(new BGRenderer());
 
-		this.ui = new Entity({x: 83, y: 50});
-		this.ui.setSprite({
+		this.ui = new Entity(83, 50);
+		this.ui.configSprite({
 			sheet: "LevelSelect"
 		});
 		this.add(this.ui);
 
-		this.cursor = new Entity({x: 92, y: 90});
-		this.cursor.setSprite({
+		this.cursor = new Entity(92, 90);
+		this.cursor.configSprite({
 			sheet: "bricks",
 			id: 43
 		});
@@ -35,7 +34,7 @@ class LevelSelectScreen extends Screen {
 	}
 
 	setup() {
-		GFX.getBuffer(0).setClearColor("#38a8f2");
+		//GFX.getBuffer(0).setClearColor("#38a8f2");
 	}
 
 	update() {
