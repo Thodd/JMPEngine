@@ -185,7 +185,7 @@ class Tilemap extends Entity {
 		// @PIXI: make Tilemap visible in case it was previously made invisible!
 		this._pixiSprite.visible = true;
 
-		// Only draw the tiles which are inside the camera (and inside the map range)
+		// set the texture of all tiles inside the camera viewport (and inside the map range)
 		let i = 0;
 		for (let col = colStart; col < colMax; col++) {
 			for (let row = rowStart; row < rowMax; row++) {

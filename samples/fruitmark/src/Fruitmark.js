@@ -27,7 +27,7 @@ class Fruit extends Entity {
 		this.yDir = Helper.choose([-1, 1]);
 
 		this.configSprite({
-			sheet: "fruits",
+			sheet: "fruits_8x8",
 			id: RNG.randomInteger(0, 6)
 		});
 

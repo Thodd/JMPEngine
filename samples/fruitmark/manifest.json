@@ -13,10 +13,15 @@
 
 	"assets": {
 		"spritesheets": {
-			"fruits": {
-				"url": "./img/fruits.png",
+			"fruits_8x8": {
+				"url": "./img/fruits_8x8.png",
 				"w": 8,
 				"h": 8
+			},
+			"fruits_16x16": {
+				"url": "./img/fruits_16x16.png",
+				"w": 16,
+				"h": 16
 			}
 		}
 	}
