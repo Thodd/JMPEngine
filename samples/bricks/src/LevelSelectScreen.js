@@ -33,10 +33,6 @@ class LevelSelectScreen extends Screen {
 		};
 	}
 
-	setup() {
-		//GFX.getBuffer(0).setClearColor("#38a8f2");
-	}
-
 	update() {
 		super.update();
 

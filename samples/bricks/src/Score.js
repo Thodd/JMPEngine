@@ -38,7 +38,7 @@ const scoringTable = {
 	2: 150,
 	3: 400,
 	4: 1500
-}
+};
 
 const Score = {
 	points: 0,

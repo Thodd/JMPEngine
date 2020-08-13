@@ -206,6 +206,11 @@ class Tilemap extends Entity {
 					spr.x = drawX;
 					spr.y = drawY;
 
+					// optional pixiSprite values e.g. tinting
+					if (t.tint) {
+						spr.tint = t.tint;
+					}
+
 					// next sprite in the pool
 					i++;
 				}

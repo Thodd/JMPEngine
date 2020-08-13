@@ -53,9 +53,9 @@ class GameScreen extends Screen {
 
 		// Scoring
 		this.scoringTexts = {
-			points: new BitmapText({text: "0", x: 75, y: 49, color: 0xFF8500}),
-			level:  new BitmapText({text: "0", x: 75, y: 89, color: 0xFF8500}),
-			lines:  new BitmapText({text: "0", x: 75, y: 129, color: 0xFF8500})
+			points: new BitmapText({font: "font1", text: "0", x: 75, y: 49, color: 0xFF8500}),
+			level:  new BitmapText({font: "font1", text: "0", x: 75, y: 89, color: 0xFF8500}),
+			lines:  new BitmapText({font: "font1", text: "0", x: 75, y: 129, color: 0xFF8500})
 		}
 		this.scoringTexts.lines.layer = 4;
 		this.scoringTexts.points.layer = 4;
@@ -283,7 +283,7 @@ class GameScreen extends Screen {
 	 */
 	updateScoringUI() {
 		// calculate text shift to the left
-		let fontWidth = Fonts.getFont("font0").w;
+		let fontWidth = Fonts.getFont("font1").w;
 
 		function shiftAndSet(e, text) {
 			e.x = 76 - (Math.max(text.length - 1, 0) * fontWidth);
@@ -314,11 +314,11 @@ class GameScreen extends Screen {
 		t.blinkTimer = new FrameCounter(12);
 		t.flip = function() {
 			if (this.sad) {
-				this.color = "#FF3333";
-				this.text = "GAME OVER!";
+				this.setColor(0xFF3333);
+				this.setText("GAME OVER!");
 			} else {
-				this.color = "#FFFFFF";
-				this.text = "    :(";
+				this.setColor(0xFFFFFF);
+				this.setText("      :(");
 			}
 			this.sad = !this.sad;
 		};
@@ -330,7 +330,7 @@ class GameScreen extends Screen {
 		this.add(t);
 
 		// continue text
-		let c = new BitmapText({text: "Press ESC\n   key to\n continue!", x: offX+9, y: offY+28, leading: 2});
+		let c = new BitmapText({text: "Press ESC\n   key to\n continue!", x: offX+9, y: offY+29, leading: 2});
 		c.layer = 5;
 		this.add(c);
 	}

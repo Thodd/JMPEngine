@@ -5,8 +5,9 @@
 
 	"w": 256,
 	"h": 192,
+
 	"scale": 1.5,
-	"fps": 60,
+
 	"hideCursor": true,
 	"skipIntro": true,
 
