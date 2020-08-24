@@ -154,6 +154,8 @@ function setupCSS(containerID) {
 	let h = Manifest.get("/h");
 	let scale = Manifest.get("/scale");
 
+	// concerning the pixelated option:
+	// works on all major browsers except Safari, there's a bug report for this: https://bugs.webkit.org/show_bug.cgi?id=193895
 	const css = `
 		#${containerID} canvas {
 			width: ${w * scale}px;
@@ -162,6 +164,7 @@ function setupCSS(containerID) {
 			image-rendering: pixelated;
 			image-rendering: -webkit-crisp-edges;
 			image-rendering: -moz-crisp-edges;
+			image-rendering: -o-crisp-edges;
 		}
 
 		.jmpWrapper {

@@ -1,9 +1,7 @@
-import Manifest from "../../../src/Manifest.js";
+import Manifest from "../../../src/assets/Manifest.js";
 import Screen from "../../../src/game/Screen.js";
-import GFX from "../../../src/gfx/GFX.js";
-import Buffer from "../../../src/gfx/Buffer.js";
 import BitmapText from "../../../src/game/BitmapText.js";
-import Engine from "../../../src/Engine.js";
+import Engine from "../../../src/core/Engine.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -13,7 +11,7 @@ import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 let width = Manifest.get("/w");
 let height = Manifest.get("/h");
-let timePerFrame = Engine.getTimePerFrame();
+let timePerFrame = 16.7;
 
 let segments = [];
 let roadWidth     = 700;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
@@ -30,7 +28,7 @@ let playerZ       = null;                    // player relative z distance from 
 let fogDensity    = 5;                       // exponential fog density
 let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
 let speed         = 0;                       // current speed
-let maxSpeed      = (segmentLength * 1.5)/Engine.getTimePerFrame();      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+let maxSpeed      = (segmentLength * 1.5)/timePerFrame;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 let centrifugal   = 0.50;
 let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
 let breaking      = -maxSpeed;               // deceleration rate when braking
@@ -101,11 +99,6 @@ const Layers = {
 		this.resetRoad();
 	}
 
-	setup() {
-		GFX.getBuffer(Layers.BG).setClearColor(COLORS.SKY);
-		GFX.getBuffer(Layers.Road).setRenderMode(Buffer.RenderModes.RAW);
-	}
-
 	checkGameStart() {
 		if (!this.started) {
 			if (Keyboard.down(Keys.ENTER)) {
@@ -171,7 +164,9 @@ const Layers = {
 		this.timing.total   = `${this.timing.minutes}'${this.timing.seconds}"${this.timing.millis}`;
 	}
 
-	update(dt) {
+	update() {
+
+		var dt = 16.7;
 
 		// change camera to cockpit view  -->  TODO: F1 Cockpit or Wheel view?
 		if (Keyboard.pressed(Keys.C)) {
@@ -687,14 +682,14 @@ const Layers = {
 
 		// laps
 		let laps = this.timing.laptimes.length + 1;
-		_gfx.text("vfr95_outline", 2, height-10, `Lap:${laps}/3`);
+		_gfx.text("font1", 2, height-10, `Lap:${laps}/3`);
 
 		// timing
 		_gfx.text("vfr95_blue", 2, 2, `#${laps}: ${this.timing.total}`);
 		for (let i = 0; i < this.timing.laptimes.length; i++) {
 			_gfx.alpha(1/(i+2));
 			let timing = this.timing.laptimes[i];
-			_gfx.text("vfr95_outline", 2, 12 + i * 10, `#${timing.lap}: ${timing.time}`);
+			_gfx.text("font1", 2, 12 + i * 10, `#${timing.lap}: ${timing.time}`);
 		}
 		_gfx.alpha(1);
 
@@ -704,12 +699,12 @@ const Layers = {
 		// The countach has a max speed of 333km/h :O, though our car accelerates a bit faster than 100km/h in 3.6s
 		let kmhStr = `${Math.ceil(333*speedPercent)}`.padStart(3, "0");
 
-		_gfx.text("vfr95_outline", width - 34, height - 10, "km/h");
+		_gfx.text("font1", width - 34, height - 10, "km/h");
 
 		// fill tacho
 		let fill = Math.ceil(speedPercent * 60);
 		let tachoHeight = height - fill;
-		_gfx.text("vfr95_outline", tachoXoffset-1, tachoHeight - 22, kmhStr);
+		_gfx.text("font1", tachoXoffset-1, tachoHeight - 22, kmhStr);
 		_gfx.alpha(0.7);
 		_gfx.spr_ext("tacho", 0, 0, 60 - fill, undefined, undefined, tachoXoffset, tachoHeight - 12);
 		_gfx.alpha(1);
@@ -717,7 +712,7 @@ const Layers = {
 		// intro
 		if (!this.started) {
 			_gfx.rectf(0, height/2 - 10, width, 10, "#000000");
-			_gfx.text("vfr95_outline", 20, height/2 - 9, "Press ENTER to start!");
+			_gfx.text("font1", 20, height/2 - 9, "Press ENTER to start!");
 		}
 	}
 }

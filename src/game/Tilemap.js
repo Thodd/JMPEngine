@@ -33,7 +33,10 @@ class Tilemap extends Entity {
 		TILEMAP_COUNT++;
 
 		// flag to quickly check if the Entity is a Tilemap, no need for instanceof
-		this.isTilemap = true;
+		this._isTilemap = true;
+
+		// mark hitbox as collidable by default
+		this._hitbox._collidable = true;
 
 		// dimensions
 		this._mapWidth = w;

@@ -2,11 +2,13 @@ import Entity from "../../../../src/game/Entity.js";
 import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
 import SwordAttack from "./attacks/SwordAttack.js";
+//import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
 class Player extends Entity {
 	constructor(x, y) {
 		super(x, y);
 
+		// we need to reduce the size of the hitbox a bit, so the player has more room for error
 		this.updateHitbox({
 			x: 3,
 			y: 6,
@@ -14,9 +16,13 @@ class Player extends Entity {
 			h: 10
 		});
 
+		this.setTypes(["player"]);
+
 		this.configSprite({
 			sheet: "player",
 
+			// the player sprites are offset by 16x16 pixels in the spritesheet
+			// we need to remove the mostly transparent pixels by providing a default offset for all animations
 			offset: {
 				x: -16,
 				y: -16
@@ -79,7 +85,7 @@ class Player extends Entity {
 
 		this.swordAttack = new SwordAttack(this);
 
-		//this.blink = new FrameCounter(3);
+		//this.blink = new FrameCounter(5);
 	}
 
 	added() {
@@ -147,21 +153,48 @@ class Player extends Entity {
 			dir = "down";
 		}
 
+		// retrieve tilemap from the screen for collision detection
+		let tm = this.getScreen().getTilemap();
+		let moved = false;
+
+		// regular movement
 		if (dx != 0) {
-			this.x += dx;
+			if (!this.collidesWith(tm, this.x + dx, this.y)) {
+				this.x += dx;
+				moved = true;
+			}
 		}
 		if (dy != 0) {
-			this.y += dy;
+			if (!this.collidesWith(tm, this.x, this.y + dy)) {
+				this.y += dy;
+				moved = true;
+			}
 		}
 
+		// if no regular movement occured, check if we can push the player around an obstacle
+		if (!moved) {
+			if (dx != 0) {
+				if (!this.collidesWith(tm, this.x + dx, this.y + 6)) {
+					this.y += 1;
+				} else if (!this.collidesWith(tm, this.x + dx, this.y - 6)) {
+					this.y -= 1;
+				}
+			} else if (dy != 0) {
+				if (!this.collidesWith(tm, this.x + 6, this.y + dy)) {
+					this.x += 1;
+				} else if (!this.collidesWith(tm, this.x - 6, this.y + dy)) {
+					this.x -= 1;
+				}
+			}
+		}
+
+		// change animation
 		if (dir !== null) {
 			this.dir = dir;
 			this.playAnimation({name: this.dir});
 		} else {
 			this.playAnimation({name: `idle_${this.dir}`});
 		}
-
-		this.getScreen().centerCameraAround(this);
 	}
 
 }

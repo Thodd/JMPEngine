@@ -5,10 +5,11 @@
 
 	"w": 200,
 	"h": 144,
+
 	"scale": 3,
-	"fps": 60,
+
 	"hideCursor": true,
-	"skipIntro": true,
+	"skipIntro": false,
 
 	"assets": {
 		"spritesheets": {
@@ -34,18 +35,16 @@
 			},
 			"tunnel": {
 				"url": "./img/tunnel.png"
-			}
-		},
-		"fonts": {
-			"vfr95_outline": {
-				"url": "./img/vfr95_outline.png",
-				"w": 8,
-				"h": 8
 			},
 			"vfr95_blue": {
 				"url": "./img/vfr95_blue.png",
 				"w": 8,
 				"h": 8
+			}
+		},
+		"fonts": {
+			"vfr95_blue": {
+				"spritesheet": "vfr95_blue"
 			}
 		}
 	}

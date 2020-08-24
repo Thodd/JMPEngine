@@ -19,23 +19,27 @@ class WorldScreen extends Screen {
 	constructor() {
 		super();
 
-		Entity.RENDER_HITBOX = 0xFF0000;
+		//Entity.RENDER_HITBOX = 0xFF0000;
 
 		/**
 		 * Tilemap demo
 		 */
-		let tm = new Tilemap({
+		this._tilemap = new Tilemap({
 			sheet: "tileset",
 			w: Constants.MAP_WIDTH,
 			h: Constants.MAP_HEIGHT
 		});
-		tm.layer = LAYERS.Tiles;
+		this._tilemap.setTypes(["tiles"]);
+		this._tilemap.layer = LAYERS.Tiles;
 
-		tm.each((tile) => {
+		this._tilemap.each((tile) => {
 			tile.set(Helper.choose([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 243, 6, 7]));
 		});
 
-		this.add(tm);
+		this._tilemap.set(10, 10, 280);
+		this._tilemap.get(10, 10).isBlocking = true;
+
+		this.add(this._tilemap);
 
 		/**
 		 * player
@@ -44,9 +48,9 @@ class WorldScreen extends Screen {
 		this.player.layer = LAYERS.Player;
 		this.add(this.player);
 
-		this.centerCameraAround(this.player);
-
 		this.addText();
+
+		this.centerCameraAround(this.player);
 	}
 
 	setup() {
@@ -57,6 +61,10 @@ class WorldScreen extends Screen {
 	centerCameraAround(e){
 		this.cam.x = e.x - (this.width / 2);
 		this.cam.y = e.y - (this.height / 2);
+	}
+
+	getTilemap() {
+		return this._tilemap;
 	}
 
 	addText() {
@@ -86,6 +94,10 @@ class WorldScreen extends Screen {
 	}
 
 	update() {}
+
+	endOfFrame() {
+		this.centerCameraAround(this.player);
+	}
 
 }
 

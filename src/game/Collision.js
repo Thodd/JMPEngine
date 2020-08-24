@@ -40,6 +40,7 @@ export default {
 	 * Checks if Entity e1 collides with Entity e2.
 	 * @param {Entity} e1
 	 * @param {Entity} e2
+	 * @returns {boolean} whether a collision occurred or not
 	 */
 	check: function (e1, e2) {
 		return this.checkAtPosition(e1, e2, e1.x, e1.y);
@@ -51,6 +52,7 @@ export default {
 	 * @param {Entity} e2
 	 * @param {int} x
 	 * @param {int} y
+	 * @returns {boolean} whether a collision occurred or not
 	 */
 	checkAtPosition: function (e1, e2, x, y) {
 		// at least one entity is not collidable so we can quickly mark this check as false
@@ -58,6 +60,7 @@ export default {
 			return false;
 		}
 
+		// check for tilemap based collision
 		if (e1._isTilemap && e2._isTilemap) {
 			warn("Two Tilemaps cannot be checked for collision against eachother.", "Collision");
 			return false;

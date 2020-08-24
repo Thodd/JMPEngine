@@ -15,20 +15,19 @@ let INSTANCE_COUNT = 0;
  * Please check the API documentation of all public functions to better understand what you can and should do
  * in these functions/hooks.
  *
- * [+] = public:            These functions can safely be overwriten
- * [-] = private:           <b>Don't overwrite these functions!</b>
+ * [+] = public:               These functions can safely be overwriten
+ * [-] = private:              <b>Don't overwrite these functions!</b>
  *
- * [+] constructor          (called once)                  -> Initial creation. Don't do game logic here, just create dependet entities etc.
+ * [+] constructor             (called once)                  -> Initial creation. Don't do game logic here, just create dependet entities etc.
  *
- * [+] setup                (called every activation)      -> General setup hook
- * [+] begin                (called every activation)      -> game logic, recurring things which need to be done before any other game logic
+ * [+] setup                   (called every activation)      -> General setup hook
+ * [+] begin                   (called every activation)      -> game logic, recurring things which need to be done before any other game logic
  *
- * [+] update               (called each frame)            -> update hook for the Screen (game logic)
- * [-] update entities      (called each frame)            -> update entities (game logic)
- * [+] render               (called each frame)            -> render hook for the Screen
- * [-] render entities      (called each frame)            -> render entities
+ * [+] update                  (called each frame)            -> update hook for the Screen (game logic)
+ * [-] update entities         (called each frame)            -> update entities (game logic)
+ * [+] endOfFrame update       (called each frame)            -> 2nd update  for the Screen AFTER all entities have been updated (game logic)
  *
- * [+] end                  (called every deactivation)    -> game logic
+ * [+] end                     (called every deactivation)    -> game logic
  *
  * @public
  */
@@ -349,10 +348,10 @@ class Screen {
 	 * Updates the Screen itself and then the entities.
 	 */
 	_update(dt) {
-		// Phase [1]: Screen update hook
+		// Phase [1]: Screen update hook (game logic)
 		this.update(dt);
 
-		// Phase [2]: update entities
+		// Phase [2]: update entities (game logic)
 		let len = this._entities.length;
 
 		for (let i = 0; i < len; i++) {
@@ -370,10 +369,13 @@ class Screen {
 			}
 		}
 
-		// Phase [3]: Housekeeping
+		// Phase [3]: End of frame update (game logic)
+		this.endOfFrame();
+
+		// Phase [4]: Housekeeping (interal)
 		this._houseKeeping();
 
-		// Phase [4]: Updating rendering information
+		// Phase [5]: Updating rendering information (interal)
 		this._updateRenderInfos();
 	}
 
@@ -485,7 +487,7 @@ class Screen {
 
 			// @PIXI: we shift the render position for all PIXI.Sprite/PIXI.DisplayObjects
 			// this is nothing PIXI can do out of the box, at least not easily in a pixel-perfect manner...
-			if (e.isTilemap) {
+			if (e._isTilemap) {
 				// Tilemaps have their own sprite replacement logic and are always stuck to the camera
 				e._updateRenderInfos();
 			} else {
@@ -509,11 +511,19 @@ class Screen {
 	}
 
 	/**
-	 * Update Hook.
+	 * Update hook.
 	 * Overwrite this in your subclasses if needed.
 	 * The Screen's update method is called before the entities of the Screen are updated.
 	 */
 	update() {}
+
+	/**
+	 * End of frame update hook.
+	 * Overwrite this in your subclasses if needed.
+	 * The endOfFrame method is called after all entities of the Screen have been updated.
+	 * This is a good place to update the camera position, e.g. if you want the camera to follow the player.
+	 */
+	endOfFrame() {}
 
 	/**
 	 * End Hook.
