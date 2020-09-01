@@ -85,6 +85,7 @@ class Player extends Entity {
 
 		this.swordAttack = new SwordAttack(this);
 
+		//this.inputDelay = new FrameCounter(2);
 		//this.blink = new FrameCounter(5);
 	}
 
@@ -109,6 +110,11 @@ class Player extends Entity {
 			return;
 		}
 
+		let dir = null;
+
+		// if (this.inputDelay.isReady()) {
+		// 	return;
+		// }
 		// attacking
 		if (Keyboard.pressed(Keys.S)) {
 			this._isAttacking = true;
@@ -135,7 +141,6 @@ class Player extends Entity {
 		// walking
 		let dx = 0;
 		let dy = 0;
-		let dir = null;
 
 		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
 			dx--;
@@ -187,6 +192,7 @@ class Player extends Entity {
 				}
 			}
 		}
+
 
 		// change animation
 		if (dir !== null) {

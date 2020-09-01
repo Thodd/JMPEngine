@@ -17,7 +17,7 @@
 	"assets": {
 		"spritesheets": {
 			"player": {
-				"url": "./img/player.png",
+				"url": "./img/player16.png",
 				"w": 48,
 				"h": 48
 			},
@@ -27,6 +27,11 @@
 				"h": 16
 			}
 		},
-		"fonts": {}
+		"fonts": {},
+		"json": {
+			"tileset16": {
+				"url": "./maps/tileset16.json"
+			}
+		}
 	}
 }

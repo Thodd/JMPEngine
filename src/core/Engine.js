@@ -40,6 +40,9 @@ async function setupStats() {
 	}
 }
 
+let _b30Frames = false;
+let _skipFrame = true;
+
 /**
  * The game loop.
  * Takes care of:
@@ -53,6 +56,12 @@ const gameloop = () => {
 		stats.begin();
 	}
 
+	if (_b30Frames) {
+		_skipFrame = !_skipFrame;
+		if (_skipFrame) {
+			return;
+		}
+	}
 
 	// if a new screen is scheduled, we end the currentScreen and begin the nextScreen
 	if (nextScreen) {

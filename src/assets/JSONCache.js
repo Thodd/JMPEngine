@@ -28,6 +28,17 @@ const JSONCache = {
 	 */
 	get(name) {
 		return _cache[name];
+	},
+
+	/**
+	 * Releases the named JSON resource.
+	 * Useful for big objects so the garbage collection can remove them.
+	 * IMPORTANT: This only works if you don't keep a reference on the resource yourself!
+	 * @param {string} name the name of the resource
+	 */
+	release(name) {
+		delete _cache[name];
+		_cache[name] = null;
 	}
 };
 

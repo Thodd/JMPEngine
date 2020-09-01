@@ -1,12 +1,13 @@
+import PIXI from "../../../src/core/PIXIWrapper.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
-import Tilemap from "../../../src/game/Tilemap.js";
-import Helper from "../../../src/utils/Helper.js";
 import BitmapText from "../../../src/game/BitmapText.js";
+import Tilemap from "../../../src/game/Tilemap.js";
 
-import Constants from "./Constants.js";
+import Tileset from "./mapgen/Tileset.js";
+import GameTile from "./mapgen/GameTile.js";
+import MapLoader from "./mapgen/MapLoader.js";
 import Player from "./actors/Player.js";
-import PIXI from "../../../src/core/PIXIWrapper.js";
 
 const LAYERS = {
 	Tiles: 0,
@@ -21,36 +22,46 @@ class WorldScreen extends Screen {
 
 		//Entity.RENDER_HITBOX = 0xFF0000;
 
-		/**
-		 * Tilemap demo
-		 */
-		this._tilemap = new Tilemap({
-			sheet: "tileset",
-			w: Constants.MAP_WIDTH,
-			h: Constants.MAP_HEIGHT
+		Tileset.init();
+
+		MapLoader.load({
+			"sampleMap": { url: "./maps/town.json" }
+		}).then((maps) => {
+			// create the tilemap
+			this._tilemap = new Tilemap({
+				sheet: "tileset",
+				w: 25,
+				h: 25,
+				tileClass: GameTile
+			});
+			this._tilemap.setTypes(["tiles"]);
+			this._tilemap.layer = LAYERS.Tiles;
+			this.add(this._tilemap);
+
+			// place tiles into tilemap
+			let mapData = maps["sampleMap"];
+			let globalIndex = 0;
+			this._tilemap.each((tile) => {
+				// The Tiled editor adds 1 to the tile-id, 0 is empty.
+				// However the JMP Engine regards 0 as the first tile and -1 as empty.
+				let tileId = mapData.tiles[globalIndex] - 1;
+
+				// set visuals
+				tile.set(tileId);
+
+				globalIndex++;
+			})
+
+			// player
+			this.player = new Player(this.width / 2 + 16, this.height / 2);
+			this.player.layer = LAYERS.Player;
+			this.add(this.player);
+
+			// some sample text
+			this.addText();
+
+			this.centerCameraAround(this.player);
 		});
-		this._tilemap.setTypes(["tiles"]);
-		this._tilemap.layer = LAYERS.Tiles;
-
-		this._tilemap.each((tile) => {
-			tile.set(Helper.choose([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 243, 6, 7]));
-		});
-
-		this._tilemap.set(10, 10, 280);
-		this._tilemap.get(10, 10).isBlocking = true;
-
-		this.add(this._tilemap);
-
-		/**
-		 * player
-		 */
-		this.player = new Player(this.width / 2, this.height / 2);
-		this.player.layer = LAYERS.Player;
-		this.add(this.player);
-
-		this.addText();
-
-		this.centerCameraAround(this.player);
 	}
 
 	setup() {
@@ -84,8 +95,8 @@ class WorldScreen extends Screen {
 
 		let textShadow = new BitmapText({
 			font: "font0",
-			text: `UI goes here!`,
-			color: 0x333333,
+			text: `  *  Top-down Sample Adventure  *`,
+			color: 0x000000,
 			x: 4,
 			y: 4
 		});
@@ -96,7 +107,10 @@ class WorldScreen extends Screen {
 	update() {}
 
 	endOfFrame() {
-		this.centerCameraAround(this.player);
+		// we can only do this if the placer is present after map loading
+		if (this.player) {
+			this.centerCameraAround(this.player);
+		}
 	}
 
 }

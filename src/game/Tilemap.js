@@ -95,11 +95,13 @@ class Tilemap extends Entity {
 
 	/**
 	 * Iterates all cells in the Tilemap.
-	 * The corresponding Tile class instance will be given in the callback.
+	 * Iteration order is from top-left to bottom-right (row by row, column by column).
+	 * The callback is called with the following arguments (in this order):
+	 * - the Tile class instance
 	 */
 	each(fn) {
-		for (let x = 0; x < this._mapWidth; x++) {
-			for (let y = 0; y < this._mapHeight; y++) {
+		for (let y = 0; y < this._mapHeight; y++) {
+			for (let x = 0; x < this._mapWidth; x++) {
 				fn(this._field[x][y]);
 			}
 		}
