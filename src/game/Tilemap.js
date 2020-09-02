@@ -19,7 +19,7 @@ class Tilemap extends Entity {
 
 		super(x, y);
 
-		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn't be much of an issue
+		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn'tile be much of an issue
 		this._pixiSprite.destroy();
 
 		// create a continer for all single tile sprites
@@ -139,7 +139,7 @@ class Tilemap extends Entity {
 	 * The rendering is pretty fast since the calculation for the visible tiles is quick and
 	 * we only need to update the textures and positions of a fixed set of sprites.
 	 *
-	 * Additionally we have a very limited memory consumption and startup performance since we don't
+	 * Additionally we have a very limited memory consumption and startup performance since we don'tile
 	 * need to prerender a big map. So the Tilemap rendering is independet from the actual map size.
 	 * Cool.
 	 */
@@ -175,9 +175,9 @@ class Tilemap extends Entity {
 
 		// This log is only for debugging, since it's quite hard to judge which parts of a tilemap are currently rendered
 		// Press (CTRL + ENTER) for logging.
-		if (Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
-			log(`origin: (${colStart},${rowStart})`, "Tilemap");
-			log(`end:    (${colMax},${rowMax})`, "Tilemap");
+		if (window.jmp && window.jmp._debugMode && Keyboard.wasPressedOrIsDown(Keys.CONTROL) && Keyboard.pressed(Keys.ENTER)) {
+			log(`origin: (${colStart},${rowStart})`, "Tilemap/debug");
+			log(`end:    (${colMax},${rowMax})`, "Tilemap/debug");
 		}
 
 		// @PIXI: if the col/row origin are outside the map's boundaries, there is nothing to draw
@@ -194,11 +194,11 @@ class Tilemap extends Entity {
 		let i = 0;
 		for (let col = colStart; col < colMax; col++) {
 			for (let row = rowStart; row < rowMax; row++) {
-				let t = this._field[col][row];
+				let tile = this._field[col][row];
 
 				// we only need to update the tiles which have a value other than -1
 				// -1 is considered invisible
-				if (t && t.id >= 0) {
+				if (tile && tile.id >= 0) {
 					let spr = this._sprites[i];
 
 					// calculate drawing coordinates for the tile
@@ -206,24 +206,42 @@ class Tilemap extends Entity {
 					let drawY = baseY + (row * this._tileHeight) - camY;
 
 					// set the correct texture and position the sprite
-					spr.texture = this._sheet.textures[t.id];
+					spr.texture = this._sheet.textures[tile.id];
 					spr.visible = true;
 					spr.x = drawX;
 					spr.y = drawY;
 
 					// optional pixiSprite values e.g. tinting
-					if (t.tint) {
-						spr.tint = t.tint;
+					if (tile.tint) {
+						spr.tint = tile.tint;
 					}
 
-					// next sprite in the pool
+					// -- Tile-Animations --
+					// Opposed to Entity sprites we can update the tile animation
+					// at the end of the frame, a tile only supports 1 animation
+					// and has a fixed timing.
+					if (tile._animInfo.isAnimated) {
+						if (tile._animInfo.frameCount == tile._animInfo.dt) {
+							tile._animInfo.frameCount = 0;
+							tile._animInfo.index++;
+							if (tile._animInfo.index >= tile._animInfo.frames.length) {
+								tile._animInfo.index = 0;
+							}
+							// update the sprite ID
+							tile.id = tile._animInfo.frames[tile._animInfo.index];
+						} else {
+							tile._animInfo.frameCount++;
+						}
+					}
+
+					// go to next sprite in the pool
 					i++;
 				}
 			}
 		}
 
 		// Cull all left over sprites in the pool, otherwise we get glitched out sprites.
-		// If you are at the border of the Tilemap we don't need all sprites.
+		// If you are at the border of the Tilemap we don'tile need all sprites.
 		let len = this._sprites.length;
 		for (; i < len; i++) {
 			let spr = this._sprites[i];

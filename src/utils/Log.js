@@ -25,13 +25,7 @@ function fail(s, prefix) {
 	throw new Error(s);
 }
 
-function exposeOnWindow(name, o) {
-	window.jmp = window.jmp || {};
-	window.jmp[name] = o;
-}
-
 export {
-	exposeOnWindow,
 	log,
 	warn,
 	error,

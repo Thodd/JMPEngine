@@ -1,5 +1,6 @@
 import domReady from "../utils/domReady.js";
 import { log, error, fail } from "../utils/Log.js";
+import { exposeOnWindow } from "../utils/Helper.js";
 import Manifest from "../assets/Manifest.js";
 import AssetLoader from "../assets/AssetLoader.js";
 import BuiltInAssets from "../assets/BuiltInAssets.js";
@@ -283,6 +284,7 @@ const Engine = {
 		// url params for debugging
 		let urlParams = new URLSearchParams(window.location.search);
 		_debugMode = urlParams.get("debug");
+		exposeOnWindow("_debugMode", _debugMode);
 
 		// retrieve manifest
 		await Manifest.init(manifest);

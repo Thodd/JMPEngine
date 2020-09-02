@@ -1,4 +1,5 @@
-import { log, warn, fail, exposeOnWindow } from "../utils/Log.js";
+import { log, warn, fail } from "../utils/Log.js";
+import { exposeOnWindow } from "../utils/Helper.js";
 import PIXI from "../core/PIXIWrapper.js";
 
 /**

@@ -18,6 +18,20 @@
  "tileheight":16,
  "tiles":[
         {
+         "id":3,
+         "properties":[
+                {
+                 "name":"anim_frames",
+                 "type":"string",
+                 "value":"3,5"
+                }, 
+                {
+                 "name":"anim_time",
+                 "type":"int",
+                 "value":60
+                }]
+        }, 
+        {
          "id":13,
          "properties":[
                 {
@@ -1262,6 +1276,16 @@
         {
          "id":441,
          "properties":[
+                {
+                 "name":"anim_frames",
+                 "type":"string",
+                 "value":"441,480"
+                }, 
+                {
+                 "name":"anim_time",
+                 "type":"int",
+                 "value":15
+                }, 
                 {
                  "name":"isBlocking",
                  "type":"bool",

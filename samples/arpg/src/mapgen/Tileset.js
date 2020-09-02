@@ -27,7 +27,23 @@ const Tileset = {
 				let propsCount = (tileRaw.properties && tileRaw.properties.length) || 0;
 				for (let p = 0; p < propsCount; p++) {
 					let prop = tileRaw.properties[p];
-					tile[prop.name] = prop.value;
+
+					// Parse animation information if defined for the tile.
+					// We do this as a string since Tiled does not support JS arrays or objects as properties...
+					// ...or I'm stupid and couldn't figure out how :(
+					if (prop.name === "anim_frames") {
+						tile.animation = tile.animation || {};
+						tile.animation.frames = prop.value.split(",").map((i) => {
+							return parseInt(i);
+						});
+					} else if (prop.name === "anim_time") {
+						tile.animation = tile.animation || {};
+						tile.animation.dt = prop.value != null ? prop.value : 0;
+					} else {
+						// standard properties, no special logic required
+						tile[prop.name] = prop.value;
+					}
+
 				}
 			}
 
@@ -36,8 +52,14 @@ const Tileset = {
 		}
 	},
 
+	/**
+	 * Returns the properties defined in the tileset for the given tile-ID.
+	 * @param {int} tileId the tile-ID for which the properties should be retrieved
+	 * @returns {object} the tile's properties. Or an empty object if no properties were found.
+	 */
 	getProperties(tileId) {
-		let ti = _tileProperties[tileId];
+		// return at least an empty object if no information is defined in the tileset
+		let ti = _tileProperties[tileId] || {};
 		return ti;
 	}
 }

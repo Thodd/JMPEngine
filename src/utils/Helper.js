@@ -62,12 +62,23 @@ function clamp(i, a, b) {
 	return i;
 }
 
+/**
+ * Sets the given value to the given name inside the "jmp" namespace on the window object.
+ * @param {string} name global name to be set in the "jmp" namespace
+ * @param {any} o the value to be set to the global "jmp" namespace
+ */
+function exposeOnWindow(name, o) {
+	window.jmp = window.jmp || {};
+	window.jmp[name] = o;
+}
+
 export {
 	choose,
 	shuffle,
 	remove,
 	contains,
-	clamp
+	clamp,
+	exposeOnWindow
 };
 
 export default {
@@ -75,5 +86,6 @@ export default {
 	shuffle,
 	remove,
 	contains,
-	clamp
+	clamp,
+	exposeOnWindow
 };
