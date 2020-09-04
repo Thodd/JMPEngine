@@ -38,7 +38,10 @@ const Tileset = {
 						});
 					} else if (prop.name === "anim_time") {
 						tile.animation = tile.animation || {};
-						tile.animation.dt = prop.value != null ? prop.value : 0;
+						tile.animation.dt = prop.value != null ? parseInt(prop.value) : 0;
+					} else if (prop.name === "anim_synchronize") {
+						tile.animation = tile.animation || {};
+						tile.animation.synchronize = prop.value || false;
 					} else {
 						// standard properties, no special logic required
 						tile[prop.name] = prop.value;

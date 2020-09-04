@@ -25,7 +25,7 @@ class WorldScreen extends Screen {
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/town.json" } //tile_animation_tests.json
+			"sampleMap": { url: "./maps/town.json" } //tile_animation_tests, center_corners_free
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({
@@ -53,7 +53,7 @@ class WorldScreen extends Screen {
 			})
 
 			// player
-			this.player = new Player(this.width / 2 + 16, this.height / 2);
+			this.player = new Player(this.width / 2 + 16, this.height / 2 + 16);
 			this.player.layer = LAYERS.Player;
 			this.add(this.player);
 
@@ -95,7 +95,7 @@ class WorldScreen extends Screen {
 
 		let textShadow = new BitmapText({
 			font: "font0",
-			text: `  *  Top-down Sample Adventure  *`,
+			text: `       *  Top-down Sample Adventure  *`,
 			color: 0x000000,
 			x: 4,
 			y: 4

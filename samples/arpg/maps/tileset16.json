@@ -23,12 +23,12 @@
                 {
                  "name":"anim_frames",
                  "type":"string",
-                 "value":"3,5"
+                 "value":"3,4,5,4"
                 }, 
                 {
                  "name":"anim_time",
                  "type":"int",
-                 "value":60
+                 "value":30
                 }]
         }, 
         {
@@ -905,6 +905,114 @@
                 }]
         }, 
         {
+         "id":213,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":214,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":215,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":216,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":217,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":218,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":219,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":220,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":221,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":222,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":223,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":224,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
          "id":232,
          "properties":[
                 {
@@ -1268,18 +1376,14 @@
          "id":440,
          "properties":[
                 {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":441,
-         "properties":[
-                {
                  "name":"anim_frames",
                  "type":"string",
-                 "value":"441,480"
+                 "value":"440,441,440,442"
+                }, 
+                {
+                 "name":"anim_synchronize",
+                 "type":"bool",
+                 "value":true
                 }, 
                 {
                  "name":"anim_time",
@@ -1288,6 +1392,39 @@
                 }, 
                 {
                  "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"isDeepWater",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":441,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"isDeepWater",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":442,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"isDeepWater",
                  "type":"bool",
                  "value":true
                 }]
@@ -1348,6 +1485,66 @@
         }, 
         {
          "id":480,
+         "properties":[
+                {
+                 "name":"anim_frames",
+                 "type":"string",
+                 "value":"480,481"
+                }, 
+                {
+                 "name":"anim_synchronize",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"anim_time",
+                 "type":"int",
+                 "value":30
+                }, 
+                {
+                 "name":"isShallowWater",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":481,
+         "properties":[
+                {
+                 "name":"isShallowWater",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":493,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":494,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":495,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":496,
          "properties":[
                 {
                  "name":"isBlocking",

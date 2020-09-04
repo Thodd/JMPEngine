@@ -66,6 +66,7 @@ class Tile {
 
 		this._animInfo = {
 			isAnimated: true,
+			synchronize: specs.synchronize || false,
 			frames: specs.frames,
 			dt: specs.dt || 0,
 			frameCount: 0,

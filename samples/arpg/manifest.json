@@ -3,8 +3,8 @@
 
 	"startScreen": "./src/WorldScreen.js",
 
-	"w": 224,
-	"h": 192,
+	"w": 272,
+	"h": 208,
 
 	"scale": 2,
 

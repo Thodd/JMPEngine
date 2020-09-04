@@ -68,6 +68,9 @@ class Tilemap extends Entity {
 			this._sprites.push(spr);
 			this._pixiSprite.addChild(spr);
 		}
+
+		// global animation timer
+		this._globalAnimationTimer = 0;
 	}
 
 	/**
@@ -144,6 +147,9 @@ class Tilemap extends Entity {
 	 * Cool.
 	 */
 	_updateRenderInfos() {
+		// increase the global timer on each tilemap rendering
+		this._globalAnimationTimer++;
+
 		// calculate minimum X/Y offsets based on camera position
 		let baseX = this.x;
 		let baseY = this.y;
@@ -220,18 +226,27 @@ class Tilemap extends Entity {
 					// Opposed to Entity sprites we can update the tile animation
 					// at the end of the frame, a tile only supports 1 animation
 					// and has a fixed timing.
+					// We do this here inplace to save some function calls.
 					if (tile._animInfo.isAnimated) {
-						if (tile._animInfo.frameCount == tile._animInfo.dt) {
-							tile._animInfo.frameCount = 0;
-							tile._animInfo.index++;
-							if (tile._animInfo.index >= tile._animInfo.frames.length) {
-								tile._animInfo.index = 0;
-							}
-							// update the sprite ID
-							tile.id = tile._animInfo.frames[tile._animInfo.index];
+						// if the tile is globally synchronized, the animation for all synchronized tiles advance simultaneously
+						if (tile._animInfo.synchronize) {
+							let cycles = (this._globalAnimationTimer/tile._animInfo.dt) | 0;
+							tile._animInfo.index = cycles % tile._animInfo.frames.length;
 						} else {
-							tile._animInfo.frameCount++;
+							// advance animation per tile
+							if (tile._animInfo.frameCount == tile._animInfo.dt) {
+								tile._animInfo.frameCount = 0;
+								tile._animInfo.index++;
+							} else {
+								tile._animInfo.frameCount++;
+							}
 						}
+
+						if (tile._animInfo.index >= tile._animInfo.frames.length) {
+							tile._animInfo.index = 0;
+						}
+						// update the sprite ID
+						tile.id = tile._animInfo.frames[tile._animInfo.index];
 					}
 
 					// go to next sprite in the pool
