@@ -8,6 +8,8 @@
 
 	"scale": 2,
 
+	"layers": 8,
+
 	"bg": "0x272d37",
 
 	"hideCursor": false,
@@ -25,6 +27,11 @@
 				"url": "./img/tileset16.png",
 				"w": 16,
 				"h": 16
+			},
+			"tileBasedEffects": {
+				"url": "./img/tileBasedEffects.png",
+				"w": 24,
+				"h": 8
 			}
 		},
 		"fonts": {},

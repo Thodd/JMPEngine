@@ -8,10 +8,10 @@ function checkTilemapCollision(e1, e2, x, y) {
 	let w = t._tileWidth;
 	let h = t._tileHeight;
 
-	// why -1 on right and bottom?
-	// because otherwise the width/height of the hitbox would (correctly) end up in a different Tile
+	// Why -1 on right and bottom?
+	// Because otherwise the width/height of the hitbox would (incorrectly) end up in a different Tile.
 	// for the grid collision the width/height of the hitbox is counted in pixels, the offset of the
-	// hit box being the first pixel to count (basically starting from 0)
+	// hitbox being the first pixel to count (basically starting from 0).
 	let left = x + e._hitbox.x;
 	let right = x + e._hitbox.x + e._hitbox.w - 1;
 	let top = y + e._hitbox.y;
@@ -47,7 +47,9 @@ export default {
 	},
 
 	/**
-	 * Checks if entity1 collides with entity2 when placing e1 at (x, y).
+	 * Checks if entity1 collides with entity2 when e1 is placed at (x, y).
+	 * Useful if you want to precheck if a position is free before moving an Entity.
+	 *
 	 * @param {Entity} e1
 	 * @param {Entity} e2
 	 * @param {int} x

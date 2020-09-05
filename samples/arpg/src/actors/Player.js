@@ -1,12 +1,17 @@
-import Entity from "../../../../src/game/Entity.js";
 import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
-import SwordAttack from "./attacks/SwordAttack.js";
 //import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
-class Player extends Entity {
+import Actor from "./Actor.js";
+import SwordAttack from "./attacks/SwordAttack.js";
+import TileBasedEffect from "./effects/TileBasedEffect.js";
+import Constants from "../Constants.js";
+
+class Player extends Actor {
 	constructor(x, y) {
 		super(x, y);
+
+		this.layer = Constants.Layers.PLAYER;
 
 		// we need to reduce the size of the hitbox a bit, so the player has more room for error
 		this.updateHitbox({
@@ -81,25 +86,33 @@ class Player extends Entity {
 			}
 		});
 
-		this.dir = "down";
-
+		// create associated entities
+		// we add these as a composition of the Player class to keep the already complex
+		// Player class as easy readable as possible
 		this.swordAttack = new SwordAttack(this);
+		this.tileBasedEffect = new TileBasedEffect(this);
 
-		//this.inputDelay = new FrameCounter(2);
 		//this.blink = new FrameCounter(5);
 	}
 
 	added() {
+		// once a Player instance is added we also add its associated entities like Attacks or Effects
 		this.getScreen().add(this.swordAttack);
+		this.getScreen().add(this.tileBasedEffect);
 	}
 
 	destroy() {
 		super.destroy();
-		// also clean up the sword attack
+		// also clean up all associated entities
 		this.swordAttack.destroy();
+		this.tileBasedEffect.destroy();
 	}
 
 	update() {
+
+		// flag might be set to true during movement checks
+		let moved = false;
+
 		// if (this.blink.isReady()) {
 		// 	this.visible = false;
 		// } else {
@@ -107,100 +120,105 @@ class Player extends Entity {
 		// }
 
 		if (this._isAttacking) {
-			return;
-		}
+			// do nothing
+		} else {
+			let dir = null;
 
-		let dir = null;
+			// attacking
+			if (Keyboard.pressed(Keys.S)) {
+				this._isAttacking = true;
 
-		// if (this.inputDelay.isReady()) {
-		// 	return;
-		// }
-		// attacking
-		if (Keyboard.pressed(Keys.S)) {
-			this._isAttacking = true;
+				this.swordAttack.reset(this.dir);
 
-			this.swordAttack.reset(this.dir);
+				this.playAnimation({
+					name: `slash_${this.dir}`,
+					reset: true,
+					change: () => {
+						this.swordAttack.nextPosition();
+					},
+					done: () => {
+						// make sure the sword hitbox is not active anymore
+						this.swordAttack.setCollidable(false);
+						// reactivate movement of player
+						this._isAttacking = false;
+						this.playAnimation({name: `idle_${this.dir}`});
+					}
+				});
+			} else {
+				// walking
+				let dx = 0;
+				let dy = 0;
 
-			this.playAnimation({
-				name: `slash_${this.dir}`,
-				reset: true,
-				change: () => {
-					this.swordAttack.nextPosition();
-				},
-				done: () => {
-					// make sure the sword hitbox is not active anymore
-					this.swordAttack.setCollidable(false);
-					// reactivate movement of player
-					this._isAttacking = false;
+				if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
+					dx--;
+					dir = "left";
+				} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
+					dx++;
+					dir = "right";
+				}
+
+				if (Keyboard.wasPressedOrIsDown(Keys.UP)) {
+					dy--;
+					dir = "up";
+				} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
+					dy++;
+					dir = "down";
+				}
+
+				// retrieve tilemap from the screen for collision detection
+				let tm = this.getScreen().getTilemap();
+
+				// regular movement
+				if (dx != 0) {
+					if (!this.collidesWith(tm, this.x + dx, this.y)) {
+						this.x += dx;
+						moved = true;
+					}
+				}
+				if (dy != 0) {
+					if (!this.collidesWith(tm, this.x, this.y + dy)) {
+						this.y += dy;
+						moved = true;
+					}
+				}
+
+				// if no regular movement occured, check if we can push the player around an obstacle
+				if (!moved) {
+					if (dx != 0) {
+						if (!this.collidesWith(tm, this.x + dx, this.y + 6)) {
+							this.y += 1;
+						} else if (!this.collidesWith(tm, this.x + dx, this.y - 6)) {
+							this.y -= 1;
+						}
+					} else if (dy != 0) {
+						if (!this.collidesWith(tm, this.x + 6, this.y + dy)) {
+							this.x += 1;
+						} else if (!this.collidesWith(tm, this.x - 6, this.y + dy)) {
+							this.x -= 1;
+						}
+					}
+				}
+
+				// change animation
+				if (dir !== null) {
+					this.dir = dir;
+					this.playAnimation({name: this.dir});
+				} else {
 					this.playAnimation({name: `idle_${this.dir}`});
 				}
-			});
-			return;
-		}
-
-		// walking
-		let dx = 0;
-		let dy = 0;
-
-		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
-			dx--;
-			dir = "left";
-		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
-			dx++;
-			dir = "right";
-		}
-
-		if (Keyboard.wasPressedOrIsDown(Keys.UP)) {
-			dy--;
-			dir = "up";
-		} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
-			dy++;
-			dir = "down";
-		}
-
-		// retrieve tilemap from the screen for collision detection
-		let tm = this.getScreen().getTilemap();
-		let moved = false;
-
-		// regular movement
-		if (dx != 0) {
-			if (!this.collidesWith(tm, this.x + dx, this.y)) {
-				this.x += dx;
-				moved = true;
-			}
-		}
-		if (dy != 0) {
-			if (!this.collidesWith(tm, this.x, this.y + dy)) {
-				this.y += dy;
-				moved = true;
 			}
 		}
 
-		// if no regular movement occured, check if we can push the player around an obstacle
-		if (!moved) {
-			if (dx != 0) {
-				if (!this.collidesWith(tm, this.x + dx, this.y + 6)) {
-					this.y += 1;
-				} else if (!this.collidesWith(tm, this.x + dx, this.y - 6)) {
-					this.y -= 1;
-				}
-			} else if (dy != 0) {
-				if (!this.collidesWith(tm, this.x + 6, this.y + dy)) {
-					this.x += 1;
-				} else if (!this.collidesWith(tm, this.x - 6, this.y + dy)) {
-					this.x -= 1;
-				}
-			}
-		}
+		// we update the tile-based effects last so they can be correctly positioned after the player moved
+		this.checkForTileBasedEffect(moved);
+	}
 
-
-		// change animation
-		if (dir !== null) {
-			this.dir = dir;
-			this.playAnimation({name: this.dir});
-		} else {
-			this.playAnimation({name: `idle_${this.dir}`});
-		}
+	/**
+	 * Whenever the player is on a tile with an effect, e.g. Grass we have to trigger it.
+	 */
+	checkForTileBasedEffect(playerMoved) {
+		let tile = this.getClosestTile();
+		this.tileBasedEffect.check(tile, playerMoved);
 	}
 
 }

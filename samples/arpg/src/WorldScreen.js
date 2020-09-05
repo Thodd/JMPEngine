@@ -8,13 +8,7 @@ import Tileset from "./mapgen/Tileset.js";
 import GameTile from "./mapgen/GameTile.js";
 import MapLoader from "./mapgen/MapLoader.js";
 import Player from "./actors/Player.js";
-
-const LAYERS = {
-	Tiles: 0,
-	Enemies: 1,
-	Player: 2,
-	UI: 6
-};
+import Constants from "./Constants.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -35,7 +29,7 @@ class WorldScreen extends Screen {
 				tileClass: GameTile
 			});
 			this._tilemap.setTypes(["tiles"]);
-			this._tilemap.layer = LAYERS.Tiles;
+			this._tilemap.layer = Constants.Layers.TILES;
 			this.add(this._tilemap);
 
 			// place tiles into tilemap
@@ -53,8 +47,7 @@ class WorldScreen extends Screen {
 			})
 
 			// player
-			this.player = new Player(this.width / 2 + 16, this.height / 2 + 16);
-			this.player.layer = LAYERS.Player;
+			this.player = new Player(this.width / 2 + Constants.TILE_WIDTH, this.height / 2 + Constants.TILE_HEIGHT*2);
 			this.add(this.player);
 
 			// some sample text
@@ -66,7 +59,7 @@ class WorldScreen extends Screen {
 
 	setup() {
 		// fix UI layer camera so it's not scrolled out of view
-		this.setCameraFixedForLayer(LAYERS.UI, true);
+		this.setCameraFixedForLayer(Constants.Layers.UI, true);
 	}
 
 	centerCameraAround(e){
@@ -82,11 +75,11 @@ class WorldScreen extends Screen {
 		// background
 		let g = new PIXI.Graphics();
 		g.beginFill(0xfdf0d1);
-		g.drawRect(0, 0, this.width, 16);
+		g.drawRect(0, 0, this.width, Constants.TILE_HEIGHT);
 		g.endFill();
 		let e = new Entity();
 		e.active = false; // no update needed
-		e.layer = LAYERS.UI;
+		e.layer = Constants.Layers.UI;
 		e.configSprite({
 			replaceWith: g
 		});
@@ -100,7 +93,7 @@ class WorldScreen extends Screen {
 			x: 4,
 			y: 4
 		});
-		textShadow.layer = LAYERS.UI;
+		textShadow.layer = Constants.Layers.UI;
 		this.add(textShadow);
 	}
 

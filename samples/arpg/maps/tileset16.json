@@ -32,6 +32,24 @@
                 }]
         }, 
         {
+         "id":10,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"grass"
+                }]
+        }, 
+        {
+         "id":11,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"grass_cut"
+                }]
+        }, 
+        {
          "id":13,
          "properties":[
                 {
@@ -380,6 +398,15 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }]
+        }, 
+        {
+         "id":70,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"stairs"
                 }]
         }, 
         {
@@ -1175,6 +1202,33 @@
                 }]
         }, 
         {
+         "id":298,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":299,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":300,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
          "id":333,
          "properties":[
                 {
@@ -1301,6 +1355,33 @@
                 }]
         }, 
         {
+         "id":378,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":379,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":380,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
          "id":387,
          "properties":[
                 {
@@ -1396,9 +1477,9 @@
                  "value":true
                 }, 
                 {
-                 "name":"isDeepWater",
-                 "type":"bool",
-                 "value":true
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_deep"
                 }]
         }, 
         {
@@ -1410,9 +1491,9 @@
                  "value":true
                 }, 
                 {
-                 "name":"isDeepWater",
-                 "type":"bool",
-                 "value":true
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_deep"
                 }]
         }, 
         {
@@ -1424,9 +1505,9 @@
                  "value":true
                 }, 
                 {
-                 "name":"isDeepWater",
-                 "type":"bool",
-                 "value":true
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_deep"
                 }]
         }, 
         {
@@ -1502,18 +1583,18 @@
                  "value":30
                 }, 
                 {
-                 "name":"isShallowWater",
-                 "type":"bool",
-                 "value":true
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_shallow"
                 }]
         }, 
         {
          "id":481,
          "properties":[
                 {
-                 "name":"isShallowWater",
-                 "type":"bool",
-                 "value":true
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_shallow"
                 }]
         }, 
         {
@@ -1635,6 +1716,15 @@
         }, 
         {
          "id":641,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":642,
          "properties":[
                 {
                  "name":"isBlocking",

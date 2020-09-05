@@ -9,9 +9,10 @@ class GameTile extends Tile {
 		if (!isAnimationUpdate) {
 			// we copy the values so we don't run into unwanted side-effects by accident
 			let tileProps = Tileset.getProperties(id);
+			Object.assign(this, tileProps);
 
-			// list of all supported props, must be enhanced if necessary
-			this.isBlocking = tileProps.isBlocking || false;
+			// let's delete the original animation information so we don't accidentally modify the original object
+			delete this.animation;
 
 			// if there is no animation defined in the Tileset for this tile,
 			// the setAnimation() call will just reset the animation info for this tile instance
