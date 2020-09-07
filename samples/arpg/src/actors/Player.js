@@ -44,7 +44,7 @@ class Player extends Actor {
 					frames: [0]
 				},
 				"slash_down": {
-					frames: [12, 13, {id: 14, dt: 3}],
+					frames: [12, 13, {id: 14, dt: 4}],
 					dt: 1
 				},
 
@@ -56,7 +56,7 @@ class Player extends Actor {
 					frames: [3]
 				},
 				"slash_up": {
-					frames: [15, 16, {id: 17, dt: 3}],
+					frames: [15, 16, {id: 17, dt: 4}],
 					dt: 1
 				},
 
@@ -68,7 +68,7 @@ class Player extends Actor {
 					frames: [6]
 				},
 				"slash_left": {
-					frames: [18, 19, {id: 20, dt: 3}],
+					frames: [18, 19, {id: 20, dt: 4}],
 					dt: 1
 				},
 
@@ -80,7 +80,7 @@ class Player extends Actor {
 					frames: [8]
 				},
 				"slash_right": {
-					frames: [21, 22, {id: 23, dt: 3}],
+					frames: [21, 22, {id: 23, dt: 4}],
 					dt: 1
 				},
 			}
