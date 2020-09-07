@@ -1,4 +1,6 @@
-import Entity from "../../../../../src/game/Entity.js";
+import Actor from "../Actor.js";
+import Tileset from "../../mapgen/Tileset.js";
+import SmallEffect from "../effects/SmallEffect.js";
 
 const allPositions = {
 	up:    [{ x:  16, y:   0 }, { x:  16, y: -16 }, { x:   0, y: -16 }],
@@ -7,14 +9,14 @@ const allPositions = {
 	right: [{ x:   0, y: -16 }, { x: +16, y: -16 }, { x:  16, y:   0 }]
 }
 
-class SwordAttack extends Entity {
+class SwordAttack extends Actor {
 	constructor(player) {
 		super();
 		this.player = player;
 
 		this.updateHitbox({
-			w: 16,
-			h: 16
+			w: 18,
+			h: 18
 		});
 
 		this.cfg = {positions: allPositions.down, index: 0};
@@ -33,6 +35,8 @@ class SwordAttack extends Entity {
 			this.x = this.player.x + posData.x;
 			this.y = this.player.y + posData.y;
 		}
+
+		this.checkTileBasedCollision();
 	}
 
 	reset(dir) {
@@ -45,6 +49,24 @@ class SwordAttack extends Entity {
 
 		// reminder: also enables the debug rendering of the hitbox
 		this.setCollidable(true);
+
+		this.checkTileBasedCollision();
+	}
+
+	checkTileBasedCollision() {
+		let tile = this.getClosestTile();
+
+		if (tile.type === Tileset.Types.GRASS) {
+			let tileInfo = Tileset.getProperties(Tileset.Types.GRASS_CUT);
+			tile.set(tileInfo.id);
+
+			// create grass cutting effect and position it on the screen
+			let grassCuttingEffect = SmallEffect.get();
+			grassCuttingEffect.x = tile.screenX;
+			grassCuttingEffect.y = tile.screenY;
+			grassCuttingEffect.show();
+			this.getScreen().add(grassCuttingEffect);
+		}
 	}
 }
 

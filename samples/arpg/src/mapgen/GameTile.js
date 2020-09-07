@@ -2,6 +2,12 @@ import Tile from "../../../../src/game/Tile.js";
 import Tileset from "./Tileset.js";
 
 class GameTile extends Tile {
+	/**
+	 * Changes the tile's type.
+	 * @param {int} id The tile id to set.
+	 * @param {*} isAnimationUpdate Only used internally to mark a tile update based on an animation.
+	 *                              Only use the tile's type to check for a specific tile.
+	 */
 	set(id, isAnimationUpdate) {
 		super.set(id, isAnimationUpdate);
 

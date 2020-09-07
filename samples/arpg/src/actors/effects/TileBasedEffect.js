@@ -1,9 +1,9 @@
 import { warn } from "../../../../../src/utils/Log.js";
-import Entity from "../../../../../src/game/Entity.js";
+import Actor from "../Actor.js";
 import Constants from "../../Constants.js";
 import Tileset from "../../mapgen/Tileset.js";
 
-class TileBasedEffect extends Entity {
+class TileBasedEffect extends Actor {
 	constructor(actor) {
 		super();
 		this.actor = actor;

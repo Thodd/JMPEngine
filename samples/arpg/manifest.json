@@ -32,6 +32,11 @@
 				"url": "./img/tileBasedEffects.png",
 				"w": 24,
 				"h": 8
+			},
+			"smallEffects": {
+				"url": "./img/smallEffects.png",
+				"w": 16,
+				"h": 16
 			}
 		},
 		"fonts": {},

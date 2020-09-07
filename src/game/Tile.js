@@ -1,4 +1,5 @@
 import { fail } from "../utils/Log.js";
+import Constants from "../../samples/arpg/src/Constants.js";
 
 class Tile {
 	/**
@@ -35,6 +36,14 @@ class Tile {
 			count: 0,
 			index: 0
 		};
+	}
+
+	get screenX() {
+		return this.x * this.tilemap._tileWidth;
+	}
+
+	get screenY() {
+		return this.y * this.tilemap._tileHeight;
 	}
 
 	/**
