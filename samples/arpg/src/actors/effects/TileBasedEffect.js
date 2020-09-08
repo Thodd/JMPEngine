@@ -19,7 +19,8 @@ class TileBasedEffect extends Actor {
 					x: -3,
 					y: 9
 				},
-				frames: [0, 1]
+				frames: [0, 1],
+				speed: 10
 			},
 			water_shallow: {
 				layer: Constants.Layers.PLAYER_UNDER,
@@ -27,7 +28,8 @@ class TileBasedEffect extends Actor {
 					x: -4,
 					y: 10
 				},
-				frames: [2, 3]
+				frames: [2, 3],
+				speed: 10
 			}
 		}
 
@@ -46,7 +48,7 @@ class TileBasedEffect extends Actor {
 		if (anim) {
 			// update the step count and advance the animation if the threshold is reached
 			this.animations.stepcount += +moved;
-			if (this.animations.stepcount >= 10) {
+			if (this.animations.stepcount >= anim.speed) {
 				this.animations.stepcount = 0;
 				this.animations.index++;
 			}

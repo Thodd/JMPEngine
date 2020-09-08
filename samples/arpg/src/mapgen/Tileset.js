@@ -18,6 +18,9 @@ const types = {
 	GRASS: "grass",
 	GRASS_CUT: "grass_cut",
 
+	BUSH: "bush",
+	BUSH_CUT: "bush_cut",
+
 	WATER_DEEP: "water_deep",
 	WATER_SHALLOW: "water_shallow",
 

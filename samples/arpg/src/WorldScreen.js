@@ -19,7 +19,7 @@ class WorldScreen extends Screen {
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/town.json" } //tile_animation_tests, center_corners_free
+			"sampleMap": { url: "./maps/center_corners_free.json" } //tile_animation_tests, center_corners_free
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({
@@ -73,23 +73,47 @@ class WorldScreen extends Screen {
 
 	addText() {
 		// background
-		let g = new PIXI.Graphics();
-		g.beginFill(0xfdf0d1);
-		g.drawRect(0, 0, this.width, Constants.TILE_HEIGHT);
-		g.endFill();
-		let e = new Entity();
-		e.active = false; // no update needed
-		e.layer = Constants.Layers.UI;
-		e.configSprite({
-			replaceWith: g
-		});
+		// let g = new PIXI.Graphics();
+		// g.beginFill(0xfdf0d1);
+		// g.drawRect(8, this.height - Constants.TILE_HEIGHT * 3 - 8, this.width - 16, Constants.TILE_HEIGHT * 3);
+		// g.endFill();
+		// let e = new Entity();
+		// e.active = false; // no update needed
+		// e.layer = Constants.Layers.UI;
+		// e.configSprite({
+		// 	replaceWith: g
+		// });
+		// this.add(e);
 
-		this.add(e);
+		// let textShadow = new BitmapText({
+		// 	font: "font0",
+		// 	text: `This is some test checking the\nmaximum width of a text.\nLooks ok to me so far...`,
+		// 	leading: 3,
+		// 	color: 0x000000,
+		// 	x: 16,
+		// 	y: this.height - Constants.TILE_HEIGHT * 3
+		// });
+		// textShadow.layer = Constants.Layers.UI;
+		// this.add(textShadow);
+
+		// background
+		let g2 = new PIXI.Graphics();
+		g2.beginFill(0xfdf0d1);
+		g2.drawRect(0, 0, this.width, Constants.TILE_HEIGHT);
+		g2.endFill();
+		let e2 = new Entity();
+		e2.active = false; // no update needed
+		e2.layer = Constants.Layers.UI;
+		e2.configSprite({
+			replaceWith: g2
+		});
+		this.add(e2);
 
 		let textShadow = new BitmapText({
 			font: "font0",
-			text: `       *  Top-down Sample Adventure  *`,
-			color: 0x000000,
+			text: `<3 <3 <3 [x] [y]   UI goes here`,
+			leading: 3,
+			color: 0xff0000,
 			x: 4,
 			y: 4
 		});

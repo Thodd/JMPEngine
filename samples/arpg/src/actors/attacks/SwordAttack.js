@@ -55,11 +55,15 @@ class SwordAttack extends Actor {
 
 	checkTileBasedCollision() {
 		let tile = this.getClosestTile();
+		let showEffect = false;
 
-		if (tile.type === Tileset.Types.GRASS) {
-			let tileInfo = Tileset.getProperties(Tileset.Types.GRASS_CUT);
+		if (tile.type === Tileset.Types.GRASS || tile.type === Tileset.Types.BUSH) {
+			let tileInfo = Tileset.getProperties(`${tile.type}_cut`);
 			tile.set(tileInfo.id);
+			showEffect = true;
+		}
 
+		if (showEffect) {
 			// create grass cutting effect and position it on the screen
 			let grassCuttingEffect = SmallEffect.get();
 			grassCuttingEffect.x = tile.screenX;
