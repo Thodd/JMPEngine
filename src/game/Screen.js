@@ -244,7 +244,9 @@ class Screen {
 	 * Checks if the given Entity collides with any other Entity of the given types.
 	 * @param {Entity} e
 	 * @param {string[]} types
-	 * @param {boolean} returnAll
+	 * @param {boolean} returnAll if set to true, all colliding entities are returned,
+	 *                            if set to false only the first one is returned.
+	 *                            Default is false.
 	 * @param {Number} x
 	 * @param {Number} y
 	 */

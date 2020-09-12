@@ -240,8 +240,8 @@ class Entity {
 	 * @param {boolean} [returnAll] if set to true, all colliding entities are returned,
 	 *      if set to false only the first one is returned.
 	 *      Default is false.
-	 * @param {Number} [x] x-coordinate at which the entity will be placed for a collision check
-	 * @param {Number} [y] y-coordinate at which the entity will be placed for a collision check
+	 * @param {Number} [x=this.x] x-coordinate at which the entity will be placed for a collision check, defaults to this.x
+	 * @param {Number} [y=this.y] y-coordinate at which the entity will be placed for a collision check, defaults to this.y
 	 * @returns {Entity|Entity[]|undefined} either: the first found colliding Entity,
 	 *      or if returnAll is set to true: an array of all colliding Entities,
 	 *      or if no collision was detected: undefined.
