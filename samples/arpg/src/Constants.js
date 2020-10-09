@@ -11,6 +11,7 @@ const Constants = {
 		PLAYER_UNDER: 2,
 		PLAYER: 3,
 		PLAYER_OVER: 4,
+		SKY: 5,
 		UI: 7
 	}
 };

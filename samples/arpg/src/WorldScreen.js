@@ -9,12 +9,13 @@ import GameTile from "./mapgen/GameTile.js";
 import MapLoader from "./mapgen/MapLoader.js";
 import Player from "./actors/Player.js";
 import Constants from "./Constants.js";
+import Sign from "./actors/interactables/Sign.js";
 
 class WorldScreen extends Screen {
 	constructor() {
 		super();
 
-		//Entity.RENDER_HITBOX = 0xFF0000;
+		Entity.RENDER_HITBOX = 0xFF0000;
 
 		Tileset.init();
 
@@ -44,7 +45,12 @@ class WorldScreen extends Screen {
 				tile.set(tileId);
 
 				globalIndex++;
-			})
+			});
+
+			// create objects
+			mapData.objects.forEach((obj) => {
+				this.add(new Sign(obj.x, obj.y, obj["msg"]));
+			});
 
 			// player
 			this.player = new Player(this.width / 2 + Constants.TILE_WIDTH, this.height / 2 + Constants.TILE_HEIGHT*2);
@@ -53,6 +59,9 @@ class WorldScreen extends Screen {
 			// some sample text
 			this.addText();
 
+			// init daylight
+			// this.setDaylight();
+
 			this.centerCameraAround(this.player);
 		});
 	}
@@ -60,6 +69,8 @@ class WorldScreen extends Screen {
 	setup() {
 		// fix UI layer camera so it's not scrolled out of view
 		this.setCameraFixedForLayer(Constants.Layers.UI, true);
+		// same for the sky overlay
+		this.setCameraFixedForLayer(Constants.Layers.SKY, true);
 	}
 
 	centerCameraAround(e){
@@ -67,35 +78,15 @@ class WorldScreen extends Screen {
 		this.cam.y = e.y - (this.height / 2);
 	}
 
+	getPlayer() {
+		return this.player;
+	}
+
 	getTilemap() {
 		return this._tilemap;
 	}
 
 	addText() {
-		// background
-		// let g = new PIXI.Graphics();
-		// g.beginFill(0xfdf0d1);
-		// g.drawRect(8, this.height - Constants.TILE_HEIGHT * 3 - 8, this.width - 16, Constants.TILE_HEIGHT * 3);
-		// g.endFill();
-		// let e = new Entity();
-		// e.active = false; // no update needed
-		// e.layer = Constants.Layers.UI;
-		// e.configSprite({
-		// 	replaceWith: g
-		// });
-		// this.add(e);
-
-		// let textShadow = new BitmapText({
-		// 	font: "font0",
-		// 	text: `This is some test checking the\nmaximum width of a text.\nLooks ok to me so far...`,
-		// 	leading: 3,
-		// 	color: 0x000000,
-		// 	x: 16,
-		// 	y: this.height - Constants.TILE_HEIGHT * 3
-		// });
-		// textShadow.layer = Constants.Layers.UI;
-		// this.add(textShadow);
-
 		// background
 		let g2 = new PIXI.Graphics();
 		g2.beginFill(0xfdf0d1);
@@ -119,6 +110,23 @@ class WorldScreen extends Screen {
 		});
 		textShadow.layer = Constants.Layers.UI;
 		this.add(textShadow);
+	}
+
+	setDaylight() {
+		if (!this._skyNight) {
+			this._skyNight = new Entity();
+			this._skyNight.layer = Constants.Layers.SKY;
+
+			let g = new PIXI.Graphics();
+			g.beginFill(0x11304e, 0.7); //eda867
+			g.drawRect(0, 0, this.width, this.height);
+			g.endFill();
+			this._skyNight.configSprite({
+				replaceWith: g
+			});
+
+			this.add(this._skyNight);
+		}
 	}
 
 	update() {}

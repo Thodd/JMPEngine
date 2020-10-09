@@ -21,6 +21,8 @@ class Player extends Actor {
 			h: 10
 		});
 
+		this.dir = "down";
+
 		this.setTypes(["player"]);
 
 		this.configSprite({

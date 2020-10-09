@@ -25,9 +25,16 @@ function fail(s, prefix) {
 	throw new Error(s);
 }
 
+function assert(expr, s, prefix) {
+	if (!expr) {
+		fail(s, prefix);
+	}
+}
+
 export {
 	log,
 	warn,
 	error,
-	fail
+	fail,
+	assert
 };

@@ -1,4 +1,4 @@
-import { error, warn } from "../../../../src/utils/Log.js";
+import { error, warn, assert } from "../../../../src/utils/Log.js";
 import JSONCache from "../../../../src/assets/JSONCache.js";
 
 let _initialized;
@@ -40,9 +40,7 @@ const parseProperty = function(tile, prop) {
 	// We do this as a string since Tiled does not support JS arrays or objects as properties...
 	// ...or I'm stupid and couldn't figure out how :(
 	if (prop.name === "anim_frames") {
-		if (typeof prop.value !== "string") {
-			error(`Error detected: 'anim_frames' was not defined as a string for tile #${tile.id}.`, "Tileset");
-		}
+		assert(typeof prop.value === "string", `Error detected: 'anim_frames' was not defined as a string for tile #${tile.id}.`, "Tileset");
 		tile.animation = tile.animation || {};
 		tile.animation.frames = prop.value.split(",").map((i) => {
 			return parseInt(i);
@@ -62,9 +60,7 @@ const parseProperty = function(tile, prop) {
 	} else {
 		// validate type values
 		if (prop.name === "type") {
-			if (_typeValues.indexOf(prop.value) == -1) {
-				error(`Error detected: unknown type-value '${prop.value}' for tile #${tile.id}.`, "Tileset");
-			}
+			assert(_typeValues.indexOf(prop.value) >= 0, `Error detected: unknown type-value '${prop.value}' for tile #${tile.id}.`, "Tileset")
 		}
 
 		// standard properties, no special logic required

@@ -1,0 +1,148 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "center_corners_free.json",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "/Users/thodd/js/JMPEngine/samples/arpg/img/sample_map.json": {
+            "scale": 1.3749023437499999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 248.38127707933802,
+                "y": 256.3818453015129
+            }
+        },
+        "10x10.json": {
+            "scale": 2.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 126.2,
+                "y": 135.79999999999998
+            }
+        },
+        "Tileset.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "algo_tests.json": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 113.75,
+                "y": 180.75
+            }
+        },
+        "center_corners_free.json": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 200,
+                "y": 200.33333333333334
+            }
+        },
+        "sample_map.json": {
+            "scale": 1.3749023437499999,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": 254.92719653384472,
+                "y": 253.4725477661766
+            }
+        },
+        "smaller.json": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 195,
+                "y": 213
+            }
+        },
+        "testing.json": {
+            "scale": 1.4977,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 200.3071376110035,
+                "y": 200.64098284035518
+            }
+        },
+        "tile_animation_tests.json": {
+            "scale": 1.47,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 200,
+                "y": 200.34013605442175
+            }
+        },
+        "tileset10.json": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "tileset16.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "town.json": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 200,
+                "y": 200.33333333333334
+            }
+        },
+        "untitled.json": {
+            "scale": 1.47,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 205.10204081632654,
+                "y": 218.70748299319726
+            }
+        }
+    },
+    "frame.defaultDuration": 200,
+    "map.fixedSize": true,
+    "map.height": 25,
+    "map.lastUsedExportFilter": "Json-Kartendateien (*.json)",
+    "map.lastUsedFormat": "json",
+    "map.orientation": 1,
+    "map.renderOrder": 2,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 25,
+    "openFiles": [
+        "tileset16.json",
+        "town.json",
+        "center_corners_free.json",
+        "testing.json",
+        "tile_animation_tests.json"
+    ],
+    "project": "ARPG.tiled-project",
+    "property.type": "string",
+    "recentFiles": [
+        "tileset16.json",
+        "town.json",
+        "tile_animation_tests.json",
+        "testing.json",
+        "center_corners_free.json",
+        "10x10.json",
+        "untitled.json",
+        "Tileset.json",
+        "algo_tests.json",
+        "tileset10.json",
+        "smaller.json"
+    ],
+    "tileset.embedInMap": false,
+    "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",
+    "tileset.lastUsedFormat": "json",
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.transparentColor": "#ff00ff",
+    "tileset.type": 0,
+    "tileset.useTransparentColor": false
+}

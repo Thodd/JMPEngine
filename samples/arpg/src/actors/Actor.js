@@ -40,36 +40,36 @@ class Actor extends Entity {
 		}
 	}
 
-	/**
-	 * Returns all Tiles this actor is touching wrt. its hitbox.
-	 * Touching means ALL tiles, no matter if they are
-	 */
-	getTouchingTiles() {
-		let screen = this.getScreen();
-		let tm = screen.getTilemap();
+	// /**
+	//  * Returns all Tiles this actor is touching wrt. its hitbox.
+	//  * Touching means ALL tiles, no matter if they are
+	//  */
+	// getTouchingTiles() {
+	// 	let screen = this.getScreen();
+	// 	let tm = screen.getTilemap();
 
-		let w = Constants.TILE_WIDTH;
-		let h = Constants.TILE_HEIGHT;
+	// 	let w = Constants.TILE_WIDTH;
+	// 	let h = Constants.TILE_HEIGHT;
 
-		let left = this.x + this._hitbox.x;
-		let right = this.x + this._hitbox.x + this._hitbox.w - 1;
-		let top = this.y + this._hitbox.y;
-		let bottom = this.y + this._hitbox.y + this._hitbox.h - 1;
+	// 	let left = this.x + this._hitbox.x;
+	// 	let right = this.x + this._hitbox.x + this._hitbox.w - 1;
+	// 	let top = this.y + this._hitbox.y;
+	// 	let bottom = this.y + this._hitbox.y + this._hitbox.h - 1;
 
-		let tileTopRight = tm.get(Math.floor(right / w), Math.floor(top / h));
-		let tileTopLeft = tm.get(Math.floor(left / w), Math.floor(top / h));
+	// 	let tileTopRight = tm.get(Math.floor(right / w), Math.floor(top / h));
+	// 	let tileTopLeft = tm.get(Math.floor(left / w), Math.floor(top / h));
 
-		let tileBottomRight = tm.get(Math.floor(right / w), Math.floor(bottom / h));
-		let tileBottomLeft = tm.get(Math.floor(left / w), Math.floor(bottom / h));
+	// 	let tileBottomRight = tm.get(Math.floor(right / w), Math.floor(bottom / h));
+	// 	let tileBottomLeft = tm.get(Math.floor(left / w), Math.floor(bottom / h));
 
-		let result = [];
-		tileTopRight ? result.push(tileTopRight) : undefined;
-		tileTopLeft ? result.push(tileTopLeft) : undefined;
-		tileBottomRight ? result.push(tileBottomRight) : undefined;
-		tileBottomLeft ? result.push(tileBottomLeft) : undefined;
+	// 	let result = [];
+	// 	tileTopRight ? result.push(tileTopRight) : undefined;
+	// 	tileTopLeft ? result.push(tileTopLeft) : undefined;
+	// 	tileBottomRight ? result.push(tileBottomRight) : undefined;
+	// 	tileBottomLeft ? result.push(tileBottomLeft) : undefined;
 
-		return result;
-	}
+	// 	return result;
+	// }
 }
 
 export default Actor;
