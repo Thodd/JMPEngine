@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "center_corners_free.json",
+    "activeFile": "testing.json",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -40,8 +40,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 200,
-                "y": 200.33333333333334
+                "x": 197.33333333333331,
+                "y": 230.33333333333334
             }
         },
         "sample_map.json": {
@@ -64,8 +64,8 @@
             "scale": 1.4977,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200.3071376110035,
-                "y": 200.64098284035518
+                "x": 196.9686853174868,
+                "y": 223.3424584362689
             }
         },
         "tile_animation_tests.json": {
@@ -114,7 +114,6 @@
     "openFiles": [
         "tileset16.json",
         "town.json",
-        "center_corners_free.json",
         "testing.json",
         "tile_animation_tests.json"
     ],
