@@ -13,7 +13,8 @@ const DEFAULTS = {
 	fps: 60,
 	startScreen: null,
 	hideCursor: false,
-	skipIntro: false
+	skipIntro: false,
+	assets: {}
 };
 
 

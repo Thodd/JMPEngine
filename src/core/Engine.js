@@ -316,7 +316,7 @@ const Engine = {
 
 		log("Gameloop started.", "Engine");
 
-		// preload built-in assets e.g. font0
+		// preload built-in assets e.g. font0 and font1
 		await AssetLoader.load(BuiltInAssets);
 
 		// Now we do some parallel stuff while the intro screen is showing.

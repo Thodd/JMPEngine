@@ -1,0 +1,30 @@
+{
+	"name": "Tennis",
+
+	"w": "180",
+	"h": "260",
+	"scale": "2.5",
+
+	"bg": "0x272d37",
+
+	"skipIntro": true,
+
+	"startScreen": "./src/GameScreen.js",
+
+	"assets": {
+		"spritesheets": {
+			"player": {
+				"url": "./img/player.png",
+				"w": 20,
+				"h": 20
+			},
+			"court": {
+				"url": "./img/court.png"
+			},
+			"net": {
+				"url": "./img/net.png"
+			}
+		}
+	}
+
+}

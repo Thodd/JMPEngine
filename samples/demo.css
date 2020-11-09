@@ -3,11 +3,11 @@ body {
 	color: #EEEEEE;
 	font-family: sans-serif;
 	font-weight: 100;
-	margin: 5;
+	margin: 0;
 }
 
 #content {
-	margin-top: 60px; /* spacing for performance stats */
+	margin-top: 50px; /* spacing for performance stats */
 	background: #000000;
 	border: 1px solid #525252;
 	padding: 3px;
