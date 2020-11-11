@@ -23,6 +23,16 @@
 			},
 			"net": {
 				"url": "./img/net.png"
+			},
+			"ball": {
+				"url": "./img/ball.png",
+				"w": 6,
+				"h": 6
+			},
+			"ball_shadow": {
+				"url": "./img/ball_shadow.png",
+				"w": 6,
+				"h": 6
 			}
 		}
 	}

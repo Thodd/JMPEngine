@@ -6,9 +6,11 @@ import Keys from "../../../src/input/Keys.js";
 const Layers = {
 	COURT: 0,
 	PLAYER_TOP: 1,
-	NET: 2,
-	PLAYER_BOTTOM: 3,
-	UI: 4
+	BALL_SHADOW: 2,
+	NET: 3,
+	PLAYER_BOTTOM: 4,
+	BALL: 5,
+	UI: 6
 }
 
 class GameScreen extends Screen {
@@ -30,7 +32,42 @@ class GameScreen extends Screen {
 		this.player.layer = Layers.PLAYER_TOP;
 		this.add(this.player);
 
-		this.player.update = function() {
+		// this.player.update = function() {
+		// 	if (Keyboard.down(Keys.LEFT)) {
+		// 		this.x--;
+		// 	} else if (Keyboard.down(Keys.RIGHT)) {
+		// 		this.x++;
+		// 	}
+
+		// 	if (Keyboard.down(Keys.UP)) {
+		// 		this.y--;
+		// 	} else if (Keyboard.down(Keys.DOWN)) {
+		// 		this.y++;
+		// 	}
+		// };
+
+		this.createBall();
+	}
+
+	createBall() {
+		// BALL (NOT the actual ball position!)
+		let ballEntity = this.ball = new Entity(100, 100);
+		this.ball.layer = Layers.BALL;
+		this.ball.configSprite({
+			sheet: "ball",
+			id: 1
+		});
+		this.add(this.ball);
+
+		// SHADOW (actual Ball position!)
+		this.ballShadow = new Entity(100, 110);
+		this.ballShadow.steps = 0;
+		this.ballShadow.layer = Layers.BALL_SHADOW;
+		this.ballShadow.configSprite({
+			sheet: "ball_shadow",
+			id: 1
+		});
+		this.ballShadow.update = function() {
 			if (Keyboard.down(Keys.LEFT)) {
 				this.x--;
 			} else if (Keyboard.down(Keys.RIGHT)) {
@@ -42,7 +79,23 @@ class GameScreen extends Screen {
 			} else if (Keyboard.down(Keys.DOWN)) {
 				this.y++;
 			}
+
+			this.steps+=0.05;
+			let bounceStep = Math.cos(this.steps);
+			ballEntity.x = this.x;
+			ballEntity.y = this.y - (10 + 10 * bounceStep);
+
+			ballEntity.configSprite({
+				sheet: "ball",
+				id: -Math.floor(4 * bounceStep)
+			});
+
+			this.configSprite({
+				sheet: "ball_shadow",
+				id: -Math.floor(4 * bounceStep)
+			});
 		};
+		this.add(this.ballShadow);
 	}
 
 	/**
