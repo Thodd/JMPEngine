@@ -1,8 +1,6 @@
 import Screen from "../../../src/game/Screen.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import BitmapText from "../../../src/game/BitmapText.js";
-import GFX from "../../../src/gfx/GFX.js";
-import Buffer from "../../../src/gfx/Buffer.js";
 import Helper from "../../../src/utils/Helper.js";
 import GameController from "./GameController.js";
 import Constants from "./Constants.js";
@@ -18,7 +16,7 @@ class WorldScreen extends Screen {
 		/**
 		 * Tilemap demo
 		 */
-		let tm = new Tilemap({sheet: "tileset", w: Constants.MAP_WIDTH, h: Constants.MAP_HEIGHT, version: Tilemap.Version.A});
+		let tm = new Tilemap({sheet: "tileset", w: Constants.MAP_WIDTH, h: Constants.MAP_HEIGHT});
 		tm.x = 0;
 		tm.y = 0;
 		tm.layer = 1;
@@ -29,12 +27,7 @@ class WorldScreen extends Screen {
 
 		this.add(tm);
 
-		// text sample
-		let textShadow = new BitmapText({text: "JMP Adventure", x: 1, y: 122, color: "#000000", useKerning: true});
-		textShadow.layer = 3;
-		this.add(textShadow);
-
-		let textColored = new BitmapText({text: "JMP Adventure", x: 0, y: 121, color: "#FFFFFF", useKerning: true});
+		let textColored = new BitmapText({font:"font1", text: "JMP Adventure", x: 0, y: 121});
 		textColored.layer = 3;
 		this.add(textColored);
 	}
@@ -44,8 +37,7 @@ class WorldScreen extends Screen {
 	}
 
 	setup() {
-		//GFX.getBuffer(1).setRenderMode(Buffer.RenderModes.RAW);
-		GFX.getBuffer(3).setCameraFixed(true);
+		this.setCameraFixedForLayer(3, true);
 	}
 }
 

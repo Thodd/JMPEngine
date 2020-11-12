@@ -18,7 +18,7 @@ class Player extends BaseActor {
 
 		this._scheduledAnimations = [];
 
-		this.setSprite({
+		this.configSprite({
 			sheet: "characters",
 
 			offsetY: 0,
@@ -28,22 +28,22 @@ class Player extends BaseActor {
 
 				"down": {
 					frames: [16, 17],
-					delay: 30
+					dt: 40
 				},
 
 				"up": {
 					frames: [18, 19],
-					delay: 30
+					dt: 40
 				},
 
 				"left": {
 					frames: [0, 1],
-					delay: 30
+					dt: 40
 				},
 
 				"right": {
 					frames: [2, 3],
-					delay: 30
+					dt: 40
 				}
 			}
 		});
@@ -109,7 +109,7 @@ class Player extends BaseActor {
 
 	centerCamera() {
 		let s = this.getScreen();
-		s.cam.x = this.x - 7 * Constants.TILE_WIDTH;
+		s.cam.x = this.x - 9 * Constants.TILE_WIDTH;
 		s.cam.y = this.y - 6 * Constants.TILE_HEIGHT;
 	}
 }

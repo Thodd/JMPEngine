@@ -49,7 +49,7 @@ class ChainAnimation extends BaseAnimation {
 				}
 			}
 		} else {
-			// end of animation chain reached
+			// end of animation chain reached: currentIndex overflows the length of the chain-array
 			this._isDone = true;
 		}
 
