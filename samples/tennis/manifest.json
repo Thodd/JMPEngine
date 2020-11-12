@@ -26,13 +26,13 @@
 			},
 			"ball": {
 				"url": "./img/ball.png",
-				"w": 6,
-				"h": 6
+				"w": 8,
+				"h": 8
 			},
 			"ball_shadow": {
 				"url": "./img/ball_shadow.png",
-				"w": 6,
-				"h": 6
+				"w": 8,
+				"h": 8
 			}
 		}
 	}
