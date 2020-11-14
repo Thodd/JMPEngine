@@ -1,5 +1,4 @@
 import AnimationPool from "./animations/AnimationPool.js";
-import Player from "./actors/Player.js";
 //import { log } from "../../../src/utils/Log.js";
 
 class GameController {
@@ -7,9 +6,15 @@ class GameController {
 		this.animations = [];
 		this.actors = [];
 
-		this.player = new Player({gc: this, map_x: 7, map_y: 7});
-
 		this.nextActorPriority = "Player";
+	}
+
+	addActor(a) {
+		this.actors.push(a);
+	}
+
+	addPlayer(p) {
+		this.player = p;
 	}
 
 	update() {

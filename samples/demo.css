@@ -16,6 +16,7 @@ body {
 
 #content canvas {
 	border: 1px solid #525252;
+	margin-bottom: -4px;
 }
 
 .jmpDemoPanelOuter {

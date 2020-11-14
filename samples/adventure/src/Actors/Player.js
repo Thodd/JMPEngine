@@ -7,8 +7,8 @@ import AnimationPool from "../animations/AnimationPool.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
 
 class Player extends BaseActor {
-	constructor({gc, map_x, map_y}) {
-		super({gc, map_x, map_y});
+	constructor({gc, gameTile}) {
+		super({gc, gameTile});
 
 		this.layer = 2;
 
@@ -49,10 +49,14 @@ class Player extends BaseActor {
 		});
 	}
 
+	toString() {
+		return `Player#${this._id}`;
+	}
+
 	takeTurn() {
 		// GC has passed us priority so we activate input check during the game loop
 		this.checkForInput = true;
-		log("player turn");
+		log("taking turn - waiting for input", "Player");
 	}
 
 	endTurn() {
@@ -61,8 +65,10 @@ class Player extends BaseActor {
 		this.checkForInput = false;
 
 		// notify the GC that the player has made their turn
-		this.gameController.endPlayerTurn(this._scheduledAnimations);
+		this.getGameController().endPlayerTurn(this._scheduledAnimations);
 		this._scheduledAnimations = [];
+
+		log("turn ended", "Player");
 	}
 
 	update() {
@@ -89,13 +95,15 @@ class Player extends BaseActor {
 			// we have some direction input, so we start a movement animation
 			if (xDif != 0 || yDif != 0) {
 
-				let startX = this.map_x;
-				let startY = this.map_y;
-				this.map_x += xDif;
-				this.map_y += yDif;
+				let startX = this.gameTile.x;
+				let startY = this.gameTile.y;
+				let endX = startX + xDif;
+				let endY = startY + yDif;
+
+				this.moveTo(endX, endY);
 
 				let moveAnim = AnimationPool.get(MovementAnimation, this);
-				moveAnim.setValues(startX, startY, this.map_x, this.map_y);
+				moveAnim.setValues(startX, startY, endX, endY);
 				this._scheduledAnimations.push(moveAnim);
 
 				this.endTurn();
