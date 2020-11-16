@@ -37,7 +37,7 @@ class GameController {
 
 				// skip finished animations
 				if (!animation._isDone) {
-					let done = animation.animate();
+					let done = animation._animate();
 
 					// if at least one animation is not done, we keep on updating
 					if (!done) {

@@ -4,15 +4,12 @@ import Constants from "../Constants.js";
 class MovementAnimation extends BaseAnimation {
 	constructor(actor) {
 		super(actor);
-
-		this.speed = 1;
-
 		this.reset();
 	}
 
 	reset() {
 		super.reset();
-
+		this.speed = 1;
 		this.startX = 0;
 		this.startY = 0;
 		this.goalX = 0;
@@ -21,28 +18,58 @@ class MovementAnimation extends BaseAnimation {
 		this.dy = 0;
 	}
 
+	/**
+	 * Sets the values for this MovementAnimation from the Actor's current GameTile to the given goal GameTile.
+	 * @param {GameTile} goalTile the GameTile on which the animation should end
+	 */
+	moveTo(goalTile) {
+		this.moveFromTo(this.actor.getTile(), goalTile);
+	}
+
+	/**
+	 * Sets the values for this MovementAnimation from the given start GameTile to the given goal GameTile
+	 * @param {GameTile} startTile start GameTile from which the animation should begin
+	 * @param {GameTile} goalTile the GameTile on which the animation should end
+	 */
+	moveFromTo(startTile, goalTile) {
+		this.setValues(
+			startTile.x * Constants.TILE_WIDTH, startTile.y * Constants.TILE_HEIGHT,
+			goalTile.x * Constants.TILE_WIDTH, goalTile.y * Constants.TILE_HEIGHT
+		);
+	}
+
+	/**
+	 * Sets the values for this MovementAnimation from a start x/y position (in pixels)
+	 * to a goal x/y position (in pixels).
+	 * @param {int} startX X coordinate start value (in pixels)
+	 * @param {*} startY Y coordinate start value (in pixels)
+	 * @param {*} goalX X coordinate goal value (in pixels)
+	 * @param {*} goalY Y coordinate goal value (in pixels)
+	 */
 	setValues(startX, startY, goalX, goalY) {
-		this.startX = startX * Constants.TILE_WIDTH;
-		this.startY = startY * Constants.TILE_HEIGHT;
+		this.startX = startX;
+		this.startY = startY;
 
-		this.goalX  = goalX  * Constants.TILE_WIDTH;
-		this.goalY  = goalY  * Constants.TILE_HEIGHT;
+		// move Actor GFX to the animation start
+		this.actor.x = startX;
+		this.actor.y = startY;
 
+		this.goalX  = goalX;
+		this.goalY  = goalY;
+
+		// TODO: Calculate slope correctly (dx/dy is != 1 or 0)!!
 		this.dx = Math.sign(goalX - startX);
 		this.dy = Math.sign(goalY - startY);
 	}
 
 	animate() {
-		if (!this._isDone) {
-			this.actor.x += this.speed * this.dx;
-			this.actor.y += this.speed * this.dy;
+		this.actor.x += this.speed * this.dx;
+		this.actor.y += this.speed * this.dy;
 
-			if (this.actor.x == this.goalX && this.actor.y == this.goalY) {
-				this._isDone = true;
-			}
+		// TODO: Handle (slope != 0 or 1) correctly
+		if (this.actor.x == this.goalX && this.actor.y == this.goalY) {
+			this.done();
 		}
-
-		return this._isDone;
 	}
 }
 

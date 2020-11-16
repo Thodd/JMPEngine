@@ -1,3 +1,4 @@
+import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 import { log, fail } from "../../../../src/utils/Log.js";
 
 const animations = {};
@@ -21,7 +22,13 @@ const AnimationPool = {
 			anim = new AnimationClass(actor);
 		}
 
+		anim.setActor(actor);
+
 		return anim;
+	},
+
+	_pool() {
+		return animations;
 	},
 
 	release(anim) {
@@ -34,5 +41,7 @@ const AnimationPool = {
 		}
 	}
 };
+
+exposeOnWindow("AnimationPool", AnimationPool);
 
 export default AnimationPool;

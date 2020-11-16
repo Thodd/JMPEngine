@@ -42,7 +42,7 @@ class ChainAnimation extends BaseAnimation {
 
 		if (animation) {
 			if (!animation._isDone) {
-				let done = animation.animate();
+				let done = animation._animate();
 				if (done) {
 					// advance to next animation in the chain
 					this.currentIndex++;

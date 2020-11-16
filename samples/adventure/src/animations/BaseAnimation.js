@@ -16,14 +16,26 @@ class BaseAnimation {
 		this.actor = actor;
 	}
 
-	animate() {
+	/**
+	 * Lifecycle function for animation update
+	 */
+	_animate() {
 		if (!this._isDone) {
-			this._isDone = true;
+			this.animate();
 		}
+		return this._isDone;
+	}
+
+	animate() {
+		this.done();
 	}
 
 	isDone() {
 		return this._isDone;
+	}
+
+	done() {
+		this._isDone = true;
 	}
 }
 

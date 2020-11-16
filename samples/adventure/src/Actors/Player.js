@@ -5,6 +5,7 @@ import Constants from "../Constants.js";
 import BaseActor from "./BaseActor.js";
 import AnimationPool from "../animations/AnimationPool.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
+import BumpAnimation from "../animations/BumpAnimation.js";
 
 class Player extends BaseActor {
 	constructor({gc, gameTile}) {
@@ -71,6 +72,10 @@ class Player extends BaseActor {
 		log("turn ended", "Player");
 	}
 
+	scheduleAnimation(anim) {
+		this._scheduledAnimations.push(anim);
+	}
+
 	update() {
 		if (this.checkForInput) {
 			let xDif = 0;
@@ -95,16 +100,17 @@ class Player extends BaseActor {
 			// we have some direction input, so we start a movement animation
 			if (xDif != 0 || yDif != 0) {
 
-				let startX = this.gameTile.x;
-				let startY = this.gameTile.y;
-				let endX = startX + xDif;
-				let endY = startY + yDif;
+				let startTile = this.gameTile;
+				let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
-				this.moveTo(endX, endY);
+				// move Actor to tile
+				// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
+				this.moveToTile(goalTile);
 
+				// start pixel-based MovementAnimation from one tile to another
 				let moveAnim = AnimationPool.get(MovementAnimation, this);
-				moveAnim.setValues(startX, startY, endX, endY);
-				this._scheduledAnimations.push(moveAnim);
+				moveAnim.moveFromTo(startTile, goalTile);
+				this.scheduleAnimation(moveAnim);
 
 				this.endTurn();
 			}

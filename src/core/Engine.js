@@ -222,7 +222,9 @@ function setupDebugUI() {
  * Engine Singleton
  */
 const Engine = {
-
+	/**
+	 * Returns the underlying PIXI.js App instance.
+	 */
 	getPixiApp() {
 		return pixiApp;
 	},
