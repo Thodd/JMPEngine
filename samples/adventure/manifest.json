@@ -5,7 +5,7 @@
 
 	"w": 190,
 	"h": 130,
-	"scale": 3,
+	"scale": 2,
 	"hideCursor": false,
 	"skipIntro": true,
 
@@ -13,8 +13,13 @@
 		"spritesheets": {
 			"characters": {
 				"url": "./img/characters.png",
-				"w": 10,
-				"h": 10
+				"w": 16,
+				"h": 16
+			},
+			"enemies": {
+				"url": "./img/enemies.png",
+				"w": 16,
+				"h": 16
 			},
 			"tileset": {
 				"url": "./img/tileset.png",

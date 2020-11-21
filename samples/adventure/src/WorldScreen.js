@@ -7,6 +7,7 @@ import GameController from "./GameController.js";
 import Player from "./actors/Player.js";
 import Constants from "./Constants.js";
 import GameTile from "./maps/GameTile.js";
+import NPC from "./actors/NPC.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -21,17 +22,23 @@ class WorldScreen extends Screen {
 		this._tileMap.layer = 1;
 
 		this._tileMap.each((tile) => {
-			tile.set(Helper.choose([1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5]));
+			tile.set(Helper.choose([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 7, 8, 9, 12, 14]));
 		});
 
 		this.add(this._tileMap);
 
-
-		this.player = new Player({gameTile: this._tileMap.get(7, 7)});
+		// player
+		this.player = new Player({gameTile: this._tileMap.get(10, 10)});
 		this.add(this.player);
 
+		// sample actor
+		this.enemy = new NPC({gameTile: this._tileMap.get(7, 7)});
+		this.add(this.enemy);
+
+		// game controller
 		this._gameController = new GameController(this);
 		this._gameController.addPlayer(this.player);
+		//this._gameController.addActor(this.enemy);
 
 
 		// sample text

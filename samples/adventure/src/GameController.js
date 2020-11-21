@@ -80,7 +80,7 @@ class GameController {
 
 		if (this.nextActorPriority === "Other") {
 			// update actors
-			for (let i = 0, len = this.actors; i < len; i++) {
+			for (let i = 0, len = this.actors.length; i < len; i++) {
 				let a = this.actors[i];
 				let animations = a.takeTurn();
 				// schedule any given animation, e.g. movement, hurting, attacking, ...

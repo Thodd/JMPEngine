@@ -8,10 +8,10 @@ import MovementAnimation from "../animations/MovementAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
 
 class Player extends BaseActor {
-	constructor({gc, gameTile}) {
-		super({gc, gameTile});
+	constructor({gameTile}) {
+		super({gameTile});
 
-		this.layer = 2;
+		this.layer = this.layer = Constants.Layers.PLAYER;
 
 		this._lastDir = "down";
 
@@ -22,18 +22,21 @@ class Player extends BaseActor {
 		this.configSprite({
 			sheet: "characters",
 
-			offsetY: 0,
+			offset: {
+				x: -4,
+				y: -9
+			},
 
 			animations: {
 				default: "down",
 
 				"down": {
-					frames: [16, 17],
+					frames: [4, 5],
 					dt: 40
 				},
 
 				"up": {
-					frames: [18, 19],
+					frames: [6, 7],
 					dt: 40
 				},
 

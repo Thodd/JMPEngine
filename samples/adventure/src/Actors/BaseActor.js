@@ -8,6 +8,8 @@ class BaseActor extends Entity {
 	constructor({gameTile}) {
 		super({});
 
+		this.layer = Constants.Layers.NPC;
+
 		// global ID to distinguish default actors during debugging.
 		this._id = _ID++;
 
