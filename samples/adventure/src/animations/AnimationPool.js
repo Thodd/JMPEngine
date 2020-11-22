@@ -22,6 +22,7 @@ const AnimationPool = {
 			anim = new AnimationClass(actor);
 		}
 
+		anim.reset();
 		anim.setActor(actor);
 
 		return anim;
@@ -34,7 +35,6 @@ const AnimationPool = {
 	release(anim) {
 		// check if the anim is finished, only finished animations should be released
 		if (anim.isDone()) {
-			anim.release();
 			animations[anim.constructor.name].push(anim);
 		} else {
 			fail(`releasing unfinished animation of type ${anim.constructor.name}!`, "AnimationPool");

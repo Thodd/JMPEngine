@@ -31,20 +31,16 @@ class WorldScreen extends Screen {
 		this.player = new Player({gameTile: this._tileMap.get(10, 10)});
 		this.add(this.player);
 
-		// sample actor
-		this.enemy = new NPC({gameTile: this._tileMap.get(7, 7)});
-		this.add(this.enemy);
-
 		// game controller
 		this._gameController = new GameController(this);
 		this._gameController.addPlayer(this.player);
-		//this._gameController.addActor(this.enemy);
 
-
-		// sample text
-		let textColored = new BitmapText({font:"font1", text: "JMP Adventure", x: 0, y: 121, color: 0xFF8500});
-		textColored.layer = 3;
-		this.add(textColored);
+		// sample actor
+		for (let i = 0; i < 10; i++) {
+			this.enemy = new NPC({gameTile: this._tileMap.get(7, 7)});
+			this.add(this.enemy);
+			this._gameController.addActor(this.enemy);
+		}
 	}
 
 	update() {

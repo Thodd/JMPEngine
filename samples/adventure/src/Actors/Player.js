@@ -5,7 +5,7 @@ import Constants from "../Constants.js";
 import BaseActor from "./BaseActor.js";
 import AnimationPool from "../animations/AnimationPool.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
-import BumpAnimation from "../animations/BumpAnimation.js";
+// import BumpAnimation from "../animations/BumpAnimation.js";
 
 class Player extends BaseActor {
 	constructor({gameTile}) {
@@ -106,14 +106,18 @@ class Player extends BaseActor {
 				let startTile = this.gameTile;
 				let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
-				// move Actor to tile
-				// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
-				this.moveToTile(goalTile);
+				// if we are out of bounds, the tilemap does not return a tile,
+				// we end the turn anyway
+				if (goalTile) {
+					// move Actor to tile
+					// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
+					this.moveToTile(goalTile);
 
-				// start pixel-based MovementAnimation from one tile to another
-				let moveAnim = AnimationPool.get(MovementAnimation, this);
-				moveAnim.moveFromTo(startTile, goalTile);
-				this.scheduleAnimation(moveAnim);
+					// start pixel-based MovementAnimation from one tile to another
+					let moveAnim = AnimationPool.get(MovementAnimation, this);
+					moveAnim.moveFromTo(startTile, goalTile);
+					this.scheduleAnimation(moveAnim);
+				}
 
 				this.endTurn();
 			}

@@ -4,10 +4,6 @@ class BaseAnimation {
 		this._isDone = false;
 	}
 
-	release() {
-		this.reset();
-	}
-
 	reset() {
 		this._isDone = false;
 	}

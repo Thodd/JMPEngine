@@ -1,4 +1,3 @@
-import Helper from "../../../../src/utils/Helper.js";
 import BaseActor from "./BaseActor.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
 import AnimationPool from "../animations/AnimationPool.js";
@@ -32,24 +31,20 @@ class NPC extends BaseActor {
 		let startTile = this.getTile();
 
 		// pick random tile to move to
-		let newTile = this.getRandomAdjacentTile();
+		let goalTile = this.getRandomAdjacentTile();
 
-		if (newTile) {
-			this.moveToTile(newTile);
+		// only move if the start and goal tile are different
+		// saves some Animation instances etc.
+		if (goalTile && goalTile != startTile) {
+			this.moveToTile(goalTile);
 			let a = AnimationPool.get(MovementAnimation, this);
-			a.moveFromTo(startTile, newTile);
+			a.moveFromTo(startTile, goalTile);
 			anims.push(a);
 		}
 
 		return anims;
 	}
 
-	getRandomAdjacentTile() {
-		let xx = Helper.choose([-1,0,1]);
-		let yy = Helper.choose([-1,0,1]);
-
-		return this.getTilemap().get(this.gameTile.x + xx, this.gameTile.y + yy);
-	}
 }
 
 export default NPC;

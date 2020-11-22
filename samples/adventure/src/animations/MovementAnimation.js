@@ -1,10 +1,13 @@
 import BaseAnimation from "./BaseAnimation.js";
 import Constants from "../Constants.js";
 
+window.move_ID = 0;
+
 class MovementAnimation extends BaseAnimation {
 	constructor(actor) {
 		super(actor);
 		this.reset();
+		window.move_ID++;
 	}
 
 	reset() {
@@ -60,6 +63,12 @@ class MovementAnimation extends BaseAnimation {
 		// TODO: Calculate slope correctly (dx/dy is != 1 or 0)!!
 		this.dx = Math.sign(goalX - startX);
 		this.dy = Math.sign(goalY - startY);
+
+		// nothing to animate!
+		// we need to detect this situation, otherwise we block the animation system
+		if (this.dx == 0 && this.dy == 0) {
+			this.done();
+		}
 	}
 
 	animate() {

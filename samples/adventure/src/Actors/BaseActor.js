@@ -1,3 +1,4 @@
+import Helper from "../../../../src/utils/Helper.js";
 import Entity from "../../../../src/game/Entity.js";
 import Constants from "../Constants.js";
 import { error } from "../../../../src/utils/Log.js";
@@ -110,6 +111,17 @@ class BaseActor extends Entity {
 		} else {
 			error(`${this} cannot be moved to new Tile. Tile does not exist.`, "BaseActor");
 		}
+	}
+
+	/**
+	 * Returns a random adjacent tile.
+	 * Moor-Neighborhood.
+	 */
+	getRandomAdjacentTile() {
+		let xx = Helper.choose([-1,0,1]);
+		let yy = Helper.choose([-1,0,1]);
+
+		return this.getTilemap().get(this.gameTile.x + xx, this.gameTile.y + yy);
 	}
 }
 

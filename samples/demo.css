@@ -8,9 +8,9 @@ body {
 
 #content {
 	margin-top: 50px; /* spacing for performance stats */
-	background: #000000;
+	background: #cccccc;
 	border: 1px solid #525252;
-	padding: 3px;
+	padding: 1px;
 	display: inline-block;
 }
 
