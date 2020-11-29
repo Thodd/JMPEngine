@@ -331,10 +331,17 @@ class Entity {
 					// set default processing values
 					anim.name = animName;
 					anim.currentFrame = 0;
-					anim.id = anim.frames[0]; // initially visible frame is 0
+
+					// check first frame (either an integer or an object!)
+					let firstFrame = anim.frames[0];
+					anim.id = firstFrame.id != undefined ? firstFrame.id : firstFrame;
 					anim.dt = anim.dt || 0;
 
-					// if no delay is given, we assume a the animation is a "freeze-frame", e.g. an idle-frame
+					// configure the initial coloring (0xFFFFFF == no tint)
+					anim.color = anim.color || 0xFFFFFF;
+					anim._defaultColor = anim.color;
+
+					// if no delay is given, we assume the animation is a "freeze-frame", e.g. an idle-frame
 					//anim.delayCounter = new FrameCounter(anim.dt);
 					this._animationTimer.setMaxFrames(anim.dt);
 				}
@@ -397,9 +404,16 @@ class Entity {
 					}
 				}
 
-				// change animation id and rest the frame-counter to the next frame dt (if defined)
+				// frameData is either an integer or an object, e.g. {id: 5, color: 0xff0085, dt: 20}
 				let frameData = anim.frames[anim.currentFrame];
+
+				// change animation id
 				anim.id = frameData.id != undefined ? frameData.id : frameData;
+
+				// update coloring (if the frame data does not provide a different color, we use the default color defined initially)
+				anim.color = frameData.color != undefined ? frameData.color : anim._defaultColor;
+
+				// reset the frame-counter to the next frame dt or the animation default
 				this._animationTimer.setMaxFrames(frameData.dt || anim.dt);
 			}
 
@@ -412,6 +426,7 @@ class Entity {
 			// @PIXI: update texture based on current key-frame, we made sure a sheet exists upon animation definition
 			let sheetObj = Spritesheets.getSheet(anim.sheet || this._spriteConfig.sheet);
 			this._pixiSprite.texture = sheetObj.textures[anim.id];
+			this._pixiSprite.tint = anim.color;
 		}
 	}
 

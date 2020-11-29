@@ -6,11 +6,13 @@ class NPC extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
 
+		this.isBlocking = true;
+
 		this.configSprite({
 			sheet: "enemies",
 			offset: {
-				x: -4,
-				y: -9
+				x: 0,
+				y: 0
 			},
 			animations: {
 				default: "right",
@@ -24,6 +26,12 @@ class NPC extends BaseActor {
 				}
 			}
 		});
+
+		// debugging for sprite positioning
+		this.RENDER_HITBOX = 0xFF0085;
+		this.updateHitbox({
+			x: 0, y:0, w:16, h:16
+		});
 	}
 
 	takeTurn() {
@@ -35,7 +43,7 @@ class NPC extends BaseActor {
 
 		// only move if the start and goal tile are different
 		// saves some Animation instances etc.
-		if (goalTile && goalTile != startTile) {
+		if (goalTile && goalTile != startTile && goalTile.isFree()) {
 			this.moveToTile(goalTile);
 			let a = AnimationPool.get(MovementAnimation, this);
 			a.moveFromTo(startTile, goalTile);

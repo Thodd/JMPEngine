@@ -49,10 +49,12 @@ class Tile {
 	/**
 	 * Sets the tile ID for this instance.
 	 * @param {number} [id=-1] the tile ID which should be set. If none given the tile is cleared (tileID = -1)
-	 * @param {boolean} [isAnimationUpdate=false] a flag which signifies if the set call comes from an animation update. Can be checked in subclasses. Unused in base implementation.
+	 * @param {boolean} [isAnimationUpdate=false] a flag which signifies if the set call comes from an animation update.
+	 *                                            Can be checked in subclasses.
+	 *                                            Unused in base implementation!
 	 */
 	set(id=-1, isAnimationUpdate=false) {
-		isAnimationUpdate;
+		isAnimationUpdate; // unused in base implementation
 		this.id = id;
 	}
 

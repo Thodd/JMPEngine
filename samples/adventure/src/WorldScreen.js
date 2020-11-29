@@ -1,17 +1,20 @@
 import Screen from "../../../src/game/Screen.js";
 import Tilemap from "../../../src/game/Tilemap.js";
 import BitmapText from "../../../src/game/BitmapText.js";
-import Helper from "../../../src/utils/Helper.js";
+import Helper, { exposeOnWindow } from "../../../src/utils/Helper.js";
 
 import GameController from "./GameController.js";
 import Player from "./actors/Player.js";
 import Constants from "./Constants.js";
 import GameTile from "./maps/GameTile.js";
 import NPC from "./actors/NPC.js";
+import RNG from "../../../src/utils/RNG.js";
 
 class WorldScreen extends Screen {
 	constructor() {
 		super();
+
+		RNG.seed(1337);
 
 		/**
 		 * Tilemap demo
@@ -19,11 +22,16 @@ class WorldScreen extends Screen {
 		this._tileMap = new Tilemap({sheet: "tileset", w: Constants.MAP_WIDTH, h: Constants.MAP_HEIGHT, tileClass: GameTile});
 		this._tileMap.x = 0;
 		this._tileMap.y = 0;
-		this._tileMap.layer = 1;
+		this._tileMap.layer = Constants.Layers.TILES;
 
 		this._tileMap.each((tile) => {
-			tile.set(Helper.choose([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 7, 8, 9, 12, 14]));
+			tile.setType(GameTile.Types.FLOOR);
 		});
+		this._tileMap.get(12,12).setType(GameTile.Types.TREE);
+		this._tileMap.get(14,12).setType(GameTile.Types.TREE);
+		this._tileMap.get(10,8).setType(GameTile.Types.WALL);
+
+		exposeOnWindow("tilemap", this._tileMap);
 
 		this.add(this._tileMap);
 
@@ -41,6 +49,15 @@ class WorldScreen extends Screen {
 			this.add(this.enemy);
 			this._gameController.addActor(this.enemy);
 		}
+
+		let bmpTxt = new BitmapText({
+			x: 2, y: 2,
+			text: "Desktop Adventures!",
+			color: Constants.Colors.YELLOW_LIGHT,
+			font: "font0"
+		});
+		bmpTxt.layer = Constants.Layers.UI;
+		this.add(bmpTxt);
 	}
 
 	update() {
@@ -50,7 +67,7 @@ class WorldScreen extends Screen {
 	}
 
 	setup() {
-		this.setCameraFixedForLayer(3, true);
+		this.setCameraFixedForLayer(Constants.Layers.UI, true);
 	}
 
 	getTilemap() {

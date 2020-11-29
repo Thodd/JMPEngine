@@ -9,7 +9,7 @@ body {
 #content {
 	margin-top: 50px; /* spacing for performance stats */
 	background: #cccccc;
-	border: 1px solid #525252;
+	border: 1px solid #888888;
 	padding: 1px;
 	display: inline-block;
 }

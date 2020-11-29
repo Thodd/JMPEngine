@@ -11,6 +11,8 @@ class Player extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
 
+		this.isBlocking = true;
+
 		this.layer = this.layer = Constants.Layers.PLAYER;
 
 		this._lastDir = "down";
@@ -20,36 +22,42 @@ class Player extends BaseActor {
 		this._scheduledAnimations = [];
 
 		this.configSprite({
-			sheet: "characters",
+			sheet: "player",
 
 			offset: {
 				x: -4,
-				y: -9
+				y: -7
 			},
 
 			animations: {
 				default: "down",
 
 				"down": {
-					frames: [4, 5],
-					dt: 40
-				},
-
-				"up": {
-					frames: [6, 7],
-					dt: 40
-				},
-
-				"left": {
 					frames: [0, 1],
 					dt: 40
 				},
 
-				"right": {
+				"up": {
 					frames: [2, 3],
+					dt: 40
+				},
+
+				"right": {
+					frames: [4, 5],
+					dt: 40
+				},
+
+				"left": {
+					frames: [6, 7],
 					dt: 40
 				}
 			}
+		});
+
+		// debugging for sprite positioning
+		//this.RENDER_HITBOX = 0xFF0085;
+		this.updateHitbox({
+			x: 0, y:0, w:16, h:16
 		});
 	}
 
@@ -107,8 +115,7 @@ class Player extends BaseActor {
 				let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
 				// if we are out of bounds, the tilemap does not return a tile,
-				// we end the turn anyway
-				if (goalTile) {
+				if (goalTile && goalTile.isFree()) {
 					// move Actor to tile
 					// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
 					this.moveToTile(goalTile);
@@ -130,7 +137,7 @@ class Player extends BaseActor {
 
 	centerCamera() {
 		let s = this.getScreen();
-		s.cam.x = this.x - 9 * Constants.TILE_WIDTH;
+		s.cam.x = this.x - 7 * Constants.TILE_WIDTH;
 		s.cam.y = this.y - 6 * Constants.TILE_HEIGHT;
 	}
 }

@@ -3,18 +3,21 @@
 
 	"startScreen": "./src/WorldScreen.js",
 
-	"w": 190,
-	"h": 130,
+	"w": 240,
+	"h": 208,
+
 	"scale": 2,
+
+	"bg": "0x000000",
 	"hideCursor": false,
 	"skipIntro": true,
 
 	"assets": {
 		"spritesheets": {
-			"characters": {
-				"url": "./img/characters.png",
-				"w": 16,
-				"h": 16
+			"player": {
+				"url": "./img/Player.png",
+				"w": 24,
+				"h": 24
 			},
 			"enemies": {
 				"url": "./img/enemies.png",
@@ -22,9 +25,9 @@
 				"h": 16
 			},
 			"tileset": {
-				"url": "./img/tileset.png",
-				"w": 10,
-				"h": 10
+				"url": "./img/Tileset.png",
+				"w": 16,
+				"h": 16
 			}
 		}
 	}
