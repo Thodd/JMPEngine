@@ -6,6 +6,7 @@ import BaseActor from "../BaseActor.js";
 import AnimationPool from "../../animations/AnimationPool.js";
 import MovementAnimation from "../../animations/MovementAnimation.js";
 import PlayerState from "./PlayerState.js";
+import Enemy from "../enemies/Enemy.js";
 // import BumpAnimation from "../../animations/BumpAnimation.js";
 
 class Player extends BaseActor {
@@ -116,28 +117,66 @@ class Player extends BaseActor {
 			// we have some direction input, so we start a movement animation
 			if (xDif != 0 || yDif != 0) {
 
+				// determine the start- and goal-tile
 				let startTile = this.gameTile;
 				let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
-				// if we are out of bounds, the tilemap does not return a tile,
-				if (goalTile && goalTile.isFree()) {
-					// move Actor to tile
-					// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
-					this.moveToTile(goalTile);
-
-					// start pixel-based MovementAnimation from one tile to another
-					let moveAnim = AnimationPool.get(MovementAnimation, this);
-					moveAnim.moveFromTo(startTile, goalTile);
-					this.scheduleAnimation(moveAnim);
+				// if something happend during this turn, end it.
+				let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
+				if (didSomeInteraction) {
+					this.endTurn();
 				}
-
-				this.endTurn();
 			}
 		}
 
 		this.playAnimation({name: `${this._lastDir}`});
 
 		this.centerCamera();
+	}
+
+	/**
+	 * Checks the goal-tile if it's free or occupied by something.
+	 * Also handles melee fighting.
+	 *
+	 * @param {GameTile} startTile the current tile of the player
+	 * @param {GameTile} goalTile the goal-tile to which the player wants to move
+	 */
+	processTileInteraction(startTile, goalTile) {
+		// this flag indicates if something has happend this turn
+		let didSomeInteraction = false;
+
+		if (goalTile) {
+			// movement
+			if (goalTile.isFree()) {
+				// move Actor to tile
+				// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
+				this.moveToTile(goalTile);
+
+				// start pixel-based MovementAnimation from one tile to another
+				let moveAnim = AnimationPool.get(MovementAnimation, this);
+				moveAnim.moveFromTo(startTile, goalTile);
+				this.scheduleAnimation(moveAnim);
+
+				didSomeInteraction = true;
+			} else {
+				let actorsOnGoalTile = goalTile.getActors();
+				for (let a of actorsOnGoalTile) {
+					if (a instanceof Enemy) {
+
+						// TODO: attack the enemy
+						// TODO: Battle Calculator
+						// TODO: Bump Animation
+						log(`attacks ${a}. Location (${a.gameTile.x},${a.gameTile.y})`, "Player");
+
+						didSomeInteraction = true;
+
+						break;
+					}
+				}
+			}
+		}
+
+		return didSomeInteraction;
 	}
 
 	/**

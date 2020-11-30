@@ -1,8 +1,8 @@
-import BaseActor from "./BaseActor.js";
-import MovementAnimation from "../animations/MovementAnimation.js";
-import AnimationPool from "../animations/AnimationPool.js";
+import BaseActor from "../BaseActor.js";
+import MovementAnimation from "../../animations/MovementAnimation.js";
+import AnimationPool from "../../animations/AnimationPool.js";
 
-class NPC extends BaseActor {
+class Enemy extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
 
@@ -28,6 +28,10 @@ class NPC extends BaseActor {
 		});
 	}
 
+	toString() {
+		return "Enemy#" + this._ID;
+	}
+
 	takeTurn() {
 		let anims = [];
 		let startTile = this.getTile();
@@ -49,4 +53,4 @@ class NPC extends BaseActor {
 
 }
 
-export default NPC;
+export default Enemy;

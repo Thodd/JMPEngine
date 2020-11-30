@@ -61,8 +61,8 @@ class GameTile extends Tile {
 		this._actors.delete(a);
 	}
 
-	getAllActors() {
-		return [...this._actors];
+	getActors() {
+		return this._actors;
 	}
 
 	/**

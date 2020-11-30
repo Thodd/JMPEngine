@@ -6,7 +6,7 @@ import GameController from "./GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
 import GameTile from "../../levelgen/GameTile.js";
-import NPC from "../../actors/NPC.js";
+import Enemy from "../../actors/enemies/Enemy.js";
 import RNG from "../../../../../src/utils/RNG.js";
 import GameUI from "./GameUI.js";
 
@@ -48,7 +48,7 @@ class WorldScreen extends Screen {
 
 		// some enemies
 		for (let i = 0; i < 10; i++) {
-			this.enemy = new NPC({gameTile: this._tileMap.get(7, 7)});
+			this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);
 			this._gameController.addActor(this.enemy);
 		}
