@@ -1,19 +1,24 @@
 {
 	"title": "Adventure",
 
-	"startScreen": "./src/WorldScreen.js",
+	"startScreen": "./src/screens/game/Overworld.js",
 
 	"w": 210,
 	"h": 150,
 
 	"scale": 2,
 
-	"bg": "0x04462f",
+	"bg": "0x222222",
 	"hideCursor": false,
 	"skipIntro": true,
 
 	"assets": {
 		"spritesheets": {
+			"UI": {
+				"url": "./img/UI.png",
+				"w": 210,
+				"h": 150
+			},
 			"player": {
 				"url": "./img/characters.png",
 				"w": 16,

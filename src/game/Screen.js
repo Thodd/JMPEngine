@@ -132,11 +132,10 @@ class Screen {
 	 * Setup Hook.
 	 * Called at the very beginning of each Screen activation.
 	 *
-	 * Configuration of the managed GFX Buffer instances should be done here:
+	 * General game-logic independent configuration should be done here:
 	 * - setting the clear-color
-	 * - disabling the automatic clearing
-	 * - changing the RenderMode
-	 * - Fixing the camera to a static position
+	 * - creating UI elements
+	 * - Fixing the camera of a layer
 	 */
 	setup() {}
 

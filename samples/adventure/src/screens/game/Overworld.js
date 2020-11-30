@@ -1,14 +1,14 @@
-import Screen from "../../../src/game/Screen.js";
-import Tilemap from "../../../src/game/Tilemap.js";
-import BitmapText from "../../../src/game/BitmapText.js";
-import Helper, { exposeOnWindow } from "../../../src/utils/Helper.js";
+import Screen from "../../../../../src/game/Screen.js";
+import Tilemap from "../../../../../src/game/Tilemap.js";
+import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 
 import GameController from "./GameController.js";
-import Player from "./actors/Player.js";
-import Constants from "./Constants.js";
-import GameTile from "./maps/GameTile.js";
-import NPC from "./actors/NPC.js";
-import RNG from "../../../src/utils/RNG.js";
+import Player from "../../actors/player/Player.js";
+import Constants from "../../Constants.js";
+import GameTile from "../../levelgen/GameTile.js";
+import NPC from "../../actors/NPC.js";
+import RNG from "../../../../../src/utils/RNG.js";
+import GameUI from "./GameUI.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -16,8 +16,10 @@ class WorldScreen extends Screen {
 
 		RNG.seed(1337);
 
+		this._ui = new GameUI(this);
+
 		/**
-		 * Tilemap demo
+		 * Tilemap
 		 */
 		this._tileMap = new Tilemap({sheet: "tileset", w: Constants.MAP_WIDTH, h: Constants.MAP_HEIGHT, tileClass: GameTile});
 		this._tileMap.x = 0;
@@ -31,9 +33,10 @@ class WorldScreen extends Screen {
 		this._tileMap.get(14,12).setType(GameTile.Types.TREE);
 		this._tileMap.get(10,8).setType(GameTile.Types.SIGN);
 
-		exposeOnWindow("tilemap", this._tileMap);
-
 		this.add(this._tileMap);
+
+		exposeOnWindow("tilemap", this._tileMap); // DEBUG reference on window
+
 
 		// player
 		this.player = new Player({gameTile: this._tileMap.get(10, 10)});
@@ -43,34 +46,18 @@ class WorldScreen extends Screen {
 		this._gameController = new GameController(this);
 		this._gameController.addPlayer(this.player);
 
-		// sample actor
+		// some enemies
 		for (let i = 0; i < 10; i++) {
 			this.enemy = new NPC({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);
 			this._gameController.addActor(this.enemy);
 		}
-
-
-		// text test
-		let bmpTxt = new BitmapText({
-			x: 5, y: 5,
-			leading: 1,
-			text: "I'm really not sure if this\nis a good idea...",
-			color: Constants.Colors.CREME,
-			font: "font0"
-		});
-		bmpTxt.layer = Constants.Layers.UI;
-		this.add(bmpTxt);
-	}
-
-	update() {
-		// delegate logic update to the GameController
-		// separates game-logic dependent activities from other things like UI, Menus etc.
-		this._gameController.update();
 	}
 
 	setup() {
-		this.setCameraFixedForLayer(Constants.Layers.UI, true);
+		// fix UI layer to the camera
+		this.setCameraFixedForLayer(Constants.Layers.UI_BG, true);
+		this.setCameraFixedForLayer(Constants.Layers.UI_TEXT, true);
 	}
 
 	getTilemap() {
@@ -79,6 +66,14 @@ class WorldScreen extends Screen {
 
 	getGameController() {
 		return this._gameController;
+	}
+
+	update() {
+		// delegate logic update to the GameController
+		// separates game-logic dependent activities from other things like UI, Menus etc.
+		this._gameController.update();
+
+		this._ui.updateData();
 	}
 }
 

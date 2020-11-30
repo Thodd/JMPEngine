@@ -18,6 +18,13 @@ class BaseActor extends Entity {
 
 		this.updateVisualPosition();
 
+		this._stats = {
+			hp_max: 5,
+			hp: 5,
+			atk: 1,
+			def: 1
+		};
+
 		// debugging for sprite positioning
 		//this.RENDER_HITBOX = 0xFF0085;
 		this.updateHitbox({
@@ -27,6 +34,14 @@ class BaseActor extends Entity {
 
 	toString() {
 		return `BaseActor#${this._id}`;
+	}
+
+	/**
+	 * Returns the current stat object of this actor.
+	 * Contains HP etc.
+	 */
+	getStats() {
+		return this._stats;
 	}
 
 	/**

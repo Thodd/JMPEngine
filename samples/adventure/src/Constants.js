@@ -15,10 +15,12 @@ const Constants = {
 	},
 
 	Layers: {
-		TILES: 0,
-		NPC: 1,
-		PLAYER: 2,
-		UI: 5
+		TILES:    0,
+		NPC:      1,
+		PLAYER:   2,
+		EFFECTS:  3,
+		UI_BG:    4,
+		UI_TEXT:  5
 	},
 
 	Colors: {
@@ -29,11 +31,13 @@ const Constants = {
 		CREME: 0xfdf0d1,
 		GREEN_LIGHT: 0x5dc48c,
 		GREEN_DARK: 0x247458,
-		RED_LIGHT: 0xeb6966,
-		BLUE_LIGHT: 0x52adf5,
+		RED_LIGHT: 0xec4b00,
+		RED_DARK: 0xbe2632,
+		BLUE_LIGHT: 0x38a8f2,
 		BROWN_LIGHT: 0xaf6a55,
 		BROWN_DARK: 0x8c424b,
-		YELLOW_LIGHT: 0xfadb6e
+		YELLOW_LIGHT: 0xf7d85d,
+		YELLOW_DARK: 0xfac800
 	}
 };
 

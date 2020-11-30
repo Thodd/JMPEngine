@@ -1,7 +1,6 @@
 import Tile from "../../../../src/game/Tile.js";
 import Helper from "../../../../src/utils/Helper.js";
 import RNG from "../../../../src/utils/RNG.js";
-import Constants from "../Constants.js";
 
 const Types = {
 	EMPTY: {

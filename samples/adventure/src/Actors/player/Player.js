@@ -1,11 +1,12 @@
-import Keyboard from "../../../../src/input/Keyboard.js";
-import Keys from "../../../../src/input/Keys.js";
-import { log } from "../../../../src/utils/Log.js";
-import Constants from "../Constants.js";
-import BaseActor from "./BaseActor.js";
-import AnimationPool from "../animations/AnimationPool.js";
-import MovementAnimation from "../animations/MovementAnimation.js";
-// import BumpAnimation from "../animations/BumpAnimation.js";
+import Keyboard from "../../../../../../src/input/Keyboard.js";
+import Keys from "../../../../../../src/input/Keys.js";
+import { log } from "../../../../../../src/utils/Log.js";
+import Constants from "../../Constants.js";
+import BaseActor from "../BaseActor.js";
+import AnimationPool from "../../animations/AnimationPool.js";
+import MovementAnimation from "../../animations/MovementAnimation.js";
+import PlayerState from "./PlayerState.js";
+// import BumpAnimation from "../../animations/BumpAnimation.js";
 
 class Player extends BaseActor {
 	constructor({gameTile}) {
@@ -59,6 +60,14 @@ class Player extends BaseActor {
 
 	toString() {
 		return `Player#${this._id}`;
+	}
+
+	/**
+	 * The Player's stats are stored in a separate class.
+	 * The Player class is stateless and reused for all controllable Actors.
+	 */
+	getStats() {
+		return PlayerState.stats;
 	}
 
 	takeTurn() {
@@ -131,6 +140,9 @@ class Player extends BaseActor {
 		this.centerCamera();
 	}
 
+	/**
+	 * Position the camera around the player character
+	 */
 	centerCamera() {
 		let s = this.getScreen();
 		s.cam.x = this.x - Constants.SCREEN_WIDTH_IN_TILES_HALF * Constants.TILE_WIDTH;

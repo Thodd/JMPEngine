@@ -1,4 +1,4 @@
-import AnimationPool from "./animations/AnimationPool.js";
+import AnimationPool from "../../animations/AnimationPool.js";
 // import { log } from "../../../src/utils/Log.js";
 
 class GameController {

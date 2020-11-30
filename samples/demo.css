@@ -8,15 +8,21 @@ body {
 
 #content {
 	margin-top: 50px; /* Spacing for performance info */
-	border: 1px solid #e6e6e6;
+	background: #e6e6e6;
+	border: 0px solid #e6e6e6;
 	box-shadow: 0px 4px 10px #252525;
 	display: inline-block;
-	border-radius: 6px;
+	padding: 3px;
+	border-radius: 0px;
 	overflow: hidden;
 }
 
 #content canvas {
 	margin-bottom: -4px;
+	/* border-left: 1px solid #333333;
+	border-top: 1px solid #333333;
+	border-right: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff; */
 }
 
 .jmpDemoPanelOuter {
