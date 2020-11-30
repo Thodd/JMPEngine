@@ -218,8 +218,8 @@ class Tilemap extends Entity {
 					spr.y = drawY;
 
 					// optional pixiSprite values e.g. tinting
-					if (tile.tint) {
-						spr.tint = tile.tint;
+					if (tile.color) {
+						spr.tint = tile.color;
 					}
 
 					// -- Tile-Animations --

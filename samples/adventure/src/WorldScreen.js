@@ -29,7 +29,7 @@ class WorldScreen extends Screen {
 		});
 		this._tileMap.get(12,12).setType(GameTile.Types.TREE);
 		this._tileMap.get(14,12).setType(GameTile.Types.TREE);
-		this._tileMap.get(10,8).setType(GameTile.Types.WALL);
+		this._tileMap.get(10,8).setType(GameTile.Types.SIGN);
 
 		exposeOnWindow("tilemap", this._tileMap);
 
@@ -50,10 +50,13 @@ class WorldScreen extends Screen {
 			this._gameController.addActor(this.enemy);
 		}
 
+
+		// text test
 		let bmpTxt = new BitmapText({
-			x: 2, y: 2,
-			text: "Desktop Adventures!",
-			color: Constants.Colors.YELLOW_LIGHT,
+			x: 5, y: 5,
+			leading: 1,
+			text: "I'm really not sure if this\nis a good idea...",
+			color: Constants.Colors.CREME,
 			font: "font0"
 		});
 		bmpTxt.layer = Constants.Layers.UI;

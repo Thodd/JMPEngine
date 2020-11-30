@@ -25,39 +25,35 @@ class Player extends BaseActor {
 			sheet: "player",
 
 			offset: {
-				x: -4,
+				x: -3,
 				y: -7
 			},
+
+			//color: Constants.Colors.YELLOW_LIGHT,
 
 			animations: {
 				default: "down",
 
-				"down": {
+				"left": {
 					frames: [0, 1],
 					dt: 40
 				},
 
-				"up": {
+				"right": {
 					frames: [2, 3],
 					dt: 40
 				},
 
-				"right": {
+				"down": {
 					frames: [4, 5],
 					dt: 40
 				},
 
-				"left": {
+				"up": {
 					frames: [6, 7],
 					dt: 40
 				}
 			}
-		});
-
-		// debugging for sprite positioning
-		//this.RENDER_HITBOX = 0xFF0085;
-		this.updateHitbox({
-			x: 0, y:0, w:16, h:16
 		});
 	}
 
@@ -137,8 +133,8 @@ class Player extends BaseActor {
 
 	centerCamera() {
 		let s = this.getScreen();
-		s.cam.x = this.x - 7 * Constants.TILE_WIDTH;
-		s.cam.y = this.y - 6 * Constants.TILE_HEIGHT;
+		s.cam.x = this.x - Constants.SCREEN_WIDTH_IN_TILES_HALF * Constants.TILE_WIDTH;
+		s.cam.y = this.y - Constants.SCREEN_HEIGHT_IN_TILES_HALF * Constants.TILE_HEIGHT;
 	}
 }
 

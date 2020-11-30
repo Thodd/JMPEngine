@@ -261,6 +261,9 @@ class Entity {
 	/**
 	 * Sets a new sprite definition, including animations.
 	 * The underlying PIXI sprite will configured according to this new sprite configuration.
+	 *
+	 * Beware: any the previous configuration is not merged with the new one! Partial updates are not supported.
+	 *
 	 * @param {object} config
 	 */
 	configSprite(config) {
@@ -304,7 +307,6 @@ class Entity {
 			this._pixiSprite.visible = true;
 		}
 
-
 		// check if the new sprite def has animations
 		// if not we asume a valid single sprite definition
 		if (this._spriteConfig && this._spriteConfig.animations) {
@@ -337,8 +339,11 @@ class Entity {
 					anim.id = firstFrame.id != undefined ? firstFrame.id : firstFrame;
 					anim.dt = anim.dt || 0;
 
-					// configure the initial coloring (0xFFFFFF == no tint)
-					anim.color = anim.color || 0xFFFFFF;
+					// configure the initial coloring, either defined on:
+					// * the animation
+					// * the sheet
+					// * or defaulted to white (0xFFFFFF == no tint)
+					anim.color = anim.color || config.color || 0xFFFFFF;
 					anim._defaultColor = anim.color;
 
 					// if no delay is given, we assume the animation is a "freeze-frame", e.g. an idle-frame

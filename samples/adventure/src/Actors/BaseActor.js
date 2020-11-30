@@ -17,6 +17,12 @@ class BaseActor extends Entity {
 		this.moveToTile(gameTile);
 
 		this.updateVisualPosition();
+
+		// debugging for sprite positioning
+		//this.RENDER_HITBOX = 0xFF0085;
+		this.updateHitbox({
+			x: 0, y:0, w:Constants.TILE_WIDTH, h:Constants.TILE_HEIGHT
+		});
 	}
 
 	toString() {

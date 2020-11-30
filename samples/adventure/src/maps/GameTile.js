@@ -4,42 +4,40 @@ import RNG from "../../../../src/utils/RNG.js";
 import Constants from "../Constants.js";
 
 const Types = {
-	VOID: {
-		id: 0,
-		color: Constants.Colors.BLUE_LIGHT,
-		walkable: true
-	},
 	EMPTY: {
-		id: 1,
+		id: 0,
 		color: undefined, // no tinting for empty tile
 		walkable: true
 	},
+	VOID: {
+		id: 1,
+		walkable: true
+	},
 	FLOOR: {
-		id: [1, 2, 3],
+		id: [2, 3, 4, 5, 6],
 		probability: 0.1,
-		color: Constants.Colors.GREEN_LIGHT,
 		walkable: true
 	},
 	DIRT: {
 		id: 4,
-		color: Constants.Colors.BROWN_DARK,
 		walkable: true
 	},
 	GRASS: {
 		id: 5,
-		color: Constants.Colors.GREEN_LIGHT,
 		walkable: true
 	},
 	TREE: {
-		id: [6, 7],
+		id: [64, 66],
 		probability: 0.5,
-		color: Constants.Colors.GREEN_LIGHT,
+		walkable: false
+	},
+	SIGN: {
+		id: 67,
 		walkable: false
 	},
 	WALL: {
 		id: [40, 41],
 		probability: 0.1,
-		color: Constants.Colors.WHITE,
 		walkable: false
 	}
 };
@@ -91,8 +89,8 @@ class GameTile extends Tile {
 	setType(type) {
 		this._type = type;
 
-		// set visuals
-		this.tint = this._type.color;
+		// set visuals (not used right now)
+		// this.color = this._type.color;
 
 		// set id
 		let newId = this._type.id;

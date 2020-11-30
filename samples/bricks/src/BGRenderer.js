@@ -52,7 +52,7 @@ class BGRenderer extends Tilemap {
 
 			for (let c in bgEffectTable) {
 				if (Score.level > c) {
-					t.tint = bgEffectTable[c].color;
+					t.color = bgEffectTable[c].color;
 				}
 			}
 
@@ -63,7 +63,7 @@ class BGRenderer extends Tilemap {
 		// change BG color if a certain level is reached
 		if (bgEffectTable[Score.level]) {
 			this.each((t) => {
-				t.tint = bgEffectTable[Score.level].color;
+				t.color = bgEffectTable[Score.level].color;
 			});
 		}
 

@@ -1,12 +1,11 @@
+import Manifest from "../../../src/assets/Manifest.js";
+
 const Constants = {
 	MAP_WIDTH:   31,
 	MAP_HEIGHT:  27,
 
-	SCREEN_HEIGHT: 15,
-	SCREEN_WIDTH: 15,
-
-	TILE_WIDTH:  16,
-	TILE_HEIGHT: 16,
+	TILE_WIDTH:  10,
+	TILE_HEIGHT: 10,
 
 	Directions: {
 		LEFT: "left",
@@ -29,6 +28,7 @@ const Constants = {
 		WHITE: 0xffffff,
 		CREME: 0xfdf0d1,
 		GREEN_LIGHT: 0x5dc48c,
+		GREEN_DARK: 0x247458,
 		RED_LIGHT: 0xeb6966,
 		BLUE_LIGHT: 0x52adf5,
 		BROWN_LIGHT: 0xaf6a55,
@@ -36,5 +36,13 @@ const Constants = {
 		YELLOW_LIGHT: 0xfadb6e
 	}
 };
+
+// We can only calculate the screen width measured in tiles with the actual canvas size from the manifest
+Constants.SCREEN_WIDTH_IN_TILES = Manifest.get("/w") / Constants.TILE_WIDTH;
+Constants.SCREEN_HEIGHT_IN_TILES = Manifest.get("/h") / Constants.TILE_HEIGHT;
+
+// keep half of it, because it's widely used to center stuff on the screen, e.g. player camera
+Constants.SCREEN_WIDTH_IN_TILES_HALF = Math.floor(Constants.SCREEN_WIDTH_IN_TILES / 2);
+Constants.SCREEN_HEIGHT_IN_TILES_HALF = Math.floor(Constants.SCREEN_HEIGHT_IN_TILES / 2);
 
 export default Constants;

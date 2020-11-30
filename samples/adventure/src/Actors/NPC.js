@@ -1,6 +1,7 @@
 import BaseActor from "./BaseActor.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
 import AnimationPool from "../animations/AnimationPool.js";
+import Constants from "../../../arpg/src/Constants.js";
 
 class NPC extends BaseActor {
 	constructor({gameTile}) {
@@ -11,8 +12,8 @@ class NPC extends BaseActor {
 		this.configSprite({
 			sheet: "enemies",
 			offset: {
-				x: 0,
-				y: 0
+				x: -3,
+				y: -7
 			},
 			animations: {
 				default: "right",
@@ -25,12 +26,6 @@ class NPC extends BaseActor {
 					dt: 40
 				}
 			}
-		});
-
-		// debugging for sprite positioning
-		this.RENDER_HITBOX = 0xFF0085;
-		this.updateHitbox({
-			x: 0, y:0, w:16, h:16
 		});
 	}
 
