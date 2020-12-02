@@ -22,6 +22,8 @@ class WorldScreen extends Screen {
 		 * Tilemap
 		 */
 		this._tileMap = new Tilemap({sheet: "tileset", w: Constants.MAP_WIDTH, h: Constants.MAP_HEIGHT, tileClass: GameTile});
+		exposeOnWindow("tilemap", this._tileMap); // DEBUG reference of Tilemap on window
+
 		this._tileMap.x = 0;
 		this._tileMap.y = 0;
 		this._tileMap.layer = Constants.Layers.TILES;
@@ -35,15 +37,13 @@ class WorldScreen extends Screen {
 
 		this.add(this._tileMap);
 
-		exposeOnWindow("tilemap", this._tileMap); // DEBUG reference on window
-
-
 		// player
 		this.player = new Player({gameTile: this._tileMap.get(10, 10)});
 		this.add(this.player);
 
 		// game controller
 		this._gameController = new GameController(this);
+		exposeOnWindow("gc", this._gameController); // DEBUG reference of GC on window
 		this._gameController.addPlayer(this.player);
 
 		// some enemies

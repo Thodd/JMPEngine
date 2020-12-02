@@ -5,7 +5,6 @@ import RNG from "../../../../src/utils/RNG.js";
 const Types = {
 	EMPTY: {
 		id: 0,
-		color: undefined, // no tinting for empty tile
 		walkable: true
 	},
 	VOID: {
@@ -48,17 +47,22 @@ class GameTile extends Tile {
 	constructor({tilemap, x, y}) {
 		super({tilemap, x, y});
 
-		this._actors = new Set();
+		this._actors = [];
 
 		this.setType(Types.VOID);
 	}
 
 	addActor(a) {
-		this._actors.add(a);
+		this._actors.push(a);
+		return a;
 	}
 
 	removeActor(a) {
-		this._actors.delete(a);
+		let i = this._actors.indexOf(a);
+		if (i >= 0) {
+			this._actors.splice(i, 1);
+		}
+		return a;
 	}
 
 	getActors() {

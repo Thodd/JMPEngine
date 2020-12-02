@@ -13,30 +13,26 @@ class BumpAnimation extends BaseAnimation {
 		this.dir = Constants.Directions.DOWN;
 	}
 
-	bumpInDirection(dir) {
-		this.dir   = dir;
-		this.xDif  = 0;
-		this.yDif  = 0;
-		this.steps = 0;
+	bumpTowards(goalTile) {
+		let startTile = this.actor.getTile();
+		this.dx       = -Math.sign(startTile.x - goalTile.x);
+		this.dy       = -Math.sign(startTile.y - goalTile.y);
+		this.steps      = 0;
 		this.bumpLength = 4;
 
-		switch(dir) {
-			case Constants.Directions.LEFT:  this.xDif = -1; this.yDif =  0; break;
-			case Constants.Directions.RIGHT: this.xDif = +1; this.yDif =  0; break;
-			case Constants.Directions.UP:    this.xDif =  0; this.yDif = -1; break;
-			default:
-			case Constants.Directions.DOWN:  this.xDif =  0; this.yDif = +1; break;
+		if (this.dx === 0 && this.dy === 0) {
+			this.done();
 		}
 	}
 
 	animate() {
 		this.steps++;
-		this.actor.x += this.xDif;
-		this.actor.y += this.yDif;
+		this.actor.x += this.dx;
+		this.actor.y += this.dy;
 
 		if (this.steps == this.bumpLength) {
-			this.xDif *= -1;
-			this.yDif *= -1;
+			this.dx *= -1;
+			this.dy *= -1;
 		}
 
 		if (this.steps == this.bumpLength * 2) {

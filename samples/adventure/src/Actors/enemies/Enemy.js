@@ -1,3 +1,4 @@
+import Helper from "../../../../../src/utils/Helper.js";
 import BaseActor from "../BaseActor.js";
 import MovementAnimation from "../../animations/MovementAnimation.js";
 import AnimationPool from "../../animations/AnimationPool.js";
@@ -37,7 +38,7 @@ class Enemy extends BaseActor {
 		let startTile = this.getTile();
 
 		// pick random tile to move to
-		let goalTile = this.getRandomAdjacentTile();
+		let goalTile = Helper.choose(this.getAdjacentNeumannTiles().all);
 
 		// only move if the start and goal tile are different
 		// saves some Animation instances etc.

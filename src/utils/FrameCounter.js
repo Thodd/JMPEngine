@@ -35,6 +35,7 @@ class FrameCounter {
 
 	reset() {
 		this._frames = 0;
+		this._looped = 0;
 	}
 }
 

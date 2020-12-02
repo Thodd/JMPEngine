@@ -1,7 +1,9 @@
-import Helper from "../../../../src/utils/Helper.js";
 import Entity from "../../../../src/game/Entity.js";
 import Constants from "../Constants.js";
 import { error } from "../../../../src/utils/Log.js";
+import AnimationPool from "../animations/AnimationPool.js";
+import HurtAnimation from "../animations/HurtAnimation.js";
+import DeathAnimation from "../animations/DeathAnimation.js";
 
 let _ID = 0;
 
@@ -10,6 +12,11 @@ class BaseActor extends Entity {
 		super({});
 
 		this.layer = Constants.Layers.NPC;
+
+		// The actors don't need to do any game-logic updates on a frame basis.
+		// Their AI will be triggered explicitly via the GameController --> see "takeTurn()".
+		// Actors are Entitys only because we want to leverage the sprite rendering and frame-animation system.
+		this.active = false;
 
 		// global ID to distinguish default actors during debugging.
 		this._id = _ID++;
@@ -27,9 +34,9 @@ class BaseActor extends Entity {
 
 		// debugging for sprite positioning
 		//this.RENDER_HITBOX = 0xFF0085;
-		this.updateHitbox({
-			x: 0, y:0, w:Constants.TILE_WIDTH, h:Constants.TILE_HEIGHT
-		});
+		// this.updateHitbox({
+		// 	x: 0, y:0, w:Constants.TILE_WIDTH, h:Constants.TILE_HEIGHT
+		// });
 	}
 
 	toString() {
@@ -135,14 +142,116 @@ class BaseActor extends Entity {
 	}
 
 	/**
-	 * Returns a random adjacent tile.
-	 * Moor-Neighborhood.
+	 * Let's the actor take damage.
+	 * Returns the animations which might be played because of the taken damage.
+	 *
+	 * @param {int} dmg the damage taken by the actor
 	 */
-	getRandomAdjacentTile() {
-		let xx = Helper.choose([-1,0,1]);
-		let yy = Helper.choose([-1,0,1]);
+	takeDamage(dmg) {
+		let animations = [];
 
-		return this.getTilemap().get(this.gameTile.x + xx, this.gameTile.y + yy);
+		if (dmg > 0) {
+			let stats = this.getStats();
+			stats.hp -= dmg;
+
+			// I'm ded x_x
+			if (stats.hp <= 0) {
+				// TODO: Dying animation
+				return this.die()
+			} else {
+				// TODO: Hurt animation
+				return AnimationPool.get(HurtAnimation, this);
+			}
+		}
+
+		return animations;
+	}
+
+	/**
+	 * Kills the actor.
+	 * Returns its dying animation.
+	 */
+	die() {
+		this.isDead = true;
+
+		// remove actor from game logic
+		this.getGameController().removeActor(this);
+
+		// remove actor from its tile
+		this.gameTile.removeActor(this);
+
+		// remove actor from screen/engine
+		this.destroy();
+
+		// the death animation is just for show
+		return AnimationPool.get(DeathAnimation, this);
+	}
+
+	/**
+	 * Returns a random adjacent tile.
+	 * Moore-Neighborhood.
+	 */
+	getAdjacentMooreTiles() {
+		let tiles = this.getAdjacentNeumannTiles();
+
+		let tilemap = this.getTilemap();
+		let NE = tilemap.get(this.gameTile.x + 1, this.gameTile.y - 1);
+		let SE = tilemap.get(this.gameTile.x + 1, this.gameTile.y + 1);
+		let SW = tilemap.get(this.gameTile.x - 1, this.gameTile.y + 1);
+		let NW = tilemap.get(this.gameTile.x - 1, this.gameTile.y - 1);
+
+		// make sure we don't have undefined in our map/all-array
+		if (NE) {
+			tiles.NE = NE;
+			tiles.all.push(NE);
+		}
+		if (SE) {
+			tiles.SE = SE;
+			tiles.all.push(SE);
+		}
+		if (SW) {
+			tiles.SW = SW;
+			tiles.all.push(SW);
+		}
+		if (NW) {
+			tiles.NW = NW;
+			tiles.all.push(NW);
+		}
+
+		return tiles;
+	}
+
+	getAdjacentNeumannTiles() {
+		let tilemap = this.getTilemap();
+		let N = tilemap.get(this.gameTile.x + 0, this.gameTile.y - 1);
+		let E = tilemap.get(this.gameTile.x + 1, this.gameTile.y + 0);
+		let S = tilemap.get(this.gameTile.x + 0, this.gameTile.y + 1);
+		let W = tilemap.get(this.gameTile.x - 1, this.gameTile.y + 0);
+
+		let tiles = {
+			all: []
+		};
+
+		// make sure we don't have undefined in our map/all-array
+		// makes stuff easier for callers
+		if (N) {
+			tiles.N = N;
+			tiles.all.push(N);
+		}
+		if (E) {
+			tiles.E = E;
+			tiles.all.push(E);
+		}
+		if (S) {
+			tiles.S = S;
+			tiles.all.push(S);
+		}
+		if (W) {
+			tiles.W = W;
+			tiles.all.push(W);
+		}
+
+		return tiles;
 	}
 }
 

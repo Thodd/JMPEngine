@@ -7,7 +7,10 @@ import AnimationPool from "../../animations/AnimationPool.js";
 import MovementAnimation from "../../animations/MovementAnimation.js";
 import PlayerState from "./PlayerState.js";
 import Enemy from "../enemies/Enemy.js";
-// import BumpAnimation from "../../animations/BumpAnimation.js";
+
+// melee stuff
+import MeleeCalculator from "../../combat/MeleeCalculator.js";
+import BumpAnimation from "../../animations/BumpAnimation.js";
 
 class Player extends BaseActor {
 	constructor({gameTile}) {
@@ -16,6 +19,9 @@ class Player extends BaseActor {
 		this.isBlocking = true;
 
 		this.layer = this.layer = Constants.Layers.PLAYER;
+
+		// the player Actor is the only one which updates each frame: Input Handling
+		this.active = true;
 
 		this._lastDir = "down";
 
@@ -160,13 +166,24 @@ class Player extends BaseActor {
 				didSomeInteraction = true;
 			} else {
 				let actorsOnGoalTile = goalTile.getActors();
-				for (let a of actorsOnGoalTile) {
-					if (a instanceof Enemy) {
+				for (let actor of actorsOnGoalTile) {
 
-						// TODO: attack the enemy
-						// TODO: Battle Calculator
-						// TODO: Bump Animation
-						log(`attacks ${a}. Location (${a.gameTile.x},${a.gameTile.y})`, "Player");
+					// ATTACKING
+					if (actor instanceof Enemy) {
+						let battleResult = MeleeCalculator.battle(this, actor);
+
+						// create bump animation
+						let bumpAnim = AnimationPool.get(BumpAnimation, this);
+						bumpAnim.bumpTowards(goalTile);
+						this.scheduleAnimation(bumpAnim);
+
+						if (battleResult.defenderWasHit) {
+							log(`attacks ${actor} at (${actor.gameTile.x},${actor.gameTile.y}) for ${battleResult.damage}dmg.`, "Player");
+							let hurtAnimation = actor.takeDamage(battleResult.damage);
+							this.scheduleAnimation(hurtAnimation);
+						} else {
+							log(`misses ${actor}.`, "Player");
+						}
 
 						didSomeInteraction = true;
 

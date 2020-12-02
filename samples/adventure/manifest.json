@@ -29,6 +29,11 @@
 				"w": 16,
 				"h": 16
 			},
+			"blood": {
+				"url": "./img/blood.png",
+				"w": 10,
+				"h": 10
+			},
 			"tileset": {
 				"url": "./img/tileset.png",
 				"w": 10,
