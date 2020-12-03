@@ -156,10 +156,9 @@ class BaseActor extends Entity {
 
 			// I'm ded x_x
 			if (stats.hp <= 0) {
-				// TODO: Dying animation
 				return this.die()
 			} else {
-				// TODO: Hurt animation
+				// TODO: Damage Indicator Effect
 				return AnimationPool.get(HurtAnimation, this);
 			}
 		}

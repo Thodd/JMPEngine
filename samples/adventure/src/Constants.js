@@ -16,11 +16,12 @@ const Constants = {
 
 	Layers: {
 		TILES:    0,
-		NPC:      1,
-		PLAYER:   2,
-		EFFECTS:  3,
-		UI_BG:    4,
-		UI_TEXT:  5
+		EFFECTS_BELOW_ACTORS: 1,
+		NPC:      2,
+		PLAYER:   3,
+		EFFECTS_ABOVE_ACTORS: 4,
+		UI_BG:    6,
+		UI_TEXT:  7
 	},
 
 	Colors: {

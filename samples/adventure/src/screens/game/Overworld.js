@@ -2,6 +2,8 @@ import Screen from "../../../../../src/game/Screen.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 
+import BitmapText from "../../../../../src/game/BitmapText.js";
+
 import GameController from "./GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
@@ -47,11 +49,22 @@ class WorldScreen extends Screen {
 		this._gameController.addPlayer(this.player);
 
 		// some enemies
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 5; i++) {
 			this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);
 			this._gameController.addActor(this.enemy);
 		}
+
+		// testing texts for log
+		// let bmpText = new BitmapText({
+		// 	text: "You hit the Snake for 5dmg.",
+		// 	color: Constants.Colors.CREME,
+		// 	font: "font0"
+		// });
+		// bmpText.x = 4;
+		// bmpText.y = 140;
+		// bmpText.layer = Constants.Layers.UI_TEXT;
+		// this.add(bmpText);
 	}
 
 	setup() {

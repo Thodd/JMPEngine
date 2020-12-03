@@ -1,25 +1,27 @@
 import FrameCounter from "../../../../src/utils/FrameCounter.js";
 import BaseAnimation from "./BaseAnimation.js";
+import Blood from "./effects/Blood.js";
 
 class DeathAnimation extends BaseAnimation {
 	constructor(actor) {
 		super(actor);
-		this.fc = new FrameCounter(2);
+		this.fc = new FrameCounter(0);
 	}
 
 	reset() {
 		super.reset();
 		this.fc.reset();
+
+		// simple: create a new blood entity everytime...
+		// TODO: can we optimize this? Reusing the blood entities makes them vanish from the screen...
+		//       but we could save some resources by doing so :/
+		this.blood = new Blood(this.actor.getTile());
+		this.actor.getScreen().add(this.blood);
 	}
 
 	animate() {
 		if (this.fc.isReady()) {
-			this.actor.visible = !this.actor.visible;
-			// stop after 5 loops
-			if (this.fc.looped() >= 5) {
-				this.done();
-				this.actor.visible = true;
-			}
+			this.done();
 		}
 	}
 }

@@ -365,7 +365,8 @@ class Screen {
 				e._updateCurrentAnimation();
 			}
 
-			if (e && e.update && e.active && !e._isDestroyed) {
+			// only entities which are set to active=true and which are not destroyed or scheduled for removal are updated!
+			if (e && e.update && e.active && !e._isDestroyed && !e._isScheduledForRemoval) {
 				e.update(dt);
 			}
 		}

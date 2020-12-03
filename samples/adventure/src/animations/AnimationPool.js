@@ -22,8 +22,9 @@ const AnimationPool = {
 			anim = new AnimationClass(actor);
 		}
 
-		anim.reset();
+		// set the actor on the animation before reset: reset() might depend on the actor location, e.g. blood splatter or item drops
 		anim.setActor(actor);
+		anim.reset();
 
 		return anim;
 	},

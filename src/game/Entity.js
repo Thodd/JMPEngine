@@ -1,5 +1,5 @@
 import Spritesheets from "../assets/Spritesheets.js";
-import { warn, error, fail } from "../utils/Log.js";
+import { warn, fail } from "../utils/Log.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
 
@@ -157,6 +157,18 @@ class Entity {
 
 			this._screen.remove(this);
 			this._isDestroyed = true;
+		}
+	}
+
+	/**
+	 * Removes the Entity from its current screen.
+	 * The Entity is NOT destroyed, and can be re-added to another screen.
+	 */
+	removeFromScreen() {
+		if (this._screen) {
+			this._screen.remove(this);
+		} else {
+			warn(`Could not remove '${this}' from a screen. Entity is not added to a screen.`, "Entity");
 		}
 	}
 

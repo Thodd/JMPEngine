@@ -29,10 +29,6 @@ class ChainAnimation extends BaseAnimation {
 		this.currentIndex = 0;
 	}
 
-	setActor(actor) {
-		this.actor = actor;
-	}
-
 	add(animation) {
 		this.chain.push(animation);
 	}

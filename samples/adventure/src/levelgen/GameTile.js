@@ -47,7 +47,11 @@ class GameTile extends Tile {
 	constructor({tilemap, x, y}) {
 		super({tilemap, x, y});
 
+		// Movable actors, e.g. Player, Enemies, Pick-ups, Items, ...
 		this._actors = [];
+
+		// TODO: track the visual effects e.g. blood or butterflies
+		// this._effects = [];
 
 		this.setType(Types.VOID);
 	}
