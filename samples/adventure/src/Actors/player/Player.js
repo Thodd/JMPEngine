@@ -2,15 +2,14 @@ import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
 import { log } from "../../../../../../src/utils/Log.js";
 import Constants from "../../Constants.js";
+
 import BaseActor from "../BaseActor.js";
 import AnimationPool from "../../animations/AnimationPool.js";
 import MovementAnimation from "../../animations/MovementAnimation.js";
-import PlayerState from "./PlayerState.js";
-import Enemy from "../enemies/Enemy.js";
 
-// melee stuff
-import MeleeCalculator from "../../combat/MeleeCalculator.js";
-import BumpAnimation from "../../animations/BumpAnimation.js";
+import PlayerState from "./PlayerState.js";
+
+import Enemy from "../enemies/Enemy.js";
 
 class Player extends BaseActor {
 	constructor({gameTile}) {
@@ -90,8 +89,6 @@ class Player extends BaseActor {
 
 		// notify the GC that the player has made their turn
 		this.getGameController().endPlayerTurn();
-
-		log("turn ended", "Player");
 	}
 
 	update() {
@@ -170,20 +167,7 @@ class Player extends BaseActor {
 
 					// ATTACKING
 					if (actor instanceof Enemy) {
-						let battleResult = MeleeCalculator.battle(this, actor);
-
-						// create bump animation
-						let bumpAnim = AnimationPool.get(BumpAnimation, this);
-						bumpAnim.bumpTowards(goalTile);
-						this.scheduleAnimation(bumpAnim);
-
-						if (battleResult.defenderWasHit) {
-							log(`attacks ${actor} at (${actor.gameTile.x},${actor.gameTile.y}) for ${battleResult.damage}dmg.`, "Player");
-							let hurtAnimation = actor.takeDamage(battleResult.damage, this);
-							this.scheduleAnimation(hurtAnimation);
-						} else {
-							log(`misses ${actor}.`, "Player");
-						}
+						this.meleeAttackActor(actor);
 
 						didSomeInteraction = true;
 

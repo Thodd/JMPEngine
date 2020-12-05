@@ -1,9 +1,12 @@
 import Entity from "../../../../src/game/Entity.js";
 import Constants from "../Constants.js";
-import { error } from "../../../../src/utils/Log.js";
+import { log, error } from "../../../../src/utils/Log.js";
+
+import MeleeCalculator from "../combat/MeleeCalculator.js";
 import AnimationPool from "../animations/AnimationPool.js";
 import HurtAnimation from "../animations/HurtAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
+import BumpAnimation from "../animations/BumpAnimation.js";
 
 let _ID = 0;
 
@@ -196,6 +199,31 @@ class BaseActor extends Entity {
 		}
 
 		return animations;
+	}
+
+	/**
+	 * Performs a melee attack against the given actor and schedules the necessary animations.
+	 *
+	 * @param {BaseActor} defender the defending actor
+	 */
+	meleeAttackActor(defender) {
+		// bump animation
+		// whether we hit or miss is irrelevant, we always perform the attack animation
+		let bump = AnimationPool.get(BumpAnimation, this);
+		bump.bumpTowards(defender.getTile());
+		this.scheduleAnimation(bump);
+
+		// now do the actual battle
+		let battleResult = MeleeCalculator.battle(this, defender);
+
+		if (battleResult.defenderWasHit) {
+			log(`attacks ${defender} at (${defender.gameTile.x},${defender.gameTile.y}) for ${battleResult.damage}dmg.`, this);
+			// defender is hurt by this actor, schedule hurt animation
+			let hurt = defender.takeDamage(battleResult.damage, this);
+			this.scheduleAnimation(hurt);
+		} else {
+			log(`misses ${defender}.`, this);
+		}
 	}
 
 	/**

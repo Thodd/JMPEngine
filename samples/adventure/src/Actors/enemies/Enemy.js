@@ -2,7 +2,6 @@ import Helper from "../../../../../src/utils/Helper.js";
 import BaseActor from "../BaseActor.js";
 import MovementAnimation from "../../animations/MovementAnimation.js";
 import AnimationPool from "../../animations/AnimationPool.js";
-import { log } from "../../../../../src/utils/Log.js";
 import RNG from "../../../../../src/utils/RNG.js";
 
 class Enemy extends BaseActor {
@@ -35,17 +34,17 @@ class Enemy extends BaseActor {
 		return "Enemy#" + this._ID;
 	}
 
+	/**
+	 * Turn taking logic
+	 */
 	takeTurn() {
 		// in case we have taken damage from the player since our last turn
 		// we try to retaliate
 		let player = this.getPlayer();
 		if (this._sinceLastTurn.hasTakenDamage == player) {
 			// attack player: melee
-			if (this.isStandingAdjacent(player) && RNG.random() < 0.5) {
-				log(`attacks the player.`, this);
-
-				// TODO: Attack player & create animation
-
+			if (this.isStandingAdjacent(player) && RNG.random() < 1) {
+				this.meleeAttackActor(player);
 			} else {
 				this.makeRandomMove();
 			}

@@ -17,7 +17,7 @@ const MeleeCalculator = {
 		// if the attacker hits, at least 1 dmg is dealt to the defender
 		if (RNG.random() < hitProbability) {
 			hit = true;
-			dmg = Math.min(1, Math.max(0, attackerStats.atk - defenderStats.def));
+			dmg = Math.max(1, attackerStats.atk - defenderStats.def);
 		}
 
 		return {
