@@ -76,10 +76,13 @@ class GameController {
 
 	// called by the player once they end their turn
 	// players gives us all animations which will be played next
-	endPlayerTurn(playerAnimations) {
+	endPlayerTurn() {
+		// retrieve all animations scheduled by the player & reset
+		let playerAnimations = this.player._scheduledAnimations;
+		this.player._scheduledAnimations = [];
 		this.waitingForPlayer = false;
 
-		// schedule the animations started by the player class
+		// schedule player animations
 		this.animations.push(...playerAnimations);
 
 		// Now update all NPCs and schedule their animations too
@@ -87,11 +90,13 @@ class GameController {
 			let a = this.actors[i];
 			// only actors which have not been removed are allowed to take a turn!!
 			if (!a._isRemoved) {
-				let animations = a.takeTurn();
-				// schedule any given animation, e.g. movement, hurting, attacking, ...
-				if (animations.length > 0) {
-					this.animations.push(...animations);
-				}
+				// actor takes turn, retrieve scheduled animations & reset
+				a.takeTurn();
+				let animations = a._scheduledAnimations;
+				a._scheduledAnimations = [];
+
+				// schedule actor animations
+				this.animations.push(...animations);
 			}
 		}
 

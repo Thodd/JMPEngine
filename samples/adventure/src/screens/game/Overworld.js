@@ -40,13 +40,13 @@ class WorldScreen extends Screen {
 		this.add(this._tileMap);
 
 		// player
-		this.player = new Player({gameTile: this._tileMap.get(10, 10)});
-		this.add(this.player);
+		this._player = new Player({gameTile: this._tileMap.get(10, 10)});
+		this.add(this._player);
 
 		// game controller
 		this._gameController = new GameController(this);
 		exposeOnWindow("gc", this._gameController); // DEBUG reference of GC on window
-		this._gameController.addPlayer(this.player);
+		this._gameController.addPlayer(this._player);
 
 		// some enemies
 		for (let i = 0; i < 5; i++) {
@@ -56,15 +56,15 @@ class WorldScreen extends Screen {
 		}
 
 		// testing texts for log
-		// let bmpText = new BitmapText({
-		// 	text: "You hit the Snake for 5dmg.",
-		// 	color: Constants.Colors.CREME,
-		// 	font: "font0"
-		// });
-		// bmpText.x = 4;
-		// bmpText.y = 140;
-		// bmpText.layer = Constants.Layers.UI_TEXT;
-		// this.add(bmpText);
+		let bmpText = new BitmapText({
+			text: "You hit the Snake for 5dmg.",
+			color: Constants.Colors.CREME,
+			font: "font0"
+		});
+		bmpText.x = 4;
+		bmpText.y = 140;
+		bmpText.layer = Constants.Layers.UI_TEXT;
+		this.add(bmpText);
 	}
 
 	setup() {
@@ -75,6 +75,10 @@ class WorldScreen extends Screen {
 
 	getTilemap() {
 		return this._tileMap;
+	}
+
+	getPlayer() {
+		return this._player;
 	}
 
 	getGameController() {

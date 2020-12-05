@@ -158,7 +158,6 @@ function setupCSS(containerID) {
 	const head = document.getElementsByTagName('head')[0];
 
 	const style = document.createElement('style');
-	style.type = 'text/css';
 
 	let w = Manifest.get("/w");
 	let h = Manifest.get("/h");
@@ -171,10 +170,13 @@ function setupCSS(containerID) {
 			width: ${w * scale}px;
 			height: ${h * scale}px;
 
-			image-rendering: pixelated;
-			image-rendering: -webkit-crisp-edges;
+			image-rendering: optimizeSpeed;
 			image-rendering: -moz-crisp-edges;
 			image-rendering: -o-crisp-edges;
+			image-rendering: -webkit-optimize-contrast;
+			image-rendering: optimize-contrast;
+			image-rendering: pixelated;
+			-ms-interpolation-mode: nearest-neighbor;
 		}
 
 		.jmpWrapper {

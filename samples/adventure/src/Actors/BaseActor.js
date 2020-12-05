@@ -21,16 +21,26 @@ class BaseActor extends Entity {
 		// global ID to distinguish default actors during debugging.
 		this._id = _ID++;
 
+		// a list of all animations which will be played after the actors turn
+		this._scheduledAnimations = [];
+
+		// place actor on start tile
 		this.moveToTile(gameTile);
 
+		// trigger initial rendering
 		this.updateVisualPosition();
 
+		// default stats, overwritten in subclasses
 		this._stats = {
 			hp_max: 5,
 			hp: 5,
 			atk: 1,
 			def: 1
 		};
+
+		// holds information about things that happend since the last turn of this actor
+		// can be used by other actors to store some information, which this AI might need
+		this._sinceLastTurn = {};
 
 		// debugging for sprite positioning
 		//this.RENDER_HITBOX = 0xFF0085;
@@ -41,6 +51,10 @@ class BaseActor extends Entity {
 
 	toString() {
 		return `BaseActor#${this._id}`;
+	}
+
+	resetSinceLastTurnInfo() {
+		this._sinceLastTurn = {};
 	}
 
 	/**
@@ -59,6 +73,14 @@ class BaseActor extends Entity {
 		this.y = this.gameTile.y * Constants.TILE_HEIGHT;
 	}
 
+	/**
+	 * Schedules the given animation.
+	 * All scheduled animations will be played at the end of the turn.
+	 */
+	scheduleAnimation(anim) {
+		this._scheduledAnimations.push(anim);
+	}
+
 	takeTurn() {
 		// no animations
 		return [];
@@ -73,6 +95,13 @@ class BaseActor extends Entity {
 	 */
 	getTile() {
 		return this.gameTile;
+	}
+
+	/**
+	 * Returns the player instance in the Screen this actor is added to.
+	 */
+	getPlayer() {
+		return this.getScreen().getPlayer();
 	}
 
 	/**
@@ -147,7 +176,7 @@ class BaseActor extends Entity {
 	 *
 	 * @param {int} dmg the damage taken by the actor
 	 */
-	takeDamage(dmg) {
+	takeDamage(dmg, cause) {
 		let animations = [];
 
 		if (dmg > 0) {
@@ -158,6 +187,9 @@ class BaseActor extends Entity {
 			if (stats.hp <= 0) {
 				return this.die()
 			} else {
+				// track that this actor has taken damage by the given cause since its last turn (e.g. Player, Poison, Fire, ...)
+				this._sinceLastTurn.hasTakenDamage = cause || true;
+
 				// TODO: Damage Indicator Effect
 				return AnimationPool.get(HurtAnimation, this);
 			}
@@ -251,6 +283,55 @@ class BaseActor extends Entity {
 		}
 
 		return tiles;
+	}
+
+	/**
+	 * Calculates the manhattan distance to the given BaseActor instance.
+	 * Typically used by Enemies to check if the player is near.
+	 *
+	 * @param {BaseActor} actor the actor to which we want to calculate the distance
+	 */
+	manhattanDistanceTo(actor) {
+		let a = this.gameTile;
+		let b = actor.gameTile;
+		return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+	}
+
+	/**
+	 * Calculates the euclidian distance to the given BaseActor instance.
+	 *
+	 * @param {BaseActor} actor the actor to which we want to calculate the distance
+	 */
+	euclidianDistanceTo(actor) {
+		let a = this.gameTile;
+		let b = actor.gameTile;
+		return Math.sqrt(Math.pow(a.x-b.x, 2) + Math.pow(a.y-b.y, 2));
+	}
+
+	/**
+	 * Checks if this BaseActor is standing one tile away from the given actor.
+	 *
+	 * @param {BaseActor} actor the actor to check
+	 * @param {boolean} diagonal whether diagonal tiles should be checked
+	 */
+	isStandingAdjacent(actor, diagonal = false) {
+		let t1 = this.gameTile;
+		let t2 = actor.gameTile;
+		let xDif = Math.abs(t1.x - t2.x);
+		let yDif = Math.abs(t1.y - t2.y);
+
+		// anything farther than 1 is not considered "adjacent"
+		if (xDif > 1 || yDif > 1) {
+			return false;
+		}
+
+		if (diagonal) {
+			if (xDif === 1 || yDif === 1) {
+				return true;
+			}
+		} else {
+			return (xDif === 1 && yDif === 0) || (xDif === 0 && yDif === 1);
+		}
 	}
 }
 

@@ -89,14 +89,9 @@ class Player extends BaseActor {
 		this.checkForInput = false;
 
 		// notify the GC that the player has made their turn
-		this.getGameController().endPlayerTurn(this._scheduledAnimations);
-		this._scheduledAnimations = [];
+		this.getGameController().endPlayerTurn();
 
 		log("turn ended", "Player");
-	}
-
-	scheduleAnimation(anim) {
-		this._scheduledAnimations.push(anim);
 	}
 
 	update() {
@@ -104,33 +99,38 @@ class Player extends BaseActor {
 			let xDif = 0;
 			let yDif = 0;
 
-			if (Keyboard.down(Keys.LEFT)) {
-				xDif = -1;
-				this._lastDir = "left";
-			} else if (Keyboard.down(Keys.RIGHT)) {
-				xDif = +1;
-				this._lastDir = "right";
-			}
+			// wait one turn
+			if (Keyboard.down(Keys.PERIOD)) {
+				this.endTurn();
+			} else {
+				if (Keyboard.down(Keys.LEFT)) {
+					xDif = -1;
+					this._lastDir = "left";
+				} else if (Keyboard.down(Keys.RIGHT)) {
+					xDif = +1;
+					this._lastDir = "right";
+				}
 
-			if (Keyboard.down(Keys.UP)) {
-				yDif = -1;
-				this._lastDir = "up";
-			} else if (Keyboard.down(Keys.DOWN)) {
-				yDif = +1;
-				this._lastDir = "down";
-			}
+				if (Keyboard.down(Keys.UP)) {
+					yDif = -1;
+					this._lastDir = "up";
+				} else if (Keyboard.down(Keys.DOWN)) {
+					yDif = +1;
+					this._lastDir = "down";
+				}
 
-			// we have some direction input, so we start a movement animation
-			if (xDif != 0 || yDif != 0) {
+				// we have some direction input, so we start a movement animation
+				if (xDif != 0 || yDif != 0) {
 
-				// determine the start- and goal-tile
-				let startTile = this.gameTile;
-				let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
+					// determine the start- and goal-tile
+					let startTile = this.gameTile;
+					let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
-				// if something happend during this turn, end it.
-				let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
-				if (didSomeInteraction) {
-					this.endTurn();
+					// if something happend during this turn, end it.
+					let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
+					if (didSomeInteraction) {
+						this.endTurn();
+					}
 				}
 			}
 		}
@@ -179,7 +179,7 @@ class Player extends BaseActor {
 
 						if (battleResult.defenderWasHit) {
 							log(`attacks ${actor} at (${actor.gameTile.x},${actor.gameTile.y}) for ${battleResult.damage}dmg.`, "Player");
-							let hurtAnimation = actor.takeDamage(battleResult.damage);
+							let hurtAnimation = actor.takeDamage(battleResult.damage, this);
 							this.scheduleAnimation(hurtAnimation);
 						} else {
 							log(`misses ${actor}.`, "Player");

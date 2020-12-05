@@ -2,6 +2,8 @@ import Helper from "../../../../../src/utils/Helper.js";
 import BaseActor from "../BaseActor.js";
 import MovementAnimation from "../../animations/MovementAnimation.js";
 import AnimationPool from "../../animations/AnimationPool.js";
+import { log } from "../../../../../src/utils/Log.js";
+import RNG from "../../../../../src/utils/RNG.js";
 
 class Enemy extends BaseActor {
 	constructor({gameTile}) {
@@ -34,7 +36,32 @@ class Enemy extends BaseActor {
 	}
 
 	takeTurn() {
-		let anims = [];
+		// in case we have taken damage from the player since our last turn
+		// we try to retaliate
+		let player = this.getPlayer();
+		if (this._sinceLastTurn.hasTakenDamage == player) {
+			// attack player: melee
+			if (this.isStandingAdjacent(player) && RNG.random() < 0.5) {
+				log(`attacks the player.`, this);
+
+				// TODO: Attack player & create animation
+
+			} else {
+				this.makeRandomMove();
+			}
+		} else {
+			this.makeRandomMove();
+		}
+
+		this.resetSinceLastTurnInfo();
+	}
+
+	/**
+	 * Makes a random move and schedules animations if needed.
+	 *
+	 * @param {BaseAnimation[]} anims a set of animations to which the random move should be added
+	 */
+	makeRandomMove() {
 		let startTile = this.getTile();
 
 		// pick random tile to move to
@@ -46,10 +73,8 @@ class Enemy extends BaseActor {
 			this.moveToTile(goalTile);
 			let a = AnimationPool.get(MovementAnimation, this);
 			a.moveFromTo(startTile, goalTile);
-			anims.push(a);
+			this.scheduleAnimation(a);
 		}
-
-		return anims;
 	}
 
 }
