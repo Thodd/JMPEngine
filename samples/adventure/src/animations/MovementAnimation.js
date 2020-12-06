@@ -1,15 +1,7 @@
 import BaseAnimation from "./BaseAnimation.js";
 import Constants from "../Constants.js";
 
-window.move_ID = 0;
-
 class MovementAnimation extends BaseAnimation {
-	constructor(actor) {
-		super(actor);
-		this.reset();
-		window.move_ID++;
-	}
-
 	reset() {
 		super.reset();
 		this.speed = 1;

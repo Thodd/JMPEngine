@@ -81,7 +81,13 @@ class BaseActor extends Entity {
 	 * All scheduled animations will be played at the end of the turn.
 	 */
 	scheduleAnimation(anim) {
-		this._scheduledAnimations.push(anim);
+		if (Array.isArray(anim) && anim.length > 0) {
+			// multiple animations (but no empty arrays)
+			this._scheduledAnimations.push([...anim]);
+		} else {
+			// only one animation
+			this._scheduledAnimations.push(anim);
+		}
 	}
 
 	takeTurn() {
@@ -193,8 +199,10 @@ class BaseActor extends Entity {
 				// track that this actor has taken damage by the given cause since its last turn (e.g. Player, Poison, Fire, ...)
 				this._sinceLastTurn.hasTakenDamage = cause || true;
 
-				// TODO: Damage Indicator Effect
-				return AnimationPool.get(HurtAnimation, this);
+				// set the damage number indicator & schedule the hurt animation
+				let hurtAnim = AnimationPool.get(HurtAnimation, this);
+				hurtAnim.setDamageNumber(dmg);
+				return hurtAnim;
 			}
 		}
 

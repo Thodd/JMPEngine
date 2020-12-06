@@ -3,8 +3,8 @@ import BaseAnimation from "./BaseAnimation.js";
 import Blood from "./effects/Blood.js";
 
 class DeathAnimation extends BaseAnimation {
-	constructor(actor) {
-		super(actor);
+	constructor() {
+		super();
 		this.fc = new FrameCounter(0);
 	}
 

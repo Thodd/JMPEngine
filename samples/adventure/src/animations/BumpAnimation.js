@@ -2,11 +2,6 @@ import BaseAnimation from "./BaseAnimation.js";
 import Constants from "../Constants.js";
 
 class BumpAnimation extends BaseAnimation {
-	constructor(actor) {
-		super(actor);
-
-		this.reset();
-	}
 
 	reset() {
 		super.reset();

@@ -8,12 +8,6 @@ import BaseAnimation from "./BaseAnimation.js";
  * Nesting ChainAnimations is also possible.
  */
 class ChainAnimation extends BaseAnimation {
-	constructor(actor) {
-		super(actor);
-
-		this.reset();
-	}
-
 	release() {
 		// release all nested animation
 		for (let i = 0, len = this.chain.length; i < len; i++) {

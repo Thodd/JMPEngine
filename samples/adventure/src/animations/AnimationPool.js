@@ -18,8 +18,8 @@ const AnimationPool = {
 		let anim = animations[AnimationClass.name].pop();
 
 		if (!anim) {
-			log(`new Animation created from class '${AnimationClass.name}`, "AnimationPool");
-			anim = new AnimationClass(actor);
+			log(`new Animation instance created from class '${AnimationClass.name}.`, "AnimationPool");
+			anim = new AnimationClass();
 		}
 
 		// set the actor on the animation before reset: reset() might depend on the actor location, e.g. blood splatter or item drops

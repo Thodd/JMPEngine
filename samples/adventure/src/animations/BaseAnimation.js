@@ -1,8 +1,5 @@
 class BaseAnimation {
-	constructor(actor) {
-		this.actor = actor;
-		this._isDone = false;
-	}
+	constructor() {}
 
 	reset() {
 		this._isDone = false;

@@ -35,23 +35,4 @@ class Blood extends Entity {
 	}
 }
 
-/**
- * Pooling all Blood splatter instances together, so we can reuse the Entities.
- */
-// const _pool = [];
-// const BloodPool = {
-// 	get(gameTile) {
-// 		let b = _pool.pop();
-// 		if (!b) {
-// 			b = new Blood(gameTile);
-// 		}
-// 		return b;
-// 	},
-
-// 	release(b) {
-// 		b.removeFromScreen();
-// 		_pool.push(b);
-// 	}
-// }
-
 export default Blood;

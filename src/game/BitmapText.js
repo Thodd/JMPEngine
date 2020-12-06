@@ -4,7 +4,7 @@ import Fonts from "../assets/Fonts.js";
 
 import PIXI from "../core/PIXIWrapper.js";
 
-class Text extends Entity {
+class BitmapText extends Entity {
 	constructor({text, x, y, font="font0", color=null, leading=0}) {
 		super(x, y);
 		this._text = null;
@@ -211,4 +211,4 @@ class Text extends Entity {
 	}
 }
 
-export default Text;
+export default BitmapText;
