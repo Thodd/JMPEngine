@@ -64,8 +64,12 @@ class MovementAnimation extends BaseAnimation {
 	}
 
 	animate() {
-		this.actor.x += this.speed * this.dx;
-		this.actor.y += this.speed * this.dy;
+		if (this.actor.x != this.goalX) {
+			this.actor.x += this.speed * this.dx;
+		}
+		if (this.actor.y != this.goalY) {
+			this.actor.y += this.speed * this.dy;
+		}
 
 		// TODO: Handle (slope != 0 or 1) correctly
 		if (this.actor.x == this.goalX && this.actor.y == this.goalY) {

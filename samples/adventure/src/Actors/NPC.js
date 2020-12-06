@@ -1,6 +1,4 @@
 import BaseActor from "./BaseActor.js";
-import MovementAnimation from "../animations/MovementAnimation.js";
-import AnimationPool from "../animations/AnimationPool.js";
 
 class NPC extends BaseActor {
 	constructor({gameTile}) {
@@ -29,22 +27,7 @@ class NPC extends BaseActor {
 	}
 
 	takeTurn() {
-		let anims = [];
-		let startTile = this.getTile();
 
-		// pick random tile to move to
-		let goalTile = this.getRandomAdjacentTile();
-
-		// only move if the start and goal tile are different
-		// saves some Animation instances etc.
-		if (goalTile && goalTile != startTile && goalTile.isFree()) {
-			this.moveToTile(goalTile);
-			let a = AnimationPool.get(MovementAnimation, this);
-			a.moveFromTo(startTile, goalTile);
-			anims.push(a);
-		}
-
-		return anims;
 	}
 
 }

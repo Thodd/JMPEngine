@@ -1,9 +1,11 @@
 import Entity from "../../../../src/game/Entity.js";
-import Constants from "../Constants.js";
+import Helper from "../../../../src/utils/Helper.js";
 import { log, error } from "../../../../src/utils/Log.js";
+import Constants from "../Constants.js";
 
 import MeleeCalculator from "../combat/MeleeCalculator.js";
 import AnimationPool from "../animations/AnimationPool.js";
+import MovementAnimation from "../animations/MovementAnimation.js";
 import HurtAnimation from "../animations/HurtAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
@@ -28,7 +30,7 @@ class BaseActor extends Entity {
 		this._scheduledAnimations = [];
 
 		// place actor on start tile
-		this.moveToTile(gameTile);
+		this.placeOnTile(gameTile);
 
 		// trigger initial rendering
 		this.updateVisualPosition();
@@ -138,36 +140,13 @@ class BaseActor extends Entity {
 	}
 
 	/**
-	 * Moves the Actor to the GameTile at the given coordinates in the Tilemap.
-	 * @param {int} x
-	 * @param {int} y
+	 * Places the actor on the given tile.
+	 * NO animation is played.
+	 *
+	 * @param {GameTile} newTile the new tile for the actor
+	 * @returns {boolean} whether the placement was successful (can be false if the tile is invalid, e.g. outside the map)
 	 */
-	moveTo(x, y) {
-		let tilemap = this.getTilemap();
-
-		if (tilemap) {
-			let newTile = tilemap.get(x, y);
-
-			if (newTile) {
-				// first remove from old tile
-				this.gameTile.removeActor(this);
-
-				// then add to new tile
-				newTile.addActor(this);
-				this.gameTile = newTile;
-			} else {
-				error(`${this} cannot be moved to tile: (${x}, ${y}). Tile does not exist.`, "BaseActor");
-			}
-		} else {
-			error(`${this} cannot be moved to tile: (${x}, ${y}). Actor is not added to a Screen with a Tilemap.`, "BaseActor");
-		}
-	}
-
-	/**
-	 * Moves the Actor to the given Tile.
-	 * @param {*} newTile
-	 */
-	moveToTile(newTile) {
+	placeOnTile(newTile) {
 		if (newTile) {
 			if (this.gameTile) {
 				this.gameTile.removeActor(this);
@@ -176,6 +155,41 @@ class BaseActor extends Entity {
 			this.gameTile = newTile;
 		} else {
 			error(`${this} cannot be moved to new Tile. Tile does not exist.`, "BaseActor");
+		}
+	}
+
+	/**
+	 * Moves the Actor to the given Tile.
+	 * Schedules a movement animation.
+	 *
+	 * @param {*} newTile
+	 */
+	moveToTile(goalTile) {
+		let startTile = this.gameTile;
+
+		this.placeOnTile(goalTile);
+
+		// start pixel-based MovementAnimation from one tile to another
+		let moveAnim = AnimationPool.get(MovementAnimation, this);
+		moveAnim.moveFromTo(startTile, goalTile);
+		this.scheduleAnimation(moveAnim);
+	}
+
+	/**
+	 * Makes a random move and schedules animations if needed.
+	 *
+	 * @param {BaseAnimation[]} anims a set of animations to which the random move should be added
+	 */
+	makeRandomMove() {
+		let startTile = this.getTile();
+
+		// pick random tile to move to
+		let goalTile = Helper.choose(this.getAdjacentNeumannTiles().all);
+
+		// only move if the start and goal tile are different
+		// saves some Animation instances etc.
+		if (goalTile && goalTile != startTile && goalTile.isFree()) {
+			this.moveToTile(goalTile);
 		}
 	}
 

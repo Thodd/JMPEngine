@@ -4,8 +4,6 @@ import { log } from "../../../../../../src/utils/Log.js";
 import Constants from "../../Constants.js";
 
 import BaseActor from "../BaseActor.js";
-import AnimationPool from "../../animations/AnimationPool.js";
-import MovementAnimation from "../../animations/MovementAnimation.js";
 
 import PlayerState from "./PlayerState.js";
 
@@ -123,7 +121,7 @@ class Player extends BaseActor {
 					let startTile = this.gameTile;
 					let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
-					// if something happend during this turn, end it.
+					// if something happend during this turn, end the turn.
 					let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
 					if (didSomeInteraction) {
 						this.endTurn();
@@ -151,14 +149,8 @@ class Player extends BaseActor {
 		if (goalTile) {
 			// movement
 			if (goalTile.isFree()) {
-				// move Actor to tile
-				// The MovementAnimation is only animating the Sprite, the Actor on the Tilemap has to be moved manually!
+				// move Actor to tile (incl. animation)
 				this.moveToTile(goalTile);
-
-				// start pixel-based MovementAnimation from one tile to another
-				let moveAnim = AnimationPool.get(MovementAnimation, this);
-				moveAnim.moveFromTo(startTile, goalTile);
-				this.scheduleAnimation(moveAnim);
 
 				didSomeInteraction = true;
 			} else {
