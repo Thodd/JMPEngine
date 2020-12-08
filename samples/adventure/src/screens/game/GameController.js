@@ -1,9 +1,10 @@
-import AnimationPool from "../../animations/AnimationPool.js";
+import AnimationSystem from "../../animations/AnimationSystem.js";
 // import { log } from "../../../src/utils/Log.js";
 
 class GameController {
 	constructor() {
-		this.animations = [];
+		this.animationSystem = new AnimationSystem();
+
 		this.actors = [];
 		this.actorsToBeRemoved = [];
 
@@ -26,38 +27,9 @@ class GameController {
 	}
 
 	update() {
-		// If animations are scheduled, we process them and only then advance to the next player turn
-		let animationCount = this.animations.length
-		if (animationCount > 0) {
-			// for simplicity we expect all animations to be finished,
-			// and if one animation is unfinished the flag is set to false
-			let allAnimationsDone = true;
+		let animationsFinished = this.animationSystem.update();
 
-			for (let i = 0; i < animationCount; i++) {
-				let animation = this.animations[i];
-
-				let done = animation._animate();
-
-				if (!done) {
-					// if at least one animation is not done, we keep on updating
-					allAnimationsDone = false;
-				}
-			}
-
-			if (allAnimationsDone) {
-				// release all animations after they have all finished
-				this.animations.forEach(AnimationPool.release);
-				this.animations = [];
-
-				// TODO: We could optimizes the release by flagging each animation instance
-				//       and releasing it upon "done" during the first loop
-
-			} else {
-				// break out:
-				// we keep updating animations until everything is finished
-				return;
-			}
-		} else {
+		if(animationsFinished) {
 			// Nothing to control until the player has made a move:
 			// Animations which need to be in sync with the game-logic e.g. movement or attacking will be handled by the GC,
 			// other animations or visual effects are just normal engine entities, as they don't effect the gameplay
@@ -83,7 +55,7 @@ class GameController {
 		this.waitingForPlayer = false;
 
 		// schedule player animations
-		this.animations.push(...playerAnimations);
+		this.animationSystem.schedule(playerAnimations);
 
 		// Now update all NPCs and schedule their animations too
 		for (let i = 0, len = this.actors.length; i < len; i++) {
@@ -96,7 +68,7 @@ class GameController {
 				a._scheduledAnimations = [];
 
 				// schedule actor animations
-				this.animations.push(...animations);
+				this.animationSystem.schedule(animations);
 			}
 		}
 

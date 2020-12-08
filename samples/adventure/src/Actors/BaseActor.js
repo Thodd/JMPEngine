@@ -9,6 +9,7 @@ import MovementAnimation from "../animations/MovementAnimation.js";
 import HurtAnimation from "../animations/HurtAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
+import ChainAnimation from "../animations/ChainAnimation.js";
 
 let _ID = 0;
 

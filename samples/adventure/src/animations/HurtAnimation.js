@@ -35,6 +35,7 @@ class HurtAnimation extends BaseAnimation {
 
 	animate() {
 		this._dmgNumber._pixiSprite.alpha -= 0.05;
+		//this._dmgNumber.y -= 0.5;
 		if (this.fc.isReady()) {
 			this.actor.visible = !this.actor.visible;
 			// stop after 5 loops

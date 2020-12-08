@@ -8,13 +8,11 @@ import BaseAnimation from "./BaseAnimation.js";
  * Nesting ChainAnimations is also possible.
  */
 class ChainAnimation extends BaseAnimation {
-	release() {
-		// release all nested animation
-		for (let i = 0, len = this.chain.length; i < len; i++) {
-			AnimationPool.release(this.chain[i]);
-		}
-
-		this.reset();
+	constructor() {
+		super();
+		// chain animations are chains... :x
+		// used by the AnimationSystem to handle the release of nested animations
+		this._isChain = true;
 	}
 
 	reset() {
@@ -23,8 +21,19 @@ class ChainAnimation extends BaseAnimation {
 		this.currentIndex = 0;
 	}
 
-	add(animation) {
-		this.chain.push(animation);
+	add(anims) {
+		if(!Array.isArray(anims)) {
+			anims = [anims];
+		}
+		this.chain.push(...anims);
+	}
+
+	_release() {
+		// release all nested animations
+		// IMPORTANT: chains might be nested too!
+		for (let anim of this.chain) {
+			AnimationPool.release(anim);
+		}
 	}
 
 	animate() {
@@ -40,14 +49,8 @@ class ChainAnimation extends BaseAnimation {
 			}
 		} else {
 			// end of animation chain reached: currentIndex overflows the length of the chain-array
-			this._isDone = true;
+			this.done();
 		}
-
-		return this._isDone;
-	}
-
-	isDone() {
-		return this._isDone;
 	}
 }
 

@@ -1,5 +1,7 @@
 class BaseAnimation {
-	constructor() {}
+	constructor() {
+		this._isChain = false;
+	}
 
 	reset() {
 		this._isDone = false;
