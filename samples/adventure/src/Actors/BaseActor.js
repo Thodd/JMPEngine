@@ -83,7 +83,12 @@ class BaseActor extends Entity {
 	 * Schedules the given animation.
 	 * All scheduled animations will be played at the end of the turn.
 	 */
-	scheduleAnimation(anim) {
+	scheduleAnimation(anim, phaseId=0) {
+
+
+		// TODO: track animations based on phaseId
+
+
 		if (Array.isArray(anim) && anim.length > 0) {
 			// multiple animations (but no empty arrays)
 			this._scheduledAnimations.push([...anim]);
@@ -173,7 +178,17 @@ class BaseActor extends Entity {
 		// start pixel-based MovementAnimation from one tile to another
 		let moveAnim = AnimationPool.get(MovementAnimation, this);
 		moveAnim.moveFromTo(startTile, goalTile);
-		this.scheduleAnimation(moveAnim);
+		this.scheduleAnimation(moveAnim, 0);
+
+		// // set the damage number indicator & schedule the hurt animation
+		// let hurtAnim = AnimationPool.get(HurtAnimation, this);
+		// hurtAnim.setDamageNumber(0);
+		// this.scheduleAnimation(hurtAnim, 0);
+
+		// // set the damage number indicator & schedule the hurt animation
+		// let bumpAnim = AnimationPool.get(DeathAnimation, this);
+		// //bumpAnim.bumpTowards(goalTile);
+		// this.scheduleAnimation(bumpAnim, 2);
 	}
 
 	/**

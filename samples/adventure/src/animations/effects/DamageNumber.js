@@ -1,4 +1,3 @@
-
 import Constants from "../../Constants.js";
 import BitmapText from "../../../../../src/game/BitmapText.js";
 

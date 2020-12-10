@@ -13,6 +13,8 @@ class Player extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
 
+		this.isPlayer = true;
+
 		this.isBlocking = true;
 
 		this.layer = this.layer = Constants.Layers.PLAYER;

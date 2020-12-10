@@ -1,17 +1,19 @@
+import { fail } from "../../../../src/utils/Log.js";
 import AnimationPool from "./AnimationPool.js";
 
-/**
- * The AnimationSystem handles the scheduling and updating of animations.
- */
-class AnimationSystem {
-	constructor() {
+class AnimationPhase {
+	constructor(name) {
+		this.name = name;
 		this.animations = [];
+		this.nextPhase = null;
+	}
+
+	then(phase) {
+		this.nextPhase = phase;
+		return this;
 	}
 
 	schedule(anims) {
-		if (!Array.isArray(anims)) {
-			anims = [anims];
-		}
 		this.animations.push(...anims);
 	}
 
@@ -48,10 +50,87 @@ class AnimationSystem {
 				return false;
 			}
 		} else {
-			// no animations to run
-			return true;
+			// move to next phase
+			if (this.nextPhase) {
+				return this.nextPhase.update();
+			} else {
+				// no animations to run
+				return true;
+			}
 		}
 	}
 }
+
+// map of all phases, keyed by name, value is the processing order id
+// used for scheduling
+const _phaseNameToProcessingOrder = {};
+
+// Map the names on each other for debugging
+// this decouples the ordering
+const _phaseConstants = {};
+
+// All Phases
+const phaseGeneral = new AnimationPhase("GENERAL");
+const phaseStatusEffects = new AnimationPhase("STATUS_EFFECT");
+const phaseEnemyAttack = new AnimationPhase("ENEMY_ATTACK");
+const phaseEndOfTurn = new AnimationPhase("END_OF_TURN");
+
+const _allPhasesOrdered = [
+	phaseGeneral,
+	phaseStatusEffects,
+	phaseEnemyAttack,
+	phaseEndOfTurn
+];
+
+let _lastPhase = null;
+for (let i = 0; i < _allPhasesOrdered.length; i++) {
+	let nextPhase = _allPhasesOrdered[i];
+
+	// track phase names and processing order
+	_phaseNameToProcessingOrder[nextPhase.name] = i;
+	_phaseConstants[nextPhase.name] = nextPhase.name;
+
+	// chain phases
+	if (_lastPhase) {
+		_lastPhase.then(nextPhase);
+	}
+	_lastPhase = nextPhase;
+}
+
+/**
+ * The AnimationSystem handles the scheduling and updating of animations.
+ */
+class AnimationSystem {
+	/**
+	 * Schedules a list of animations to the given animation phase.
+	 * @param {BaseAnimation[]} anims list of animations to schedule, subclasses of BaseAnimations
+	 * @param {int} phaseId=0 processing order ID of the AnimationPhase to which the animations should be scheduled
+	 */
+	schedule(anims, phaseId=0) {
+		if (!Array.isArray(anims)) {
+			anims = [anims];
+		}
+
+		// relay scheduling to the animation phase
+		let phase = _allPhasesOrdered[phaseId];
+		if (phase) {
+			phase.schedule(anims);
+		} else {
+			fail(`Unknown animation phase with ID '${phaseId}'!`, "AnimationSystem");
+		}
+	}
+
+	update() {
+		let animationsDone = phaseGeneral.update();
+
+		if (animationsDone) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+AnimationSystem.Phases = _phaseConstants;
 
 export default AnimationSystem;
