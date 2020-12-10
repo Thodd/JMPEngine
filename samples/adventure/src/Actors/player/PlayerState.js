@@ -8,8 +8,8 @@ const PlayerState = {
 	inventory: null,
 
 	stats: {
-		hp_max: 10,
-		hp: 10,
+		hp_max: 100,
+		hp: 100,
 		atk: 2,
 		def: 2
 	},

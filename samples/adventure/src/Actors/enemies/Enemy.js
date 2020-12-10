@@ -35,19 +35,28 @@ class Enemy extends BaseActor {
 	 * Turn taking logic
 	 */
 	takeTurn() {
-		// in case we have taken damage from the player since our last turn
-		// we try to retaliate
+
 		let player = this.getPlayer();
-		if (this._sinceLastTurn.hasTakenDamage == player) {
-			// attack player: melee
-			if (this.isStandingAdjacent(player) && RNG.random() < 1) {
-				this.meleeAttackActor(player);
-			} else {
-				this.makeRandomMove();
-			}
+
+		// wander around and attack the player if they come to close
+		if (this.isStandingAdjacent(player)) {
+			this.meleeAttackActor(player);
 		} else {
 			this.makeRandomMove();
 		}
+
+		// in case we have taken damage from the player since our last turn
+		// we try to retaliate
+		// if (this._sinceLastTurn.hasTakenDamage == player) {
+		// 	// attack player: melee
+		// 	if (this.isStandingAdjacent(player) && RNG.random() < 1) {
+		// 		this.meleeAttackActor(player);
+		// 	} else {
+		// 		this.makeRandomMove();
+		// 	}
+		// } else {
+		// 	this.makeRandomMove();
+		// }
 
 		this.resetSinceLastTurnInfo();
 	}

@@ -5,11 +5,11 @@ import Constants from "../Constants.js";
 
 import MeleeCalculator from "../combat/MeleeCalculator.js";
 import AnimationPool from "../animations/AnimationPool.js";
+import AnimationSystem from "../animations/AnimationSystem.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
 import HurtAnimation from "../animations/HurtAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
-import ChainAnimation from "../animations/ChainAnimation.js";
 
 let _ID = 0;
 
@@ -27,9 +27,6 @@ class BaseActor extends Entity {
 		// global ID to distinguish default actors during debugging.
 		this._id = _ID++;
 
-		// a list of all animations which will be played after the actors turn
-		this._scheduledAnimations = [];
-
 		// place actor on start tile
 		this.placeOnTile(gameTile);
 
@@ -38,8 +35,8 @@ class BaseActor extends Entity {
 
 		// default stats, overwritten in subclasses
 		this._stats = {
-			hp_max: 5,
-			hp: 5,
+			hp_max: 3,
+			hp: 3,
 			atk: 1,
 			def: 1
 		};
@@ -83,19 +80,9 @@ class BaseActor extends Entity {
 	 * Schedules the given animation.
 	 * All scheduled animations will be played at the end of the turn.
 	 */
-	scheduleAnimation(anim, phaseId=0) {
-
-
-		// TODO: track animations based on phaseId
-
-
-		if (Array.isArray(anim) && anim.length > 0) {
-			// multiple animations (but no empty arrays)
-			this._scheduledAnimations.push([...anim]);
-		} else {
-			// only one animation
-			this._scheduledAnimations.push(anim);
-		}
+	scheduleAnimation(anim, phaseName) {
+		// Pass animations to the animation-system instance
+		this.getGameController().getAnimationSystem().schedule(anim, phaseName);
 	}
 
 	takeTurn() {
@@ -178,17 +165,7 @@ class BaseActor extends Entity {
 		// start pixel-based MovementAnimation from one tile to another
 		let moveAnim = AnimationPool.get(MovementAnimation, this);
 		moveAnim.moveFromTo(startTile, goalTile);
-		this.scheduleAnimation(moveAnim, 0);
-
-		// // set the damage number indicator & schedule the hurt animation
-		// let hurtAnim = AnimationPool.get(HurtAnimation, this);
-		// hurtAnim.setDamageNumber(0);
-		// this.scheduleAnimation(hurtAnim, 0);
-
-		// // set the damage number indicator & schedule the hurt animation
-		// let bumpAnim = AnimationPool.get(DeathAnimation, this);
-		// //bumpAnim.bumpTowards(goalTile);
-		// this.scheduleAnimation(bumpAnim, 2);
+		this.scheduleAnimation(moveAnim, AnimationSystem.Phases.GENERAL);
 	}
 
 	/**
@@ -245,11 +222,14 @@ class BaseActor extends Entity {
 	 * @param {BaseActor} defender the defending actor
 	 */
 	meleeAttackActor(defender) {
+		// determine animation phase
+		let phase = this.isPlayer ? AnimationSystem.Phases.GENERAL : AnimationSystem.Phases.ENEMY_ATTACK;
+
 		// bump animation
 		// whether we hit or miss is irrelevant, we always perform the attack animation
 		let bump = AnimationPool.get(BumpAnimation, this);
 		bump.bumpTowards(defender.getTile());
-		this.scheduleAnimation(bump);
+		this.scheduleAnimation(bump, phase);
 
 		// now do the actual battle
 		let battleResult = MeleeCalculator.battle(this, defender);
@@ -258,7 +238,7 @@ class BaseActor extends Entity {
 			log(`attacks ${defender} at (${defender.gameTile.x},${defender.gameTile.y}) for ${battleResult.damage}dmg.`, this);
 			// defender is hurt by this actor, schedule hurt animation
 			let hurt = defender.takeDamage(battleResult.damage, this);
-			this.scheduleAnimation(hurt);
+			this.scheduleAnimation(hurt, phase);
 		} else {
 			log(`misses ${defender}.`, this);
 		}

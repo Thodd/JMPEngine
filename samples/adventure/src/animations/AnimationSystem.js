@@ -1,5 +1,7 @@
-import { fail } from "../../../../src/utils/Log.js";
+import { fail, warn } from "../../../../src/utils/Log.js";
 import AnimationPool from "./AnimationPool.js";
+
+import ChainAnimation from "../animations/ChainAnimation.js";
 
 class AnimationPhase {
 	constructor(name) {
@@ -104,11 +106,19 @@ class AnimationSystem {
 	/**
 	 * Schedules a list of animations to the given animation phase.
 	 * @param {BaseAnimation[]} anims list of animations to schedule, subclasses of BaseAnimations
-	 * @param {int} phaseId=0 processing order ID of the AnimationPhase to which the animations should be scheduled
+	 * @param {string} phaseName name of the phase to which the animation(s) should be scheduled
 	 */
-	schedule(anims, phaseId=0) {
+	schedule(anims, phaseName) {
+		// make sure we have an array
 		if (!Array.isArray(anims)) {
 			anims = [anims];
+		}
+
+		// get processing id for the named phase
+		let phaseId = _phaseNameToProcessingOrder[phaseName];
+		if (phaseId === undefined) {
+			warn(`No AnimationPhase with name '${phaseName}' does exist. Defaulting to AnimationPhase '${_allPhasesOrdered[0].name}'.`, "AnimationSystem");
+			phaseId = 0;
 		}
 
 		// relay scheduling to the animation phase

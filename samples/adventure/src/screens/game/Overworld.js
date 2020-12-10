@@ -49,11 +49,23 @@ class WorldScreen extends Screen {
 		this._gameController.addPlayer(this._player);
 
 		// some enemies
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 20; i++) {
 			this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);
 			this._gameController.addActor(this.enemy);
 		}
+
+		// this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
+		// this.add(this.enemy);
+		// this._gameController.addActor(this.enemy);
+
+		// this.enemy = new Enemy({gameTile: this._tileMap.get(8, 6)});
+		// this.add(this.enemy);
+		// this._gameController.addActor(this.enemy);
+
+		// this.enemy = new Enemy({gameTile: this._tileMap.get(9, 7)});
+		// this.add(this.enemy);
+		// this._gameController.addActor(this.enemy);
 
 		// testing texts for log
 		let bmpText = new BitmapText({

@@ -26,6 +26,10 @@ class GameController {
 		this.player = p;
 	}
 
+	getAnimationSystem() {
+		return this.animationSystem;
+	}
+
 	update() {
 		let animationsFinished = this.animationSystem.update();
 
@@ -49,13 +53,8 @@ class GameController {
 	// called by the player once they end their turn
 	// players gives us all animations which will be played next
 	endPlayerTurn() {
-		// retrieve all animations scheduled by the player & reset
-		let playerAnimations = this.player._scheduledAnimations;
-		this.player._scheduledAnimations = [];
+		// we stop waiting for the player now
 		this.waitingForPlayer = false;
-
-		// schedule player animations
-		this.animationSystem.schedule(playerAnimations);
 
 		// Now update all NPCs and schedule their animations too
 		for (let i = 0, len = this.actors.length; i < len; i++) {
@@ -64,11 +63,6 @@ class GameController {
 			if (!a._isRemoved) {
 				// actor takes turn, retrieve scheduled animations & reset
 				a.takeTurn();
-				let animations = a._scheduledAnimations;
-				a._scheduledAnimations = [];
-
-				// schedule actor animations
-				this.animationSystem.schedule(animations);
 			}
 		}
 
