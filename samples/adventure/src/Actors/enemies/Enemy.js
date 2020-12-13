@@ -1,5 +1,5 @@
 import BaseActor from "../BaseActor.js";
-import RNG from "../../../../../src/utils/RNG.js";
+//import RNG from "../../../../../src/utils/RNG.js";
 
 class Enemy extends BaseActor {
 	constructor({gameTile}) {

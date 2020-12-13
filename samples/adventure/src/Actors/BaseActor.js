@@ -4,8 +4,8 @@ import { log, error } from "../../../../src/utils/Log.js";
 import Constants from "../Constants.js";
 
 import MeleeCalculator from "../combat/MeleeCalculator.js";
-import AnimationPool from "../animations/AnimationPool.js";
-import AnimationSystem from "../animations/AnimationSystem.js";
+import AnimationPool from "../animations/system/AnimationPool.js";
+import AnimationSystem from "../animations/system/AnimationSystem.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
 import HurtAnimation from "../animations/HurtAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";

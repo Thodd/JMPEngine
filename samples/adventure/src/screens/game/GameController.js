@@ -1,4 +1,4 @@
-import AnimationSystem from "../../animations/AnimationSystem.js";
+import AnimationSystem from "../../animations/system/AnimationSystem.js";
 // import { log } from "../../../src/utils/Log.js";
 
 class GameController {

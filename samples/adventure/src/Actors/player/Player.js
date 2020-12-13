@@ -26,19 +26,6 @@ class Player extends BaseActor {
 
 		this.checkForInput = true;
 
-
-		/*
-			// TODO:
-			// Per actor:   define which action uses which animation phase (???)
-
-			this.animationPhases = {
-				movement: "GENERAL",
-				attack: "PLAYER",
-			}
-		*/
-
-
-
 		this.configSprite({
 			sheet: "player",
 

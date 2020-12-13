@@ -1,5 +1,5 @@
-import { exposeOnWindow } from "../../../../src/utils/Helper.js";
-import { log, fail } from "../../../../src/utils/Log.js";
+import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
+import { log, fail } from "../../../../../src/utils/Log.js";
 
 const animations = {};
 
