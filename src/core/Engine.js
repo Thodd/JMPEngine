@@ -199,13 +199,21 @@ function setupCSS(containerID) {
  */
 function setupDebugUI() {
 	if (_debugMode) {
-		let dbg = document.createElement("div");
-		dbg.id = "__debugUI";
-		dbg.innerHTML = "<div id='__debugUI_stats'></div>";
-		document.body.appendChild(dbg);
 
+		// find debug placeholder if defined
+		let dbg = document.getElementById("__jmp_debugUI");
+		if (!dbg) {
+			dbg = document.createElement("div");
+			dbg.id = "__debugUI";
+		}
+
+		// stats
+		let statsUI = document.createElement("div");
+		statsUI.innerHTML = "<div id='__debugUI_stats'></div>";
+		document.body.appendChild(statsUI);
+
+		// engine dbg
 		let entities = document.createElement("div");
-		entities.style.fontFamily = "monospace";
 		setInterval(() => {
 			if (Engine.screen) {
 				entities.innerHTML = `

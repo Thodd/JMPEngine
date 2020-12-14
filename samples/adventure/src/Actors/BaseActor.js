@@ -3,6 +3,8 @@ import Helper from "../../../../src/utils/Helper.js";
 import { log, error } from "../../../../src/utils/Log.js";
 import Constants from "../Constants.js";
 
+import UISystem from "../ui/UISystem.js";
+
 import MeleeCalculator from "../combat/MeleeCalculator.js";
 import AnimationPool from "../animations/system/AnimationPool.js";
 import AnimationSystem from "../animations/system/AnimationSystem.js";
@@ -235,12 +237,12 @@ class BaseActor extends Entity {
 		let battleResult = MeleeCalculator.battle(this, defender);
 
 		if (battleResult.defenderWasHit) {
-			log(`attacks ${defender} at (${defender.gameTile.x},${defender.gameTile.y}) for ${battleResult.damage}dmg.`, this);
+			UISystem.log(`${this} attacks ${defender} for ${battleResult.damage} dmg.`);
 			// defender is hurt by this actor, schedule hurt animation
 			let hurt = defender.takeDamage(battleResult.damage, this);
 			this.scheduleAnimation(hurt, phase);
 		} else {
-			log(`misses ${defender}.`, this);
+			UISystem.log(`${this} misses!`);
 		}
 	}
 
@@ -249,6 +251,8 @@ class BaseActor extends Entity {
 	 * Returns its dying animation.
 	 */
 	die() {
+		UISystem.log(`${this} dies!`);
+
 		this.isDead = true;
 
 		// remove actor from game logic

@@ -1,0 +1,67 @@
+.wnd_title {
+	background: #2353bf;
+	color: #ffffff;
+	font-size: 12px;
+	height: 17px;
+	margin-bottom: 3px;
+	padding-left: 2px;
+	padding-top: 3px;
+	user-select: none;
+}
+p {
+	margin: 1px;
+	padding: 2px;
+}
+
+.wnd_container {
+	position: fixed;
+	top: 0;
+	left: 0;
+
+	background: #eeeeee;
+	border: 1px solid #bbbbbb;
+	box-shadow: 4px 4px 0px #000000;
+	color: #000000;
+	display: inline-block;
+	font-family: monospace;
+	padding: 3px;
+}
+
+.wnd_content canvas {
+	margin-bottom: -3px;
+}
+
+/* Initial Positioning of Windows */
+#adv_map {
+	left: 10px;
+	top: 50px;
+}
+
+#adv_stats {
+	left: 10px;
+	top: 530px;
+
+	width: 200px;
+}
+
+#adv_log {
+	left: 10px;
+	top: 400px;
+	width: 420px;
+}
+
+#adv_dbg {
+	left: 460px;
+	top: 200px;
+}
+
+/* Log UI */
+#adv_log .wnd_content {
+	height: 80px; /* 5 lines */
+	overflow-y: scroll;
+}
+
+.wnd_content p.even {
+	background: #ffffff;
+	border-bottom: 1px solid #dddddd;
+}

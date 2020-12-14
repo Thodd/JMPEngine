@@ -4,6 +4,8 @@
 		<title>DeskAdv</title>
 		<link href="../demo.css" rel="stylesheet"></link>
 
+		<link href="./src/ui/adv_ui.css" rel="stylesheet"></link>
+
 		<!-- PIXI.js rendering library -->
 		<script src="../../libs/pixi.min.js"></script>
 
@@ -11,25 +13,49 @@
 		<script src="../../src/jmp-bootstrap.js"
 				type="module"
 				data-jmp-manifest="./manifest.json"
-				data-jmp-container="content">
+				data-jmp-container="adv_game">
 		</script>
 
 	</head>
 	<body>
-		<div class="jmpDemoPanelOuter">
-			<div class="jmpDemoPanelInner">
-				<div id="content">
-					<div style="
-						font-size: 12px;
-						font-family: monospace;
-						color: #ffffff;
-						padding-top: 3px;
-						padding-left: 2px;
-						margin-bottom: 3px;
-						height: 17px;
-						background: #2353bf;
-					">:: Map</div>
-				</div>
+		<!-- map, main game screen -->
+		<div id="adv_map" class="wnd_container">
+			<div class="wnd_title">
+				:: Map
+			</div>
+			<div id="adv_game" class="wnd_content">
+
+			</div>
+		</div>
+
+		<!-- player stats -->
+		<div id="adv_stats" class="wnd_container">
+			<div class="wnd_title">
+				:: Stats
+			</div>
+			<div class="wnd_content">
+				<p>HP: 10/10</p>
+				<p>ATK: 3</p>
+				<p>DEF: 2</p>
+			</div>
+		</div>
+
+		<!-- log messages -->
+		<div id="adv_log" class="wnd_container">
+			<div class="wnd_title">
+				:: Log
+			</div>
+			<div class="wnd_content">
+				<p class="even">Roguelike</p>
+			</div>
+		</div>
+
+		<!-- debug -->
+		<div id="adv_dbg" class="wnd_container">
+			<div class="wnd_title">
+				:: dbg
+			</div>
+			<div class="wnd_content" id="__jmp_debugUI">
 			</div>
 		</div>
 	</body>

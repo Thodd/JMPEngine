@@ -2,13 +2,14 @@ import Screen from "../../../../../src/game/Screen.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 
+import UISystem from "../../ui/UISystem.js";
+
 import GameController from "./GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
 import GameTile from "../../levelgen/GameTile.js";
 import Enemy from "../../actors/enemies/Enemy.js";
 import RNG from "../../../../../src/utils/RNG.js";
-import GameUI from "./GameUI.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -16,7 +17,8 @@ class WorldScreen extends Screen {
 
 		RNG.seed(1337);
 
-		this._ui = new GameUI(this);
+		// init UI
+		UISystem.init();
 
 		/**
 		 * Tilemap
@@ -88,8 +90,6 @@ class WorldScreen extends Screen {
 		// delegate logic update to the GameController
 		// separates game-logic dependent activities from other things like UI, Menus etc.
 		this._gameController.update();
-
-		this._ui.updateData();
 	}
 }
 

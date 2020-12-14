@@ -15,11 +15,6 @@
 
 	"assets": {
 		"spritesheets": {
-			"UI": {
-				"url": "./img/UI.png",
-				"w": 210,
-				"h": 150
-			},
 			"player": {
 				"url": "./img/characters.png",
 				"w": 16,
