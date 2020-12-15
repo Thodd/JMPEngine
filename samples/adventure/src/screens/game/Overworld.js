@@ -2,8 +2,6 @@ import Screen from "../../../../../src/game/Screen.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 
-import UISystem from "../../ui/UISystem.js";
-
 import GameController from "./GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
@@ -16,9 +14,6 @@ class WorldScreen extends Screen {
 		super();
 
 		RNG.seed(1337);
-
-		// init UI
-		UISystem.init();
 
 		/**
 		 * Tilemap

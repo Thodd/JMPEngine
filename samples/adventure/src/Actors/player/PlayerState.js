@@ -1,4 +1,15 @@
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
+import UISystem from "../../ui/UISystem.js";
+import Stats from "../Stats.js";
+
+const _stats = new Stats(function() {
+	UISystem.updatePlayerStats(_stats);
+});
+_stats.hp_max = 10;
+_stats.hp = 10;
+_stats.atk = 3;
+_stats.def = 2;
+
 
 /**
  * A singleton to store all player information.
@@ -6,23 +17,7 @@ import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
  */
 const PlayerState = {
 	inventory: null,
-
-	stats: {
-		hp_max: 100,
-		hp: 100,
-		atk: 2,
-		def: 2
-	},
-
-	/**
-	 * Sets a value on the player state.
-	 * @param {string} key the stat to change
-	 * @param {any} value the value to set
-	 */
-	set(key, value) {
-		this.stats[key] = value;
-		this._isDirty = true;
-	}
+	stats: _stats
 };
 
 export default PlayerState;

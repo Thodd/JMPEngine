@@ -34,19 +34,20 @@ p {
 /* Initial Positioning of Windows */
 #adv_map {
 	left: 10px;
-	top: 50px;
+	top: 160px;
 }
 
 #adv_stats {
 	left: 10px;
-	top: 530px;
+	top: 50px;
 
 	width: 200px;
 }
 
-#adv_log {
+#adv_history {
 	left: 10px;
-	top: 400px;
+	top: 510px;
+
 	width: 420px;
 }
 
@@ -56,7 +57,7 @@ p {
 }
 
 /* Log UI */
-#adv_log .wnd_content {
+#adv_history .wnd_content {
 	height: 80px; /* 5 lines */
 	overflow-y: scroll;
 }

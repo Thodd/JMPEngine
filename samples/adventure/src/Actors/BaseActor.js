@@ -1,9 +1,10 @@
 import Entity from "../../../../src/game/Entity.js";
 import Helper from "../../../../src/utils/Helper.js";
-import { log, error } from "../../../../src/utils/Log.js";
+import { error } from "../../../../src/utils/Log.js";
 import Constants from "../Constants.js";
 
 import UISystem from "../ui/UISystem.js";
+import Stats from "./Stats.js";
 
 import MeleeCalculator from "../combat/MeleeCalculator.js";
 import AnimationPool from "../animations/system/AnimationPool.js";
@@ -36,12 +37,7 @@ class BaseActor extends Entity {
 		this.updateVisualPosition();
 
 		// default stats, overwritten in subclasses
-		this._stats = {
-			hp_max: 3,
-			hp: 3,
-			atk: 1,
-			def: 1
-		};
+		this._stats = new Stats();
 
 		// holds information about things that happend since the last turn of this actor
 		// can be used by other actors to store some information, which this AI might need

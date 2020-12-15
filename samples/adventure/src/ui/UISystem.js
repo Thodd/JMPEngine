@@ -1,9 +1,14 @@
 const _dom = {};
 
-function init() {
-	_dom.stats = document.getElementById("adv_stats");
-	_dom.log = document.querySelector("#adv_log .wnd_content");
-}
+
+// DOM can be accessed, since the game is started only after the loaded event
+_dom.stats = document.getElementById("adv_stats");
+_dom.hp = document.getElementById("adv_stats_hp");
+_dom.atk = document.getElementById("adv_stats_atk");
+_dom.def = document.getElementById("adv_stats_def");
+
+_dom.history = document.querySelector("#adv_history .wnd_content");
+
 
 // number of max messages (keep the dom small)
 let maxMsgs = 100;
@@ -16,7 +21,7 @@ function log(msg) {
 	maxMsgs--;
 	let newMsg;
 	if (maxMsgs < 0) {
-		newMsg = _dom.log.firstElementChild;
+		newMsg = _dom.history.firstElementChild;
 	} else {
 		newMsg = document.createElement("p");
 	}
@@ -25,13 +30,24 @@ function log(msg) {
 	newMsg.className = _lastMsgWasEven ? "odd" : "even";
 	_lastMsgWasEven = !_lastMsgWasEven;
 	newMsg.textContent = msg;
-	_dom.log.appendChild(newMsg);
+	_dom.history.appendChild(newMsg);
 
 	// scroll down
-	_dom.log.scrollTop = _dom.log.scrollHeight;
+	_dom.history.scrollTop = _dom.history.scrollHeight;
+}
+
+
+/**
+ * Called on stat change by the Player(State).
+ * @param {Stats} stats the Stats instance of the player
+ */
+function updatePlayerStats(stats) {
+	_dom.hp.textContent = `HP : ${stats.hp}/${stats.hp_max}`;
+	_dom.atk.textContent = `ATK: ${stats.atk}`;
+	_dom.def.textContent = `DEF: ${stats.def}`;
 }
 
 export default {
-	init: init,
-	log: log
+	log: log,
+	updatePlayerStats: updatePlayerStats
 };
