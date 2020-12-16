@@ -1,13 +1,18 @@
-const _dom = {};
+import HealthBar from "./HealthBar.js";
 
-
+// container DOM elements
 // DOM can be accessed, since the game is started only after the loaded event
-_dom.stats = document.getElementById("adv_stats");
-_dom.hp = document.getElementById("adv_stats_hp");
-_dom.atk = document.getElementById("adv_stats_atk");
-_dom.def = document.getElementById("adv_stats_def");
+const _dom = {
+	stats:   document.getElementById("adv_stats"),
+	hp:      document.getElementById("adv_stats_hp"),
+	atk:     document.getElementById("adv_stats_atk"),
+	def:     document.getElementById("adv_stats_def"),
+	history: document.querySelector("#adv_history .wnd_content")
+};
 
-_dom.history = document.querySelector("#adv_history .wnd_content");
+
+const playerHealthBar = new HealthBar();
+_dom.hp.appendChild(playerHealthBar.getDom());
 
 
 // number of max messages (keep the dom small)
@@ -42,9 +47,11 @@ function log(msg) {
  * @param {Stats} stats the Stats instance of the player
  */
 function updatePlayerStats(stats) {
-	_dom.hp.textContent = `HP : ${stats.hp}/${stats.hp_max}`;
-	_dom.atk.textContent = `ATK: ${stats.atk}`;
-	_dom.def.textContent = `DEF: ${stats.def}`;
+	playerHealthBar.setMaxValue(stats.hp_max);
+	playerHealthBar.setValue(stats.hp);
+	//_dom.hp.textContent = `HP : ${stats.hp}/${stats.hp_max}`;
+	// _dom.atk.textContent = `ATK: ${stats.atk}`;
+	// _dom.def.textContent = `DEF: ${stats.def}`;
 }
 
 export default {

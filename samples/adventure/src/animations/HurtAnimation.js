@@ -25,7 +25,6 @@ class HurtAnimation extends BaseAnimation {
 		this._dmgNumber.visible = false; // initially invisible, visibility is set once the HurtAnimation actually starts
 		this._dmgNumber._pixiSprite.alpha = 1;
 		this._dmgNumber.reposition(this.actor.getTile());
-
 	}
 
 	setDamageNumber(dmg) {
@@ -33,9 +32,14 @@ class HurtAnimation extends BaseAnimation {
 		this._dmgNumber.setText(`-${dmg}`);
 	}
 
+	done() {
+		super.done();
+		this._dmgNumber.visible = false;
+	}
+
 	animate() {
 		this._dmgNumber.visible = true;
-		this._dmgNumber._pixiSprite.alpha -= 0.05;
+		this._dmgNumber._pixiSprite.alpha -= 0.025;
 		//this._dmgNumber.y -= 0.5;
 		if (this.fc.isReady()) {
 			this.actor.visible = !this.actor.visible;

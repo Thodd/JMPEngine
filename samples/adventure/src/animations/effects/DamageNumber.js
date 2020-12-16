@@ -8,7 +8,7 @@ class DamageNumber extends BitmapText {
 			x: 0,
 			y: 0,
 			font: "font1",
-			color: Constants.Colors.RED_LIGHT,
+			color: Constants.Colors.YELLOW_DARK,
 			leading: 0
 		});
 
