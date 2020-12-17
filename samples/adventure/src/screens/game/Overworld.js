@@ -2,7 +2,7 @@ import Screen from "../../../../../src/game/Screen.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 
-import GameController from "./GameController.js";
+import GameController from "../../controller/GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
 import GameTile from "../../levelgen/GameTile.js";

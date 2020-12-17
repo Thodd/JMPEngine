@@ -1,9 +1,12 @@
-import AnimationSystem from "../../animations/system/AnimationSystem.js";
+import AnimationSystem from "../animations/system/AnimationSystem.js";
+import Timeline from "./Timeline.js";
 // import { log } from "../../../src/utils/Log.js";
 
 class GameController {
 	constructor() {
 		this.animationSystem = new AnimationSystem();
+
+		this.timeline = new Timeline();
 
 		this.actors = [];
 		this.actorsToBeRemoved = [];
@@ -30,6 +33,10 @@ class GameController {
 		return this.animationSystem;
 	}
 
+	getTimeline() {
+		return this.timeline;
+	}
+
 	update() {
 		let animationsFinished = this.animationSystem.update();
 
@@ -47,7 +54,6 @@ class GameController {
 			// we now keep waiting until the player has made their turn
 			this.waitingForPlayer = true;
 		}
-
 	}
 
 	// called by the player once they end their turn
