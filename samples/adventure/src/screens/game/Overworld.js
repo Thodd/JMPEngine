@@ -47,7 +47,7 @@ class WorldScreen extends Screen {
 		for (let i = 0; i < 10; i++) {
 			this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);
-			this._gameController.addActor(this.enemy);
+			this._gameController.getTimeline().addActor(this.enemy);
 		}
 
 		// this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});

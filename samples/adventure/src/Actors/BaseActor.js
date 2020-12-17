@@ -119,6 +119,13 @@ class BaseActor extends Entity {
 	}
 
 	/**
+	 * Convenience function to return the Timeline to which this Actor is added.
+	 */
+	getTimeline() {
+		return this.getGameController().getTimeline();
+	}
+
+	/**
 	 * Convenience function to retrieve the currently active Tilemap instance.
 	 */
 	getTilemap() {
@@ -252,7 +259,7 @@ class BaseActor extends Entity {
 		this.isDead = true;
 
 		// remove actor from game logic
-		this.getGameController().removeActor(this);
+		this.getTimeline().removeActor(this);
 
 		// remove actor from its tile
 		this.gameTile.removeActor(this);
