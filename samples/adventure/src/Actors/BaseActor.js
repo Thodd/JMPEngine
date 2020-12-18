@@ -36,7 +36,7 @@ class BaseActor extends Entity {
 		// trigger initial rendering
 		this.updateVisualPosition();
 
-		// default stats, overwritten in subclasses
+		// default stats
 		this._stats = new Stats();
 
 		// holds information about things that happend since the last turn of this actor

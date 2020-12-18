@@ -25,8 +25,19 @@ class Timeline {
 			let a = this.actors[i];
 			// only actors which have not been removed are allowed to take a turn!!
 			if (!a._isRemoved) {
-				// actor takes turn, retrieve scheduled animations & reset
-				a.takeTurn();
+
+				// check energy level: actor has not enough energy to take a turn
+				// TODO: This can be optimized by minimizing function calls -> access stats directly
+				//       Only do this should we see performance issues with thousands of NPCs!
+				let stats = a.getStats();
+				if (stats.energy >= 100) {
+					// actor takes turn, retrieve scheduled animations & reset
+					a.takeTurn();
+					// standard turn cost of 100 energy
+					stats.energy -= 100;
+				}
+
+				stats.energy += stats.speed;
 			}
 		}
 

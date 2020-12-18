@@ -5,6 +5,12 @@ class Stats {
 		this._hp = 3;
 		this._atk = 1;
 		this._def = 1;
+
+		// speed & energy
+		// speed == energy consumption per turn
+		this._speed = 100;
+		// energy == the currently accumulated energy (+ this._speed each turn)
+		this._energy = 100;
 	}
 
 	_statChange() {
@@ -47,6 +53,22 @@ class Stats {
 	}
 	get def() {
 		return this._def;
+	}
+
+	// Speed
+	set speed(v) {
+		this._speed = v;
+	}
+	get speed() {
+		return this._speed;
+	}
+
+	// energy
+	set energy(v) {
+		this._energy = v;
+	}
+	get energy() {
+		return this._energy;
 	}
 }
 

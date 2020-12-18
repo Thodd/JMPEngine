@@ -5,6 +5,8 @@ class Enemy extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
 
+		this._stats.speed = 80;
+
 		this.isBlocking = true;
 
 		this.configSprite({

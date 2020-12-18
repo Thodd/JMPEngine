@@ -93,6 +93,11 @@ class GameTile extends Tile {
 		return isFree;
 	}
 
+	/**
+	 * Changes the type of this GameTile instance.
+	 * Updates the visuals and the gameplay properties like "walkable" etc.
+	 * @param {GameTile.Types} type the new type to set for this tile instance
+	 */
 	setType(type) {
 		this._type = type;
 

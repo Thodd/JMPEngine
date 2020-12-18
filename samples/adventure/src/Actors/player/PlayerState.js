@@ -5,11 +5,12 @@ import Stats from "../Stats.js";
 const _stats = new Stats(function() {
 	UISystem.updatePlayerStats(_stats);
 });
+// default stats of the player are different from the BaseActor's stats
 _stats.hp_max = 10;
 _stats.hp = 10;
 _stats.atk = 3;
 _stats.def = 2;
-
+_stats.speed = 100;
 
 /**
  * A singleton to store all player information.
