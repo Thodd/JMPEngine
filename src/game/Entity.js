@@ -271,6 +271,23 @@ class Entity {
 	}
 
 	/**
+	 * Sets the global tinting color value for the Entity.
+	 * The color value will be used for single sprites and Animations, except:
+	 * - if a color is defined on the animation
+	 * - if an animation defines a color per key-frame
+	 * @param {int} c color value
+	 */
+	setColor(c) {
+		this._color = c;
+
+		// update single sprite color (meaning: no animations)
+		// animation tinting will be taken care of during animation updating on a per-frame basis
+		if (this._pixiSprite && (this._spriteConfig && !this._spriteConfig.animations)) {
+			this._pixiSprite.tint = this._color;
+		}
+	}
+
+	/**
 	 * Sets a new sprite definition, including animations.
 	 * The underlying PIXI sprite will configured according to this new sprite configuration.
 	 *
@@ -316,6 +333,7 @@ class Entity {
 		// might be overwritten by an animation definition below
 		if (newTexture) {
 			this._pixiSprite.texture = newTexture;
+			this._pixiSprite.tint = config.color;
 			this._pixiSprite.visible = true;
 		}
 
@@ -354,8 +372,8 @@ class Entity {
 					// configure the initial coloring, either defined on:
 					// * the animation
 					// * the sheet
-					// * or defaulted to white (0xFFFFFF == no tint)
-					anim.color = anim.color || config.color || 0xFFFFFF;
+					// * or defaulted to white (0xFFFFFF == no tint) during animation handling
+					anim.color = anim.color || config.color;
 					anim._defaultColor = anim.color;
 
 					// if no delay is given, we assume the animation is a "freeze-frame", e.g. an idle-frame
@@ -443,7 +461,8 @@ class Entity {
 			// @PIXI: update texture based on current key-frame, we made sure a sheet exists upon animation definition
 			let sheetObj = Spritesheets.getSheet(anim.sheet || this._spriteConfig.sheet);
 			this._pixiSprite.texture = sheetObj.textures[anim.id];
-			this._pixiSprite.tint = anim.color;
+			// if no tinting color is defined on the animation, we take the Entity color or as a fallback 'white'.
+			this._pixiSprite.tint = anim.color || this._color || 0xFFFFFF;
 		}
 	}
 

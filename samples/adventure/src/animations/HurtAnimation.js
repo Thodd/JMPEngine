@@ -42,12 +42,25 @@ class HurtAnimation extends BaseAnimation {
 		this._dmgNumber._pixiSprite.alpha -= 0.025;
 		//this._dmgNumber.y -= 0.5;
 		if (this.fc.isReady()) {
+
+			// blink in red
 			this.actor.visible = !this.actor.visible;
+			if (this.actor.visible) {
+				this.actor.setColor(0xFF0000);
+			} else {
+				this.actor.setColor(undefined);
+			}
+
 			// stop after 5 loops
 			if (this.fc.looped() >= 5) {
 				this.done();
+
+				// make actor visible again and reset tint color to default
 				this.actor.visible = true;
-				this._dmgNumber.visible = false; // hide damage number again
+				this.actor.setColor(undefined);
+
+				// hide damage number again
+				this._dmgNumber.visible = false;
 			}
 		}
 	}
