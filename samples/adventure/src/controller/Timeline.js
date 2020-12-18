@@ -33,6 +33,7 @@ class Timeline {
 				if (stats.energy >= 100) {
 					// actor takes turn, retrieve scheduled animations & reset
 					a.takeTurn();
+					a.resetSinceLastTurnInfo();
 					// standard turn cost of 100 energy
 					stats.energy -= 100;
 				}

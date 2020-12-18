@@ -34,7 +34,7 @@ function log(msg) {
 	// add new msg and color row accordingly
 	newMsg.className = _lastMsgWasEven ? "odd" : "even";
 	_lastMsgWasEven = !_lastMsgWasEven;
-	newMsg.textContent = msg;
+	newMsg.innerHTML = msg;
 	_dom.history.appendChild(newMsg);
 
 	// scroll down

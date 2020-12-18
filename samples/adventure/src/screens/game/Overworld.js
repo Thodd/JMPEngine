@@ -6,8 +6,12 @@ import GameController from "../../controller/GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
 import GameTile from "../../levelgen/GameTile.js";
-import Enemy from "../../actors/enemies/Enemy.js";
+
 import RNG from "../../../../../src/utils/RNG.js";
+import Helper from "../../../../../src/utils/Helper.js";
+
+import Snake from "../../actors/enemies/Snake.js";
+import Wolf from "../../actors/enemies/Wolf.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -44,23 +48,24 @@ class WorldScreen extends Screen {
 		this._gameController.addPlayer(this._player);
 
 		// some enemies
-		for (let i = 0; i < 10; i++) {
-			this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
-			this.add(this.enemy);
-			this._gameController.getTimeline().addActor(this.enemy);
-		}
+		// for (let i = 0; i < 10; i++) {
+		// 	let EnemyClass = Helper.choose([Snake, Wolf]);
+		// 	this.enemy = new EnemyClass({gameTile: this._tileMap.get(7, 7)});
+		// 	this.add(this.enemy);
+		// 	this._gameController.getTimeline().addActor(this.enemy);
+		// }
 
-		// this.enemy = new Enemy({gameTile: this._tileMap.get(7, 7)});
-		// this.add(this.enemy);
-		// this._gameController.addActor(this.enemy);
+		this.enemy = new Snake({gameTile: this._tileMap.get(7, 7)});
+		this.add(this.enemy);
+		this._gameController.getTimeline().addActor(this.enemy);
 
-		// this.enemy = new Enemy({gameTile: this._tileMap.get(8, 6)});
-		// this.add(this.enemy);
-		// this._gameController.addActor(this.enemy);
+		this.enemy = new Snake({gameTile: this._tileMap.get(8, 6)});
+		this.add(this.enemy);
+		this._gameController.getTimeline().addActor(this.enemy);
 
-		// this.enemy = new Enemy({gameTile: this._tileMap.get(9, 7)});
-		// this.add(this.enemy);
-		// this._gameController.addActor(this.enemy);
+		this.enemy = new Wolf({gameTile: this._tileMap.get(9, 7)});
+		this.add(this.enemy);
+		this._gameController.getTimeline().addActor(this.enemy);
 	}
 
 	setup() {

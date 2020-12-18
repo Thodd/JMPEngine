@@ -13,6 +13,9 @@ class Player extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
 
+		this.name = "Thor";
+		this.nameColor = "#00FF85";
+
 		this.isPlayer = true;
 
 		this.isBlocking = true;
@@ -60,10 +63,6 @@ class Player extends BaseActor {
 				}
 			}
 		});
-	}
-
-	toString() {
-		return `Player#${this._id}`;
 	}
 
 	/**

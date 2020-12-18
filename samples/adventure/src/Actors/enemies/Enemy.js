@@ -1,36 +1,15 @@
 import BaseActor from "../BaseActor.js";
-//import RNG from "../../../../../src/utils/RNG.js";
 
+/**
+ * @abstract
+ */
 class Enemy extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
-
-		this._stats.speed = 80;
-
 		this.isBlocking = true;
 
-		this.configSprite({
-			sheet: "enemies",
-			offset: {
-				x: -3,
-				y: -7
-			},
-			animations: {
-				default: "right",
-				"left": {
-					frames: [0, 1],
-					dt: 40
-				},
-				"right": {
-					frames: [2, 3],
-					dt: 40
-				}
-			}
-		});
-	}
-
-	toString() {
-		return "Enemy#" + this._ID;
+		this.name = "Enemy#" + this._ID;
+		this.nameColor = "#FF0000";
 	}
 
 	/**
@@ -59,8 +38,6 @@ class Enemy extends BaseActor {
 		// } else {
 		// 	this.makeRandomMove();
 		// }
-
-		this.resetSinceLastTurnInfo();
 	}
 
 }

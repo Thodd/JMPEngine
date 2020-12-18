@@ -20,6 +20,10 @@ class BaseActor extends Entity {
 	constructor({gameTile}) {
 		super({});
 
+		// default name is the class name
+		this.name = `${this.constructor.name}#${this._ID}`;
+		this.nameColor = "#FFFFFF";
+
 		this.layer = Constants.Layers.NPC;
 
 		// The actors don't need to do any game-logic updates on a frame basis.
@@ -51,9 +55,12 @@ class BaseActor extends Entity {
 	}
 
 	toString() {
-		return `BaseActor#${this._id}`;
+		return `<span style="color: ${this.nameColor}">${this.name}</span>`;
 	}
 
+	/**
+	 * Reset the information about the last turn.
+	 */
 	resetSinceLastTurnInfo() {
 		this._sinceLastTurn = {};
 	}
@@ -83,14 +90,7 @@ class BaseActor extends Entity {
 		this.getGameController().getAnimationSystem().schedule(anim, phaseName);
 	}
 
-	takeTurn() {
-		// no animations
-		return [];
-	}
-
-	endTurn() {
-
-	}
+	takeTurn() {}
 
 	/**
 	 * Retrieves the Tile this Actor is on.
