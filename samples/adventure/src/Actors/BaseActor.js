@@ -1,5 +1,6 @@
 import Entity from "../../../../src/game/Entity.js";
 import Helper from "../../../../src/utils/Helper.js";
+import RNG from "../../../../src/utils/RNG.js";
 import { error } from "../../../../src/utils/Log.js";
 import Constants from "../Constants.js";
 
@@ -22,7 +23,7 @@ class BaseActor extends Entity {
 
 		// default name is the class name
 		this.name = `${this.constructor.name}#${this._ID}`;
-		this.nameColor = "#FFFFFF";
+		this.nameColor = "#fdf0d1";
 
 		this.layer = Constants.Layers.NPC;
 
@@ -160,7 +161,7 @@ class BaseActor extends Entity {
 	 * Moves the Actor to the given Tile.
 	 * Schedules a movement animation.
 	 *
-	 * @param {*} newTile
+	 * @param {GameTile} newTile the goal tile to move the actor to
 	 */
 	moveToTile(goalTile) {
 		let startTile = this.gameTile;
@@ -171,6 +172,52 @@ class BaseActor extends Entity {
 		let moveAnim = AnimationPool.get(MovementAnimation, this);
 		moveAnim.moveFromTo(startTile, goalTile);
 		this.scheduleAnimation(moveAnim, AnimationSystem.Phases.GENERAL);
+	}
+
+	/**
+	 * Tries to move the actor to the given GameTile but respecting collision.
+	 * Returns wheter the move was made.
+	 *
+	 * @param {GameTile} goalTile the goal tile to move the actor to
+	 * @returns whether the move could be made
+	 */
+	moveToTileWithCollision(goalTile) {
+		if (goalTile && goalTile.isFree()) {
+			this.moveToTile(goalTile);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Very simple "step-towards" logic.
+	 * Compares the coordinates and randomly picks a tile closer to the target actor.
+	 * Obviously not as clever as using Dijkstra or A*, but good enough for a simple AI.
+	 */
+	moveTowardsActor(targetActor) {
+		let dx = -1 * Math.sign(this.gameTile.x - targetActor.gameTile.x);
+		let dy = -1 * Math.sign(this.gameTile.y - targetActor.gameTile.y);
+
+		let possibleGoalTiles = [];
+
+		if (dx != 0) {
+			possibleGoalTiles.push(this.getTileRelative(dx, 0));
+		}
+		if (dy != 0) {
+			possibleGoalTiles.push(this.getTileRelative(0, dy));
+		}
+
+		let r = RNG.random() > 0.5;
+		let firstTile = r ? possibleGoalTiles[0] : possibleGoalTiles[1];
+		let secondTile = !r ? possibleGoalTiles[0] : possibleGoalTiles[1];
+
+		// try first movement possibility
+		let moveMade = this.moveToTileWithCollision(firstTile);
+
+		// try second possibility (if any)
+		if (secondTile && !moveMade) {
+			this.moveToTileWithCollision(secondTile);
+		}
 	}
 
 	/**
@@ -336,6 +383,15 @@ class BaseActor extends Entity {
 		}
 
 		return tiles;
+	}
+
+	/**
+	 * Retrieves a Tile relative to the actors current tile.
+	 * @param {int} dx x delta
+	 * @param {int} dy y delta
+	 */
+	getTileRelative(dx, dy) {
+		return this.gameTile.getRelative(dx, dy);
 	}
 
 	/**

@@ -1,5 +1,4 @@
 import Enemy from "./Enemy.js";
-import RNG from "../../../../../src/utils/RNG.js";
 
 class Wolf extends Enemy {
 	constructor({gameTile}) {
@@ -35,6 +34,8 @@ class Wolf extends Enemy {
 
 	/**
 	 * Turn taking logic
+	 * Wolf uses a very simple fuzzy "step-towards-player" logic.
+	 * No as good as Djkstra or A*, but good enough to simulate animal behavior.
 	 */
 	takeTurn() {
 		let player = this.getPlayer();
@@ -44,33 +45,8 @@ class Wolf extends Enemy {
 			this.meleeAttackActor(player);
 		} else {
 			// if player is not adjacent but close: move towards player
-			if (this.manhattanDistanceTo(player) < 6) {
-				let tm = this.getTilemap();
-				let xDif = -1 * Math.sign(this.gameTile.x - player.gameTile.x);
-				let yDif = -1 * Math.sign(this.gameTile.y - player.gameTile.y);
-				let goalTile = null;
-
-				// first check if we can move horizontally
-				if (xDif != 0) {
-					goalTile = tm.get(this.gameTile.x + xDif, this.gameTile.y);
-					if (goalTile && goalTile.isFree()) {
-						this.moveToTile(goalTile);
-					} else {
-						goalTile = null;
-					}
-				}
-
-				// if horizontyl move was impossible  -> try vertically
-				if (!goalTile) {
-					if (yDif != 0) {
-						goalTile = tm.get(this.gameTile.x, this.gameTile.y + yDif);
-						if (goalTile && goalTile.isFree()) {
-							this.moveToTile(goalTile);
-						} else {
-							goalTile = null;
-						}
-					}
-				}
+			if (this.manhattanDistanceTo(player) < 8) {
+				this.moveTowardsActor(player);
 			} else {
 				// do nothing... wait for the player to come closer
 			}

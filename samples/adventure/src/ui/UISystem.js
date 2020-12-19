@@ -7,7 +7,8 @@ const _dom = {
 	hp:      document.getElementById("adv_stats_hp"),
 	atk:     document.getElementById("adv_stats_atk"),
 	def:     document.getElementById("adv_stats_def"),
-	history: document.querySelector("#adv_history .wnd_content")
+	history: document.querySelector("#adv_history .wnd_content"),
+	seed:    document.getElementById("adv_map_seed"),
 };
 
 
@@ -54,7 +55,12 @@ function updatePlayerStats(stats) {
 	// _dom.def.textContent = `DEF: ${stats.def}`;
 }
 
+function showSeed(s) {
+	_dom.seed.textContent = ` (seed: ${s})`;
+}
+
 export default {
 	log: log,
-	updatePlayerStats: updatePlayerStats
+	updatePlayerStats: updatePlayerStats,
+	showSeed
 };

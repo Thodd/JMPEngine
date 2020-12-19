@@ -10,7 +10,6 @@
 	"scale": 2,
 
 	"bg": "0x222222",
-	"hideCursor": false,
 	"skipIntro": true,
 
 	"assets": {

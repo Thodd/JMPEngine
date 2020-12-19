@@ -1,5 +1,5 @@
 import Enemy from "./Enemy.js";
-//import RNG from "../../../../../src/utils/RNG.js";
+import RNG from "../../../../../src/utils/RNG.js";
 
 class Snake extends Enemy {
 	constructor({gameTile}) {

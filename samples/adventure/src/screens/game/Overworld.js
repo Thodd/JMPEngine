@@ -12,12 +12,15 @@ import Helper from "../../../../../src/utils/Helper.js";
 
 import Snake from "../../actors/enemies/Snake.js";
 import Wolf from "../../actors/enemies/Wolf.js";
+import UISystem from "../../ui/UISystem.js";
 
 class WorldScreen extends Screen {
 	constructor() {
 		super();
 
-		RNG.seed(1337);
+		let seed = 12345678;
+		RNG.seed(seed);
+		UISystem.showSeed(seed);
 
 		/**
 		 * Tilemap

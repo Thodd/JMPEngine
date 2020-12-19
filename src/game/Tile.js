@@ -85,6 +85,16 @@ class Tile {
 		};
 		this.set(this._animInfo.frames[0], true);
 	}
+
+	/**
+	 * Retrieves the tile at the given relative coordinates.
+	 *
+	 * @param {int} dx delta x, default: 0
+	 * @param {int} dy delta y, default: 0
+	 */
+	getRelative(dx=0, dy=0) {
+		return this.tilemap.get(this.x + dx, this.y + dy);
+	}
 }
 
 export default Tile;
