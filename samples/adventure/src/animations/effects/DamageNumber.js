@@ -1,6 +1,9 @@
 import Constants from "../../Constants.js";
 import BitmapText from "../../../../../src/game/BitmapText.js";
 
+/**
+ * DamageNumbers don't extend BaseEffect, since they are completely handled by the HurtAnimation.
+ */
 class DamageNumber extends BitmapText {
 	constructor() {
 		super({

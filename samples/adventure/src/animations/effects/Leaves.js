@@ -1,27 +1,27 @@
+
 import BaseEffect from "./BaseEffect.js";
 
-class Blood extends BaseEffect {
+class Leaves extends BaseEffect {
 	constructor() {
 		super();
 
 		this.configSprite({
-			sheet: "blood",
+			sheet: "leaves",
 			animations: {
-				default: "splatter",
-				splatter: {
-					frames: [0,1,2,3,4],
+				default: "scatter",
+				scatter: {
+					frames: [0,1,2],
 					dt: 3
 				},
 				done: {
-					frames: [5]
+					frames: [3]
 				}
 			}
 		});
 	}
-
 	reset() {
 		this.playAnimation({
-			name: "splatter",
+			name: "scatter",
 			done: () => {
 				this.playAnimation({name: "done"});
 				this.done();
@@ -30,4 +30,4 @@ class Blood extends BaseEffect {
 	}
 }
 
-export default Blood;
+export default Leaves;

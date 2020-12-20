@@ -2,6 +2,12 @@ import Tile from "../../../../src/game/Tile.js";
 import Helper from "../../../../src/utils/Helper.js";
 import { error } from "../../../../src/utils/Log.js";
 import RNG from "../../../../src/utils/RNG.js";
+import EffectPool from "../animations/effects/EffectPool.js";
+
+
+// effects used by tiles
+import LeavesEffect from "../animations/effects/Leaves.js";
+
 
 const Types = {
 	EMPTY: {
@@ -41,6 +47,7 @@ const Types = {
 		id: 70,
 		walkable: false,
 		destroyable: true,
+		destroyEffect: LeavesEffect,
 		replaceWith: "BUSH_STUMP"
 	},
 	BUSH_STUMP: {
@@ -148,13 +155,18 @@ class GameTile extends Tile {
 	}
 
 	destroy() {
-		// change the type on destroy
-		this.setType(Types[this.type.replaceWith]);
+		// get the destroy effect and add it to the screen
+		if (this.type.destroyEffect) {
+			let destroyEffectInstance = EffectPool.get(this.type.destroyEffect, this);
+			this.tilemap.getScreen().add(destroyEffectInstance);
+		}
 
-		// TODO: create purely visual destroy effect
-		// TODO: Use TileEffect from ARPG
+		// change to the new type on destroy
+		if (this.type.replaceWith) {
+			this.setType(Types[this.type.replaceWith]);
+		}
+
 		// TODO: Make Droppable Items
-
 	}
 }
 

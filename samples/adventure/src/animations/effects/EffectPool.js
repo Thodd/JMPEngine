@@ -1,4 +1,6 @@
 import { log } from "../../../../../src/utils/Log.js";
+import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
+
 
 const effectEntities = {};
 
@@ -31,8 +33,16 @@ const EffectPool = {
 	},
 
 	release(effect) {
+		// remove effect from the screen (if added)
+		let scr = effect.getScreen();
+		if (scr) {
+			scr.remove(effect);
+		}
+		// put it back into the pool
 		effectEntities[effect.constructor.name].push(effect);
 	}
 };
+
+exposeOnWindow("EffectPool", EffectPool);
 
 export default EffectPool;
