@@ -1,39 +1,60 @@
 import Tile from "../../../../src/game/Tile.js";
 import Helper from "../../../../src/utils/Helper.js";
+import { error } from "../../../../src/utils/Log.js";
 import RNG from "../../../../src/utils/RNG.js";
 
 const Types = {
 	EMPTY: {
+		name: "EMPTY",
 		id: 0,
 		walkable: true
 	},
 	VOID: {
+		name: "VOID",
 		id: 1,
 		walkable: true
 	},
 	FLOOR: {
+		name: "FLOOR",
 		id: [2, 3, 4, 5, 6],
 		probability: 0.1,
 		walkable: true
 	},
 	DIRT: {
+		name: "DIRT",
 		id: 4,
 		walkable: true
 	},
 	GRASS: {
+		name: "GRASS",
 		id: 5,
 		walkable: true
 	},
 	TREE: {
+		name: "TREE",
 		id: [64, 66],
 		probability: 0.5,
 		walkable: false
 	},
+	BUSH: {
+		name: "BUSH",
+		id: 70,
+		walkable: false,
+		destroyable: true,
+		replaceWith: "BUSH_STUMP"
+	},
+	BUSH_STUMP: {
+		name: "BUSH_STUMP",
+		id: 71,
+		walkable: true
+	},
 	SIGN: {
+		name: "SIGN",
 		id: 67,
 		walkable: false
 	},
 	WALL: {
+		name: "WALL",
 		id: [40, 41],
 		probability: 0.1,
 		walkable: false
@@ -50,7 +71,7 @@ class GameTile extends Tile {
 		// Movable actors, e.g. Player, Enemies, Pick-ups, Items, ...
 		this._actors = [];
 
-		// TODO: track the visual effects e.g. blood or butterflies
+		// TODO: track the lasting visual effects e.g. blood or butterflies
 		// this._effects = [];
 
 		this.setType(Types.VOID);
@@ -82,7 +103,7 @@ class GameTile extends Tile {
 	 */
 	isFree() {
 		// first check, is the tile walkable -> if not, that obviously means the tile is not free
-		let isFree = this._type.walkable;
+		let isFree = this.type.walkable;
 		if (isFree) {
 			// now check the actor stack
 			// there might be some actors, like pickups, health potions etc which are not blocking another Actor from moving here
@@ -99,24 +120,41 @@ class GameTile extends Tile {
 	 * @param {GameTile.Types} type the new type to set for this tile instance
 	 */
 	setType(type) {
-		this._type = type;
+
+		// sanity check
+		if (!type || !type.name || !Types[type.name]) {
+			error(`Unknown tile type '${type}'. Using FLOOR instead.`, "GameTile.setType");
+			type = Types.FLOOR;
+		}
+
+		this.type = type;
 
 		// set visuals (not used right now)
-		// this.color = this._type.color;
+		// this.color = this.type.color;
 
 		// set id
-		let newId = this._type.id;
-		if (Array.isArray(this._type.id)) {
-			let defaultId = this._type.id[0];
+		let newId = this.type.id;
+		if (Array.isArray(this.type.id)) {
+			let defaultId = this.type.id[0];
 			// change ID based ob the given probability
-			let prob = this._type.probability || 1;
+			let prob = this.type.probability || 1;
 			if (RNG.random() < prob) {
-				newId = Helper.choose(this._type.id.slice(1));
+				newId = Helper.choose(this.type.id.slice(1));
 			} else {
 				newId = defaultId;
 			}
 		}
 		this.set(newId);
+	}
+
+	destroy() {
+		// change the type on destroy
+		this.setType(Types[this.type.replaceWith]);
+
+		// TODO: create purely visual destroy effect
+		// TODO: Use TileEffect from ARPG
+		// TODO: Make Droppable Items
+
 	}
 }
 

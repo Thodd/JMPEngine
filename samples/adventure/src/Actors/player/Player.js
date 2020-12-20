@@ -1,13 +1,20 @@
+// engine imports
 import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
 import { log } from "../../../../../../src/utils/Log.js";
 import Constants from "../../Constants.js";
 
+// animations
+import AnimationSystem from "../../animations/system/AnimationSystem.js";
+import AnimationPool from "../../animations/system/AnimationPool.js";
+import BumpAnimation from "../../animations/BumpAnimation.js";
+
+// actors
 import BaseActor from "../BaseActor.js";
-
-import PlayerState from "./PlayerState.js";
-
 import Enemy from "../enemies/Enemy.js";
+
+// own stuff
+import PlayerState from "./PlayerState.js";
 
 class Player extends BaseActor {
 	constructor({gameTile}) {
@@ -135,6 +142,23 @@ class Player extends BaseActor {
 	}
 
 	/**
+	 * Punch the given Tile.
+	 * If the tile is destroyable it will be replaced with its destroyed state.
+	 * @param {GameTile} goalTile the tile to punch
+	 */
+	punchTile(goalTile) {
+		// bump the tile
+		let bump = AnimationPool.get(BumpAnimation, this);
+		bump.bumpTowards(goalTile);
+		this.scheduleAnimation(bump, AnimationSystem.Phases.GENERAL);
+
+		// destroy tile if possible
+		if (goalTile.type.destroyable) {
+			goalTile.destroy();
+		}
+	}
+
+	/**
 	 * Checks the goal-tile if it's free or occupied by something.
 	 * Also handles melee fighting.
 	 *
@@ -146,16 +170,20 @@ class Player extends BaseActor {
 		let didSomeInteraction = false;
 
 		if (goalTile) {
+			let actorsOnGoalTile = goalTile.getActors();
 			// movement
 			if (goalTile.isFree()) {
 				// move Actor to tile (incl. animation)
 				this.moveToTile(goalTile);
-
 				didSomeInteraction = true;
-			} else {
-				let actorsOnGoalTile = goalTile.getActors();
-				for (let actor of actorsOnGoalTile) {
 
+			} else if (goalTile.type.destroyable) {
+				// destroyable tiles can be pushed over
+				this.punchTile(goalTile);
+				didSomeInteraction = true;
+
+			} else if (actorsOnGoalTile.length > 0) {
+				for (let actor of actorsOnGoalTile) {
 					// ATTACKING
 					if (actor instanceof Enemy) {
 						this.meleeAttackActor(actor);

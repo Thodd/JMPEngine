@@ -29,6 +29,8 @@ class Timeline {
 				// check energy level: actor has not enough energy to take a turn
 				// TODO: This can be optimized by minimizing function calls -> access stats directly
 				//       Only do this should we see performance issues with thousands of NPCs!
+				// TODO: Introduce WHILE loop to take more than 1 turn --> needs refactoring of animation scheduling
+				//       (return animations after turn instead of scheduling directly)
 				let stats = a.getStats();
 				if (stats.energy >= 100) {
 					// actor takes turn, retrieve scheduled animations & reset

@@ -39,6 +39,10 @@ class WorldScreen extends Screen {
 		this._tileMap.get(14,12).setType(GameTile.Types.TREE);
 		this._tileMap.get(10,8).setType(GameTile.Types.SIGN);
 
+		this._tileMap.get(12,8).setType(GameTile.Types.BUSH);
+		this._tileMap.get(13,8).setType(GameTile.Types.BUSH);
+		this._tileMap.get(14,8).setType(GameTile.Types.BUSH);
+
 		this.add(this._tileMap);
 
 		// player
@@ -51,24 +55,24 @@ class WorldScreen extends Screen {
 		this._gameController.addPlayer(this._player);
 
 		// some enemies
-		// for (let i = 0; i < 10; i++) {
-		// 	let EnemyClass = Helper.choose([Snake, Wolf]);
-		// 	this.enemy = new EnemyClass({gameTile: this._tileMap.get(7, 7)});
-		// 	this.add(this.enemy);
-		// 	this._gameController.getTimeline().addActor(this.enemy);
-		// }
+		for (let i = 0; i < 10; i++) {
+			let EnemyClass = Helper.choose([Snake, Wolf]);
+			this.enemy = new EnemyClass({gameTile: this._tileMap.get(7, 7)});
+			this.add(this.enemy);
+			this._gameController.getTimeline().addActor(this.enemy);
+		}
 
-		this.enemy = new Snake({gameTile: this._tileMap.get(7, 7)});
-		this.add(this.enemy);
-		this._gameController.getTimeline().addActor(this.enemy);
+		// this.enemy = new Snake({gameTile: this._tileMap.get(7, 7)});
+		// this.add(this.enemy);
+		// this._gameController.getTimeline().addActor(this.enemy);
 
-		this.enemy = new Snake({gameTile: this._tileMap.get(8, 6)});
-		this.add(this.enemy);
-		this._gameController.getTimeline().addActor(this.enemy);
+		// this.enemy = new Snake({gameTile: this._tileMap.get(8, 6)});
+		// this.add(this.enemy);
+		// this._gameController.getTimeline().addActor(this.enemy);
 
-		this.enemy = new Wolf({gameTile: this._tileMap.get(9, 7)});
-		this.add(this.enemy);
-		this._gameController.getTimeline().addActor(this.enemy);
+		// this.enemy = new Wolf({gameTile: this._tileMap.get(9, 7)});
+		// this.add(this.enemy);
+		// this._gameController.getTimeline().addActor(this.enemy);
 	}
 
 	setup() {

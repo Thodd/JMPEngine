@@ -6,8 +6,8 @@ class Wolf extends Enemy {
 
 		this.name = "Wolf";
 
-		this._stats.hp_max = 5;
-		this._stats.hp = 5;
+		this._stats.hp_max = 4;
+		this._stats.hp = 4;
 		this._stats.atk = 2;
 		this._stats.def = 2;
 		this._stats.speed = 80; // a wolf is a bit slower than the player, this allows the player to run away
