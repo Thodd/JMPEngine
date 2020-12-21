@@ -15,7 +15,7 @@ class DamageNumber extends BitmapText {
 			leading: 0
 		});
 
-		this.layer = Constants.Layers.EFFECTS_ABOVE_ACTORS;
+		this.layer = Constants.Layers.ABOVE_ACTORS;
 
 		// no update needed, will be handled by the HurtAnimation which instantiated the DamageNumber
 		this.active = false;

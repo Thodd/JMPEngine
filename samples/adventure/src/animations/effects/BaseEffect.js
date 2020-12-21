@@ -5,7 +5,7 @@ import EffectPool from "./EffectPool.js";
 class BaseEffect extends Entity {
 	constructor() {
 		super();
-		this.layer = Constants.Layers.EFFECTS_BELOW_ACTORS;
+		this.layer = Constants.Layers.BELOW_ACTORS;
 
 		// just a graphics effect, no logic update needed
 		this.active = false;

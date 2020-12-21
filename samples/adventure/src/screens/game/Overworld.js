@@ -5,6 +5,7 @@ import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 import GameController from "../../controller/GameController.js";
 import Player from "../../actors/player/Player.js";
 import Constants from "../../Constants.js";
+import GameTileTypes from "../../levelgen/GameTileTypes.js";
 import GameTile from "../../levelgen/GameTile.js";
 
 import RNG from "../../../../../src/utils/RNG.js";
@@ -33,15 +34,15 @@ class WorldScreen extends Screen {
 		this._tileMap.layer = Constants.Layers.TILES;
 
 		this._tileMap.each((tile) => {
-			tile.setType(GameTile.Types.FLOOR);
+			tile.setType(GameTileTypes.FLOOR);
 		});
-		this._tileMap.get(12,12).setType(GameTile.Types.TREE);
-		this._tileMap.get(14,12).setType(GameTile.Types.TREE);
-		this._tileMap.get(10,8).setType(GameTile.Types.SIGN);
+		this._tileMap.get(12,12).setType(GameTileTypes.TREE);
+		this._tileMap.get(14,12).setType(GameTileTypes.TREE);
+		this._tileMap.get(10,8).setType(GameTileTypes.SIGN);
 
-		this._tileMap.get(12,8).setType(GameTile.Types.BUSH);
-		this._tileMap.get(13,8).setType(GameTile.Types.BUSH);
-		this._tileMap.get(14,8).setType(GameTile.Types.BUSH);
+		this._tileMap.get(12,8).setType(GameTileTypes.BUSH);
+		this._tileMap.get(13,8).setType(GameTileTypes.BUSH);
+		this._tileMap.get(14,8).setType(GameTileTypes.BUSH);
 
 		this.add(this._tileMap);
 

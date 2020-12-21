@@ -333,7 +333,7 @@ class Entity {
 		// might be overwritten by an animation definition below
 		if (newTexture) {
 			this._pixiSprite.texture = newTexture;
-			this._pixiSprite.tint = config.color;
+			this._pixiSprite.tint = config.color || 0xffffff;
 			this._pixiSprite.visible = true;
 		}
 

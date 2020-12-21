@@ -5,7 +5,8 @@ import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 const effectEntities = {};
 
 /**
- * Allows to retreive an
+ * Allows to retreive an Effect instance.
+ * Effects are purely visual entities for rendering things like destroy-animations, blood, etc.
  */
 const EffectPool = {
 	get(EffectClass, tile) {
@@ -21,7 +22,7 @@ const EffectPool = {
 			effect = new EffectClass();
 		}
 
-		// set the gamet-tile for the effect: reset() might depend on the tile location, e.g. blood splatter, butterflies :3
+		// set the game-tile for the effect: reset() might depend on the tile location, e.g. blood splatter, butterflies :3
 		effect.setTile(tile);
 		effect.reset();
 

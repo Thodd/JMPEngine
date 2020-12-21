@@ -4,84 +4,21 @@ import { error } from "../../../../src/utils/Log.js";
 import RNG from "../../../../src/utils/RNG.js";
 import EffectPool from "../animations/effects/EffectPool.js";
 
+import GameTileTypes from "./GameTileTypes.js";
 
-// effects used by tiles
-import LeavesEffect from "../animations/effects/Leaves.js";
-
-
-const Types = {
-	EMPTY: {
-		name: "EMPTY",
-		id: 0,
-		walkable: true
-	},
-	VOID: {
-		name: "VOID",
-		id: 1,
-		walkable: true
-	},
-	FLOOR: {
-		name: "FLOOR",
-		id: [2, 3, 4, 5, 6],
-		probability: 0.1,
-		walkable: true
-	},
-	DIRT: {
-		name: "DIRT",
-		id: 4,
-		walkable: true
-	},
-	GRASS: {
-		name: "GRASS",
-		id: 5,
-		walkable: true
-	},
-	TREE: {
-		name: "TREE",
-		id: [64, 66],
-		probability: 0.5,
-		walkable: false
-	},
-	BUSH: {
-		name: "BUSH",
-		id: 70,
-		walkable: false,
-		destroyable: true,
-		destroyEffect: LeavesEffect,
-		replaceWith: "BUSH_STUMP"
-	},
-	BUSH_STUMP: {
-		name: "BUSH_STUMP",
-		id: 71,
-		walkable: true
-	},
-	SIGN: {
-		name: "SIGN",
-		id: 67,
-		walkable: false
-	},
-	WALL: {
-		name: "WALL",
-		id: [40, 41],
-		probability: 0.1,
-		walkable: false
-	}
-};
-
-
+import ItemPool from "../items/ItemPool.js";
+import ItemTypes from "../items/ItemTypes.js";
 
 class GameTile extends Tile {
-
 	constructor({tilemap, x, y}) {
 		super({tilemap, x, y});
 
 		// Movable actors, e.g. Player, Enemies, Pick-ups, Items, ...
 		this._actors = [];
 
-		// TODO: track the lasting visual effects e.g. blood or butterflies
-		// this._effects = [];
+		this._items = [];
 
-		this.setType(Types.VOID);
+		this.setType(GameTileTypes.VOID);
 	}
 
 	addActor(a) {
@@ -99,6 +36,36 @@ class GameTile extends Tile {
 
 	getActors() {
 		return this._actors;
+	}
+
+	/**
+	 * Drops the given ItemEntity instance on the tile
+	 * @param {BaseItem} item the item entity instance to drop
+	 */
+	dropItem(item) {
+		// track item on the tile
+		if (item && item.gameTile == null) {
+			this._items.push(item);
+			item._setTile(this);
+		}
+	}
+
+	/**
+	 *
+	 * @param {BaseItem} item the item to remove from the tile
+	 */
+	removeItem(item) {
+		// remove item from the list
+		let i = this._items.indexOf(item);
+		if (i >= 0) {
+			this._items.splice(i, 1);
+			item.gameTile = null;
+		}
+		return item;
+	}
+
+	getItems() {
+		return this._items;
 	}
 
 	/**
@@ -124,14 +91,14 @@ class GameTile extends Tile {
 	/**
 	 * Changes the type of this GameTile instance.
 	 * Updates the visuals and the gameplay properties like "walkable" etc.
-	 * @param {GameTile.Types} type the new type to set for this tile instance
+	 * @param {GameTileTypes} type the new type to set for this tile instance
 	 */
 	setType(type) {
 
 		// sanity check
-		if (!type || !type.name || !Types[type.name]) {
+		if (!type || !type.name || !GameTileTypes[type.name]) {
 			error(`Unknown tile type '${type}'. Using FLOOR instead.`, "GameTile.setType");
-			type = Types.FLOOR;
+			type = GameTileTypes.FLOOR;
 		}
 
 		this.type = type;
@@ -161,15 +128,46 @@ class GameTile extends Tile {
 			this.tilemap.getScreen().add(destroyEffectInstance);
 		}
 
-		// change to the new type on destroy
-		if (this.type.replaceWith) {
-			this.setType(Types[this.type.replaceWith]);
+		// check if the tile drops something on destroy, e.g. cutting down a bush
+		if (this.type.drops) {
+			this.dropStandardLoot();
 		}
 
-		// TODO: Make Droppable Items
+		// TODO: Rethink - Destroy existing Items on the Tile too? e.g. explosion?
+
+		// change to the new type on destroy
+		if (this.type.replaceWith) {
+			this.setType(GameTileTypes[this.type.replaceWith]);
+		}
+	}
+
+	/**
+	 * Drops a random standard Item on the tile.
+	 */
+	dropStandardLoot() {
+		let item;
+
+		// Drop some random loot
+		let dropProb = 0.05; //RNG.random();
+		if (dropProb <= 0.02) {
+			// drop ammo
+			//item = ItemPool.get(ItemTypes.AMMO, this);
+		} else if (dropProb <= 0.05) {
+			// drop health
+			item = ItemPool.get(ItemTypes.HEART_SMALL);
+		} else if (dropProb <= 0.1) {
+			// drop money
+			//item = ItemPool.get(ItemTypes.MONEY, this);
+		}
+
+		if (item) {
+			// place item on tile
+			this.dropItem(item);
+
+			// add to screen for rendering
+			this.tilemap.getScreen().add(item);
+		}
 	}
 }
-
-GameTile.Types = Types;
 
 export default GameTile;
