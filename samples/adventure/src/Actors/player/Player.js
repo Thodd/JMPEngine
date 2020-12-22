@@ -1,7 +1,6 @@
 // engine imports
 import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
-import { log } from "../../../../../../src/utils/Log.js";
 import Constants from "../../Constants.js";
 
 // animations
@@ -16,6 +15,12 @@ import Enemy from "../enemies/Enemy.js";
 // own stuff
 import PlayerState from "./PlayerState.js";
 
+/**
+ * Entity representation of the Player.
+ * Standard Actor.
+ * Manages input handling in the update loop.
+ * Persistent Player information is stored in the PlayerState class.
+ */
 class Player extends BaseActor {
 	constructor({gameTile}) {
 		super({gameTile});
@@ -34,8 +39,6 @@ class Player extends BaseActor {
 
 		this._lastDir = "down";
 
-		this.checkForInput = true;
-
 		this.configSprite({
 			sheet: "player",
 
@@ -43,8 +46,6 @@ class Player extends BaseActor {
 				x: -3,
 				y: -7
 			},
-
-			//color: Constants.Colors.YELLOW_LIGHT,
 
 			animations: {
 				default: "down",
@@ -80,65 +81,76 @@ class Player extends BaseActor {
 		return PlayerState.stats;
 	}
 
-	takeTurn() {
-		// GC has passed us priority so we activate input check during the game loop
-		this.checkForInput = true;
-		log("taking turn - waiting for input", "Player");
-	}
-
-	endTurn() {
-		// once the player turn ends we stop checking for input
-		// and wait until the GC gives us priority again
-		this.checkForInput = false;
-
-		// notify the GC that the player has made their turn
-		this.getGameController().endPlayerTurn();
-	}
-
 	update() {
-		if (this.checkForInput) {
-			let xDif = 0;
-			let yDif = 0;
-
+		if (PlayerState.yourTurn) {
 			// wait one turn
 			if (Keyboard.down(Keys.PERIOD)) {
-				this.endTurn();
+				PlayerState.endTurn();
+			} else if (Keyboard.down(Keys.G)) {
+				// player tries to grab an item
+				this.grabItems();
 			} else {
-				if (Keyboard.down(Keys.LEFT)) {
-					xDif = -1;
-					this._lastDir = "left";
-				} else if (Keyboard.down(Keys.RIGHT)) {
-					xDif = +1;
-					this._lastDir = "right";
-				}
-
-				if (Keyboard.down(Keys.UP)) {
-					yDif = -1;
-					this._lastDir = "up";
-				} else if (Keyboard.down(Keys.DOWN)) {
-					yDif = +1;
-					this._lastDir = "down";
-				}
-
-				// we have some direction input, so we start a movement animation
-				if (xDif != 0 || yDif != 0) {
-
-					// determine the start- and goal-tile
-					let startTile = this.gameTile;
-					let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
-
-					// if something happend during this turn, end the turn.
-					let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
-					if (didSomeInteraction) {
-						this.endTurn();
-					}
-				}
+				this.inputCheck_Movement();
 			}
 		}
 
 		this.playAnimation({name: `${this._lastDir}`});
 
 		this.centerCamera();
+	}
+
+	/**
+	 * Check if an item can be picked up.
+	 */
+	grabItems() {
+		let itemTypes = this.gameTile.pickupItems();
+
+		if (itemTypes.length > 0) {
+
+			// process items
+			// TODO: Use "INSTANT_USE" items directly
+			// TODO: Place everything else in your backpack
+
+			PlayerState.endTurn();
+		}
+	}
+
+	/**
+	 * Routine to check for player movement input.
+	 */
+	inputCheck_Movement() {
+		let xDif = 0;
+		let yDif = 0;
+
+		if (Keyboard.down(Keys.LEFT)) {
+			xDif = -1;
+			this._lastDir = "left";
+		} else if (Keyboard.down(Keys.RIGHT)) {
+			xDif = +1;
+			this._lastDir = "right";
+		}
+
+		if (Keyboard.down(Keys.UP)) {
+			yDif = -1;
+			this._lastDir = "up";
+		} else if (Keyboard.down(Keys.DOWN)) {
+			yDif = +1;
+			this._lastDir = "down";
+		}
+
+		// we have some direction input, so we start a movement animation
+		if (xDif != 0 || yDif != 0) {
+
+			// determine the start- and goal-tile
+			let startTile = this.gameTile;
+			let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
+
+			// if something happend during this turn, end the turn.
+			let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
+			if (didSomeInteraction) {
+				PlayerState.endTurn();
+			}
+		}
 	}
 
 	/**
@@ -187,9 +199,7 @@ class Player extends BaseActor {
 					// ATTACKING
 					if (actor instanceof Enemy) {
 						this.meleeAttackActor(actor);
-
 						didSomeInteraction = true;
-
 						break;
 					}
 				}

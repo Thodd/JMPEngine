@@ -12,8 +12,8 @@ const phaseEnemyAttack = new AnimationPhase({
 		// This could be inefficient, but typically only a couple of Animations are scheduled
 		// as an ENEMY_ATTACK per turn (incl. HurtAnimation of the player).
 
-		// TODO: Refactor the whole AnimationPhase creation... how can we get this away from the AnimationSystem class?
 		// ********** TODO ***********
+		// TODO: Make sure the DamageNumber of the single HurtAnimation is accumulated!
 		// Make sure we don't double schedule a HurtAnimation for the player
 		let doubleHurtPlayer = false;
 		for (let a of this.animations) {

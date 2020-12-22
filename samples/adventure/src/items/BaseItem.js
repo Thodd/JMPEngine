@@ -1,8 +1,11 @@
 import Entity from "../../../../src/game/Entity.js";
 import { fail } from "../../../../src/utils/Log.js";
 import Constants from "../Constants.js";
-import ItemPool from "./ItemPool.js";
 
+/**
+ * BaseItem entity class.
+ * Serves as a visual representation of an ItemType.
+ */
 class BaseItem extends Entity {
 	constructor() {
 		super();
@@ -36,13 +39,11 @@ class BaseItem extends Entity {
 	moveToTile(tile) {
 		if (tile) {
 			// remove from old tile (if dropped already)
-			if (this.gameTile) {
-				this.gameTile.removeItem(this);
-			}
+			this.removeFromTile();
 			// connect to the tile instance
 			tile.dropItem(this);
 		} else {
-			fail("Item cannot be moved to unknown tile!", "BaseItem");
+			fail(`Item '${this.type.id}' cannot be moved to unknown tile!`, "BaseItem");
 		}
 	}
 
@@ -56,15 +57,10 @@ class BaseItem extends Entity {
 	}
 
 	/**
-	 * Picks up the item from the tile and returns it to the ItemPool.
+	 * Reset the type of an item and updates the visuals.
+	 * Called by the ItemPool upon retrieving a BaseItem instance.
+	 * @param {ItemType} type the new item type
 	 */
-	pickup() {
-		// first remove the item from the tile
-		this.removeFromTile();
-		// then release if (automatically removes it from the screen if added)
-		ItemPool.release(this);
-	}
-
 	reset(type) {
 		this.type = type;
 

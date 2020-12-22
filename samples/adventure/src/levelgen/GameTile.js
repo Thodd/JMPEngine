@@ -9,6 +9,11 @@ import GameTileTypes from "./GameTileTypes.js";
 import ItemPool from "../items/ItemPool.js";
 import ItemTypes from "../items/ItemTypes.js";
 
+/**
+ * GameTile class.
+ * Contains gameplay logic related to a single Tile.
+ * Is defined via its GameTileType.
+ */
 class GameTile extends Tile {
 	constructor({tilemap, x, y}) {
 		super({tilemap, x, y});
@@ -64,8 +69,30 @@ class GameTile extends Tile {
 		return item;
 	}
 
+	/**
+	 * Returns all BaseItem instances on this tile.
+	 */
 	getItems() {
 		return this._items;
+	}
+
+	/**
+	 * Pick's up all item instances and releases them safely into the Pool.
+	 * Returns an array of ItemTypes corresponding to all items that were picked up.
+	 * @returns {ItemType[]} the list of all item types (incl. multiples) which were picked up from this tile.
+	 */
+	pickupItems() {
+		let types = [];
+
+		// we need a copy here, because releasing an item to the ItemPool also removes the Item from the tile
+		// which will modify the items list inplace (splice(...)).
+		let _itemsCopy = this._items.slice();
+		_itemsCopy.forEach((item) => {
+			types.push(item.type);
+			ItemPool.release(item);
+		});
+
+		return types;
 	}
 
 	/**
@@ -94,7 +121,6 @@ class GameTile extends Tile {
 	 * @param {GameTileTypes} type the new type to set for this tile instance
 	 */
 	setType(type) {
-
 		// sanity check
 		if (!type || !type.name || !GameTileTypes[type.name]) {
 			error(`Unknown tile type '${type}'. Using FLOOR instead.`, "GameTile.setType");
@@ -132,8 +158,6 @@ class GameTile extends Tile {
 		if (this.type.drops) {
 			this.dropStandardLoot();
 		}
-
-		// TODO: Rethink - Destroy existing Items on the Tile too? e.g. explosion?
 
 		// change to the new type on destroy
 		if (this.type.replaceWith) {

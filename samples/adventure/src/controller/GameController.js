@@ -1,6 +1,6 @@
+import PlayerState from "../actors/player/PlayerState.js";
 import AnimationSystem from "../animations/system/AnimationSystem.js";
 import Timeline from "./Timeline.js";
-// import { log } from "../../../src/utils/Log.js";
 
 class GameController {
 	constructor() {
@@ -37,7 +37,7 @@ class GameController {
 
 			if (animationsFinished) {
 				// now give the player priority to do inputs
-				this.player.takeTurn();
+				PlayerState.takeTurn();
 
 				// we wait for the player & NPC turns to end now for the next animation phase
 				this.animationsRunning = false;

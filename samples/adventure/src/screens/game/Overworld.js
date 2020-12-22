@@ -14,6 +14,7 @@ import Helper from "../../../../../src/utils/Helper.js";
 import Snake from "../../actors/enemies/Snake.js";
 import Wolf from "../../actors/enemies/Wolf.js";
 import UISystem from "../../ui/UISystem.js";
+import PlayerState from "../../actors/player/PlayerState.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -54,6 +55,9 @@ class WorldScreen extends Screen {
 		this._gameController = new GameController(this);
 		exposeOnWindow("gc", this._gameController); // DEBUG reference of GC on window
 		this._gameController.addPlayer(this._player);
+
+		// register GameController at the PlayerState
+		PlayerState.setCurrentGameController(this._gameController);
 
 		// some enemies
 		for (let i = 0; i < 10; i++) {

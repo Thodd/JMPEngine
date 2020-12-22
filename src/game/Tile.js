@@ -1,5 +1,4 @@
 import { fail } from "../utils/Log.js";
-import Constants from "../../samples/arpg/src/Constants.js";
 
 class Tile {
 	/**

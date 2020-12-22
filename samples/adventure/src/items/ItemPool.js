@@ -7,8 +7,8 @@ import { fail } from "../../../../src/utils/Log.js";
 const _itemEntities = {};
 
 /**
- * Allows to retreive an Item instance.
- * Items are purely visual representations of a certain Item type.
+ * Allows to retreive a BaseItem instance.
+ * BaseItems are purely visual representations of a certain Item type.
  */
 const ItemPool = {
 	get(type) {

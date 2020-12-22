@@ -1,5 +1,5 @@
 import { fail } from "../../../../src/utils/Log.js";
-
+import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 /**
  * Constants for all items.
  * Hard-coded values like attack power, sprite ID, ...
@@ -10,6 +10,7 @@ class ItemType {
 	constructor(spec) {
 		// define some defaults
 		this.id = spec.id || "UNKNOWN";
+		this.category = spec.category || "GENERAL";
 		this.sprite = spec.sprite || 0;
 		this.text = {
 			name: (spec.text && spec.text.name) || "Unknown Item",
@@ -35,10 +36,24 @@ ItemType.create = function(spec) {
 }
 
 /**
+ * All Item categories
+ */
+const categories = {
+	GENERAL: "general",
+	WEAPON: "weapon",
+	CONSUMABLE: "consumable",
+	INSTANT_USE: "instant_use",
+	QUEST: "quest",
+	TREASURE: "treasure",
+	MAP: "map"
+}
+
+/**
  * Actual ItemType definitions
  */
 ItemType.create({
 	id: "HEART_SMALL",
+	category: categories.INSTANT_USE,
 	sprite: 0,
 	text: {
 		name: "a small heart",
@@ -48,8 +63,10 @@ ItemType.create({
 		restore: 1
 	}
 });
+
 ItemType.create({
 	id: "HEART_BIG",
+	category: categories.INSTANT_USE,
 	sprite: 1,
 	text: {
 		name: "a big heart",
@@ -61,3 +78,5 @@ ItemType.create({
 });
 
 export default _types;
+
+exposeOnWindow("ItemTypes", _types);
