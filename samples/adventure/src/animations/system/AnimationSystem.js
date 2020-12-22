@@ -13,16 +13,24 @@ const phaseEnemyAttack = new AnimationPhase({
 		// as an ENEMY_ATTACK per turn (incl. HurtAnimation of the player).
 
 		// ********** TODO ***********
-		// TODO: Make sure the DamageNumber of the single HurtAnimation is accumulated!
+		// TODO: Refactor this so it respects ALL health changes
+		// TODO: Make this reusable for ALL actors ???
 		// Make sure we don't double schedule a HurtAnimation for the player
-		let doubleHurtPlayer = false;
-		for (let a of this.animations) {
-			if (a instanceof HurtAnimation && a.actor.isPlayer) {
-				if (doubleHurtPlayer) {
-					a.done();
+		let maxPlayerDamage = 0;
+		let firstPlayerHurtAnimation;
+		for (let anim of this.animations) {
+			if (anim instanceof HurtAnimation && anim.actor.isPlayer) {
+				maxPlayerDamage += anim.getHealthDelta();
+				if (!firstPlayerHurtAnimation) {
+					firstPlayerHurtAnimation = anim;
+				} else {
+					// ignore all others
+					anim.done();
 				}
-				doubleHurtPlayer = true;
 			}
+		}
+		if (firstPlayerHurtAnimation) {
+			firstPlayerHurtAnimation.setDamageNumber(maxPlayerDamage);
 		}
 		// ********** TODO ***********
 	}

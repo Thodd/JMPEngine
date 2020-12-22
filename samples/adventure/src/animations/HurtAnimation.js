@@ -10,6 +10,18 @@ class HurtAnimation extends BaseAnimation {
 
 		// create damage number indicator
 		this._dmgNumber = new DamageNumber();
+
+		// health update delta
+		this._healthDelta = 0;
+	}
+
+	/**
+	 * Retrieves the delta of the actors health.
+	 * Can be positive or negative.
+	 * Used for consolidating health updates if an Actor is affected multiple times through a turn.
+	 */
+	getHealthDelta() {
+		return this._healthDelta;
 	}
 
 	reset() {
@@ -28,6 +40,7 @@ class HurtAnimation extends BaseAnimation {
 	}
 
 	setDamageNumber(dmg) {
+		this._healthDelta = dmg;
 		// make sure the damage number is a string!
 		this._dmgNumber.setText(`-${dmg}`);
 	}
