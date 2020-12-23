@@ -8,6 +8,9 @@ import AnimationSystem from "../../animations/system/AnimationSystem.js";
 import AnimationPool from "../../animations/system/AnimationPool.js";
 import BumpAnimation from "../../animations/BumpAnimation.js";
 
+// Item Handling
+import ItemTypes from "../../items/ItemTypes.js";
+
 // actors
 import BaseActor from "../BaseActor.js";
 import Enemy from "../enemies/Enemy.js";
@@ -26,7 +29,7 @@ class Player extends BaseActor {
 		super({gameTile});
 
 		this.name = "Thor";
-		this.nameColor = "#00FF85";
+		this.nameColor = "#a4ce26";
 
 		this.isPlayer = true;
 
@@ -73,6 +76,11 @@ class Player extends BaseActor {
 		});
 	}
 
+	added() {
+		// initial camera positioning
+		this.centerCamera();
+	}
+
 	/**
 	 * The Player's stats are stored in a separate class.
 	 * The Player class is stateless and reused for all controllable Actors.
@@ -95,22 +103,22 @@ class Player extends BaseActor {
 		}
 
 		this.playAnimation({name: `${this._lastDir}`});
-
-		this.centerCamera();
 	}
 
 	/**
 	 * Check if an item can be picked up.
 	 */
 	grabItems() {
-		let itemTypes = this.gameTile.pickupItems();
+		let items = this.gameTile.pickupItems();
 
-		if (itemTypes.length > 0) {
-
+		if (items.length > 0) {
 			// process items
-			// TODO: Use "INSTANT_USE" items directly
-			// TODO: Place everything else in your backpack
-
+			for (let item of items) {
+				if (item.category == ItemTypes.Categories.INSTANT_USE) {
+					this.useItem(item);
+				}
+				// TODO: Place everything else in your backpack
+			}
 			PlayerState.endTurn();
 		}
 	}

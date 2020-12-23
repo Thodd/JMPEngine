@@ -13,7 +13,8 @@ class ItemType {
 		this.category = spec.category || "GENERAL";
 		this.sprite = spec.sprite || 0;
 		this.text = {
-			name: (spec.text && spec.text.name) || "Unknown Item",
+			name: (spec.text && spec.text.name) || "an unknown Item",
+			result: (spec.text && spec.text.result) || "Nothing happens.",
 			flavor: (spec.text && spec.text.flavor) || "Not sure what this is..."
 		}
 		this.values = spec.values || {};
@@ -49,6 +50,11 @@ const categories = {
 }
 
 /**
+ * Public Access to Categories.
+ */
+_types.Categories = categories;
+
+/**
  * Actual ItemType definitions
  */
 ItemType.create({
@@ -57,6 +63,7 @@ ItemType.create({
 	sprite: 0,
 	text: {
 		name: "a small heart",
+		result: "1 HP restored",
 		flavor: "Restores 1 HP"
 	},
 	values: {
@@ -70,6 +77,7 @@ ItemType.create({
 	sprite: 1,
 	text: {
 		name: "a big heart",
+		result: "2 HP restored",
 		flavor: "Restores 2 HP"
 	},
 	values: {

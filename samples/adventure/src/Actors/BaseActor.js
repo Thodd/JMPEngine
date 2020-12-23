@@ -1,17 +1,27 @@
+// General
 import Entity from "../../../../src/game/Entity.js";
 import Helper from "../../../../src/utils/Helper.js";
 import RNG from "../../../../src/utils/RNG.js";
 import { error } from "../../../../src/utils/Log.js";
 import Constants from "../Constants.js";
 
+// UI
 import UISystem from "../ui/UISystem.js";
+
+// Stats
 import Stats from "./Stats.js";
 
+// Item Handling
+import ItemTypes from "../items/ItemTypes.js";
+
+// Battle
 import MeleeCalculator from "../combat/MeleeCalculator.js";
+
+// Animation System
 import AnimationPool from "../animations/system/AnimationPool.js";
 import AnimationSystem from "../animations/system/AnimationSystem.js";
 import MovementAnimation from "../animations/MovementAnimation.js";
-import HurtAnimation from "../animations/HurtAnimation.js";
+import HPUpdateAnimation from "../animations/HPUpdateAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
 
@@ -239,33 +249,67 @@ class BaseActor extends Entity {
 	}
 
 	/**
-	 * Let's the actor take damage.
-	 * Returns the animations which might be played because of the taken damage.
-	 *
-	 * @param {int} dmg the damage taken by the actor
+	 * Changes the Hitpoints of the actor.
+	 * Can be positive (heal) or negative (damage).
+	 * @param {int} delta the delta amount of health change
+	 * @param {any} cause cause information for the health change
+	 * @returns {HPUpdateAnimation|undefined} returns the HPUpdateAnimation if the HP actually changed, undefined otherwise
 	 */
-	takeDamage(dmg, cause) {
-		let animations = [];
-
-		if (dmg > 0) {
-			let stats = this.getStats();
-			stats.hp -= dmg;
-
-			// I'm ded x_x
-			if (stats.hp <= 0) {
-				return this.die()
-			} else {
-				// track that this actor has taken damage by the given cause since its last turn (e.g. Player, Poison, Fire, ...)
-				this._sinceLastTurn.hasTakenDamage = cause || true;
-
-				// set the damage number indicator & schedule the hurt animation
-				let hurtAnim = AnimationPool.get(HurtAnimation, this);
-				hurtAnim.setDamageNumber(dmg);
-				return hurtAnim;
-			}
+	updateHP(delta, cause) {
+		// calculate actual delta (depends on max hp), might be 0 in the end
+		let stats = this.getStats();
+		if (stats.hp + delta > stats.hp_max) {
+			delta = stats.hp_max - stats.hp;
 		}
 
-		return animations;
+		if (delta != 0) {
+			stats.hp += delta;
+
+			// hp is now below 0 --> die
+			if (stats.hp <= 0) {
+				return this.die()
+			}
+
+			if (delta > 0) {
+				// track if this actor has healed somehow (e.g. potion, spell, ...)
+				this._sinceLastTurn.hasHealed = cause || true;
+				UISystem.log(`${this} gains ${delta} HP.`);
+			} else if (delta < 0) {
+				// track that this actor has taken damage by the given cause since its last turn (e.g. Player, Poison, Fire, ...)
+				this._sinceLastTurn.hasTakenDamage = cause || true;
+				UISystem.log(`${this} loses ${Math.abs(delta)} HP.`);
+			}
+
+			// create animation
+			// set the hp delta number indicator & schedule the animation
+			let hpUpdateAnim = AnimationPool.get(HPUpdateAnimation, this);
+			hpUpdateAnim.setNumber(delta);
+			return hpUpdateAnim;
+		} else {
+			// nothing to do, no health change needed
+		}
+	}
+
+	/**
+	 * Uses the given Item (if possible).
+	 * @param {ItemType} item the item to be used
+	 */
+	useItem(item) {
+		// consume an instant health item, e.g. a small/big heart
+		if (item.category == ItemTypes.Categories.INSTANT_USE) {
+			UISystem.log(`${this} uses ${item.text.name}.`);
+
+			let healthUpdateAnim = this.updateHP(item.values.restore, item.id);
+			if (healthUpdateAnim) {
+				this.scheduleAnimation(healthUpdateAnim, AnimationSystem.Phases.ITEM_USAGE);
+			} else {
+				UISystem.log(`Nothing happens.`);
+			}
+
+		} else if (item.category == ItemTypes.Categories.CONSUMABLE) {
+			// nothing so far
+			// TODO: potions, etc.
+		}
 	}
 
 	/**
@@ -287,10 +331,12 @@ class BaseActor extends Entity {
 		let battleResult = MeleeCalculator.battle(this, defender);
 
 		if (battleResult.defenderWasHit) {
-			UISystem.log(`${this} attacks ${defender} for ${battleResult.damage} dmg.`);
+			UISystem.log(`${this} attacks ${defender}.`);
 			// defender is hurt by this actor, schedule hurt animation
-			let hurt = defender.takeDamage(battleResult.damage, this);
-			this.scheduleAnimation(hurt, phase);
+			let hurtAnim = defender.updateHP(-battleResult.damage, this);
+			if (hurtAnim) {
+				this.scheduleAnimation(hurtAnim, phase);
+			}
 		} else {
 			UISystem.log(`${this} misses!`);
 		}
@@ -305,6 +351,9 @@ class BaseActor extends Entity {
 
 		this.isDead = true;
 
+		// call afterDeath Hook (actor is still on the tile and entity is not yet destroyed!)
+		this.afterDeath();
+
 		// remove actor from game logic
 		this.getTimeline().removeActor(this);
 
@@ -317,6 +366,12 @@ class BaseActor extends Entity {
 		// the death animation is just for show
 		return AnimationPool.get(DeathAnimation, this);
 	}
+
+	/**
+	 * afterDeath Hook.
+	 * The actor is still on the tile and entity is not yet destroyed.
+	 */
+	afterDeath() {}
 
 	/**
 	 * Returns a random adjacent tile.

@@ -34,8 +34,10 @@ class WorldScreen extends Screen {
 		this._tileMap.y = 0;
 		this._tileMap.layer = Constants.Layers.TILES;
 
+		const _types = [GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.TREE, GameTileTypes.BUSH];
 		this._tileMap.each((tile) => {
-			tile.setType(GameTileTypes.FLOOR);
+			let tileType = Helper.choose(_types);
+			tile.setType(tileType);
 		});
 		this._tileMap.get(12,12).setType(GameTileTypes.TREE);
 		this._tileMap.get(14,12).setType(GameTileTypes.TREE);

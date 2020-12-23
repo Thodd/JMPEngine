@@ -9,7 +9,7 @@ class Enemy extends BaseActor {
 		this.isBlocking = true;
 
 		this.name = "Enemy#" + this._ID;
-		this.nameColor = "#FF0000";
+		this.nameColor = "#be2632";
 	}
 
 	/**
@@ -38,6 +38,11 @@ class Enemy extends BaseActor {
 		// } else {
 		// 	this.makeRandomMove();
 		// }
+	}
+
+	afterDeath() {
+		// enemies can drop standard loot
+		this.gameTile.dropStandardLoot();
 	}
 
 }

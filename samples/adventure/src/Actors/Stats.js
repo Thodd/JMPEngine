@@ -31,6 +31,8 @@ class Stats {
 	// HP
 	set hp(v) {
 		this._hp = v;
+		// clamp to max hp
+		this._hp = Math.min(this._hp, this._hp_max);
 		this._statChange();
 	}
 	get hp() {

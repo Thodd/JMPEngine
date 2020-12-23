@@ -11,6 +11,8 @@ class BaseItem extends Entity {
 		super();
 
 		this.layer = Constants.Layers.BELOW_ACTORS;
+
+		// just for visuals, no update loop needed
 		this.active = false;
 
 		this.type = null;
@@ -72,7 +74,7 @@ class BaseItem extends Entity {
 			animations: {
 				default: "blink",
 				blink: {
-					frames: [{id: sprId, color: 0xFFFF00, dt: 10}, {id: sprId, color: 0xFFFFFF, dt: 120}],
+					frames: [{id: sprId, color: 0xFF0085, dt: 10}, {id: sprId, color: 0xFFFFFF, dt: 120}],
 				}
 			}
 		});

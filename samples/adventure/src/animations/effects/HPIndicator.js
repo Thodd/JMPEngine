@@ -2,22 +2,21 @@ import Constants from "../../Constants.js";
 import BitmapText from "../../../../../src/game/BitmapText.js";
 
 /**
- * DamageNumbers don't extend BaseEffect, since they are completely handled by the HurtAnimation.
+ * HPIndicator don't extend BaseEffect, since they are completely handled by the HPUpdateAnimation.
  */
-class DamageNumber extends BitmapText {
+class HPIndicator extends BitmapText {
 	constructor() {
 		super({
 			text: undefined,
 			x: 0,
 			y: 0,
 			font: "font1",
-			color: Constants.Colors.YELLOW_DARK,
 			leading: 0
 		});
 
 		this.layer = Constants.Layers.ABOVE_ACTORS;
 
-		// no update needed, will be handled by the HurtAnimation which instantiated the DamageNumber
+		// no update needed, will be handled by the HPUpdateAnimation which instantiated the HPIndicator
 		this.active = false;
 
 		this.visible = false;
@@ -28,9 +27,9 @@ class DamageNumber extends BitmapText {
 	}
 
 	reposition(gameTile) {
-		this.x = gameTile.x * Constants.TILE_WIDTH;
+		this.x = gameTile.x * Constants.TILE_WIDTH - 2;
 		this.y = gameTile.y * Constants.TILE_HEIGHT - 13; // always render above the actor
 	}
 }
 
-export default DamageNumber;
+export default HPIndicator;

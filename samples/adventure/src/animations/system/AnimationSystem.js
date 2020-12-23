@@ -1,36 +1,36 @@
 import { error } from "../../../../../src/utils/Log.js";
-import HurtAnimation from "../HurtAnimation.js";
+import HPUpdateAnimation from "../HPUpdateAnimation.js";
 import AnimationPhase from "./AnimationPhase.js";
 
 // Create Phases
 const phaseGeneral = new AnimationPhase({name: "GENERAL"});
+const phaseItemUsage = new AnimationPhase({name: "ITEM_USAGE"});
 const phaseStatusEffects = new AnimationPhase({name: "STATUS_EFFECT"});
 const phaseEnemyAttack = new AnimationPhase({
 	name: "ENEMY_ATTACK",
 	preprocess: function() {
 		// We decouple this from game logic, so the AI does not need to know if a player was hurt already.
 		// This could be inefficient, but typically only a couple of Animations are scheduled
-		// as an ENEMY_ATTACK per turn (incl. HurtAnimation of the player).
+		// as an ENEMY_ATTACK per turn (incl. HPUpdateAnimation of the player).
 
 		// ********** TODO ***********
 		// TODO: Refactor this so it respects ALL health changes
-		// TODO: Make this reusable for ALL actors ???
-		// Make sure we don't double schedule a HurtAnimation for the player
+		// Make sure we don't double schedule a HPUpdateAnimation for the player
 		let maxPlayerDamage = 0;
-		let firstPlayerHurtAnimation;
+		let firstPlayerHPUpdateAnimation;
 		for (let anim of this.animations) {
-			if (anim instanceof HurtAnimation && anim.actor.isPlayer) {
-				maxPlayerDamage += anim.getHealthDelta();
-				if (!firstPlayerHurtAnimation) {
-					firstPlayerHurtAnimation = anim;
+			if (anim instanceof HPUpdateAnimation && anim.actor.isPlayer) {
+				maxPlayerDamage += anim.getHPDelta();
+				if (!firstPlayerHPUpdateAnimation) {
+					firstPlayerHPUpdateAnimation = anim;
 				} else {
 					// ignore all others
 					anim.done();
 				}
 			}
 		}
-		if (firstPlayerHurtAnimation) {
-			firstPlayerHurtAnimation.setDamageNumber(maxPlayerDamage);
+		if (firstPlayerHPUpdateAnimation) {
+			firstPlayerHPUpdateAnimation.setNumber(maxPlayerDamage);
 		}
 		// ********** TODO ***********
 	}
@@ -41,6 +41,7 @@ const phaseEndOfTurn = new AnimationPhase({name: "END_OF_TURN"});
 // allows to decouple the constants used by the game logic from the implementation
 const _phaseMap = {
 	"GENERAL": phaseGeneral,
+	"ITEM_USAGE": phaseItemUsage,
 	"STATUS_EFFECT": phaseStatusEffects,
 	"ENEMY_ATTACK": phaseEnemyAttack,
 	"END_OF_TURN": phaseEndOfTurn
@@ -48,6 +49,7 @@ const _phaseMap = {
 
 // chain phases
 phaseGeneral
+	.then(phaseItemUsage)
 	.then(phaseStatusEffects)
 	.then(phaseEnemyAttack)
 	.then(phaseEndOfTurn);

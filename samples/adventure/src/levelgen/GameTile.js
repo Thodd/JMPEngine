@@ -172,16 +172,9 @@ class GameTile extends Tile {
 		let item;
 
 		// Drop some random loot
-		let dropProb = 0.05; //RNG.random();
-		if (dropProb <= 0.02) {
-			// drop ammo
-			//item = ItemPool.get(ItemTypes.AMMO, this);
-		} else if (dropProb <= 0.05) {
-			// drop health
-			item = ItemPool.get(ItemTypes.HEART_SMALL);
-		} else if (dropProb <= 0.1) {
-			// drop money
-			//item = ItemPool.get(ItemTypes.MONEY, this);
+		let dropProb = RNG.random();
+		if (dropProb <= 0.2) {
+			item = ItemPool.get(Helper.choose([ItemTypes.HEART_SMALL, ItemTypes.HEART_BIG]));
 		}
 
 		if (item) {

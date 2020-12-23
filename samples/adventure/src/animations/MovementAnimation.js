@@ -71,6 +71,12 @@ class MovementAnimation extends BaseAnimation {
 			this.actor.y += this.speed * this.dy;
 		}
 
+		// We update the Camera to center around the player only when moving the player.
+		// If we were to do this in the update() loop of the player, the screen would constantly shake during BumpAnimations.
+		if (this.actor.isPlayer) {
+			this.actor.centerCamera();
+		}
+
 		// TODO: Handle (slope != 0 or 1) correctly
 		if (this.actor.x == this.goalX && this.actor.y == this.goalY) {
 			this.done();
