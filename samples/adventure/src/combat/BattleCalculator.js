@@ -1,6 +1,6 @@
 import RNG from "../../../../src/utils/RNG.js";
 
-const MeleeCalculator = {
+const BattleCalculator = {
 	battle(attacker, defender) {
 		let result = {
 			defenderWasHit: false,
@@ -24,4 +24,4 @@ const MeleeCalculator = {
 	}
 };
 
-export default MeleeCalculator;
+export default BattleCalculator;

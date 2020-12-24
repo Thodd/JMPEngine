@@ -15,7 +15,7 @@ import Stats from "./Stats.js";
 import ItemTypes from "../items/ItemTypes.js";
 
 // Battle
-import MeleeCalculator from "../combat/MeleeCalculator.js";
+import MeleeCalculator from "../combat/BattleCalculator.js";
 
 // Animation System
 import AnimationPool from "../animations/system/AnimationPool.js";
@@ -342,8 +342,8 @@ class BaseActor extends Entity {
 		// now do the actual battle
 		let battleResult = MeleeCalculator.battle(this, defender);
 
+		UISystem.log(`${this} attacks ${defender}.`);
 		if (battleResult.defenderWasHit) {
-			UISystem.log(`${this} attacks ${defender}.`);
 			// defender is hurt by this actor, schedule hurt animation
 			let hurtAnim = defender.updateHP(-battleResult.damage, this);
 			if (hurtAnim) {

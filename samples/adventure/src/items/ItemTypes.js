@@ -146,7 +146,7 @@ _create({
 _create({
 	id: "KNIFE",
 	category: categories.WEAPON,
-	subCategory: subCategories.RANGED,
+	subCategory: subCategories.MELEE,
 	sprite: 53,
 	text: {
 		name: "a knife",

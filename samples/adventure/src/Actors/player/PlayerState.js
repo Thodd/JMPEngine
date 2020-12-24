@@ -1,11 +1,11 @@
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 import { log } from "../../../../../../src/utils/Log.js";
 
-import Backpack from "../../items/Backpack.js";
-
 import UISystem from "../../ui/UISystem.js";
 
+import Backpack from "../../items/Backpack.js";
 import Stats from "../Stats.js";
+import ItemTypes from "../../items/ItemTypes.js";
 
 // Callback for chaning the player's stats
 const _stats = new Stats(function() {
@@ -28,8 +28,17 @@ let _gc = null;
  */
 const PlayerState = {
 	backpack: new Backpack(),
-
 	stats: _stats,
+
+	/**
+	 * Init PlayerState.
+	 * Called only once.
+	 */
+	init() {
+		// Equip first basic melee weapon
+		let weapon = ItemTypes.KNIFE;
+		this.backpack.equipItem(weapon, weapon.subCategory);
+	},
 
 	/**
 	 * Changes the game controller.
@@ -61,6 +70,8 @@ const PlayerState = {
 		_gc.endPlayerTurn();
 	}
 };
+
+PlayerState.init();
 
 export default PlayerState;
 
