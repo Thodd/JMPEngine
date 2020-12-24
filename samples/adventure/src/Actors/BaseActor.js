@@ -296,7 +296,7 @@ class BaseActor extends Entity {
 	 */
 	useItem(item) {
 		// consume an instant health item, e.g. a small/big heart
-		if (item.category == ItemTypes.Categories.INSTANT_USE) {
+		if (item.is(ItemTypes.Categories.CONSUMABLE, ItemTypes.SubCategories.INSTANT_USE)) {
 			UISystem.log(`${this} uses ${item.text.name}.`);
 
 			let healthUpdateAnim = this.updateHP(item.values.restore, item.id);
@@ -306,7 +306,7 @@ class BaseActor extends Entity {
 				UISystem.log(`Nothing happens.`);
 			}
 
-		} else if (item.category == ItemTypes.Categories.CONSUMABLE) {
+		} else if (item.is(ItemTypes.Categories.CONSUMABLE)) {
 			// nothing so far
 			// TODO: potions, etc.
 		}

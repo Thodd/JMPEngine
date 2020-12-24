@@ -34,9 +34,16 @@ class WorldScreen extends Screen {
 		this._tileMap.y = 0;
 		this._tileMap.layer = Constants.Layers.TILES;
 
-		const _types = [GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.FLOOR, GameTileTypes.TREE, GameTileTypes.BUSH];
 		this._tileMap.each((tile) => {
-			let tileType = Helper.choose(_types);
+			let rnd = RNG.random();
+			let tileType;
+			if (rnd < 0.05) {
+				tileType = GameTileTypes.TREE;
+			} else if (rnd < 0.1) {
+				tileType = GameTileTypes.BUSH;
+			} else {
+				tileType = GameTileTypes.FLOOR;
+			}
 			tile.setType(tileType);
 		});
 		this._tileMap.get(12,12).setType(GameTileTypes.TREE);
@@ -62,7 +69,7 @@ class WorldScreen extends Screen {
 		PlayerState.setCurrentGameController(this._gameController);
 
 		// some enemies
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 5; i++) {
 			let EnemyClass = Helper.choose([Snake, Wolf]);
 			this.enemy = new EnemyClass({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);

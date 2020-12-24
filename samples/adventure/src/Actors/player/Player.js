@@ -114,7 +114,8 @@ class Player extends BaseActor {
 		if (items.length > 0) {
 			// process items
 			for (let item of items) {
-				if (item.category == ItemTypes.Categories.INSTANT_USE) {
+				// consume instant use items
+				if (item.is(ItemTypes.Categories.CONSUMABLE, ItemTypes.SubCategories.INSTANT_USE)) {
 					this.useItem(item);
 				}
 				// TODO: Place everything else in your backpack
