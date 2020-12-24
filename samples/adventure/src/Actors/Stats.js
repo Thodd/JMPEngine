@@ -1,8 +1,8 @@
 class Stats {
 	constructor(changeCallback) {
 		this._changeCallback = changeCallback;
-		this._hp_max = 3;
-		this._hp = 3;
+		this._hp_max = 2;
+		this._hp = 2;
 
 		// speed & energy
 		// speed == energy consumption per turn

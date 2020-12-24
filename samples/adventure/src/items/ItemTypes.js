@@ -119,10 +119,10 @@ _create({
 	id: "FANGS",
 	category: categories.WEAPON,
 	subCategory: subCategories.MELEE,
-	sprite: 80, // "?" sprite
+	sprite: 81, // mystery sprite
 	text: {
 		name: "fangs",
-		flavor: "Don't bite of more than you can chew!"
+		flavor: "Don't bite off more than you can chew!"
 	},
 	values: {
 		dmg: 1,
@@ -133,7 +133,7 @@ _create({
 	id: "CLAWS",
 	category: categories.WEAPON,
 	subCategory: subCategories.MELEE,
-	sprite: 80, // "?" sprite
+	sprite: 81, // mystery sprite
 	text: {
 		name: "a set of claws",
 		flavor: "Don't get caught by those!"

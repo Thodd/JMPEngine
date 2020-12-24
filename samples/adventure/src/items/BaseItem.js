@@ -43,7 +43,7 @@ class BaseItem extends Entity {
 			// remove from old tile (if dropped already)
 			this.removeFromTile();
 			// connect to the tile instance
-			tile.dropItem(this);
+			tile.addItem(this);
 		} else {
 			fail(`Item '${this.type.id}' cannot be moved to unknown tile!`, "BaseItem");
 		}

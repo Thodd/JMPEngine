@@ -45,6 +45,10 @@ class Tile {
 		return this.y * this.tilemap._tileHeight;
 	}
 
+	getTilemap() {
+		return this.tilemap;
+	}
+
 	/**
 	 * Sets the tile ID for this instance.
 	 * @param {number} [id=-1] the tile ID which should be set. If none given the tile is cleared (tileID = -1)

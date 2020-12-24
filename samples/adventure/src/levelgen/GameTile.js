@@ -44,19 +44,17 @@ class GameTile extends Tile {
 	}
 
 	/**
-	 * Drops the given ItemEntity instance on the tile
+	 * Drops a NEW instance of the given ItemType on the tile.
 	 * @param {BaseItem} item the item entity instance to drop
 	 */
-	dropItem(item) {
-		// track item on the tile
-		if (item && item.gameTile == null) {
-			this._items.push(item);
-			item._setTile(this);
-		}
+	dropNewItem(itemType) {
+		let item = ItemPool.get(itemType);
+		this.addItem(item);
+		this.tilemap.getScreen().add(item);
 	}
 
 	/**
-	 *
+	 * Removes the given BaseItem instance from this tile.
 	 * @param {BaseItem} item the item to remove from the tile
 	 */
 	removeItem(item) {
@@ -67,6 +65,17 @@ class GameTile extends Tile {
 			item.gameTile = null;
 		}
 		return item;
+	}
+
+	/**
+	 * Adds the given BaseItem instance to this tile.
+	 * @param {BaseItem} item item instance to be added to this tile
+	 */
+	addItem(item) {
+		if (item && item.gameTile == null) {
+			this._items.push(item);
+			item._setTile(this);
+		}
 	}
 
 	/**
@@ -169,20 +178,10 @@ class GameTile extends Tile {
 	 * Drops a random standard Item on the tile.
 	 */
 	dropStandardLoot() {
-		let item;
-
 		// Drop some random loot
 		let dropProb = RNG.random();
 		if (dropProb <= 0.2) {
-			item = ItemPool.get(Helper.choose([ItemTypes.HEART_SMALL, ItemTypes.HEART_BIG]));
-		}
-
-		if (item) {
-			// place item on tile
-			this.dropItem(item);
-
-			// add to screen for rendering
-			this.tilemap.getScreen().add(item);
+			this.dropNewItem(Helper.choose([ItemTypes.HEART_SMALL, ItemTypes.HEART_BIG]));
 		}
 	}
 }
