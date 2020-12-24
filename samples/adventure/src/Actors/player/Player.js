@@ -89,6 +89,14 @@ class Player extends BaseActor {
 		return PlayerState.stats;
 	}
 
+	/**
+	 * The Player's backpack is stored in a separate class.
+	 * The Player class is stateless and reused for all controllable Actors.
+	 */
+	getBackpack() {
+		return PlayerState.backpack;
+	}
+
 	update() {
 		if (PlayerState.yourTurn) {
 			// wait one turn

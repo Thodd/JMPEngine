@@ -24,6 +24,7 @@ import MovementAnimation from "../animations/MovementAnimation.js";
 import HPUpdateAnimation from "../animations/HPUpdateAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
+import Backpack from "../items/Backpack.js";
 
 let _ID = 0;
 
@@ -54,6 +55,9 @@ class BaseActor extends Entity {
 		// default stats
 		this._stats = new Stats();
 
+		// inventory
+		this._backpack = new Backpack();
+
 		// holds information about things that happend since the last turn of this actor
 		// can be used by other actors to store some information, which this AI might need
 		this._sinceLastTurn = {};
@@ -77,11 +81,19 @@ class BaseActor extends Entity {
 	}
 
 	/**
-	 * Returns the current stat object of this actor.
+	 * Returns the Stats object of this actor.
 	 * Contains HP etc.
 	 */
 	getStats() {
 		return this._stats;
+	}
+
+	/**
+	 * Returns the Backpack object of the actor.
+	 * Contains Items, Equipment, etc.
+	 */
+	getBackpack() {
+		return this._backpack;
 	}
 
 	/**

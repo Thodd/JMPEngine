@@ -20,20 +20,16 @@ class ItemType {
 		}
 		this.values = spec.values || {};
 
+		// weapons are equippable
+		// TODO: other categories, e.g. CONSUMABLES ?
+		this.isEquippable = spec.category == categories.WEAPON;
+
 		// just a fail safe for messing up during coding... :)
 		if (this.id === "UNKOWN") {
 			fail(`Broken Item created ${spec.id || this.id}!`, "ItemPool");
 		}
 
 		_types[spec.id] = this;
-	}
-
-	/**
-	 * Retrieves the given ItemType by name.
-	 * @param {string} s the item type name
-	 */
-	get(s) {
-		return this.values[s];
 	}
 
 	/**
@@ -117,8 +113,36 @@ _create({
 });
 
 /**
- * WEAPON
+ * WEAPONS
  */
+_create({
+	id: "FANGS",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 80, // "?" sprite
+	text: {
+		name: "fangs",
+		flavor: "Don't bite of more than you can chew!"
+	},
+	values: {
+		dmg: 1,
+		acc: 0.9
+	}
+})
+_create({
+	id: "CLAWS",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 80, // "?" sprite
+	text: {
+		name: "a set of claws",
+		flavor: "Don't get caught by those!"
+	},
+	values: {
+		dmg: 2,
+		acc: 0.7
+	}
+});
 _create({
 	id: "KNIFE",
 	category: categories.WEAPON,

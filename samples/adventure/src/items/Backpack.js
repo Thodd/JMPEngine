@@ -8,6 +8,13 @@ class Backpack {
 	constructor() {
 		// we store items by their category for easier sorting and rendering
 		this._itemsByCategory = {};
+
+		// equipment is split into different "slots"
+		this._equiped = {
+			"melee": null,
+			"ranged": null,
+			"quick": null
+		};
 	}
 
 	/**
@@ -24,6 +31,14 @@ class Backpack {
 	 */
 	getAllItemsByCategory() {
 		return this._itemsByCategory;
+	}
+
+	/**
+	 * Returns the item quipped in the given slot.
+	 * @param {string} slot slot name
+	 */
+	getItemFromSlot(slot) {
+		return this._equiped[slot];
 	}
 
 	/**
@@ -50,10 +65,48 @@ class Backpack {
 		if (cat[type.id] > 0) {
 			cat[type.id]--;
 		} else {
-			warn(`No item of type '${type.id}' found in backpack`, "Backpack");
+			// TODO: this log happens for initial weapons...
+			// warn(`No item of type '${type.id}' found in backpack`, "Backpack");
 		}
 
 		return type;
+	}
+
+	equipItem(type, slot) {
+		if (type.isEquippable) {
+			// first remove the item from the backpack
+			this.removeItem(type);
+
+			// check if current item needs to be unequipped
+			let currentItem = this._equiped[slot];
+			if (currentItem) {
+				this.unequip(slot);
+			}
+
+			// and now equip the new item
+			this._equiped[slot] = type;
+		} else {
+			warn(`${type.id} cannot be equipped.`, "Backpack");
+		}
+	}
+
+	/**
+	 * Unequips the item in the given slot.
+	 * Unequipping works a bit different than equipping.
+	 * You don't need an item but just need to know the slot you are unequipping.
+	 * Item will be placed in the Backpack.
+	 * @param {string} slot The slot to unequip
+	 */
+	unequip(slot) {
+		// For now we can only unequip weapons
+		// TODO: QuickSlot Items
+		let currentItem = this._equiped[slot];
+
+		if (currentItem) {
+			this.addItem(currentItem);
+		}
+
+		this._equiped[slot] = null;
 	}
 }
 

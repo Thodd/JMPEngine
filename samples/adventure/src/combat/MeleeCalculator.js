@@ -2,29 +2,25 @@ import RNG from "../../../../src/utils/RNG.js";
 
 const MeleeCalculator = {
 	battle(attacker, defender) {
-		let dmg = 0;
-		let hit = false;
+		let result = {
+			defenderWasHit: false,
+			damage: 0,
+			defenderDies: false
+		};
 
-		// every attack has at least 10% hit chance
-		let baseProbability = 0.1;
+		let attackWeapon = attacker.getBackpack().getItemFromSlot("melee");
 
-		let attackerStats = attacker.getStats();
-		let defenderStats = defender.getStats();
+		if (attackWeapon) {
+			let battleValues = attackWeapon.values;
 
-		// at least 10% hit chance, maximum 98% (so even the best attacker might miss sometimes)
-		let hitProbability = Math.min(Math.min(baseProbability + (attackerStats.atk / defenderStats.def), 1), 0.98);
-
-		// if the attacker hits, at least 1 dmg is dealt to the defender
-		if (RNG.random() < hitProbability) {
-			hit = true;
-			dmg = Math.max(1, attackerStats.atk - defenderStats.def);
+			// if the attacker hits, at least 1 dmg is dealt to the defender
+			if (RNG.random() < battleValues.acc) {
+				result.defenderWasHit = true;
+				result.damage = battleValues.dmg;
+			}
 		}
 
-		return {
-			defenderWasHit: hit,
-			damage: dmg,
-			defenderDies: defenderStats.hp - dmg <= 0 // defender dies when the dmg would reduce its HP to 0 or lower
-		}
+		return result;
 	}
 };
 

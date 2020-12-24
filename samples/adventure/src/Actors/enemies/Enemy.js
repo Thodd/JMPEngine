@@ -1,5 +1,7 @@
 import BaseActor from "../BaseActor.js";
 
+import ItemTypes from "../../items/ItemTypes.js";
+
 /**
  * @abstract
  */
@@ -10,6 +12,10 @@ class Enemy extends BaseActor {
 
 		this.name = "Enemy#" + this._ID;
 		this.nameColor = "#be2632";
+
+		// equip default weapon
+		let weapon = ItemTypes.FANGS;
+		this.getBackpack().equipItem(weapon, weapon.subCategory);
 	}
 
 	/**

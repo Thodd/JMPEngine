@@ -27,20 +27,6 @@ class Snake extends Enemy {
 		});
 	}
 
-	/**
-	 * Turn taking logic
-	 */
-	takeTurn() {
-		let player = this.getPlayer();
-
-		// wander around and attack the player if they come to close
-		if (this.isStandingAdjacent(player)) {
-			this.meleeAttackActor(player);
-		} else {
-			this.makeRandomMove();
-		}
-	}
-
 }
 
 export default Snake;
