@@ -18,7 +18,7 @@ class BaseMap extends Screen {
 		// RNG seeding
 		let seed = 12345678;
 		RNG.seed(seed);
-		UISystem.showSeed(seed);
+		UISystem.log(`New World generated using seed: <span style='color:#FF0085'>${seed}</span>.`);
 
 		// creation lifecycle
 		this.initTilemap(tilemapSpec);

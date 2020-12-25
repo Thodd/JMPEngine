@@ -32,6 +32,10 @@ class ItemType {
 		_types[spec.id] = this;
 	}
 
+	toString() {
+		return `<span style='color: #FFFF00'>${this.text.name}</span>`;
+	}
+
 	/**
 	 * Checks the given ItemType if it fits into the given categories
 	 * @param {ItemType} item the ItemType
@@ -80,7 +84,7 @@ _types.Categories = categories;
 _types.SubCategories = subCategories;
 
 /**
- * INSTANT_USE
+ * CONSUMABLES -> INSTANT_USE
  */
 _create({
 	id: "HEART_SMALL",

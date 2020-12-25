@@ -5,10 +5,7 @@ import HealthBar from "./HealthBar.js";
 const _dom = {
 	stats:   document.getElementById("adv_stats"),
 	hp:      document.getElementById("adv_stats_hp"),
-	atk:     document.getElementById("adv_stats_atk"),
-	def:     document.getElementById("adv_stats_def"),
-	history: document.querySelector("#adv_history .wnd_content"),
-	seed:    document.getElementById("adv_map_seed"),
+	history: document.querySelector("#adv_history .wnd_content")
 };
 
 
@@ -28,6 +25,7 @@ function log(msg) {
 	let newMsg;
 	if (maxMsgs < 0) {
 		newMsg = _dom.history.firstElementChild;
+		_dom.history.removeChild(newMsg);
 	} else {
 		newMsg = document.createElement("p");
 	}
@@ -55,12 +53,8 @@ function updatePlayerStats(stats) {
 	// _dom.def.textContent = `DEF: ${stats.def}`;
 }
 
-function showSeed(s) {
-	_dom.seed.textContent = ` (seed: ${s})`;
-}
 
 export default {
 	log: log,
-	updatePlayerStats: updatePlayerStats,
-	showSeed
+	updatePlayerStats: updatePlayerStats
 };

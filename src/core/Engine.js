@@ -205,6 +205,7 @@ function setupDebugUI() {
 		if (!dbg) {
 			dbg = document.createElement("div");
 			dbg.id = "__debugUI";
+			document.body.appendChild(dbg);
 		}
 
 		// stats

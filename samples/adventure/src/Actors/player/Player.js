@@ -17,6 +17,7 @@ import Enemy from "../enemies/Enemy.js";
 
 // own stuff
 import PlayerState from "./PlayerState.js";
+import UISystem from "../../ui/UISystem.js";
 
 /**
  * Entity representation of the Player.
@@ -117,16 +118,22 @@ class Player extends BaseActor {
 	 * Check if an item can be picked up.
 	 */
 	grabItems() {
+		// Picking items off the tile releases the BaseItem render entities ot the Pool
 		let items = this.gameTile.pickupItems();
 
 		if (items.length > 0) {
+			let backpack = this.getBackpack();
+
 			// process items
 			for (let item of items) {
 				// consume instant use items
 				if (item.is(ItemTypes.Categories.CONSUMABLE, ItemTypes.SubCategories.INSTANT_USE)) {
 					this.useItem(item);
+				} else {
+					// store everything else in the backpack
+					backpack.addItem(item);
+					UISystem.log(`${this} places ${item} in their backpack.`);
 				}
-				// TODO: Place everything else in your backpack
 			}
 			PlayerState.endTurn();
 		}

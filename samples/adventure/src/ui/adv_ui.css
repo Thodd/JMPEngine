@@ -2,25 +2,27 @@ body {
 	background: #222222;
 	color: #ffffff;
 	text-shadow: 1px 1px 0px #000000;
+	user-select: none;
 }
 
-.hidden {
-	display: none;
+p {
+	margin: 1px;
+	padding: 2px;
 }
+
+/* Containers */
 
 .wnd_title {
 	color: #eb8d2f;
+	background: #111111;
+	text-align: center;
+	border-bottom: 1px solid #2d2d2d;
 	text-shadow: 0px 0px 2px #c56d00;
 	font-size: 12px;
 	height: 17px;
 	margin-bottom: 3px;
 	padding-left: 2px;
 	padding-top: 3px;
-	user-select: none;
-}
-p {
-	margin: 1px;
-	padding: 2px;
 }
 
 .wnd_container {
@@ -42,10 +44,34 @@ p {
 	margin-bottom: -3px;
 }
 
+/* General */
+.hidden {
+	display: none;
+}
+
+.even {
+	background: #252525;
+	border-bottom: 1px solid #2d2d2d;
+}
+
+.row {
+	width: 100%;
+	display: flex;
+}
+
+.cell {
+	display: flex;
+	float: left;
+}
+
+.cell .content {
+	margin: auto;
+}
+
 /* Initial Positioning of Windows */
 #adv_map {
 	left: 10px;
-	top: 100px;
+	top: 92px;
 }
 
 #adv_stats {
@@ -57,26 +83,36 @@ p {
 
 #adv_history {
 	left: 10px;
-	top: 447px;
+	top: 408px;
 
 	width: 420px;
 }
 
+#adv_equipment {
+	left: 445px;
+	top: 60px;
+
+	height: 100px;
+	width: 300px;
+}
+
+#adv_backpack {
+	left: 445px;
+	top: 176px;
+
+	height: 400px;
+	width: 300px;
+}
+
 #adv_dbg {
 	left: 460px;
-	top: 60px;
+	top: 600px;
 }
 
 /* Log UI */
 #adv_history .wnd_content {
-	height: 80px; /* 5 lines */
-	user-select: none;
+	height: 144px; /* 5 lines */
 	overflow-y: scroll;
-}
-
-.wnd_content p.even {
-	background: #252525;
-	border-bottom: 1px solid #2d2d2d;
 }
 
 /* Stats & Health */
@@ -113,4 +149,39 @@ p {
 
 	text-align: center;
 	margin-top: -1px;
+}
+
+/* Backpack */
+#adv_backpack .wnd_content {
+	overflow: scroll;
+}
+
+.adv_backpack_entry {
+	background: #252525;
+	border-bottom: 1px solid #2d2d2d;
+
+}
+
+.adv_backpack_entry:hover {
+	background: #333333;
+	border-color: #000000;
+}
+
+.adv_backpack_entry .cell {
+	height: 32px;
+	margin: 2px;
+}
+
+.adv_backpack_entry .container .content {
+	margin: auto;
+}
+
+/* amount & icon */
+.adv_backpack_entry .amount, .adv_backpack_entry .icon {
+	width: 32px;
+}
+
+/* item name */
+.adv_backpack_entry .itemName {
+	width: 126px;
 }

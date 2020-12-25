@@ -20,8 +20,8 @@
 	<body>
 		<!-- map, main game screen -->
 		<div id="adv_map" class="wnd_container">
-			<div class="wnd_title">
-				:: Map <span id="adv_map_seed">#</span>
+			<div class="wnd_title hidden">
+				Map <span id="adv_map_seed">#</span>
 			</div>
 			<div id="adv_game" class="wnd_content">
 
@@ -31,7 +31,7 @@
 		<!-- player stats -->
 		<div id="adv_stats" class="wnd_container">
 			<div class="wnd_title hidden">
-				:: Stats
+				Stats
 			</div>
 			<div class="wnd_content">
 				<div>
@@ -46,17 +46,89 @@
 		<!-- history messages -->
 		<div id="adv_history" class="wnd_container">
 			<div class="wnd_title">
-				:: History
+				History
 			</div>
 			<div class="wnd_content">
-				<p class="even">Roguelike</p>
+				<p class="even">Web Adventures!</p>
+			</div>
+		</div>
+
+		<!-- Equipment -->
+		<div id="adv_equipment" class="wnd_container">
+			<div class="wnd_title">Equipment</div>
+			<div class="wnd_content">
+				<div class="row">
+					<div class="cell">Melee:</div>
+					<div class="cell">a Knife</div>
+				</div>
+				<div class="row">
+					<div class="cell">Ranged:</div>
+					<div class="cell">a Bow</div>
+				</div>
+				<div class="row">
+					<div class="cell">Quick-Use:</div>
+					<div class="cell">Health-Potion +2</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Backpack -->
+		<div id="adv_backpack" class="wnd_container">
+			<div class="wnd_title">
+				Backpack
+			</div>
+			<div class="wnd_content">
+				<div class="adv_backpack_entry row">
+					<div class="amount cell">
+						<div class="content">2x</div>
+					</div>
+					<div class="icon cell">
+						<div class="content">/</div>
+					</div>
+					<div class="itemName cell">
+						<div class="content">Knife</div>
+					</div>
+					<div class="actionButtons cell">
+						<div class="content">[A] [B] [C]</div>
+					</div>
+				</div>
+
+				<div class="adv_backpack_entry row">
+					<div class="amount cell">
+						<div class="content">9x</div>
+					</div>
+					<div class="icon cell">
+						<div class="content">$</div>
+					</div>
+					<div class="itemName cell">
+						<div class="content">some cash</div>
+					</div>
+					<div class="actionButtons cell">
+						<div class="content">[A] [B] [C]</div>
+					</div>
+				</div>
+
+				<div class="adv_backpack_entry row">
+					<div class="amount cell">
+						<div class="content">1x</div>
+					</div>
+					<div class="icon cell">
+						<div class="content">:3</div>
+					</div>
+					<div class="itemName cell">
+						<div class="content">UwU</div>
+					</div>
+					<div class="actionButtons cell">
+						<div class="content">[A] [B] [C]</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<!-- debug -->
 		<div id="adv_dbg" class="wnd_container">
 			<div class="wnd_title">
-				:: dbg
+				dbg
 			</div>
 			<div class="wnd_content" id="__jmp_debugUI">
 			</div>
