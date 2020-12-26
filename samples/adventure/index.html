@@ -19,21 +19,15 @@
 	</head>
 	<body>
 		<!-- map, main game screen -->
-		<div id="adv_map" class="wnd_container">
-			<div class="wnd_title hidden">
-				Map <span id="adv_map_seed">#</span>
-			</div>
+		<div id="adv_map" class="wnd_container noTitle">
 			<div id="adv_game" class="wnd_content">
 
 			</div>
 		</div>
 
 		<!-- player stats -->
-		<div id="adv_stats" class="wnd_container">
-			<div class="wnd_title hidden">
-				Stats
-			</div>
-			<div class="wnd_content">
+		<div id="adv_stats" class="wnd_container noTitle">
+			<div class="wnd_content noScroll">
 				<div>
 					<div class="labelText">HP:</div>
 					<div id="adv_stats_hp"></div>
@@ -78,48 +72,18 @@
 				Backpack
 			</div>
 			<div class="wnd_content">
-				<div class="adv_backpack_entry row">
-					<div class="amount cell">
-						<div class="content">2x</div>
+				<div class="adv_backpack_entry">
+					<div class="amount column">
+						<div>2x</div>
 					</div>
-					<div class="icon cell">
-						<div class="content">/</div>
+					<div class="icon column">
+						<div>/</div>
 					</div>
-					<div class="itemName cell">
-						<div class="content">Knife</div>
+					<div class="itemName column">
+						<div>Knife</div>
 					</div>
-					<div class="actionButtons cell">
-						<div class="content">[A] [B] [C]</div>
-					</div>
-				</div>
-
-				<div class="adv_backpack_entry row">
-					<div class="amount cell">
-						<div class="content">9x</div>
-					</div>
-					<div class="icon cell">
-						<div class="content">$</div>
-					</div>
-					<div class="itemName cell">
-						<div class="content">some cash</div>
-					</div>
-					<div class="actionButtons cell">
-						<div class="content">[A] [B] [C]</div>
-					</div>
-				</div>
-
-				<div class="adv_backpack_entry row">
-					<div class="amount cell">
-						<div class="content">1x</div>
-					</div>
-					<div class="icon cell">
-						<div class="content">:3</div>
-					</div>
-					<div class="itemName cell">
-						<div class="content">UwU</div>
-					</div>
-					<div class="actionButtons cell">
-						<div class="content">[A] [B] [C]</div>
+					<div class="actionButtons column">
+						<div>[A] [B] [C]</div>
 					</div>
 				</div>
 			</div>

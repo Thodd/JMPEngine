@@ -30,7 +30,7 @@ class Player extends BaseActor {
 		super({gameTile});
 
 		this.name = "Thor";
-		this.nameColor = "#a4ce26";
+		this.nameColor = "#0253b7";
 
 		this.isPlayer = true;
 

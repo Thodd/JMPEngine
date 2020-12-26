@@ -33,7 +33,7 @@ class ItemType {
 	}
 
 	toString() {
-		return `<span style='color: #FFFF00'>${this.text.name}</span>`;
+		return `<span style='color: #FF00FF'>${this.text.name}</span>`;
 	}
 
 	/**

@@ -1,7 +1,5 @@
 import Enemy from "./Enemy.js";
 
-import ItemTypes from "../../items/ItemTypes.js";
-
 class Wolf extends Enemy {
 	constructor({gameTile}) {
 		super({gameTile});
@@ -12,10 +10,6 @@ class Wolf extends Enemy {
 		stats.hp_max = 3;
 		stats.hp = 3;
 		stats.speed = 80; // a wolf is a bit slower than the player, this allows the player to run away
-
-		// equip weapon
-		let weapon = ItemTypes.FANGS;
-		this.getBackpack().equipItem(weapon, weapon.subCategory);
 
 		this.configSprite({
 			sheet: "enemies",

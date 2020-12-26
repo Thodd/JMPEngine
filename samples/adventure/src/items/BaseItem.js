@@ -71,6 +71,10 @@ class BaseItem extends Entity {
 		let sprId = this.type.sprite || 0;
 		this.configSprite({
 			sheet: "items",
+			offset: {
+				x: 0,
+				y: -2
+			},
 			animations: {
 				default: "blink",
 				blink: {

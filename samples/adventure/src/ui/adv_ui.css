@@ -1,7 +1,7 @@
 body {
-	background: #222222;
-	color: #ffffff;
-	text-shadow: 1px 1px 0px #000000;
+	background: #316fbb;
+	color: #000000;
+	text-shadow: 1px 1px 0px #e1efff;
 	user-select: none;
 }
 
@@ -13,11 +13,15 @@ p {
 /* Containers */
 
 .wnd_title {
-	color: #eb8d2f;
-	background: #111111;
+	font-family: sans-serif;
+
+	color: #ffffff;
+	text-shadow: 0px 0px 2px #000000;
+
+	background: #0253b7;
 	text-align: center;
-	border-bottom: 1px solid #2d2d2d;
-	text-shadow: 0px 0px 2px #c56d00;
+	border-bottom: 1px solid #001f46;
+
 	font-size: 12px;
 	height: 17px;
 	margin-bottom: 3px;
@@ -30,14 +34,27 @@ p {
 	top: 0;
 	left: 0;
 
-	background: #1d1d1d;
-	border: 1px solid #444444;
-	box-shadow: 0px 0px 2px #000000;
+	display: grid;
+	grid-template-rows: 24px auto; /* 2 rows: Title, Content */
 
-	color: #dddddd;
-	display: inline-block;
+	background: #e2eaec;
+	border: 1px solid #444444;
+	box-shadow: 1px 1px 0px #002465;
+
 	font-family: monospace;
 	padding: 5px;
+}
+
+.wnd_container.noTitle {
+	grid-template-rows: auto; /* 1 row: Content */
+}
+
+.wnd_content {
+	overflow: scroll;
+}
+
+.wnd_content.noScroll {
+	overflow: hidden;
 }
 
 .wnd_content canvas {
@@ -45,27 +62,14 @@ p {
 }
 
 /* General */
+
 .hidden {
 	display: none;
 }
 
 .even {
-	background: #252525;
-	border-bottom: 1px solid #2d2d2d;
-}
-
-.row {
-	width: 100%;
-	display: flex;
-}
-
-.cell {
-	display: flex;
-	float: left;
-}
-
-.cell .content {
-	margin: auto;
+	background: #e8f1f3;
+	border-bottom: 1px solid #d1ddec;
 }
 
 /* Initial Positioning of Windows */
@@ -112,7 +116,6 @@ p {
 /* Log UI */
 #adv_history .wnd_content {
 	height: 144px; /* 5 lines */
-	overflow-y: scroll;
 }
 
 /* Stats & Health */
@@ -143,6 +146,8 @@ p {
 	top: 0;
 }
 .adv_health_bar_text {
+	color: #ffffff;
+	text-shadow: 1px 1px 0px #000000;
 	font-family: monospace;
 	position: absolute;
 	width: 100%;
@@ -152,24 +157,25 @@ p {
 }
 
 /* Backpack */
-#adv_backpack .wnd_content {
-	overflow: scroll;
+#adv_backpack {
+
 }
 
 .adv_backpack_entry {
-	background: #252525;
-	border-bottom: 1px solid #2d2d2d;
-
+	display: grid;
+	grid-template-columns: 32px 34px auto 100px;
+	column-gap: 2px;
+	grid-template-rows: 34px;
+	border-bottom: 1px solid #d1ddec;
 }
 
 .adv_backpack_entry:hover {
-	background: #333333;
-	border-color: #000000;
+	background: #ebf4ff;
 }
 
-.adv_backpack_entry .cell {
-	height: 32px;
-	margin: 2px;
+.adv_backpack_entry .column {
+	align-self: center;
+	justify-self: center;
 }
 
 .adv_backpack_entry .container .content {
@@ -178,10 +184,10 @@ p {
 
 /* amount & icon */
 .adv_backpack_entry .amount, .adv_backpack_entry .icon {
-	width: 32px;
+
 }
 
 /* item name */
 .adv_backpack_entry .itemName {
-	width: 126px;
+	justify-self: start; /* item text is justified to the left */
 }

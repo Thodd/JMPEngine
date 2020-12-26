@@ -49,8 +49,11 @@ class Backpack {
 		let cat = this.getItemsForCategory(type.category);
 
 		// count the number of items of the given type
-		cat[type.id] = cat[type.id] || 0;
-		cat[type.id]++;
+		cat[type.id] = cat[type.id] || {
+			type: type,
+			amount: 0
+		};
+		cat[type.id].amount++;
 
 		return type;
 	}
@@ -62,8 +65,8 @@ class Backpack {
 	removeItem(type) {
 		let cat = this.getItemsForCategory(type.category);
 
-		if (cat[type.id] > 0) {
-			cat[type.id]--;
+		if (cat[type.id]) {
+			cat[type.id].amount--;
 		} else {
 			// TODO: this log happens for initial weapons...
 			// warn(`No item of type '${type.id}' found in backpack`, "Backpack");
@@ -74,9 +77,6 @@ class Backpack {
 
 	equipItem(type, slot) {
 		if (type.isEquippable) {
-			// first remove the item from the backpack
-			this.removeItem(type);
-
 			// check if current item needs to be unequipped
 			let currentItem = this._equiped[slot];
 			if (currentItem) {

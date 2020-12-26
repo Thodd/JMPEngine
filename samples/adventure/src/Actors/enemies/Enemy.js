@@ -15,6 +15,7 @@ class Enemy extends BaseActor {
 
 		// equip default weapon
 		let weapon = ItemTypes.FANGS;
+		this.getBackpack().addItem(weapon);
 		this.getBackpack().equipItem(weapon, weapon.subCategory);
 	}
 
