@@ -125,7 +125,8 @@ _create({
 	subCategory: subCategories.MELEE,
 	sprite: 81, // mystery sprite
 	text: {
-		name: "fangs",
+		name: "Fangs",
+		innerName: "a pair of fangs",
 		flavor: "Don't bite off more than you can chew!"
 	},
 	values: {
@@ -139,7 +140,8 @@ _create({
 	subCategory: subCategories.MELEE,
 	sprite: 81, // mystery sprite
 	text: {
-		name: "a set of claws",
+		name: "Claws",
+		innerName: "a set of claws",
 		flavor: "Don't get caught by those!"
 	},
 	values: {
@@ -153,12 +155,43 @@ _create({
 	subCategory: subCategories.MELEE,
 	sprite: 53,
 	text: {
-		name: "a knife",
+		name: "Kitchen Knife",
+		innerName: "a kitchen knife",
 		flavor: "Simple but effective. A true classic."
 	},
 	values: {
 		dmg: 1,
 		acc: 1,
+	}
+});
+_create({
+	id: "SPEAR",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 47,
+	text: {
+		name: "Spear",
+		innerName: "a spear",
+		flavor: "The shaft is finely crafted from durable bamboo wood."
+	},
+	values: {
+		dmg: 1.5,
+		acc: 0.85,
+	}
+});
+_create({
+	id: "MACHETE",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 54,
+	text: {
+		name: "Machete",
+		innerName: "a machete",
+		flavor: "A trusty but brutish tool. Can also be used for chopping sugar cane."
+	},
+	values: {
+		dmg: 2,
+		acc: 0.8,
 	}
 });
 

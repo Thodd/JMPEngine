@@ -100,6 +100,9 @@ class Backpack {
 				this.unequip(slot);
 			}
 
+			// remove 1 item from the backpack to equip it
+			this.removeItem(type);
+
 			// and now equip the new item
 			this._equiped[slot] = type;
 
