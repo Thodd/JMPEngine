@@ -46,6 +46,11 @@ const BackpackRenderer = {
 			}
 		}
 
+		// It can happen that the player drops or consumes all items
+		if (!allItemsDOM) {
+			allItemsDOM = "Your backpack is empty.";
+		}
+
 		container.innerHTML = allItemsDOM;
 	}
 }

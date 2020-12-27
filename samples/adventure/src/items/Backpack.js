@@ -75,6 +75,10 @@ class Backpack {
 
 		if (cat[type.id]) {
 			cat[type.id].amount--;
+
+			if (cat[type.id].amount <= 0) {
+				delete cat[type.id];
+			}
 		} else {
 			// TODO: this log happens for initial weapons...
 			// warn(`No item of type '${type.id}' found in backpack`, "Backpack");
