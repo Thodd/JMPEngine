@@ -5,7 +5,10 @@ import { warn } from "../../../../src/utils/Log.js";
  * Keeps track of the inventory content of an actor
  */
 class Backpack {
-	constructor() {
+	constructor(changeListeners) {
+		// if none are given, the changes are not listened to
+		this._changeListeners = changeListeners || {};
+
 		// we store items by their category for easier sorting and rendering
 		this._itemsByCategory = {};
 
@@ -55,6 +58,11 @@ class Backpack {
 		};
 		cat[type.id].amount++;
 
+		// notify listeners for item change
+		if (this._changeListeners.onItemChange) {
+			this._changeListeners.onItemChange(type);
+		}
+
 		return type;
 	}
 
@@ -72,6 +80,11 @@ class Backpack {
 			// warn(`No item of type '${type.id}' found in backpack`, "Backpack");
 		}
 
+		// notify listeners for item change
+		if (this._changeListeners.onItemChange) {
+			this._changeListeners.onItemChange(type);
+		}
+
 		return type;
 	}
 
@@ -85,6 +98,12 @@ class Backpack {
 
 			// and now equip the new item
 			this._equiped[slot] = type;
+
+			// notify listeners for equipment change
+			if (this._changeListeners.onEquipmentChange) {
+				this._changeListeners.onEquipmentChange(slot, type);
+			}
+
 		} else {
 			warn(`${type.id} cannot be equipped.`, "Backpack");
 		}
@@ -107,6 +126,11 @@ class Backpack {
 		}
 
 		this._equiped[slot] = null;
+
+		// notify listeners for equipment change
+		if (this._changeListeners.onEquipmentChange) {
+			this._changeListeners.onEquipmentChange(slot);
+		}
 	}
 }
 

@@ -51,17 +51,14 @@ function log(msg) {
 function updatePlayerStats(stats) {
 	playerHealthBar.setMaxValue(stats.hp_max);
 	playerHealthBar.setValue(stats.hp);
-	//_dom.hp.textContent = `HP : ${stats.hp}/${stats.hp_max}`;
-	// _dom.atk.textContent = `ATK: ${stats.atk}`;
-	// _dom.def.textContent = `DEF: ${stats.def}`;
 }
 
 
 const _api = {
 	log: log,
-	updatePlayerStats: updatePlayerStats,
-	renderBackpack: () => {
-		BackpackRenderer.render(_dom.backpack);
+	renderPlayerStats: updatePlayerStats,
+	renderBackpackContent: (backpack) => {
+		BackpackRenderer.renderBackpackContent(backpack, _dom.backpack);
 	}
 };
 

@@ -170,7 +170,8 @@ p {
 }
 
 .adv_backpack_entry:hover {
-	background: #ebf4ff;
+	background: #cde4ff;
+	border-bottom: 1px solid #316fbb;
 }
 
 .adv_backpack_entry .column {
@@ -182,12 +183,17 @@ p {
 	margin: auto;
 }
 
-/* amount & icon */
-.adv_backpack_entry .amount, .adv_backpack_entry .icon {
-
+/* amount is aligend to the right */
+.adv_backpack_entry .amount {
+	justify-self: self-end;
 }
 
-/* item name */
+.adv_backpack_entry .icon {
+	width: 24px;
+	height: 24px;
+}
+
+/* item text is justified to the left */
 .adv_backpack_entry .itemName {
-	justify-self: start; /* item text is justified to the left */
+	justify-self: start;
 }

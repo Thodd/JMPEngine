@@ -14,10 +14,12 @@ function process(allSheets, pixiResources) {
 		let sheetDef = allSheets[sheetName];
 
 		// track _sheets internally (don't modify allSheets!)
+		let rawPixiResource = pixiResources[sheetName];
 		let sheet = _sheets[sheetName] = {
 			name: sheetName,
-			orgTexture: pixiResources[sheetName].texture,
-			textures: []
+			orgTexture: rawPixiResource.texture,
+			textures: [],
+			rawImage: rawPixiResource.data
 		};
 
 		// w/h are the size of a single frame, if none given we assume the full size should be used

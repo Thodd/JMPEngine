@@ -7,9 +7,19 @@ import Backpack from "../../items/Backpack.js";
 import Stats from "../Stats.js";
 import ItemTypes from "../../items/ItemTypes.js";
 
-// Callback for chaning the player's stats
+// Callback for changing the player's stats  -->  updates UI
 const _stats = new Stats(function() {
-	UISystem.updatePlayerStats(_stats);
+	UISystem.renderPlayerStats(_stats);
+});
+
+// Callback for changing Backpack Content --> updates UI
+const _backpack = new Backpack({
+	onItemChange: function() {
+		UISystem.renderBackpackContent(_backpack);
+	},
+	onEuqipmentChange: function() {
+		// TODO: Re-Render Equipment slots
+	}
 });
 
 // default stats of the player are different from the BaseActor's stats
@@ -27,7 +37,7 @@ let _gc = null;
  * e.g. stats like health or the inventory.
  */
 const PlayerState = {
-	backpack: new Backpack(),
+	backpack: _backpack,
 	stats: _stats,
 
 	/**
@@ -59,7 +69,6 @@ const PlayerState = {
 	takeTurn() {
 		// GC has passed us priority so we activate input check during the game loop
 		PlayerState.yourTurn = true;
-		log("taking turn - waiting for input", "Player");
 	},
 
 	endTurn() {

@@ -330,19 +330,22 @@ const Engine = {
 		log("Gameloop started.", "Engine");
 
 		// preload built-in assets e.g. font0 and font1
+		log("Preloading built-in assets ...", "Engine");
 		await AssetLoader.load(BuiltInAssets);
 
 		// Now we do some parallel stuff while the intro screen is showing.
 		// All of which involves additional resource requests:
 		//   1. show the intro screen, since the gameloop is already running we can see stuff on screen
-		//   2. loading the manifest defined assets
+		//   2. loading the game assets defined in the manifest.json
 		//   3. loading the start screen class
 		let parallel = [];
 
 		// show intro screen (instantly resolves if skipped via manifest configuration)
 		parallel.push(getIntroScreen());
 
+		// Now load the game assets...
 		// the AssetLoader will enhance the _manifestObject with the loaded resources
+		log(`Preloading '${Manifest.get("/title") || "unknown"}' assets ...`, "Engine");
 		parallel.push(AssetLoader.load(Manifest.get("/assets")));
 
 		// import StartScreen class module (defaults to the Screen class)
