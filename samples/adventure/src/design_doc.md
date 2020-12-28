@@ -3,7 +3,9 @@
 |------------------------|-------------------------|
 | Adventurer             | 10% accuracy increase with melee weapons.    |
 | Soldier of Fortune     | 10% accuracy increase with ranged weapons.   |
-| Scientist              | 50% more health gain with potions & pickups. |
+| Scout                  | Good Hearing. See Enemies behind Fog of War. |
+| Hermit                 | Consume 10% less ammo. |
+| Scientist              | 50% more potion efficiency. |
 
 
 # Enemies
