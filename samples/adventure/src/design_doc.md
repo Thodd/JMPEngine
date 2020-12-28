@@ -37,8 +37,8 @@
 | Hatchet                     |   1.25 |  95% | Good weapon.                                      |
 | Metal-Rod                   |   1.25 |  95% | Basic weapon, very easy to use.        |
 | Spear                       |   1.5  |  90% | Hunting weapon. |
-| Machete                     |   2    |  80% | Good melee weapon, but harder to use than a simple knife. |
-| Axe                         |   2.5  |  70% | Yup.                                 |
+| Machete                     |   2    |  85% | Good melee weapon, but harder to use than a simple knife. |
+| Axe                         |   2.5  |  80% | Yup.                                 |
 
 ## Ranged
 

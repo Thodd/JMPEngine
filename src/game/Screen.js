@@ -164,6 +164,7 @@ class Screen {
 			}
 			this._toBeAdded.push(e);
 			e._isScheduledForAdding = true;
+			e._screen = this;
 
 			// add to type mapping
 			if (e._types) {
@@ -189,13 +190,15 @@ class Screen {
 		// check if already scheduled for adding
 		let isScheduled = e._isScheduledForRemoval;
 
-		if (e._screen == this && !e._isScheduledForRemoval) {
+		if (e._screen == this && !isScheduled) {
 			if (e._isScheduledForAdding) {
 				Helper.remove(e, this._toBeAdded);
 				e._isScheduledForAdding = false;
 			}
 			this._toBeRemoved.push(e);
 			e._isScheduledForRemoval = true;
+			e._screen = null;
+
 			if (e._types) {
 				this._entityTypeStore.remove(e);
 			}
@@ -394,7 +397,7 @@ class Screen {
 		for (let i = 0; i < lenA; i++) {
 			let ea = curA[i];
 			this._entities.push(ea);
-			ea._screen = this;
+			//ea._screen = this;
 
 			// @PIXI: Add entity sprite from the container of the Screen (in case it was not already added)
 			let layer = this._layers[ea.layer];
@@ -421,7 +424,7 @@ class Screen {
 		for (let j = 0; j < lenR; j++) {
 			let er = curR[j];
 			Helper.remove(er, this._entities);
-			er._screen = null;
+			//er._screen = null;
 
 			// @PIXI: remove entity's sprite from the container of the Screen
 			let layer = this._layers[er.layer];

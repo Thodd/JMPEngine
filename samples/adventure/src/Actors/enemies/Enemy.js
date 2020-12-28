@@ -1,3 +1,5 @@
+import Constants from "../../Constants.js";
+
 import BaseActor from "../BaseActor.js";
 
 import ItemTypes from "../../items/ItemTypes.js";
@@ -16,7 +18,7 @@ class Enemy extends BaseActor {
 		// equip default weapon
 		let weapon = ItemTypes.FANGS;
 		this.getBackpack().addItem(weapon);
-		this.getBackpack().equipItem(weapon, weapon.subCategory);
+		this.getBackpack().equipItem(weapon, Constants.EquipmentSlots.MELEE);
 	}
 
 	/**

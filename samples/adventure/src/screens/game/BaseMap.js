@@ -3,13 +3,13 @@ import Tilemap from "../../../../../src/game/Tilemap.js";
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 import RNG from "../../../../../src/utils/RNG.js";
 
+import UISystem from "../../ui/UISystem.js";
+
 import GameController from "../../controller/GameController.js";
 import Player from "../../actors/player/Player.js";
 import PlayerState from "../../actors/player/PlayerState.js";
 
 import Constants from "../../Constants.js";
-
-import UISystem from "../../ui/UISystem.js";
 
 class BaseMap extends Screen {
 	constructor(tilemapSpec) {
@@ -66,6 +66,10 @@ class BaseMap extends Screen {
 		// Create Player instance
 		this._player = new Player({gameTile: this._tileMap.get(0, 0)});
 		this.add(this._player);
+
+		// initialize the global PlayerState singleton
+		// This happens always, but the class itself is guarded against multiple initializations
+		PlayerState.init();
 
 		// game controller
 		this._gameController = new GameController(this);

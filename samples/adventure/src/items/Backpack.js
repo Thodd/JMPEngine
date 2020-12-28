@@ -16,11 +16,7 @@ class Backpack {
 		this._itemsByCategory = {};
 
 		// equipment is split into different "slots"
-		this._equiped = {
-			"melee": null,
-			"ranged": null,
-			"quick": null
-		};
+		this._equiped = {};
 	}
 
 	/**
@@ -110,7 +106,7 @@ class Backpack {
 	}
 
 	equipItem(type, slot) {
-		if (type.isEquippable) {
+		if (type.isEquippableAs(slot)) {
 			// check if current item needs to be unequipped
 			let currentItem = this._equiped[slot];
 			if (currentItem) {

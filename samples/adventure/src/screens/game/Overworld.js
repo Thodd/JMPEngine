@@ -10,6 +10,7 @@ import Helper from "../../../../../src/utils/Helper.js";
 import Snake from "../../actors/enemies/Snake.js";
 import Wolf from "../../actors/enemies/Wolf.js";
 
+import ItemTypes from "../../items/ItemTypes.js";
 
 class WorldScreen extends BaseMap {
 	constructor() {
@@ -57,6 +58,10 @@ class WorldScreen extends BaseMap {
 		// place the Player on the correct start-tile
 		let startTile = this.getTilemap().get(10, 10);
 		this.getPlayer().placeOnTile(startTile);
+	}
+
+	begin() {
+		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.KNIFE_POCKET);
 	}
 
 }

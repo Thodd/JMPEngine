@@ -1,4 +1,5 @@
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
+import Constants from "../../Constants.js";
 
 import Backpack from "../../items/Backpack.js";
 import Stats from "../Stats.js";
@@ -10,13 +11,6 @@ const _stats = new Stats(true);
 // Callback for changing Backpack Content --> updates UI
 const _backpack = new Backpack(true);
 
-// default stats of the player are different from the BaseActor's stats
-_stats.hp_max = 10;
-_stats.hp = 10;
-_stats.atk = 3;
-_stats.def = 2;
-_stats.speed = 100;
-
 // the current GameController reference
 let _gc = null;
 
@@ -25,18 +19,35 @@ let _gc = null;
  * e.g. stats like health or the inventory.
  */
 const PlayerState = {
+	_initialized: false,
+
 	backpack: _backpack,
 	stats: _stats,
 
 	/**
 	 * Init PlayerState.
-	 * Called only once.
+	 * Called everytime a new Level is created.
+	 * Yet initialization only happens the first time --> Singleton.
 	 */
 	init() {
-		// Equip first basic melee weapon
-		let weapon = ItemTypes.KNIFE_POCKET;
-		this.backpack.addItem(weapon);
-		this.backpack.equipItem(weapon, weapon.subCategory);
+		if (!this._initialized) {
+			this._initialized = true;
+
+			// Define starting stats of the Player.
+			_stats.hp_max = 10;
+			_stats.hp = 10;
+			_stats.atk = 3;
+			_stats.def = 2;
+			_stats.speed = 100;
+
+			// Equip first basic melee weapon
+			// let weapon = ItemTypes.KNIFE_POCKET;
+			// this.backpack.addItem(weapon);
+			// this.backpack.equipItem(weapon, Constants.EquipmentSlots.MELEE);
+
+			// place a health potion in the backpack as a starting item
+			this.backpack.addItem(ItemTypes.APPLE);
+		}
 	},
 
 	/**
@@ -69,8 +80,6 @@ const PlayerState = {
 	}
 };
 
-PlayerState.init();
+exposeOnWindow("playerState", PlayerState);
 
 export default PlayerState;
-
-exposeOnWindow("playerState", PlayerState);

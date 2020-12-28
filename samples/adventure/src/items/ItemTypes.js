@@ -1,5 +1,8 @@
 import { fail } from "../../../../src/utils/Log.js";
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
+
+import Constants from "../Constants.js";
+
 /**
  * Constants for all items.
  * Hard-coded values like attack power, sprite ID, ...
@@ -11,18 +14,19 @@ class ItemType {
 		// define some defaults
 		this.id = spec.id || "UNKNOWN";
 		this.category = spec.category || "GENERAL";
-		this.subCategory = spec.subCategory; // can be empty for simple items
+
 		this.sprite = spec.sprite || 0;
+
 		this.text = {
 			name: (spec.text && spec.text.name) || "an unknown Item",
 			result: (spec.text && spec.text.result) || "Nothing happens.",
 			flavor: (spec.text && spec.text.flavor) || "Not sure what this is..."
 		}
+
 		this.values = spec.values || {};
 
-		// weapons are equippable
-		// TODO: other categories, e.g. CONSUMABLES ?
-		this.isEquippable = spec.category == categories.WEAPON;
+		// Equippable
+		this.equippableAs = spec.equippableAs || [];
 
 		// just a fail safe for messing up during coding... :)
 		if (this.id === "UNKOWN") {
@@ -41,16 +45,8 @@ class ItemType {
 	 * @param {ItemType} item the ItemType
 	 * @param {string[]} categories an array of ItemType (sub)categories
 	 */
-	is(cat, subCat) {
-		let fits = false;
-		if (cat == this.category) {
-			fits = true;
-			// check if the sub-category matches
-			if (subCat && subCat != this.subCategory) {
-				fits = false;
-			}
-		}
-		return fits;
+	isEquippableAs(equipSlot) {
+		return this.equippableAs.indexOf(equipSlot) >= 0;
 	}
 }
 
@@ -65,31 +61,40 @@ const categories = {
 	GENERAL: "general",
 	WEAPON: "weapon",
 	CONSUMABLE: "consumable",
+	CONSUMABLE_INSTANT: "consumable_INSTANT",
 	QUEST: "quest",
 	TREASURE: "treasure",
 	MAP: "map"
-};
-
-const subCategories = {
-	MELEE: "melee",
-	RANGED: "ranged",
-	MAGIC: "magic",
-	INSTANT_USE: "instant_use"
 };
 
 /**
  * Public Access to Categories.
  */
 _types.Categories = categories;
-_types.SubCategories = subCategories;
 
 /**
- * CONSUMABLES -> INSTANT_USE
+ * CONSUMABLES -> only used from within the backpack
+ */
+_create({
+	id: "APPLE",
+	category: categories.CONSUMABLE,
+	sprite: 7,
+	text: {
+		name: "Apple",
+		result: "0.5 HP restored",
+		flavor: "Restores 0.5 HP."
+	},
+	values: {
+		restore: 0.5
+	}
+});
+
+/**
+ * CONSUMABLES_INSTANT -> instant use health pickups
  */
 _create({
 	id: "HEART_SMALL",
-	category: categories.CONSUMABLE,
-	subCategory: subCategories.INSTANT_USE,
+	category: categories.CONSUMABLE_INSTANT,
 	sprite: 0,
 	text: {
 		name: "a small heart",
@@ -103,8 +108,7 @@ _create({
 
 _create({
 	id: "HEART_BIG",
-	category: categories.CONSUMABLE,
-	subCategory: subCategories.INSTANT_USE,
+	category: categories.CONSUMABLE_INSTANT,
 	sprite: 1,
 	text: {
 		name: "a big heart",
@@ -122,7 +126,7 @@ _create({
 _create({
 	id: "FANGS",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 81, // mystery sprite
 	text: {
 		name: "Fangs",
@@ -137,7 +141,7 @@ _create({
 _create({
 	id: "CLAWS",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 81, // mystery sprite
 	text: {
 		name: "Claws",
@@ -156,7 +160,7 @@ _create({
 _create({
 	id: "KNIFE_POCKET",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 52,
 	text: {
 		name: "Pocket Knife",
@@ -171,7 +175,7 @@ _create({
 _create({
 	id: "SHOVEL",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 34,
 	text: {
 		name: "Shovel",
@@ -186,7 +190,7 @@ _create({
 _create({
 	id: "KNIFE_KITCHEN",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 53,
 	text: {
 		name: "Kitchen Knife",
@@ -201,7 +205,7 @@ _create({
 _create({
 	id: "WRENCH",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 35,
 	text: {
 		name: "Wrench",
@@ -216,7 +220,7 @@ _create({
 _create({
 	id: "HAMMER",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 37,
 	text: {
 		name: "Hammer",
@@ -231,7 +235,7 @@ _create({
 _create({
 	id: "HATCHET",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 55,
 	text: {
 		name: "Hatchet",
@@ -246,7 +250,7 @@ _create({
 _create({
 	id: "METAL_ROD",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 51,
 	text: {
 		name: "Metal Rod",
@@ -261,7 +265,7 @@ _create({
 _create({
 	id: "SPEAR",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 47,
 	text: {
 		name: "Spear",
@@ -276,7 +280,7 @@ _create({
 _create({
 	id: "MACHETE",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 54,
 	text: {
 		name: "Machete",
@@ -285,13 +289,13 @@ _create({
 	},
 	values: {
 		dmg: 2,
-		acc: 0.8,
+		acc: 0.85,
 	}
 });
 _create({
 	id: "AXE",
 	category: categories.WEAPON,
-	subCategory: subCategories.MELEE,
+	equippableAs: [Constants.EquipmentSlots.MELEE],
 	sprite: 36,
 	text: {
 		name: "Axe",
@@ -300,7 +304,7 @@ _create({
 	},
 	values: {
 		dmg: 2.5,
-		acc: 0.7,
+		acc: 0.8,
 	}
 });
 

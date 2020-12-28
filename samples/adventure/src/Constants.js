@@ -44,6 +44,12 @@ const Constants = {
 	Events: {
 		UPDATE_STATS: "update_hp",
 		UPDATE_BACKPACK: "update_backpack"
+	},
+
+	EquipmentSlots: {
+		MELEE: "melee",
+		RANGED: "ranged",
+		QUICK: "quick"
 	}
 };
 

@@ -126,15 +126,32 @@ class Player extends BaseActor {
 
 			// process items
 			for (let item of items) {
-				// consume instant use items
-				if (item.is(ItemTypes.Categories.CONSUMABLE, ItemTypes.SubCategories.INSTANT_USE)) {
-					this.useItem(item);
+				// consume ALL instant use items
+				if (item.category === ItemTypes.Categories.CONSUMABLE_INSTANT) {
+					// we skip the ending of the turn, so we can schedule multiple instant use items
+					this.useItem(item, true);
 				} else {
 					// store everything else in the backpack
 					backpack.addItem(item);
 					UISystem.log(`${this} places ${item} in their backpack.`);
 				}
 			}
+
+			// we end the turn after ALL items are grabbed
+			PlayerState.endTurn();
+		}
+	}
+
+	/**
+	 * Overwritten from BaseActor class.
+	 * @param {ItemType} item the item to use
+	 */
+	useItem(item, skipTurnEnd) {
+		super.useItem(item);
+
+		// normally using an item ends the turn,
+		// but we sometimes need to call this in a loop and want to schedule multiple animations
+		if (!skipTurnEnd) {
 			PlayerState.endTurn();
 		}
 	}

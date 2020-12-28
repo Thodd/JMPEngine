@@ -308,7 +308,7 @@ class BaseActor extends Entity {
 	 */
 	useItem(item) {
 		// consume an instant health item, e.g. a small/big heart
-		if (item.is(ItemTypes.Categories.CONSUMABLE, ItemTypes.SubCategories.INSTANT_USE)) {
+		if (item.category === ItemTypes.Categories.CONSUMABLE_INSTANT) {
 			UISystem.log(`${this} uses ${item.text.name}.`);
 
 			let healthUpdateAnim = this.updateHP(item.values.restore, item.id);
@@ -317,10 +317,6 @@ class BaseActor extends Entity {
 			} else {
 				UISystem.log(`Nothing happens.`);
 			}
-
-		} else if (item.is(ItemTypes.Categories.CONSUMABLE)) {
-			// nothing so far
-			// TODO: potions, etc.
 		}
 	}
 
@@ -361,6 +357,9 @@ class BaseActor extends Entity {
 	die() {
 		UISystem.log(`${this} dies!`);
 
+		// we need to create the animation before destroying the Entity --> otherwise the Animation cannot get the Screen instance anymore!
+		let deathAnim = AnimationPool.get(DeathAnimation, this);
+
 		this.isDead = true;
 
 		// call afterDeath Hook (actor is still on the tile and entity is not yet destroyed!)
@@ -376,7 +375,7 @@ class BaseActor extends Entity {
 		this.destroy();
 
 		// the death animation is just for show
-		return AnimationPool.get(DeathAnimation, this);
+		return deathAnim;
 	}
 
 	/**
