@@ -39,6 +39,11 @@ const Constants = {
 		BROWN_DARK: 0x8c424b,
 		YELLOW_LIGHT: 0xf7d85d,
 		YELLOW_DARK: 0xfac800
+	},
+
+	Events: {
+		UPDATE_STATS: "update_hp",
+		UPDATE_BACKPACK: "update_backpack"
 	}
 };
 

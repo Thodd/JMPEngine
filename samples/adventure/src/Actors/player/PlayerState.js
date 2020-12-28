@@ -1,26 +1,14 @@
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
-import { log } from "../../../../../../src/utils/Log.js";
-
-import UISystem from "../../ui/UISystem.js";
 
 import Backpack from "../../items/Backpack.js";
 import Stats from "../Stats.js";
 import ItemTypes from "../../items/ItemTypes.js";
 
 // Callback for changing the player's stats  -->  updates UI
-const _stats = new Stats(function() {
-	UISystem.renderPlayerStats(_stats);
-});
+const _stats = new Stats(true);
 
 // Callback for changing Backpack Content --> updates UI
-const _backpack = new Backpack({
-	onItemChange: function() {
-		UISystem.renderBackpackContent(_backpack);
-	},
-	onEuqipmentChange: function() {
-		// TODO: Re-Render Equipment slots
-	}
-});
+const _backpack = new Backpack(true);
 
 // default stats of the player are different from the BaseActor's stats
 _stats.hp_max = 10;

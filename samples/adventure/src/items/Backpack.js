@@ -1,13 +1,16 @@
 import { warn } from "../../../../src/utils/Log.js";
 
+import EventBus from "../../../../src/utils/EventBus.js";
+import Constants from "../Constants.js";
+
 /**
  * A Bag containing items.
  * Keeps track of the inventory content of an actor
  */
 class Backpack {
-	constructor(changeListeners) {
+	constructor(fireEvents) {
 		// if none are given, the changes are not listened to
-		this._changeListeners = changeListeners || {};
+		this._fireEvents = fireEvents;
 
 		// we store items by their category for easier sorting and rendering
 		this._itemsByCategory = {};
@@ -18,6 +21,24 @@ class Backpack {
 			"ranged": null,
 			"quick": null
 		};
+	}
+
+	/**
+	 * If requested fires an event everytime the Backpack content is changed somehow.
+	 *
+	 * @param {string} changeType either "add", "remove", "equip" or "unequip"
+	 * @param {ItemType} type the item type which is affected
+	 * @param {string} changedSlot the slot name which was changed (only for "equip" and "unequip")
+	 */
+	_fireChange(changeType, type, changedSlot) {
+		if (this._fireEvents) {
+			EventBus.publish(Constants.Events.UPDATE_BACKPACK, {
+				changeType: changeType,
+				changedItem: type,
+				changedSlot: changedSlot,
+				backpack: this
+			});
+		}
 	}
 
 	/**
@@ -59,9 +80,7 @@ class Backpack {
 		cat[type.id].amount++;
 
 		// notify listeners for item change
-		if (this._changeListeners.onItemChange) {
-			this._changeListeners.onItemChange(type);
-		}
+		this._fireChange("add", type);
 
 		return type;
 	}
@@ -85,9 +104,7 @@ class Backpack {
 		}
 
 		// notify listeners for item change
-		if (this._changeListeners.onItemChange) {
-			this._changeListeners.onItemChange(type);
-		}
+		this._fireChange("remove", type);
 
 		return type;
 	}
@@ -107,9 +124,7 @@ class Backpack {
 			this._equiped[slot] = type;
 
 			// notify listeners for equipment change
-			if (this._changeListeners.onEquipmentChange) {
-				this._changeListeners.onEquipmentChange(slot, type);
-			}
+			this._fireChange("equip", type, slot);
 
 		} else {
 			warn(`${type.id} cannot be equipped.`, "Backpack");
@@ -135,9 +150,7 @@ class Backpack {
 		this._equiped[slot] = null;
 
 		// notify listeners for equipment change
-		if (this._changeListeners.onEquipmentChange) {
-			this._changeListeners.onEquipmentChange(slot);
-		}
+		this._fireChange("unequip", currentItem, slot);
 	}
 }
 

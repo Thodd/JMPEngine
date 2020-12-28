@@ -1,4 +1,8 @@
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
+import EventBus from "../../../../src/utils/EventBus.js";
+
+import Constants from "../Constants.js";
+
 import BackpackRenderer from "./controls/BackpackRenderer.js";
 import Bar from "./controls/Bar.js";
 
@@ -48,18 +52,27 @@ function log(msg) {
  * Called on stat change by the Player(State).
  * @param {Stats} stats the Stats instance of the player
  */
-function updatePlayerStats(stats) {
+function updatePlayerStats(evt) {
+	let stats = evt.data;
 	playerHealthBar.setMaxValue(stats.hp_max);
 	playerHealthBar.setValue(stats.hp);
 }
 
+/**
+ * Called on each Backpack change.
+ * @param {object} evt contains the Backpack instance in its data property
+ */
+function updateBackpack(evt) {
+	let backpack = evt.data.backpack;
+	BackpackRenderer.renderBackpackContent(backpack, _dom.backpack);
+}
+
+// Subscribe to global Events which trigger a UI update
+EventBus.subscribe(Constants.Events.UPDATE_STATS, updatePlayerStats);
+EventBus.subscribe(Constants.Events.UPDATE_BACKPACK, updateBackpack);
 
 const _api = {
-	log: log,
-	renderPlayerStats: updatePlayerStats,
-	renderBackpackContent: (backpack) => {
-		BackpackRenderer.renderBackpackContent(backpack, _dom.backpack);
-	}
+	log: log
 };
 
 exposeOnWindow("UISystem", _api);

@@ -1,6 +1,10 @@
+import EventBus from "../../../../src/utils/EventBus.js";
+
+import Constants from "../Constants.js";
+
 class Stats {
-	constructor(changeCallback) {
-		this._changeCallback = changeCallback;
+	constructor(fireEvents) {
+		this._fireEvents = fireEvents;
 		this._hp_max = 2;
 		this._hp = 2;
 
@@ -13,8 +17,9 @@ class Stats {
 	}
 
 	_statChange() {
-		if (this._changeCallback) {
-			this._changeCallback();
+		// fire events on each stat change, only the PlayerState is registered to the stat change -> UI Update needed
+		if (this._fireEvents) {
+			EventBus.publish(Constants.Events.UPDATE_STATS, this);
 		}
 	}
 
