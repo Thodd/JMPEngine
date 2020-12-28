@@ -46,7 +46,7 @@ const PlayerState = {
 	 */
 	init() {
 		// Equip first basic melee weapon
-		let weapon = ItemTypes.KNIFE;
+		let weapon = ItemTypes.KNIFE_POCKET;
 		this.backpack.addItem(weapon);
 		this.backpack.equipItem(weapon, weapon.subCategory);
 	},

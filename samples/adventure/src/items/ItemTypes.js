@@ -149,8 +149,42 @@ _create({
 		acc: 0.7
 	}
 });
+
+/**
+ * MELEE
+ */
 _create({
-	id: "KNIFE",
+	id: "KNIFE_POCKET",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 52,
+	text: {
+		name: "Pocket Knife",
+		innerName: "a small pocket knife",
+		flavor: "Not really a weapon... but you still feel stabby."
+	},
+	values: {
+		dmg: 0.5,
+		acc: 1,
+	}
+});
+_create({
+	id: "SHOVEL",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 34,
+	text: {
+		name: "Shovel",
+		innerName: "a shovel",
+		flavor: "Every treasure hunter needs a shovel."
+	},
+	values: {
+		dmg: 0.5,
+		acc: 1,
+	}
+});
+_create({
+	id: "KNIFE_KITCHEN",
 	category: categories.WEAPON,
 	subCategory: subCategories.MELEE,
 	sprite: 53,
@@ -165,6 +199,66 @@ _create({
 	}
 });
 _create({
+	id: "WRENCH",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 35,
+	text: {
+		name: "Wrench",
+		innerName: "a wrench",
+		flavor: "More a tool than a weapon. But then again, so is a chainsaw."
+	},
+	values: {
+		dmg: 1,
+		acc: 1,
+	}
+});
+_create({
+	id: "HAMMER",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 37,
+	text: {
+		name: "Hammer",
+		innerName: "a hammer",
+		flavor: "Not exactly Mjölnir, but better than nothing."
+	},
+	values: {
+		dmg: 1,
+		acc: 0.9,
+	}
+});
+_create({
+	id: "HATCHET",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 55,
+	text: {
+		name: "Hatchet",
+		innerName: "a hatchet",
+		flavor: "Not yet an axe but still pretty sharp."
+	},
+	values: {
+		dmg: 1.25,
+		acc: 0.95,
+	}
+});
+_create({
+	id: "METAL_ROD",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 51,
+	text: {
+		name: "Metal Rod",
+		innerName: "a metal rod",
+		flavor: "Ah yes, the good old slum scepter."
+	},
+	values: {
+		dmg: 1.25,
+		acc: 0.95,
+	}
+});
+_create({
 	id: "SPEAR",
 	category: categories.WEAPON,
 	subCategory: subCategories.MELEE,
@@ -172,11 +266,11 @@ _create({
 	text: {
 		name: "Spear",
 		innerName: "a spear",
-		flavor: "The shaft is finely crafted from durable bamboo wood."
+		flavor: "A classic hunting weapon used by great warriors of ."
 	},
 	values: {
 		dmg: 1.5,
-		acc: 0.85,
+		acc: 0.9,
 	}
 });
 _create({
@@ -192,6 +286,21 @@ _create({
 	values: {
 		dmg: 2,
 		acc: 0.8,
+	}
+});
+_create({
+	id: "AXE",
+	category: categories.WEAPON,
+	subCategory: subCategories.MELEE,
+	sprite: 36,
+	text: {
+		name: "Axe",
+		innerName: "an axe",
+		flavor: "History has proven that an axe is deadly. A fan favorite."
+	},
+	values: {
+		dmg: 2.5,
+		acc: 0.7,
 	}
 });
 
