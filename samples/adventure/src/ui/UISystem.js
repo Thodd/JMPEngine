@@ -1,25 +1,30 @@
+// JMP Engine imports
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
-import EventBus from "../../../../src/utils/EventBus.js";
 
-import Constants from "../Constants.js";
-
-import BackpackRenderer from "./controls/BackpackRenderer.js";
-import Bar from "./controls/Bar.js";
+// Adventure Engine imports
+import StatsController from "./controls/StatsController.js";
+import BackpackController from "./controls/BackpackController.js";
+import EquipmentController from "./controls/EquipmentController.js";
 
 // container DOM elements
 // DOM can be accessed, since the game is started only after the loaded event
 const _dom = {
-	stats:    document.getElementById("adv_stats"),
-	hp:       document.getElementById("adv_stats_hp"),
-	history:  document.querySelector("#adv_history .wnd_content"),
-	backpack: document.querySelector("#adv_backpack .wnd_content")
+	stats:     document.getElementById("adv_stats"),
+	hp:        document.getElementById("adv_stats_hp"),
+	history:   document.querySelector("#adv_history .wnd_content"),
+	backpack:  document.querySelector("#adv_backpack .wnd_content"),
+	equipment: {
+		melee: document.getElementById("#adv_equipment_melee_slot"),
+		ranged: document.getElementById("#adv_equipment_ranged_slot"),
+		quickSlot1: document.getElementById("#adv_equipment_quick_slot_1"),
+		quickSlot2: document.getElementById("#adv_equipment_quick_slot_2")
+	}
 };
 
 
-const playerHealthBar = new Bar();
-_dom.hp.appendChild(playerHealthBar.getDom());
-
-
+/**
+ * History & Logging
+ */
 // number of max messages (keep the dom small)
 let maxMsgs = 100;
 
@@ -47,33 +52,15 @@ function log(msg) {
 	_dom.history.scrollTop = _dom.history.scrollHeight;
 }
 
-
-/**
- * Called on stat change by the Player(State).
- * @param {Stats} stats the Stats instance of the player
- */
-function updatePlayerStats(evt) {
-	let stats = evt.data;
-	playerHealthBar.setMaxValue(stats.hp_max);
-	playerHealthBar.setValue(stats.hp);
-}
-
-/**
- * Called on each Backpack change.
- * @param {object} evt contains the Backpack instance in its data property
- */
-function updateBackpack(evt) {
-	let backpack = evt.data.backpack;
-	BackpackRenderer.renderBackpackContent(backpack, _dom.backpack);
-}
-
-// Subscribe to global Events which trigger a UI update
-EventBus.subscribe(Constants.Events.UPDATE_STATS, updatePlayerStats);
-EventBus.subscribe(Constants.Events.UPDATE_BACKPACK, updateBackpack);
-
+// simple History logging API
 const _api = {
 	log: log
 };
+
+// initialize controllers
+StatsController.init(_dom.hp);
+BackpackController.init(_dom.backpack);
+EquipmentController.init(_dom.equipment);
 
 exposeOnWindow("UISystem", _api);
 

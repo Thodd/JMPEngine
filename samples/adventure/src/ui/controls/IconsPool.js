@@ -13,12 +13,12 @@ const _iconInfos = {
 };
 
 const IconsPool = {
-	getIconInfo(type, id) {
-		let iconInfo = _iconInfos[type][id];
+	getIconInfo(sheetName, id) {
+		let iconInfo = _iconInfos[sheetName][id];
 
 		// icon not yet converted to data url
 		if (!iconInfo) {
-			let sheet = _iconSheets[type];
+			let sheet = _iconSheets[sheetName];
 			let frame = sheet.textures[id].frame;
 
 			// crop image to icon format
@@ -36,7 +36,8 @@ const IconsPool = {
 				frame.width,
 				frame.height);
 
-			_iconInfos[type][id] = iconInfo = {
+			_iconInfos[sheetName][id] = iconInfo = {
+				canvas: can,
 				dataUrl: can.toDataURL(),
 				w: frame.width,
 				h: frame.height
@@ -46,9 +47,9 @@ const IconsPool = {
 		return iconInfo;
 	},
 
-	getIconDOM(type, id) {
-		let iconInfo = IconsPool.getIconInfo(type, id);
-		return `<img src="${iconInfo.dataUrl}" style="width: ${iconInfo.w*2}px; height: ${iconInfo.h*2}px; image-rendering: pixelated;" />`;
+	getIconDOM(sheetName, id) {
+		let iconInfo = IconsPool.getIconInfo(sheetName, id);
+		return `<img src="${iconInfo.dataUrl}" style="width: ${iconInfo.w*2}px; height: ${iconInfo.h*2}px; image-rendering: pixelated;" draggable="false" />`;
 	}
 };
 

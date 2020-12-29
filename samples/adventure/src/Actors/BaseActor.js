@@ -355,27 +355,29 @@ class BaseActor extends Entity {
 	 * Returns its dying animation.
 	 */
 	die() {
-		UISystem.log(`${this} dies!`);
+		if (!this.isDead) {
+			UISystem.log(`${this} dies!`);
 
-		// we need to create the animation before destroying the Entity --> otherwise the Animation cannot get the Screen instance anymore!
-		let deathAnim = AnimationPool.get(DeathAnimation, this);
+			// we need to create the animation before destroying the Entity --> otherwise the Animation cannot get the Screen instance anymore!
+			let deathAnim = AnimationPool.get(DeathAnimation, this);
 
-		this.isDead = true;
+			this.isDead = true;
 
-		// call afterDeath Hook (actor is still on the tile and entity is not yet destroyed!)
-		this.afterDeath();
+			// call afterDeath Hook (actor is still on the tile and entity is not yet destroyed!)
+			this.afterDeath();
 
-		// remove actor from game logic
-		this.getTimeline().removeActor(this);
+			// remove actor from game logic
+			this.getTimeline().removeActor(this);
 
-		// remove actor from its tile
-		this.gameTile.removeActor(this);
+			// remove actor from its tile
+			this.gameTile.removeActor(this);
 
-		// remove actor from screen/engine
-		this.destroy();
+			// remove actor from screen/engine
+			this.destroy();
 
-		// the death animation is just for show
-		return deathAnim;
+			// the death animation is just for show
+			return deathAnim;
+		}
 	}
 
 	/**

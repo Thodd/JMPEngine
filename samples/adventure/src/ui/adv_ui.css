@@ -163,7 +163,7 @@ p {
 
 .adv_backpack_entry {
 	display: grid;
-	grid-template-columns: 32px 34px auto 100px;
+	grid-template-columns: 32px 32px auto 110px;
 	column-gap: 2px;
 	grid-template-rows: 34px;
 	border-bottom: 1px solid #d1ddec;
@@ -195,4 +195,29 @@ p {
 /* item text is justified to the left */
 .adv_backpack_entry .itemName {
 	justify-self: start;
+}
+
+/* item [use] button is justified to the left */
+.adv_backpack_entry .actionButtons {
+	justify-self: end;
+}
+
+/**
+ * Equipment
+ */
+ #adv_equipment .wnd_content {
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+}
+
+.adv_equipment_entry {
+	width: 56px;
+	height: 56px;
+	justify-self: center;
+	align-self: center;
+	border: 1px solid #d1ddec;
+}
+
+.adv_equipment_entry:hover {
+	background: #cde4ff;
 }

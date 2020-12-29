@@ -1,5 +1,4 @@
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
-import Constants from "../../Constants.js";
 
 import Backpack from "../../items/Backpack.js";
 import Stats from "../Stats.js";
