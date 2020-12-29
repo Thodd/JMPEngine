@@ -1,7 +1,6 @@
 body {
 	background: #316fbb;
-	color: #000000;
-	text-shadow: 1px 1px 0px #e1efff;
+	color: #222222;
 	user-select: none;
 }
 
@@ -205,9 +204,16 @@ p {
 /**
  * Equipment
  */
- #adv_equipment .wnd_content {
+#adv_equipment .slotTitles {
 	display: grid;
-	grid-template-columns: auto auto auto auto;
+	grid-template-columns: 25% 25% 25% 25%;
+	font-size: 10px;
+	justify-items: center;
+}
+
+#adv_equipment .dropzones {
+	display: grid;
+	grid-template-columns: 25% 25% 25% 25%;
 }
 
 .adv_equipment_entry {
