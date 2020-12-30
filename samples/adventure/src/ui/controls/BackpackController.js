@@ -3,7 +3,7 @@ import { fail } from "../../../../../src/utils/Log.js";
 import EventBus from "../../../../../src/utils/EventBus.js";
 
 // Adventure Engine imports
-import EquipmentController from "./EquipmentController.js";
+import ContextMenuController from "./ContextMenuController.js";
 import IconsPool from "./IconsPool.js";
 import Constants from "../../Constants.js";
 
@@ -17,9 +17,8 @@ import Constants from "../../Constants.js";
 function renderEntry(itemInfo) {
 	let entryDOM = document.createElement("div");
 	entryDOM.classList.add("adv_backpack_entry");
-	entryDOM.setAttribute("draggable", true);
 
-	entryDOM.setAttribute("data-adv-drag-origin", "backpack");
+	entryDOM.setAttribute("data-adv-context", "backpack");
 
 	entryDOM.innerHTML = `
 <div class="amount column">
@@ -30,9 +29,6 @@ function renderEntry(itemInfo) {
 </div>
 <div class="itemName column">
 	<div>${itemInfo.type.text.name}</div>
-</div>
-<div class="actionButtons column">
-	<div>[Use]</div>
 </div>
 	`;
 
@@ -56,7 +52,6 @@ const BackpackController = {
 		this._containerDOM = containerDOM;
 
 		EventBus.subscribe(Constants.Events.UPDATE_BACKPACK, this.updateBackpack.bind(this));
-		EventBus.subscribe(Constants.Events.UPDATE_EQUIPMENT, this.updateEquipment.bind(this));
 	},
 
 	/**
@@ -66,14 +61,6 @@ const BackpackController = {
 	updateBackpack(evt) {
 		let backpack = evt.data.backpack;
 		this.renderBackpackContent(backpack);
-	},
-
-	/**
-	 * Called on each Equipment update.
-	 * @param {object} evt contains the equipment change information
-	 */
-	updateEquipment(evt) {
-		fail("not implemented yet", evt.data);
 	},
 
 	/**
@@ -87,6 +74,7 @@ const BackpackController = {
 		let itemsCount = 0;
 
 		// clear container, I know... not the most elegant solution but good enough for our game ;)
+		// TODO: deregister event handlers ???   -->   ContextMenuController.deconnect(...)
 		this._containerDOM.innerHTML = "";
 
 		// create new entries
@@ -96,8 +84,19 @@ const BackpackController = {
 				let itemInfo = category[itemID];
 				let entryDOM = renderEntry(itemInfo);
 
-				// connect Drag Handlers
-				EquipmentController.connectDraggableHandlers(entryDOM, itemInfo.type);
+				// connect Contextmenu
+				ContextMenuController.connect({
+					dom: entryDOM,
+					title: `${itemInfo.type.text.name}`,
+					entries: [
+						{text: "Look at", callback: function() {}},
+						{text: "Equip as Melee", callback: function() {}},
+						{text: "Equip as Ranged", callback: function() {}},
+						{text: "Equip in Quick-Slot 1", callback: function() {}},
+						{text: "Equip in Quick-Slot 2", callback: function() {}},
+						{text: "Consume", callback: function() {}}
+					]
+				});
 
 				this._containerDOM.appendChild(entryDOM);
 				itemsCount++;

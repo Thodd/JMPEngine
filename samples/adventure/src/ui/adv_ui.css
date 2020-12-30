@@ -9,6 +9,19 @@ p {
 	padding: 2px;
 }
 
+button {
+	background: #acc9ec;
+	border: 0px solid #0253b7;
+	border-radius: 2px;
+	box-shadow: 0px 2px 0px #0253b7;
+	outline: none;
+}
+
+button:active {
+	box-shadow: 0 0 #000;
+	margin-top: 3px;
+}
+
 /* Containers */
 
 .wnd_title {
@@ -58,6 +71,29 @@ p {
 
 .wnd_content canvas {
 	margin-bottom: -3px;
+}
+
+/**
+ * Context Menu
+ */
+#adv_contextMenu {
+	width: fit-content;
+}
+
+.contextMenuEntry {
+	display: grid;
+	align-content: center;
+
+	border-bottom: 1px solid #d1ddec;
+	height: 22px;
+	padding-right: 8px;
+}
+
+.contextMenuEntry:hover {
+	background: #cde4ff;
+	border-bottom: 1px solid #0253b7;
+	padding-left: 8px;
+	padding-right: 0px;
 }
 
 /* General */
@@ -162,7 +198,7 @@ p {
 
 .adv_backpack_entry {
 	display: grid;
-	grid-template-columns: 32px 32px auto 110px;
+	grid-template-columns: 32px 32px auto;
 	column-gap: 2px;
 	grid-template-rows: 34px;
 	border-bottom: 1px solid #d1ddec;
@@ -196,11 +232,6 @@ p {
 	justify-self: start;
 }
 
-/* item [use] button is justified to the left */
-.adv_backpack_entry .actionButtons {
-	justify-self: end;
-}
-
 /**
  * Equipment
  */
@@ -211,7 +242,7 @@ p {
 	justify-items: center;
 }
 
-#adv_equipment .dropzones {
+#adv_equipment .slots {
 	display: grid;
 	grid-template-columns: 25% 25% 25% 25%;
 }
@@ -224,6 +255,6 @@ p {
 	border: 1px solid #d1ddec;
 }
 
-.adv_equipment_entry:hover, .hoverDropzone {
+.adv_equipment_entry:hover {
 	background: #cde4ff;
 }
