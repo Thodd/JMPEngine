@@ -224,6 +224,6 @@ p {
 	border: 1px solid #d1ddec;
 }
 
-.adv_equipment_entry:hover {
+.adv_equipment_entry:hover, .hoverDropzone {
 	background: #cde4ff;
 }

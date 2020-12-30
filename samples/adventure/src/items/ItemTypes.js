@@ -46,6 +46,10 @@ class ItemType {
 	 * @param {string[]} categories an array of ItemType (sub)categories
 	 */
 	isEquippableAs(equipSlot) {
+		// for quick-slots id doesn't matter if the item is in slot 1 or 2
+		if (equipSlot.startsWith("quick")) {
+			equipSlot = "quick";
+		}
 		return this.equippableAs.indexOf(equipSlot) >= 0;
 	}
 }
@@ -72,22 +76,6 @@ const categories = {
  */
 _types.Categories = categories;
 
-/**
- * CONSUMABLES -> only used from within the backpack
- */
-_create({
-	id: "APPLE",
-	category: categories.CONSUMABLE,
-	sprite: 7,
-	text: {
-		name: "Apple",
-		result: "0.5 HP restored",
-		flavor: "Restores 0.5 HP."
-	},
-	values: {
-		restore: 0.5
-	}
-});
 
 /**
  * CONSUMABLES_INSTANT -> instant use health pickups
@@ -117,6 +105,24 @@ _create({
 	},
 	values: {
 		restore: 2
+	}
+});
+
+/**
+ * CONSUMABLES -> only used from within the backpack
+ */
+_create({
+	id: "APPLE",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK],
+	sprite: 7,
+	text: {
+		name: "Apple",
+		result: "0.5 HP restored",
+		flavor: "Restores 0.5 HP."
+	},
+	values: {
+		restore: 0.5
 	}
 });
 

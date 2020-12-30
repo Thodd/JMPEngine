@@ -3,6 +3,7 @@ import { fail } from "../../../../../src/utils/Log.js";
 import EventBus from "../../../../../src/utils/EventBus.js";
 
 // Adventure Engine imports
+import EquipmentController from "./EquipmentController.js";
 import IconsPool from "./IconsPool.js";
 import Constants from "../../Constants.js";
 
@@ -17,6 +18,8 @@ function renderEntry(itemInfo) {
 	let entryDOM = document.createElement("div");
 	entryDOM.classList.add("adv_backpack_entry");
 	entryDOM.setAttribute("draggable", true);
+
+	entryDOM.setAttribute("data-adv-drag-origin", "backpack");
 
 	entryDOM.innerHTML = `
 <div class="amount column">
@@ -36,17 +39,6 @@ function renderEntry(itemInfo) {
 	return entryDOM;
 }
 
-/**
- * Handling of a dragstart operation.
- *
- * @param {ItemType} itemType the dragged backpack ItemType
- * @param {object} event DOM Event for 'dragstart'
- */
-function dragstartHandler(itemType, event) {
-	event.dataTransfer.effectAllowed = "move";
-	// we only need the item types id to process the dragging from/to the backpack
-	event.dataTransfer.setData("text/plain", itemType.id);
-}
 
 /**
  * The BackpackController handles:
@@ -105,7 +97,7 @@ const BackpackController = {
 				let entryDOM = renderEntry(itemInfo);
 
 				// connect Drag Handlers
-				entryDOM.addEventListener("dragstart", dragstartHandler.bind(entryDOM, itemInfo.type));
+				EquipmentController.connectDraggableHandlers(entryDOM, itemInfo.type);
 
 				this._containerDOM.appendChild(entryDOM);
 				itemsCount++;
