@@ -61,6 +61,7 @@ class WorldScreen extends BaseMap {
 	}
 
 	begin() {
+		super.begin();
 		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.KNIFE_POCKET);
 		this.getPlayer().getTileRelative(-1, 3).dropNewItem(ItemTypes.APPLE);
 	}

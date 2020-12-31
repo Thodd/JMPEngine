@@ -21,7 +21,7 @@ const StatsController = {
 		this._containerDOM.appendChild(this._playerHealthBar.getDom());
 
 		// Subscribe to global Events which trigger a UI update
-		EventBus.subscribe(Constants.Events.UPDATE_STATS, this.updatePlayerStats.bind(this));
+		EventBus.subscribe(Constants.Events.LOGIC_UPDATE_STATS, this.updatePlayerStats.bind(this));
 	},
 
 	/**

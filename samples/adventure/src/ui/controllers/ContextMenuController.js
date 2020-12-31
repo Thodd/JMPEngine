@@ -23,7 +23,11 @@ function renderMenuContent(title, entries) {
 
 		entryDOM.innerHTML = `<span>${entry.text}</span>`;
 
-		entryDOM.addEventListener("click", entry.callback);
+		entryDOM.addEventListener("click", function() {
+			entry.callback();
+			// force close of context-menu after an entry was clicked
+			ContextMenuController.close();
+		});
 
 		_contentDOM.appendChild(entryDOM);
 	});
@@ -39,9 +43,9 @@ const ContextMenuController = {
 		// close a context menu if we register a click outside the menu
 		document.addEventListener("click", function(evt) {
 			if (!_outerDOM.contains(evt.target)) {
-				_outerDOM.classList.add("hidden");
+				this.close();
 			}
-		});
+		}.bind(this));
 
 		// prevent default context menu of the browser
 		// document.addEventListener("contextmenu", function(evt) {
@@ -49,6 +53,12 @@ const ContextMenuController = {
 		// })
 	},
 
+	/**
+	 * Forces a close of the context-menu.
+	 */
+	close() {
+		_outerDOM.classList.add("hidden");
+	},
 
 	/**
 	 * Creates a context-menu for the given DOM Element.
@@ -63,7 +73,7 @@ const ContextMenuController = {
 		// default entry is looking
 		let entries = [{text: "Look at", callback: ContextMenuHandlers.lookAt.bind(entryDOM, itemType)}];
 
-		// one entry for each "equipment type"
+		// one entry for each equippable slot
 		for (let slot of itemType.equippableAs) {
 			// check the currently equipped item in the player's backpack
 			// so we can exclude the entries which are unnecessary

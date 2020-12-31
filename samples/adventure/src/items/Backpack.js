@@ -28,7 +28,7 @@ class Backpack {
 	 */
 	_fireChange(changeType, type, changedSlot) {
 		if (this._fireEvents) {
-			EventBus.publish(Constants.Events.UPDATE_BACKPACK, {
+			EventBus.publish(Constants.Events.LOGIC_UPDATE_BACKPACK, {
 				changeType: changeType,
 				changedItem: type,
 				changedSlot: changedSlot,

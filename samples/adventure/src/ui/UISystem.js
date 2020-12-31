@@ -17,10 +17,10 @@ const _dom = {
 	history:      document.querySelector("#adv_history .wnd_content"),
 	backpack:     document.querySelector("#adv_backpack .wnd_content"),
 	equipment: {
-		melee:       document.getElementById("adv_equipment_melee_slot"),
-		ranged:      document.getElementById("adv_equipment_ranged_slot"),
-		quickSlot1:  document.getElementById("adv_equipment_quick_slot_1"),
-		quickSlot2:  document.getElementById("adv_equipment_quick_slot_2")
+		melee:    document.getElementById("adv_equipment_melee_slot"),
+		ranged:   document.getElementById("adv_equipment_ranged_slot"),
+		quick1:   document.getElementById("adv_equipment_quick_slot_1"),
+		quick2:   document.getElementById("adv_equipment_quick_slot_2")
 	}
 };
 

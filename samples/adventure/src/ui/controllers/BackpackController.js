@@ -22,7 +22,7 @@ function renderEntry(itemInfo) {
 
 	entryDOM.innerHTML = `
 <div class="amount column">
-	<div>${itemInfo.amount}x</div>
+	<div>${itemInfo.amount > 0 ? itemInfo.amount + 'x' : ''}</div>
 </div>
 <div class="icon column">
 	${IconsPool.getIconDOM("items", itemInfo.type.sprite)}
@@ -50,7 +50,7 @@ const BackpackController = {
 	init(containerDOM) {
 		this._containerDOM = containerDOM;
 
-		EventBus.subscribe(Constants.Events.UPDATE_BACKPACK, this.updateBackpack.bind(this));
+		EventBus.subscribe(Constants.Events.LOGIC_UPDATE_BACKPACK, this.updateBackpack.bind(this));
 	},
 
 	/**
@@ -91,9 +91,17 @@ const BackpackController = {
 			}
 		}
 
-		// It can happen that the player drops or consumes all items
+		// It can happen that the players backpack is empty, e.g. if all items are consumed
 		if (!itemsCount) {
-			this._containerDOM.innerHTML = "<div class='adv_backpack_entry'>Your backpack is empty.</div>";
+			this._containerDOM.appendChild(renderEntry({
+				amount: 0,
+				type: {
+					sprite: 81,
+					text: {
+						name: "Your backpack is empty."
+					}
+				}
+			}))
 		}
 	}
 }

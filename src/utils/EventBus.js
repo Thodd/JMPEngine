@@ -34,6 +34,18 @@ const api = {
 	},
 
 	/**
+	 * Removes all event listeners currently subscribed to the given event.
+	 *
+	 * @param {string} eventName the event name for which all listeners should be removed
+	 */
+	unsubscribeAll(eventName) {
+		let chan = _channels[eventName];
+		if (chan) {
+			chan = [];
+		}
+	},
+
+	/**
 	 * Publishes an event.
 	 *
 	 * @param {string} eventName the event name which should be fired

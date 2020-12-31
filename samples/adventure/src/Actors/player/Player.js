@@ -1,7 +1,7 @@
 // engine imports
 import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
-import Constants from "../../Constants.js";
+import EventBus from "../../../../../src/utils/EventBus.js";
 
 // animations
 import AnimationSystem from "../../animations/system/AnimationSystem.js";
@@ -9,6 +9,7 @@ import AnimationPool from "../../animations/system/AnimationPool.js";
 import BumpAnimation from "../../animations/BumpAnimation.js";
 
 // Item Handling
+import Constants from "../../Constants.js";
 import ItemTypes from "../../items/ItemTypes.js";
 
 // actors
@@ -98,6 +99,25 @@ class Player extends BaseActor {
 		return PlayerState.backpack;
 	}
 
+	/**
+	 * Subscribes to the UI input events (e.g. Backpack/Equipment changes).
+	 */
+	connectInputEventHandlers() {
+		EventBus.subscribe(Constants.Events.UI_UPDATE_BACKPACK, this.inputCheck_fromUI.bind(this));
+	}
+
+	/**
+	 * Unsubscribes from the UI input events.
+	 * This is necessary since each screen has a separate Player class instance,
+	 * and only the currently active one should react to UI interactions.
+	 */
+	disconnectInputEventHandlers() {
+		EventBus.unsubscribeAll(Constants.Events.UI_UPDATE_BACKPACK);
+	}
+
+	/**
+	 * Update Loop
+	 */
 	update() {
 		if (PlayerState.yourTurn) {
 			// wait one turn
@@ -129,7 +149,7 @@ class Player extends BaseActor {
 				// consume ALL instant use items
 				if (item.category === ItemTypes.Categories.CONSUMABLE_INSTANT) {
 					// we skip the ending of the turn, so we can schedule multiple instant use items
-					this.useItem(item, true);
+					this.useItem(item);
 				} else {
 					// store everything else in the backpack
 					backpack.addItem(item);
@@ -146,13 +166,44 @@ class Player extends BaseActor {
 	 * Overwritten from BaseActor class.
 	 * @param {ItemType} item the item to use
 	 */
-	useItem(item, skipTurnEnd) {
+	useItem(item) {
 		super.useItem(item);
 
 		// normally using an item ends the turn,
 		// but we sometimes need to call this in a loop and want to schedule multiple animations
-		if (!skipTurnEnd) {
+		// this is the case for instant consumables like heart pickups etc.
+		if (item.category !== ItemTypes.Categories.CONSUMABLE_INSTANT) {
 			PlayerState.endTurn();
+		}
+	}
+
+	/**
+	 * Handles UI Input events, e.g. euqipping or using items from the backpack.
+	 *
+	 * @param {object} evt event object fired from UI
+	 * @param {string} evt.name the event name
+	 * @param {object} evt.data the event data attached to the UI event
+	 */
+	inputCheck_fromUI(evt) {
+		// event data is:
+		// changeType
+		// changedItem
+		// changedSlot
+		let evtData = evt.data;
+
+		// only do stuff when it's our turn
+		if (PlayerState.yourTurn) {
+
+			let backpack = this.getBackpack();
+
+			if (evtData.changeType === "consume") {
+				backpack.removeItem(evtData.changedItem);
+				this.useItem(evtData.changedItem);
+				PlayerState.endTurn();
+			} else if (evtData.changeType === "equip") {
+				backpack.equipItem(evtData.changedItem, evtData.changedSlot);
+				PlayerState.endTurn();
+			}
 		}
 	}
 

@@ -41,6 +41,21 @@ class ItemType {
 	}
 
 	/**
+	 * Checks if the ItemType fits into one or more categories.
+	 *
+	 * @param {ItemTypes.Categories[]|ItemTypes.Categories} cats the categories/category which should be checked
+	 */
+	hasCategory(cats) {
+		// mutliple categorys given
+		if (Array.isArray(cats)) {
+			return cats.indexOf(this.category) >= 0;
+		} else {
+			// only one category given
+			return this.category == cats;
+		}
+	}
+
+	/**
 	 * Checks the given ItemType if it fits into the given categories
 	 * @param {ItemType} item the ItemType
 	 * @param {string[]} categories an array of ItemType (sub)categories

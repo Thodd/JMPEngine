@@ -55,7 +55,7 @@ const EquipmentController = {
 	init(domElements) {
 		_domElements = domElements;
 
-		EventBus.subscribe(Constants.Events.UPDATE_BACKPACK, renderEquipmentSlots);
+		EventBus.subscribe(Constants.Events.LOGIC_UPDATE_BACKPACK, renderEquipmentSlots);
 	}
 };
 

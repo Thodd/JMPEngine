@@ -42,8 +42,12 @@ const Constants = {
 	},
 
 	Events: {
-		UPDATE_STATS: "update_hp",
-		UPDATE_BACKPACK: "update_backpack"
+		// events from game LOGIC -> UI
+		LOGIC_UPDATE_STATS: "logic_update_hp",
+		LOGIC_UPDATE_BACKPACK: "logic_update_backpack",
+
+		// events from UI -> LOGIC
+		UI_UPDATE_BACKPACK: "ui_update_backpack"
 	},
 
 	EquipmentSlots: {

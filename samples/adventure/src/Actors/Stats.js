@@ -19,7 +19,7 @@ class Stats {
 	_statChange() {
 		// fire events on each stat change, only the PlayerState is registered to the stat change -> UI Update needed
 		if (this._fireEvents) {
-			EventBus.publish(Constants.Events.UPDATE_STATS, this);
+			EventBus.publish(Constants.Events.LOGIC_UPDATE_STATS, this);
 		}
 	}
 

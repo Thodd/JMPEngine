@@ -308,7 +308,7 @@ class BaseActor extends Entity {
 	 */
 	useItem(item) {
 		// consume an instant health item, e.g. a small/big heart
-		if (item.category === ItemTypes.Categories.CONSUMABLE_INSTANT) {
+		if (item.hasCategory([ItemTypes.Categories.CONSUMABLE_INSTANT, ItemTypes.Categories.CONSUMABLE])) {
 			UISystem.log(`${this} uses ${item.text.name}.`);
 
 			let healthUpdateAnim = this.updateHP(item.values.restore, item.id);

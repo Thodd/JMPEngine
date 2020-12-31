@@ -44,6 +44,24 @@ class BaseMap extends Screen {
 	}
 
 	/**
+	 * Connect UI Event Handlers to the currently active Player instance.
+	 * This has to happen on every Screen change, so only the currently active
+	 * Player instance is handling UI input events.
+	 */
+	begin() {
+		this.getPlayer().connectInputEventHandlers();
+	}
+
+	/**
+	 * Disconnect UI Event Handlers to the currently active Player instance.
+	 * This has to happen on every Screen change, so only the currently active
+	 * Player instance is handling UI input events.
+	 */
+	end() {
+		this.getPlayer().disconnectInputEventHandlers();
+	}
+
+	/**
 	 * Initializes the Tilemap for this Map Screen.
 	 * @param {object} tilemapSpec config object for the Tilemap constructor
 	 */
