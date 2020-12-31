@@ -49,21 +49,26 @@ class HPUpdateAnimation extends BaseAnimation {
 	 * @param {int} hpDelta the delta value which should be displayed
 	 */
 	setNumber(hpDelta) {
+		let fnt;
+
 		this._healthDelta = hpDelta;
 
 		// for positive numbers we need to add a "+" since it's lost in a regular JS string
 		// we also set the color depending on the hpDelta sign
 		let plusSign = "";
 		if (hpDelta > 0) {
+			fnt = "FontHeal";
 			this._blinkColor = 0x00FF00;
 			plusSign = "+";
 		} else {
+			fnt = "FontDamage";
 			this._blinkColor = 0xFF0000;
 		}
 
 		// make sure the damage number is a string!
 		this._hpIndicator.setText(`${plusSign}${hpDelta}`);
-		this._hpIndicator.setColor(this._blinkColor);
+		this._hpIndicator.setFont(fnt);
+		this._hpIndicator.center();
 	}
 
 	done() {
@@ -73,8 +78,8 @@ class HPUpdateAnimation extends BaseAnimation {
 
 	animate() {
 		this._hpIndicator.visible = true;
-		this._hpIndicator._pixiSprite.alpha -= 0.05;
-		//this._hpIndicator.y -= 0.5;
+		this._hpIndicator._pixiSprite.alpha -= 0.025;
+		//this._hpIndicator.y -= 1;
 		if (this.fc.isReady()) {
 
 			// blink in red

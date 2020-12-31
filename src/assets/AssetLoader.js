@@ -19,8 +19,10 @@ async function load(assetsMap) {
 	let loader = new PIXI.Loader(Manifest.getBaseUrl().toString());
 
 	// shorthands
-	let allSheets = assetsMap.spritesheets || {};
-	let allJson = assetsMap.json || {};
+	assetsMap.spritesheets = assetsMap.spritesheets || {};
+	assetsMap.json = assetsMap.json || {};
+	let allSheets = assetsMap.spritesheets;
+	let allJson = assetsMap.json;
 	let allFonts = assetsMap.fonts || {};
 
 

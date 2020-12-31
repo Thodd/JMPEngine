@@ -1,10 +1,10 @@
 import Spritesheets from "../../../../../src/assets/Spritesheets.js";
 
+// map to store the spritesheets
 let _iconSheets = {
-	"items": Spritesheets.getSheet("items"),
+	"items": null,
 	"buttons": null
 };
-
 
 // map for icons
 const _iconInfos = {
@@ -18,7 +18,7 @@ const IconsPool = {
 
 		// icon not yet converted to data url
 		if (!iconInfo) {
-			let sheet = _iconSheets[sheetName];
+			let sheet = Spritesheets.getSheet(sheetName);
 			let frame = sheet.textures[id].frame;
 
 			// crop image to icon format

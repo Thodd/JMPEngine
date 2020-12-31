@@ -17,7 +17,7 @@ class BitmapText extends Entity {
 		this._pixiSprite = new PIXI.Container();
 		this._spritePool = [];
 
-		this._font = Fonts.getFont(font);
+		this.setFont(font);
 
 		this.setColor(color);
 		this.setText(text);
@@ -153,6 +153,9 @@ class BitmapText extends Entity {
 		}
 	}
 
+	/**
+	 * Returns the currently set text string.
+	 */
 	getText() {
 		return this._text;
 	}
@@ -203,11 +206,22 @@ class BitmapText extends Entity {
 	}
 
 	/**
-	 * Not yet implemented.
+	 * Changes the font of the Bitmap text.
+	 * Text will be rerendered.
 	 */
-	setFont() {
-		// TODO: Implement font change at runtime
-		warn(`'setFont()' is not implemented yet.`, "BitmapText");
+	setFont(font) {
+		this._font = Fonts.getFont(font);
+
+		if (this._text) {
+			this.setText(this._text);
+		}
+	}
+
+	/**
+	 * Returns the Font instance.
+	 */
+	getFont() {
+		return this._font;
 	}
 }
 

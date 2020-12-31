@@ -22,7 +22,7 @@ let initialized;
 let _manifestObject;
 let _baseURL = window.location; // default base
 
-// @PIXI: we just use a PIXI.Loader to load our manifest.json, wrapped in a promise for await-syntax
+// @PIXI: we just use a PIXI.Loader to load our manifest.json, wrapped in a promise so we can use the await-syntax
 async function loadJSON(cfg) {
 	return new Promise((res) => {
 		let loader = new PIXI.Loader();
