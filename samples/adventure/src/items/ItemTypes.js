@@ -46,10 +46,6 @@ class ItemType {
 	 * @param {string[]} categories an array of ItemType (sub)categories
 	 */
 	isEquippableAs(equipSlot) {
-		// for quick-slots id doesn't matter if the item is in slot 1 or 2
-		if (equipSlot.startsWith("quick")) {
-			equipSlot = "quick";
-		}
 		return this.equippableAs.indexOf(equipSlot) >= 0;
 	}
 }
@@ -114,7 +110,7 @@ _create({
 _create({
 	id: "APPLE",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK],
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
 	sprite: 7,
 	text: {
 		name: "Apple",

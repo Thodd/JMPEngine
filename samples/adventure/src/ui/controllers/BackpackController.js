@@ -1,10 +1,10 @@
 // JMP Engine imports
-import { fail } from "../../../../../src/utils/Log.js";
 import EventBus from "../../../../../src/utils/EventBus.js";
 
 // Adventure Engine imports
 import ContextMenuController from "./ContextMenuController.js";
-import IconsPool from "./IconsPool.js";
+
+import IconsPool from "../controls/IconsPool.js";
 import Constants from "../../Constants.js";
 
 /**
@@ -34,7 +34,6 @@ function renderEntry(itemInfo) {
 
 	return entryDOM;
 }
-
 
 /**
  * The BackpackController handles:
@@ -85,18 +84,7 @@ const BackpackController = {
 				let entryDOM = renderEntry(itemInfo);
 
 				// connect Contextmenu
-				ContextMenuController.connect({
-					dom: entryDOM,
-					title: `${itemInfo.type.text.name}`,
-					entries: [
-						{text: "Look at", callback: function() {}},
-						{text: "Equip as Melee", callback: function() {}},
-						{text: "Equip as Ranged", callback: function() {}},
-						{text: "Equip in Quick-Slot 1", callback: function() {}},
-						{text: "Equip in Quick-Slot 2", callback: function() {}},
-						{text: "Consume", callback: function() {}}
-					]
-				});
+				ContextMenuController.createContextMenuForItem(entryDOM, itemInfo.type);
 
 				this._containerDOM.appendChild(entryDOM);
 				itemsCount++;

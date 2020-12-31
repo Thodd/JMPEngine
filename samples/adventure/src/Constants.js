@@ -49,7 +49,6 @@ const Constants = {
 	EquipmentSlots: {
 		MELEE: "melee",
 		RANGED: "ranged",
-		QUICK: "quick",
 		QUICK1: "quick1",
 		QUICK2: "quick2"
 	}

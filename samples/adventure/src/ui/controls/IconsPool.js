@@ -47,9 +47,9 @@ const IconsPool = {
 		return iconInfo;
 	},
 
-	getIconDOM(sheetName, id) {
+	getIconDOM(sheetName, id, scale=2) {
 		let iconInfo = IconsPool.getIconInfo(sheetName, id);
-		return `<img src="${iconInfo.dataUrl}" style="width: ${iconInfo.w*2}px; height: ${iconInfo.h*2}px; image-rendering: pixelated;" draggable="false" />`;
+		return `<img src="${iconInfo.dataUrl}" style="width: ${iconInfo.w*scale}px; height: ${iconInfo.h*scale}px; image-rendering: pixelated;" draggable="false" />`;
 	}
 };
 

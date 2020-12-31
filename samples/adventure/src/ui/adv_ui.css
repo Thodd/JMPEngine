@@ -37,7 +37,8 @@ button:active {
 	font-size: 12px;
 	height: 17px;
 	margin-bottom: 3px;
-	padding-left: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
 	padding-top: 3px;
 }
 
@@ -91,7 +92,7 @@ button:active {
 
 .contextMenuEntry:hover {
 	background: #cde4ff;
-	border-bottom: 1px solid #0253b7;
+	/*border-bottom: 1px solid #0253b7;*/
 	padding-left: 8px;
 	padding-right: 0px;
 }
@@ -153,7 +154,9 @@ button:active {
 	height: 144px; /* 5 lines */
 }
 
-/* Stats & Health */
+/**
+ * Stats & Health
+ */
 
 /* Text positioning */
 #adv_stats .labelText {
@@ -191,11 +194,9 @@ button:active {
 	margin-top: -1px;
 }
 
-/* Backpack */
-#adv_backpack {
-
-}
-
+/**
+ * Backpack
+ */
 .adv_backpack_entry {
 	display: grid;
 	grid-template-columns: 32px 32px auto;
@@ -250,9 +251,16 @@ button:active {
 .adv_equipment_entry {
 	width: 56px;
 	height: 56px;
+
+	display: grid;
+
+	border: 1px solid #d1ddec;
+
 	justify-self: center;
 	align-self: center;
-	border: 1px solid #d1ddec;
+
+	justify-content: center;
+	align-content: center;
 }
 
 .adv_equipment_entry:hover {

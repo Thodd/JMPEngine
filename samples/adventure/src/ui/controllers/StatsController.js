@@ -1,7 +1,7 @@
 import EventBus from "../../../../../src/utils/EventBus.js";
 
 import Constants from "../../Constants.js";
-import Bar from "./Bar.js";
+import Bar from "../controls/Bar.js";
 
 /**
  * Renders and updates the Player Stats on change.

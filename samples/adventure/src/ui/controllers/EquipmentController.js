@@ -1,11 +1,12 @@
+// jmp engine imports
 import EventBus from "../../../../../src/utils/EventBus.js";
+import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 
-import ItemTypes from "../../items/ItemTypes.js";
+// ui imports
 import IconsPool from "../controls/IconsPool.js";
-
 import ContextMenuController from "./ContextMenuController.js";
 
-import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
+// game logic imports
 import Constants from "../../Constants.js";
 
 let _domElements;
@@ -28,21 +29,11 @@ function renderEquipmentSlots(evt) {
 		let slotDom = _domElements[evtData.changedSlot];
 
 		// TODO: Render Equipment content into slot
-		slotDom.innerHTML = IconsPool.getIconDOM("items", evtData.changedItem.sprite);
+		slotDom.innerHTML = IconsPool.getIconDOM("items", evtData.changedItem.sprite, 4);
 
 		// connect Contextmenu
-		ContextMenuController.connect({
-			dom: slotDom,
-			title: `${evtData.changedItem.text.name}`,
-			entries: [
-				{text: "Look at", callback: function() {console.log("test");}},
-				{text: "Unequip", callback: function() {}},
-				{text: "Equip as Ranged", callback: function() {}},
-				{text: "Equip in Quick-Slot 1", callback: function() {}},
-				{text: "Equip in Quick-Slot 2", callback: function() {}},
-				{text: "Consume", callback: function() {}}
-			]
-		});
+		ContextMenuController.createContextMenuForItem(slotDom, evtData.changedItem);
+
 	} else if (evtData.changeType == "unequip") {
 		// TODO: remove event handlers and empty the display
 		let slotDom = _domElements[evtData.changedSlot];
@@ -66,9 +57,7 @@ const EquipmentController = {
 
 		EventBus.subscribe(Constants.Events.UPDATE_BACKPACK, renderEquipmentSlots);
 	}
-
-
-}
+};
 
 exposeOnWindow("EquipmentController", EquipmentController);
 

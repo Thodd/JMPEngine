@@ -2,11 +2,11 @@
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 
 // Adventure Engine imports
-import ContextMenuController from "./controls/ContextMenuController.js";
-import HistoryController from "./controls/HistoryController.js";
-import StatsController from "./controls/StatsController.js";
-import BackpackController from "./controls/BackpackController.js";
-import EquipmentController from "./controls/EquipmentController.js";
+import ContextMenuController from "./controllers/ContextMenuController.js";
+import HistoryController from "./controllers/HistoryController.js";
+import StatsController from "./controllers/StatsController.js";
+import BackpackController from "./controllers/BackpackController.js";
+import EquipmentController from "./controllers/EquipmentController.js";
 
 // container DOM elements
 // DOM can be accessed, since the game is started only after the loaded event

@@ -1,7 +1,7 @@
+import ContextMenuHandlers from "../controls/ContextMenuHandlers.js";
+
 import PlayerState from "../../actors/player/PlayerState.js";
-import Constants from "../../Constants.js";
 import ItemTypes from "../../items/ItemTypes.js";
-import IconsPool from "./IconsPool.js";
 
 let _outerDOM;
 let _titleDOM;
@@ -47,6 +47,47 @@ const ContextMenuController = {
 		// document.addEventListener("contextmenu", function(evt) {
 		// 	evt.preventDefault();
 		// })
+	},
+
+
+	/**
+	 * Creates a context-menu for the given DOM Element.
+	 * Creates a default set of entries based on the given item type.
+	 *
+	 * @param {Element} entryDOM the dom element which should have a context-menu
+	 * @param {ItemType} itemInfo the itemType which is associated with this context-menu
+	 */
+	createContextMenuForItem(entryDOM, itemType) {
+		let backpack = PlayerState.backpack;
+
+		// default entry is looking
+		let entries = [{text: "Look at", callback: ContextMenuHandlers.lookAt.bind(entryDOM, itemType)}];
+
+		// one entry for each "equipment type"
+		for (let slot of itemType.equippableAs) {
+			// check the currently equipped item in the player's backpack
+			// so we can exclude the entries which are unnecessary
+			if (backpack.getItemFromSlot(slot) != itemType) {
+				entries.push({
+					text: `Equip as '${slot}'`,
+					callback: ContextMenuHandlers.equip.bind(entryDOM, itemType, slot)
+				});
+			}
+		}
+
+		// consumables
+		if (itemType.category == ItemTypes.Categories.CONSUMABLE) {
+			entries.push({
+				text: "Consume",
+				callback: ContextMenuHandlers.consume.bind(entryDOM, itemType)
+			});
+		}
+
+		ContextMenuController.connect({
+			dom: entryDOM,
+			title: `${itemType.text.name}`,
+			entries: entries
+		});
 	},
 
 	/**
