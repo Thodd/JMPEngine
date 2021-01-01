@@ -18,8 +18,8 @@ class ItemType {
 		this.sprite = spec.sprite || 0;
 
 		this.text = {
-			name: (spec.text && spec.text.name) || "an unknown Item",
-			result: (spec.text && spec.text.result) || "Nothing happens.",
+			name: (spec.text && spec.text.name) || this.id.toLowerCase(),
+			innerName: (spec.text && spec.text.innerName) || "an unknown Item",
 			flavor: (spec.text && spec.text.flavor) || "Not sure what this is..."
 		}
 
@@ -97,7 +97,6 @@ _create({
 	sprite: 0,
 	text: {
 		name: "a small heart",
-		result: "1 HP restored",
 		flavor: "Restores 1 HP."
 	},
 	values: {
@@ -111,7 +110,6 @@ _create({
 	sprite: 1,
 	text: {
 		name: "a big heart",
-		result: "2 HP restored",
 		flavor: "Restores 2 HP."
 	},
 	values: {
@@ -126,14 +124,98 @@ _create({
 	id: "APPLE",
 	category: categories.CONSUMABLE,
 	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
-	sprite: 7,
+	sprite: 25,
 	text: {
 		name: "Apple",
-		result: "0.5 HP restored",
-		flavor: "Restores 0.5 HP."
+		innerName: "an apple",
+		flavor: "A good old fashioned apple. Nothing much, only restores 0.5 HP."
 	},
 	values: {
 		restore: 0.5
+	}
+});
+_create({
+	id: "BANANA",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	sprite: 26,
+	text: {
+		name: "Banana",
+		innerName: "a banana",
+		flavor: "Rich in potassium... at least that's what they say. Restores 1 HP."
+	},
+	values: {
+		restore: 1
+	}
+});
+_create({
+	id: "ORANGE",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	sprite: 27,
+	text: {
+		name: "Orange",
+		innerName: "an orange",
+		flavor: "The king of citrus fruits. Restores 1.5 HP."
+	},
+	values: {
+		restore: 1.5
+	}
+});
+_create({
+	id: "WATERMELON",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	sprite: 28,
+	text: {
+		name: "Watermelon",
+		innerName: "a slice of watermelon",
+		flavor: "Mouthwatering watery... Restores 2 HP."
+	},
+	values: {
+		restore: 2
+	}
+});
+_create({
+	id: "GRAPES",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	sprite: 29,
+	text: {
+		name: "Grapes",
+		innerName: "a couple of grapes",
+		flavor: "I like them more in liquid form, but well they are certainly rich in sugar. Restores 2.5 HP."
+	},
+	values: {
+		restore: 2.5
+	}
+});
+_create({
+	id: "CHERRIES",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	sprite: 30,
+	text: {
+		name: "Cherries",
+		innerName: "a couple of cherries",
+		flavor: "Sweet and sour at the same time. Restores 3 HP."
+	},
+	values: {
+		restore: 3
+	}
+});
+_create({
+	id: "MEAT",
+	category: categories.CONSUMABLE,
+	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	sprite: 31,
+	text: {
+		name: "Meat",
+		innerName: "a nice chunk of meat",
+		flavor: "Now that's some real food. Restores 3.5 HP."
+	},
+	values: {
+		restore: 3.5
 	}
 });
 
@@ -287,7 +369,7 @@ _create({
 	text: {
 		name: "Spear",
 		innerName: "a spear",
-		flavor: "A classic hunting weapon used by great warriors of ."
+		flavor: "A classic hunting weapon used by great warriors of."
 	},
 	values: {
 		dmg: 1.5,

@@ -16,7 +16,7 @@ class Backpack {
 		this._itemsByCategory = {};
 
 		// equipment is split into different "slots"
-		this._equiped = {};
+		this._equipped = {};
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Backpack {
 	 * @param {string} slot slot name
 	 */
 	getItemFromSlot(slot) {
-		return this._equiped[slot];
+		return this._equipped[slot];
 	}
 
 	/**
@@ -83,6 +83,7 @@ class Backpack {
 
 	/**
 	 * Removes 1 item of the given type from the Backpack.
+	 * If the item is not in the backpack, but is equipped, the equipped item will be removed.
 	 * @param {ItemType} type the type of item that should be removed from the Backpack
 	 */
 	removeItem(type) {
@@ -94,21 +95,47 @@ class Backpack {
 			if (cat[type.id].amount <= 0) {
 				delete cat[type.id];
 			}
-		} else {
-			// TODO: this log happens for initial weapons...
-			// warn(`No item of type '${type.id}' found in backpack`, "Backpack");
-		}
 
-		// notify listeners for item change
-		this._fireChange("remove", type);
+			// notify listeners for item change
+			this._fireChange("remove", type);
+		} else {
+			// item is not in the backpack, check equipment slots
+			let equippedInSlot = this.isEquipped(type);
+			if (equippedInSlot) {
+				// unequip item (necessary to trigger an "equipment change event")
+				this.unequip(equippedInSlot);
+				// and then remove it again
+				this.removeItem(type);
+			}
+		}
 
 		return type;
 	}
 
+	/**
+	 * Checks if the given ItemType is equipped in any slot.
+	 * @param {ItemType} type type to check if it is equipped
+	 * @returns {string} the slot name in which the item is equipped; or <code>false</code> if not equipped
+	 */
+	isEquipped(type) {
+		for (let slot in this._equipped) {
+			if (this._equipped[slot] == type) {
+				return slot;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Equips the given item.
+	 *
+	 * @param {ItemType} type the item to equip
+	 * @param {string} slot the slot name into which the item should be equipped
+	 */
 	equipItem(type, slot) {
 		if (type.isEquippableAs(slot)) {
 			// check if current item needs to be unequipped
-			let currentItem = this._equiped[slot];
+			let currentItem = this._equipped[slot];
 			if (currentItem) {
 				this.unequip(slot);
 			}
@@ -117,7 +144,7 @@ class Backpack {
 			this.removeItem(type);
 
 			// and now equip the new item
-			this._equiped[slot] = type;
+			this._equipped[slot] = type;
 
 			// notify listeners for equipment change
 			this._fireChange("equip", type, slot);
@@ -137,13 +164,13 @@ class Backpack {
 	unequip(slot) {
 		// For now we can only unequip weapons
 		// TODO: QuickSlot Items
-		let currentItem = this._equiped[slot];
+		let currentItem = this._equipped[slot];
 
 		if (currentItem) {
 			this.addItem(currentItem);
 		}
 
-		this._equiped[slot] = null;
+		this._equipped[slot] = null;
 
 		// notify listeners for equipment change
 		this._fireChange("unequip", currentItem, slot);

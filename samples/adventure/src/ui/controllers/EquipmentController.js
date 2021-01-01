@@ -28,11 +28,14 @@ function renderEquipmentSlots(evt) {
 	if (evtData.changeType == "equip") {
 		let slotDom = _domElements[evtData.changedSlot];
 
-		// TODO: Render Equipment content into slot
+		// Render Equipment content into slot
 		slotDom.innerHTML = IconsPool.getIconDOM("items", evtData.changedItem.sprite, 4);
 
+		// icon DOM
+		let iconDOM = slotDom.firstElementChild;
+
 		// connect Contextmenu
-		ContextMenuController.createContextMenuForItem(slotDom, evtData.changedItem);
+		ContextMenuController.createContextMenuForItem(iconDOM, evtData.changedItem);
 
 	} else if (evtData.changeType == "unequip") {
 		// TODO: remove event handlers and empty the display

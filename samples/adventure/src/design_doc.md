@@ -52,3 +52,16 @@
 | Rifle                  |   3    |  85% |    1     | High damage, but slow reload. |
 | Shotgun                |   2    |  60% |    6     | High damage, but wide spread. Shoots 3 Projectiles, at once -> 2 Shots per reload. |
 | Double Barrel          |   3.5  |  70% |    2     | Super High damage, but inaccurate. Slow reload speed. |
+
+# Items
+
+## Consumables
+| Name                   | Restore | Effect     | Description                         |
+|------------------------|---------|------------|-----------------------------------------------|
+| Apple                  |   0.5   |            |    /                     |
+| Banana                 |   1.0   |            |    /                     |
+| Orange                 |   1.5   |            |    /                     |
+| Watermelon             |   2.0   |            |    /                     |
+| Grapes                 |   2.5   |            |    /                     |
+| Cherries               |   3.0   |            |    /                     |
+| Meat                   |   3.5   |            |    /                     |

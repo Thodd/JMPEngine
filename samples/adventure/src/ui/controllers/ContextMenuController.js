@@ -1,7 +1,13 @@
+// jmp engine imports
+import EventBus from "../../../../../src/utils/EventBus.js";
+
+// ui layer imports
 import ContextMenuHandlers from "../controls/ContextMenuHandlers.js";
 
+// game logic imports
 import PlayerState from "../../actors/player/PlayerState.js";
 import ItemTypes from "../../items/ItemTypes.js";
+import Constants from "../../Constants.js";
 
 let _outerDOM;
 let _titleDOM;
@@ -51,6 +57,8 @@ const ContextMenuController = {
 		// document.addEventListener("contextmenu", function(evt) {
 		// 	evt.preventDefault();
 		// })
+
+		EventBus.subscribe(Constants.Events.LOGIC_PLAYER_TURN_ENDED, this.close.bind(this));
 	},
 
 	/**
@@ -61,17 +69,14 @@ const ContextMenuController = {
 	},
 
 	/**
-	 * Creates a context-menu for the given DOM Element.
-	 * Creates a default set of entries based on the given item type.
-	 *
-	 * @param {Element} entryDOM the dom element which should have a context-menu
-	 * @param {ItemType} itemInfo the itemType which is associated with this context-menu
+	 * Dynamically creates the content of the context menu for the given ItemType.
+	 * @param {ItemType} itemType the item type for which the context-menu entries will be created
 	 */
-	createContextMenuForItem(entryDOM, itemType) {
+	createDynamicEntriesForItem(itemType) {
 		let backpack = PlayerState.backpack;
 
 		// default entry is looking
-		let entries = [{text: "Look at", callback: ContextMenuHandlers.lookAt.bind(entryDOM, itemType)}];
+		let entries = [{text: "Look at", callback: ContextMenuHandlers.lookAt.bind(this, itemType)}];
 
 		// one entry for each equippable slot
 		for (let slot of itemType.equippableAs) {
@@ -80,7 +85,7 @@ const ContextMenuController = {
 			if (backpack.getItemFromSlot(slot) != itemType) {
 				entries.push({
 					text: `Equip as '${slot}'`,
-					callback: ContextMenuHandlers.equip.bind(entryDOM, itemType, slot)
+					callback: ContextMenuHandlers.equip.bind(this, itemType, slot)
 				});
 			}
 		}
@@ -89,14 +94,25 @@ const ContextMenuController = {
 		if (itemType.category == ItemTypes.Categories.CONSUMABLE) {
 			entries.push({
 				text: "Consume",
-				callback: ContextMenuHandlers.consume.bind(entryDOM, itemType)
+				callback: ContextMenuHandlers.consume.bind(this, itemType)
 			});
 		}
 
+		return entries;
+	},
+
+	/**
+	 * Creates a context-menu for the given DOM Element.
+	 * Creates a default set of entries based on the given item type.
+	 *
+	 * @param {Element} entryDOM the dom element which should have a context-menu
+	 * @param {ItemType} itemInfo the itemType which is associated with this context-menu
+	 */
+	createContextMenuForItem(entryDOM, itemType) {
 		ContextMenuController.connect({
 			dom: entryDOM,
 			title: `${itemType.text.name}`,
-			entries: entries
+			createContent: this.createDynamicEntriesForItem.bind(this, itemType)
 		});
 	},
 
@@ -120,7 +136,13 @@ const ContextMenuController = {
 			_outerDOM.style.left = `${evt.pageX}px`;
 			_outerDOM.style.top = `${evt.pageY}px`;
 
-			renderMenuContent(contextInfo.title, contextInfo.entries);
+			// dynamically create content if needed
+			let content;
+			if (contextInfo.createContent) {
+				content = contextInfo.createContent();
+			}
+
+			renderMenuContent(contextInfo.title, content || contextInfo.entries);
 		});
 	}
 }

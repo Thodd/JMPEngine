@@ -1,8 +1,10 @@
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
+import EventBus from "../../../../../src/utils/EventBus.js";
 
 import Backpack from "../../items/Backpack.js";
 import Stats from "../Stats.js";
 import ItemTypes from "../../items/ItemTypes.js";
+import Constants from "../../Constants.js";
 
 // Callback for changing the player's stats  -->  updates UI
 const _stats = new Stats(true);
@@ -73,6 +75,9 @@ const PlayerState = {
 		// once the player turn ends we stop checking for input
 		// and wait until the GC gives us priority again
 		PlayerState.yourTurn = false;
+
+		// publish an event so the UI might react on it
+		EventBus.publish(Constants.Events.LOGIC_PLAYER_TURN_ENDED, {});
 
 		// notify the GC that the player has made their turn
 		_gc.endPlayerTurn();

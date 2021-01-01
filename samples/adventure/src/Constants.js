@@ -45,6 +45,7 @@ const Constants = {
 		// events from game LOGIC -> UI
 		LOGIC_UPDATE_STATS: "logic_update_hp",
 		LOGIC_UPDATE_BACKPACK: "logic_update_backpack",
+		LOGIC_PLAYER_TURN_ENDED: "logic_player_turn_ended",
 
 		// events from UI -> LOGIC
 		UI_UPDATE_BACKPACK: "ui_update_backpack"
