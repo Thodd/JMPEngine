@@ -199,7 +199,6 @@ class Player extends BaseActor {
 			if (evtData.changeType === "consume") {
 				backpack.removeItem(evtData.changedItem);
 				this.useItem(evtData.changedItem);
-				PlayerState.endTurn();
 			} else if (evtData.changeType === "equip") {
 				backpack.equipItem(evtData.changedItem, evtData.changedSlot);
 				PlayerState.endTurn();
