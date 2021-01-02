@@ -86,7 +86,7 @@ class Backpack {
 	 * If the item is not in the backpack, but is equipped, the equipped item will be removed.
 	 * @param {ItemType} type the type of item that should be removed from the Backpack
 	 */
-	removeItem(type) {
+	removeItem(type, fallbackSlot) {
 		let cat = this.getItemsForCategory(type.category);
 
 		if (cat[type.id]) {
@@ -99,11 +99,10 @@ class Backpack {
 			// notify listeners for item change
 			this._fireChange("remove", type);
 		} else {
-			// item is not in the backpack, check equipment slots
-			let equippedInSlot = this.isEquipped(type);
-			if (equippedInSlot) {
+			// item is not in the backpack, check the given equipment slots as a fallback
+			if (fallbackSlot && this.getItemFromSlot(fallbackSlot)) {
 				// unequip item (necessary to trigger an "equipment change event")
-				this.unequip(equippedInSlot);
+				this.unequip(fallbackSlot);
 				// and then remove it again
 				this.removeItem(type);
 			}

@@ -10,7 +10,7 @@
 	"scale": 2,
 
 	"bg": "0x222222",
-	"skipIntro": true,
+	"skipIntro": false,
 
 	"assets": {
 		"spritesheets": {

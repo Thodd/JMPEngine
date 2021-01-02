@@ -123,7 +123,7 @@ _create({
 _create({
 	id: "APPLE",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 25,
 	text: {
 		name: "Apple",
@@ -137,7 +137,7 @@ _create({
 _create({
 	id: "BANANA",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 26,
 	text: {
 		name: "Banana",
@@ -151,7 +151,7 @@ _create({
 _create({
 	id: "ORANGE",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 27,
 	text: {
 		name: "Orange",
@@ -165,7 +165,7 @@ _create({
 _create({
 	id: "WATERMELON",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 28,
 	text: {
 		name: "Watermelon",
@@ -179,7 +179,7 @@ _create({
 _create({
 	id: "GRAPES",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 29,
 	text: {
 		name: "Grapes",
@@ -193,7 +193,7 @@ _create({
 _create({
 	id: "CHERRIES",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 30,
 	text: {
 		name: "Cherries",
@@ -207,7 +207,7 @@ _create({
 _create({
 	id: "MEAT",
 	category: categories.CONSUMABLE,
-	equippableAs: [Constants.EquipmentSlots.QUICK1, Constants.EquipmentSlots.QUICK2],
+	equippableAs: [Constants.EquipmentSlots.QUICK_A, Constants.EquipmentSlots.QUICK_S],
 	sprite: 31,
 	text: {
 		name: "Meat",

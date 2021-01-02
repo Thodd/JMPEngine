@@ -20,8 +20,8 @@ const _dom = {
 	equipment: {
 		melee:    document.getElementById("adv_equipment_melee_slot"),
 		ranged:   document.getElementById("adv_equipment_ranged_slot"),
-		quick1:   document.getElementById("adv_equipment_quick_slot_1"),
-		quick2:   document.getElementById("adv_equipment_quick_slot_2")
+		quickA:   document.getElementById("adv_equipment_quick_slot_A"),
+		quickS:   document.getElementById("adv_equipment_quick_slot_S")
 	}
 };
 

@@ -126,12 +126,27 @@ class Player extends BaseActor {
 			} else if (Keyboard.down(Keys.G)) {
 				// player tries to grab an item
 				this.grabItems();
+			} else if (Keyboard.down(Keys.A)) {
+				this.quickSlotUsed(Constants.EquipmentSlots.QUICK_A);
+			} else if (Keyboard.down(Keys.S)) {
+				this.quickSlotUsed(Constants.EquipmentSlots.QUICK_S);
 			} else {
 				this.inputCheck_Movement();
 			}
 		}
 
 		this.playAnimation({name: `${this._lastDir}`});
+	}
+
+	quickSlotUsed(slot) {
+		let backpack = this.getBackpack();
+		let item = backpack.getItemFromSlot(slot);
+
+		// consome the equipped item
+		if (item && item.hasCategory(ItemTypes.Categories.CONSUMABLE)) {
+			backpack.removeItem(item, slot);
+			this.useItem(item);
+		}
 	}
 
 	/**

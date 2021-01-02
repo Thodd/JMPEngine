@@ -36,7 +36,6 @@ button:active {
 
 	font-size: 12px;
 	height: 17px;
-	margin-bottom: 3px;
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 3px;
@@ -46,16 +45,12 @@ button:active {
 	position: fixed;
 	top: 0;
 	left: 0;
-
 	display: grid;
-	grid-template-rows: 24px auto; /* 2 rows: Title, Content */
-
+	grid-template-rows: 22px auto;
 	background: #e2eaec;
-	border: 1px solid #444444;
-	box-shadow: 1px 1px 0px #002465;
-
+	border: 3px solid #0253b7;
+	box-shadow: 2px 2px 0px #002465;
 	font-family: monospace;
-	padding: 5px;
 }
 
 .wnd_container.noTitle {
@@ -64,6 +59,7 @@ button:active {
 
 .wnd_content {
 	overflow: scroll;
+	padding: 5px;
 }
 
 .wnd_content.noScroll {
@@ -79,6 +75,7 @@ button:active {
  */
 #adv_contextMenu {
 	width: fit-content;
+	min-width: 100px;
 }
 
 .contextMenuEntry {
@@ -111,42 +108,42 @@ button:active {
 /* Initial Positioning of Windows */
 #adv_map {
 	left: 10px;
-	top: 92px;
+	top: 100px;
 }
 
 #adv_stats {
 	left: 10px;
 	top: 60px;
 
-	width: 420px;
+	width: 430px;
 }
 
 #adv_history {
 	left: 10px;
-	top: 408px;
+	top: 425px;
 
-	width: 420px;
+	width: 430px;
 }
 
 #adv_equipment {
-	left: 445px;
+	left: 453px;
 	top: 60px;
 
-	height: 100px;
+	height: 105px;
 	width: 300px;
 }
 
 #adv_backpack {
-	left: 445px;
-	top: 176px;
+	left: 453px;
+	top: 180px;
 
-	height: 400px;
+	height: 423px;
 	width: 300px;
 }
 
 #adv_dbg {
 	left: 460px;
-	top: 600px;
+	top: 620px;
 }
 
 /* Log UI */
