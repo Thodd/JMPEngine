@@ -7,6 +7,7 @@ import HistoryController from "./controllers/HistoryController.js";
 import StatsController from "./controllers/StatsController.js";
 import BackpackController from "./controllers/BackpackController.js";
 import EquipmentController from "./controllers/EquipmentController.js";
+import IconsPool from "./controls/IconsPool.js";
 
 // container DOM elements
 // DOM can be accessed, since the game is started only after the loaded event
@@ -35,6 +36,25 @@ HistoryController.init(_dom.history);
 StatsController.init(_dom.hp);
 BackpackController.init(_dom.backpack);
 EquipmentController.init(_dom.equipment);
+
+
+/**
+ * custom mouse cursor
+ * TODO: Move to own module
+ * TODO: initialize after Spritesheet is available
+ */
+// let cursorDOM = document.createElement("div");
+// cursorDOM.innerHTML = IconsPool.getIconDOM("items", 47, 2);
+// cursorDOM.style.position = "fixed";
+// cursorDOM.style.transform = "rotate(-90deg)";
+
+// document.body.appendChild(cursorDOM);
+
+// document.addEventListener("mousemove", function(evt) {
+// 	evt.preventDefault();
+// 	cursorDOM.style.left = `${evt.clientX+2}px`;
+// 	cursorDOM.style.top = `${evt.clientY+2}px`;
+// });
 
 exposeOnWindow("UISystem", _api);
 
