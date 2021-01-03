@@ -181,7 +181,7 @@ class GameTile extends Tile {
 		// Drop some random loot
 		let dropProb = RNG.random();
 		if (dropProb <= 0.2) {
-			this.dropNewItem(Helper.choose([ItemTypes.HEART_SMALL, ItemTypes.HEART_BIG]));
+			this.dropNewItem(Helper.choose([ItemTypes.HEART_SMALL, ItemTypes.BANANA]));
 		}
 	}
 }

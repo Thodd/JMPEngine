@@ -7,33 +7,31 @@ import Constants from "../../Constants.js";
  * Thin layer to fire the events from UI to LOGIC.
  */
 const MenuHandlerImplementations = {
-	lookAt(itemType) {
+	lookAt(itemType, context, slot) {
 		log(`looking at item: '${itemType.id}'`, "ContextMenu");
 		EventBus.publish(Constants.Events.UI_UPDATE_BACKPACK, {
 			changeType: "look",
-			changedItem: itemType
+			changedItem: itemType,
+			context: context
 		});
 	},
-	equip(itemType, slot) {
-		log(`equipping item '${itemType.id}' in slot '${slot}'`, "ContextMenu");
+	equip(itemType, context, newSlot, currentSlot) {
+		log(`equipping item '${itemType.id}' in slot '${newSlot}'`, "ContextMenu");
 		EventBus.publish(Constants.Events.UI_UPDATE_BACKPACK, {
 			changeType: "equip",
 			changedItem: itemType,
-			changedSlot: slot
+			context: context,
+			newSlot: newSlot,
+			currentSlot: currentSlot
 		});
 	},
-	unequip(slot) {
-		log(`unequipping item from slot '${slot}'`, "ContextMenu");
-		EventBus.publish(Constants.Events.UI_UPDATE_BACKPACK, {
-			changeType: "unequip",
-			changedSlot: slot
-		});
-	},
-	consume(itemType) {
+	consume(itemType, context, slot) {
 		log(`consuming item '${itemType.id}'`, "ContextMenu");
 		EventBus.publish(Constants.Events.UI_UPDATE_BACKPACK, {
 			changeType: "consume",
-			changedItem: itemType
+			changedItem: itemType,
+			context: context,
+			currentSlot: slot
 		});
 	}
 };

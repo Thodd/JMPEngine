@@ -21,12 +21,11 @@ function renderEquipmentSlots(evt) {
 	// Event Data consists of:
 	// changeType
 	// changedItem
-	// changedSlot
-	// backpack
+	// newSlot
 	let evtData = evt.data;
 
 	if (evtData.changeType == "equip") {
-		let slotDom = _domElements[evtData.changedSlot];
+		let slotDom = _domElements[evtData.newSlot];
 
 		// Render Equipment content into slot
 		slotDom.innerHTML = IconsPool.getIconDOM("items", evtData.changedItem.sprite, 4);
@@ -34,12 +33,16 @@ function renderEquipmentSlots(evt) {
 		// icon DOM
 		let iconDOM = slotDom.firstElementChild;
 
+		// get context information
+		let context = slotDom.dataset.advContext;
+		let slotName = slotDom.dataset.advSlot;
+
 		// connect Contextmenu
-		ContextMenuController.createContextMenuForItem(iconDOM, evtData.changedItem);
+		ContextMenuController.createContextMenuForItem(iconDOM, evtData.changedItem, context, slotName);
 
 	} else if (evtData.changeType == "unequip") {
 		// TODO: remove event handlers and empty the display
-		let slotDom = _domElements[evtData.changedSlot];
+		let slotDom = _domElements[evtData.newSlot];
 		slotDom.innerHTML = "";
 	}
 }

@@ -24,14 +24,14 @@ class Backpack {
 	 *
 	 * @param {string} changeType either "add", "remove", "equip" or "unequip"
 	 * @param {ItemType} type the item type which is affected
-	 * @param {string} changedSlot the slot name which was changed (only for "equip" and "unequip")
+	 * @param {string} newSlot the slot name which was changed (only for "equip" and "unequip")
 	 */
-	_fireChange(changeType, type, changedSlot) {
+	_fireChange(changeType, type, newSlot) {
 		if (this._fireEvents) {
 			EventBus.publish(Constants.Events.LOGIC_UPDATE_BACKPACK, {
 				changeType: changeType,
 				changedItem: type,
-				changedSlot: changedSlot,
+				newSlot: newSlot,
 				backpack: this
 			});
 		}

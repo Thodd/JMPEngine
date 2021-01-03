@@ -71,21 +71,23 @@ const ContextMenuController = {
 	/**
 	 * Dynamically creates the content of the context menu for the given ItemType.
 	 * @param {ItemType} itemType the item type for which the context-menu entries will be created
+	 * @param {string} context the context from which the context-menu opens up: "equipment" or "backpack"
+	 * @param {string} [currentSlot] optionally the slot name if the menu is opened on an equipment slot
 	 */
-	createDynamicEntriesForItem(itemType) {
+	createDynamicEntriesForItem(itemType, context, currentSlot) {
 		let backpack = PlayerState.backpack;
 
 		// default entry is looking
-		let entries = [{text: "Look at", callback: ContextMenuHandlers.lookAt.bind(this, itemType)}];
+		let entries = [{text: "Look at", callback: ContextMenuHandlers.lookAt.bind(this, itemType, context, currentSlot)}];
 
 		// one entry for each equippable slot
-		for (let slot of itemType.equippableAs) {
+		for (let newSlot of itemType.equippableAs) {
 			// check the currently equipped item in the player's backpack
 			// so we can exclude the entries which are unnecessary
-			if (backpack.getItemFromSlot(slot) != itemType) {
+			if (backpack.getItemFromSlot(newSlot) != itemType) {
 				entries.push({
-					text: `Equip as '${slot}'`,
-					callback: ContextMenuHandlers.equip.bind(this, itemType, slot)
+					text: `Equip as '${newSlot}'`,
+					callback: ContextMenuHandlers.equip.bind(this, itemType, context, newSlot, currentSlot)
 				});
 			}
 		}
@@ -94,7 +96,7 @@ const ContextMenuController = {
 		if (itemType.category == ItemTypes.Categories.CONSUMABLE) {
 			entries.push({
 				text: "Consume",
-				callback: ContextMenuHandlers.consume.bind(this, itemType)
+				callback: ContextMenuHandlers.consume.bind(this, itemType, context, currentSlot)
 			});
 		}
 
@@ -107,12 +109,14 @@ const ContextMenuController = {
 	 *
 	 * @param {Element} entryDOM the dom element which should have a context-menu
 	 * @param {ItemType} itemInfo the itemType which is associated with this context-menu
+	 * @param {string} context the context from which the context-menu opens up: "equipment" or "backpack"
+	 * @param {string} [slotName] optionally the slot name if the menu is opened on an equipment slot
 	 */
-	createContextMenuForItem(entryDOM, itemType) {
+	createContextMenuForItem(entryDOM, itemType, context, slotName) {
 		ContextMenuController.connect({
 			dom: entryDOM,
 			title: `${itemType.text.name}`,
-			createContent: this.createDynamicEntriesForItem.bind(this, itemType)
+			createContent: this.createDynamicEntriesForItem.bind(entryDOM, itemType, context, slotName)
 		});
 	},
 

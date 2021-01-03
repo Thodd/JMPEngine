@@ -203,7 +203,7 @@ class Player extends BaseActor {
 		// event data is:
 		// changeType
 		// changedItem
-		// changedSlot
+		// newSlot
 		let evtData = evt.data;
 
 		// only do stuff when it's our turn
@@ -212,10 +212,14 @@ class Player extends BaseActor {
 			let backpack = this.getBackpack();
 
 			if (evtData.changeType === "consume") {
-				backpack.removeItem(evtData.changedItem);
+				backpack.removeItem(evtData.changedItem, evtData.currentSlot);
 				this.useItem(evtData.changedItem);
 			} else if (evtData.changeType === "equip") {
-				backpack.equipItem(evtData.changedItem, evtData.changedSlot);
+				// check if the item is already equipped in another slot  -->  unequip first
+				if (evtData.currentSlot) {
+					backpack.unequip(evtData.currentSlot);
+				}
+				backpack.equipItem(evtData.changedItem, evtData.newSlot);
 				PlayerState.endTurn();
 			}
 		}

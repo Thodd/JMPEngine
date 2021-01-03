@@ -84,7 +84,7 @@ const BackpackController = {
 				let entryDOM = renderEntry(itemInfo);
 
 				// connect Contextmenu
-				ContextMenuController.createContextMenuForItem(entryDOM, itemInfo.type);
+				ContextMenuController.createContextMenuForItem(entryDOM, itemInfo.type, "backpack");
 
 				this._containerDOM.appendChild(entryDOM);
 				itemsCount++;
