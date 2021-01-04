@@ -15,6 +15,10 @@ class Enemy extends BaseActor {
 		this.name = "Enemy#" + this._ID;
 		this.nameColor = "#be2632";
 
+		this.equipInitialWeapon();
+	}
+
+	equipInitialWeapon() {
 		// equip default weapon
 		let weapon = ItemTypes.FANGS;
 		this.getBackpack().addItem(weapon);

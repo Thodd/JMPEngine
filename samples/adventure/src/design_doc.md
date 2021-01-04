@@ -17,7 +17,7 @@
 | Wolf                   |  3 |             | Fangs       | Attacks in packs of 4, Moves closer each turn  |
 | Spider                 |  2 |             | Fangs       | Randomly leaves spiderwebs. Web immobilizes for 1 turn, then is destroyed |
 | Red Wolf               |  3 |             | Claws       | Attacks in packs of 3, Moves closer each turn. Higher damage than regular Wolf  |
-| Bear                   |  6 |             | Claws       | Slow but strong. |
+| Bear                   | 12 |             | Claws       | Slow but strong. |
 | Roots                  |  3 |             | Thorns      | Hurts the player after they try to bash the Roots. |
 
 # Weapons
@@ -28,7 +28,7 @@
 |-----------------------------|--------|------|-------------------------------------|
 | **[E]** Thorns              |   1    | 100% | Only hurts if attacked. "Retaliates". |
 | **[E]** Fangs               |   1    |  90% | Default Enemy weapon. Misses sometimes |
-| **[E]** Claws               |   2    |  70% | Dangerous Enemy weapon. Misses often. |
+| **[E]** Claws               |   2.5  |  70% | Dangerous Enemy weapon. Misses often. |
 | Pocket-Knife                |   0.5  | 100% | Makeshift weapon                                      |
 | Shovel                      |   0.5  | 100% | Makeshift weapon         |
 | Kitchen-Knife               |   1    | 100% | Basic weapon, very easy to use.        |

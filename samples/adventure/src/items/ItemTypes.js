@@ -248,7 +248,7 @@ _create({
 		flavor: "Don't get caught by those!"
 	},
 	values: {
-		dmg: 2,
+		dmg: 2.5,
 		acc: 0.7
 	}
 });

@@ -326,27 +326,32 @@ class BaseActor extends Entity {
 	 * @param {BaseActor} defender the defending actor
 	 */
 	meleeAttackActor(defender) {
-		// determine animation phase
-		let phase = this.isPlayer ? AnimationSystem.Phases.GENERAL : AnimationSystem.Phases.ENEMY_ATTACK;
+		// Only attack living actors
+		// it might happen that an actor dies on a turn before we had a chance to attack it
+		if (!defender.isDead) {
 
-		// bump animation
-		// whether we hit or miss is irrelevant, we always perform the attack animation
-		let bump = AnimationPool.get(BumpAnimation, this);
-		bump.bumpTowards(defender.getTile());
-		this.scheduleAnimation(bump, phase);
+			// determine animation phase
+			let phase = this.isPlayer ? AnimationSystem.Phases.GENERAL : AnimationSystem.Phases.ENEMY_ATTACK;
 
-		// now do the actual battle
-		let battleResult = MeleeCalculator.battle(this, defender);
+			// bump animation
+			// whether we hit or miss is irrelevant, we always perform the attack animation
+			let bump = AnimationPool.get(BumpAnimation, this);
+			bump.bumpTowards(defender.getTile());
+			this.scheduleAnimation(bump, phase);
 
-		UISystem.log(`${this} attacks ${defender}.`);
-		if (battleResult.defenderWasHit) {
-			// defender is hurt by this actor, schedule hurt animation
-			let hurtAnim = defender.updateHP(-battleResult.damage, this);
-			if (hurtAnim) {
-				this.scheduleAnimation(hurtAnim, phase);
+			// now do the actual battle
+			let battleResult = MeleeCalculator.battle(this, defender);
+
+			UISystem.log(`${this} attacks ${defender}.`);
+			if (battleResult.defenderWasHit) {
+				// defender is hurt by this actor, schedule hurt animation
+				let hurtAnim = defender.updateHP(-battleResult.damage, this);
+				if (hurtAnim) {
+					this.scheduleAnimation(hurtAnim, phase);
+				}
+			} else {
+				UISystem.log(`${this} misses!`);
 			}
-		} else {
-			UISystem.log(`${this} misses!`);
 		}
 	}
 
