@@ -10,15 +10,15 @@
 
 # Enemies
 
-| Name                   | HP | Hits 2 Kill | Weapon      | Description                         |
-|------------------------|----|-------------|-------------|-------------------------------------|
-| Rat                    |  2 |             | Fangs       | Moves randomly, attacks if adjacent. Nothing special |
-| Snake                  |  2 |             | Fangs       | Moves randomly, attacks if adjacent. Can poison! |
-| Wolf                   |  3 |             | Fangs       | Attacks in packs of 4, Moves closer each turn  |
-| Spider                 |  2 |             | Fangs       | Randomly leaves spiderwebs. Web immobilizes for 1 turn, then is destroyed |
-| Red Wolf               |  3 |             | Claws       | Attacks in packs of 3, Moves closer each turn. Higher damage than regular Wolf  |
-| Bear                   | 12 |             | Claws       | Slow but strong. |
-| Roots                  |  3 |             | Thorns      | Hurts the player after they try to bash the Roots. |
+| Name                   | HP | Speed  | Weapon      | Description                         |
+|------------------------|----|--------|-------------|-------------------------------------|
+| Rat                    |  2 |   100  | Fangs       | Moves randomly, attacks if adjacent. Nothing special |
+| Snake                  |  2 |   100  | Fangs       | Moves randomly, attacks if adjacent. Can poison! |
+| Wolf                   |  3 |    80  | Fangs       | Attacks in packs of 4, Moves closer each turn  |
+| Spider                 |  2 |   ???  | Fangs       | Randomly leaves spiderwebs. Web immobilizes for 1 turn, then is destroyed |
+| Red Wolf               |  3 |   ???  | Claws       | Attacks in packs of 3, Moves closer each turn. Higher damage than regular Wolf  |
+| Bear                   | 12 |    60  | Claws       | Slow but strong. |
+| Roots                  |  3 |     0  | Thorns      | Hurts the player after they try to bash the Roots. |
 
 # Weapons
 

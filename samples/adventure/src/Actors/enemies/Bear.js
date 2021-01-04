@@ -48,7 +48,8 @@ class Bear extends Enemy {
 		let player = this.getPlayer();
 
 		// We are directly adjacent to the player: always attack!
-		if (this.isStandingAdjacent(player)) {
+		// also attack diagonally!
+		if (this.isStandingAdjacent(player, true)) {
 			this.meleeAttackActor(player);
 		} else {
 			// if player is not adjacent but close: move towards player
