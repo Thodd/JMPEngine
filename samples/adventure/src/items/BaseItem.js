@@ -21,6 +21,13 @@ class BaseItem extends Entity {
 	}
 
 	/**
+	 * Returns the ItemType for this BaseItem instance.
+	 */
+	getItemType() {
+		return this.type;
+	}
+
+	/**
 	 * Sets the tile reference and places the item on a tile (visually).
 	 * @param {GameTile} gameTile the tile on which the item is placed
 	 */

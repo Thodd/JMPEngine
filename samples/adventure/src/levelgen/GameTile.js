@@ -86,7 +86,7 @@ class GameTile extends Tile {
 	}
 
 	/**
-	 * Pick's up all item instances and releases them safely into the Pool.
+	 * Picks up all item instances and releases them safely into the Pool.
 	 * Returns an array of ItemTypes corresponding to all items that were picked up.
 	 * @returns {ItemType[]} the list of all item types (incl. multiples) which were picked up from this tile.
 	 */
@@ -97,11 +97,26 @@ class GameTile extends Tile {
 		// which will modify the items list inplace (splice(...)).
 		let _itemsCopy = this._items.slice();
 		_itemsCopy.forEach((item) => {
-			types.push(item.type);
+			types.push(item.getItemType());
 			ItemPool.release(item);
 		});
 
 		return types;
+	}
+
+	/**
+	 * Picks up the topmost consumable.
+	 * @returns {ItemType|null} Returns the ItemType of the topmost consumable item, or null if none present on the tile.
+	 */
+	pickupTopmostConsumable() {
+		let topmostConsumable = this._items.find((item) => item.getItemType().hasCategory(ItemTypes.Categories.CONSUMABLE));
+
+		if (topmostConsumable) {
+			ItemPool.release(topmostConsumable);
+			return topmostConsumable.getItemType();
+		}
+
+		return null;
 	}
 
 	/**
@@ -181,7 +196,7 @@ class GameTile extends Tile {
 		// Drop some random loot
 		let dropProb = RNG.random();
 		if (dropProb <= 0.2) {
-			this.dropNewItem(Helper.choose([ItemTypes.HEART_SMALL, ItemTypes.BANANA]));
+			this.dropNewItem(Helper.choose([ItemTypes.APPLE, ItemTypes.BANANA]));
 		}
 	}
 }

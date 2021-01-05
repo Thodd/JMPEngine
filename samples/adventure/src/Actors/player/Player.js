@@ -124,8 +124,9 @@ class Player extends BaseActor {
 			if (Keyboard.down(Keys.PERIOD)) {
 				PlayerState.endTurn();
 			} else if (Keyboard.down(Keys.G)) {
-				// player tries to grab an item
-				this.grabItems();
+				this.grabItemsFromFloor();
+			} else if (Keyboard.down(Keys.U)) {
+				this.useItemsFromFloor();
 			} else if (Keyboard.down(Keys.A)) {
 				this.quickSlotUsed(Constants.EquipmentSlots.QUICK_A);
 			} else if (Keyboard.down(Keys.S)) {
@@ -138,6 +139,10 @@ class Player extends BaseActor {
 		this.playAnimation({name: `${this._lastDir}`});
 	}
 
+	/**
+	 * Uses the item in the given Quickslot (if possible).
+	 * @param {string} slot the slot from which an item should be used
+	 */
 	quickSlotUsed(slot) {
 		let backpack = this.getBackpack();
 		let item = backpack.getItemFromSlot(slot);
@@ -146,13 +151,15 @@ class Player extends BaseActor {
 		if (item && item.hasCategory(ItemTypes.Categories.CONSUMABLE)) {
 			backpack.removeItem(item, slot);
 			this.useItem(item);
+
+			PlayerState.endTurn();
 		}
 	}
 
 	/**
 	 * Check if an item can be picked up.
 	 */
-	grabItems() {
+	grabItemsFromFloor() {
 		// Picking items off the tile releases the BaseItem render entities ot the Pool
 		let items = this.gameTile.pickupItems();
 
@@ -161,33 +168,25 @@ class Player extends BaseActor {
 
 			// process items
 			for (let item of items) {
-				// consume ALL instant use items
-				if (item.category === ItemTypes.Categories.CONSUMABLE_INSTANT) {
-					// we skip the ending of the turn, so we can schedule multiple instant use items
-					this.useItem(item);
-				} else {
-					// store everything else in the backpack
-					backpack.addItem(item);
-					UISystem.log(`${this} places ${item} in their backpack.`);
-				}
+				// store everything else in the backpack
+				backpack.addItem(item);
+				UISystem.log(`${this} places ${item} in their backpack.`);
 			}
 
-			// we end the turn after ALL items are grabbed
+			// end turn after picking up all items
 			PlayerState.endTurn();
 		}
 	}
 
 	/**
-	 * Overwritten from BaseActor class.
-	 * @param {ItemType} item the item to use
+	 * Use an item directly from the floor without picking it up first.
 	 */
-	useItem(item) {
-		super.useItem(item);
+	useItemsFromFloor() {
+		let topmostConsumable = this.gameTile.pickupTopmostConsumable();
 
-		// normally using an item ends the turn,
-		// but we sometimes need to call this in a loop and want to schedule multiple animations
-		// this is the case for instant consumables like heart pickups etc.
-		if (item.category !== ItemTypes.Categories.CONSUMABLE_INSTANT) {
+		// use item and remove it from the tile
+		if (topmostConsumable) {
+			this.useItem(topmostConsumable);
 			PlayerState.endTurn();
 		}
 	}
@@ -213,15 +212,17 @@ class Player extends BaseActor {
 
 			if (evtData.changeType === "consume") {
 				backpack.removeItem(evtData.changedItem, evtData.currentSlot);
-				this.useItem(evtData.changedItem);
+				this.useItem(evtData.changedItem); // ends the turn!
 			} else if (evtData.changeType === "equip") {
 				// check if the item is already equipped in another slot  -->  unequip first
 				if (evtData.currentSlot) {
 					backpack.unequip(evtData.currentSlot);
 				}
 				backpack.equipItem(evtData.changedItem, evtData.newSlot);
-				PlayerState.endTurn();
 			}
+
+			// end turn after action was performed
+			PlayerState.endTurn();
 		}
 	}
 

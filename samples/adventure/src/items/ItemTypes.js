@@ -76,7 +76,6 @@ const categories = {
 	GENERAL: "general",
 	WEAPON: "weapon",
 	CONSUMABLE: "consumable",
-	CONSUMABLE_INSTANT: "consumable_INSTANT",
 	QUEST: "quest",
 	TREASURE: "treasure",
 	MAP: "map"
@@ -87,35 +86,6 @@ const categories = {
  */
 _types.Categories = categories;
 
-
-/**
- * CONSUMABLES_INSTANT -> instant use health pickups
- */
-_create({
-	id: "HEART_SMALL",
-	category: categories.CONSUMABLE_INSTANT,
-	sprite: 0,
-	text: {
-		name: "a small heart",
-		flavor: "Restores 1 HP."
-	},
-	values: {
-		restore: 1
-	}
-});
-
-_create({
-	id: "HEART_BIG",
-	category: categories.CONSUMABLE_INSTANT,
-	sprite: 1,
-	text: {
-		name: "a big heart",
-		flavor: "Restores 2 HP."
-	},
-	values: {
-		restore: 2
-	}
-});
 
 /**
  * CONSUMABLES -> only used from within the backpack
