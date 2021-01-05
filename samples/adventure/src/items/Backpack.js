@@ -54,6 +54,28 @@ class Backpack {
 	}
 
 	/**
+	 * Returns the list of ALL items in the backpack, NOT grouped by their category.
+	 * @returns {object[]} an array containing the item info objects; might be an empty array
+	 */
+	getAllItemsFlat() {
+		let allItemsFlat = [];
+
+		for (let catName in this._itemsByCategory) {
+			let category = this._itemsByCategory[catName];
+			for (let itemID in category) {
+				allItemsFlat.push(category[itemID]);
+			}
+		}
+
+		// sort items alphabetically
+		return allItemsFlat.sort(function(a, b) {
+			let name_a = a.type.text.name;
+			let name_b = b.type.text.name;
+			return name_a.localeCompare(name_b);
+		});
+	}
+
+	/**
 	 * Returns the item quipped in the given slot.
 	 * @param {string} slot slot name
 	 */

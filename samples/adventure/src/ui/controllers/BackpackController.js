@@ -69,30 +69,23 @@ const BackpackController = {
 	 * @param {Element} container DOM Element into which the Backpack content should be rendered
 	 */
 	renderBackpackContent(backpack) {
-		let allItemsByCategory = backpack.getAllItemsByCategory();
-		let itemsCount = 0;
-
 		// clear container, I know... not the most elegant solution but good enough for our game ;)
 		// TODO: deregister event handlers ???   -->   ContextMenuController.deconnect(...)
 		this._containerDOM.innerHTML = "";
 
-		// create new entries
-		for (let catName in allItemsByCategory) {
-			let category = allItemsByCategory[catName];
-			for (let itemID in category) {
-				let itemInfo = category[itemID];
+		let allItems = backpack.getAllItemsFlat();
+
+		if (allItems.length > 0) {
+			allItems.forEach(function(itemInfo) {
 				let entryDOM = renderEntry(itemInfo);
 
 				// connect Contextmenu
 				ContextMenuController.createContextMenuForItem(entryDOM, itemInfo.type, "backpack");
 
 				this._containerDOM.appendChild(entryDOM);
-				itemsCount++;
-			}
-		}
-
-		// It can happen that the players backpack is empty, e.g. if all items are consumed
-		if (!itemsCount) {
+			}.bind(this));
+		} else {
+			// It can happen that the players backpack is empty, e.g. if all items are consumed
 			this._containerDOM.appendChild(renderEntry({
 				amount: 0,
 				type: {
@@ -101,7 +94,7 @@ const BackpackController = {
 						name: "Your backpack is empty."
 					}
 				}
-			}))
+			}));
 		}
 	}
 }
