@@ -224,7 +224,7 @@ _create({
 });
 
 /**
- * MELEE
+ * WEAPONS: melee
  */
 _create({
 	id: "KNIFE_POCKET",
@@ -374,6 +374,25 @@ _create({
 	values: {
 		dmg: 2.5,
 		acc: 0.8,
+	}
+});
+
+/**
+ * WEAPONS: ranged
+ */
+_create({
+	id: "THROWING_KNIFES",
+	category: categories.WEAPON,
+	equippableAs: [Constants.EquipmentSlots.RANGED],
+	sprite: 58,
+	text: {
+		name: "Throwing Knifes",
+		innerName: "a set of throwing knifes",
+		flavor: "A staple of carnival culture."
+	},
+	values: {
+		dmg: 0.5,
+		acc: 0.95,
 	}
 });
 

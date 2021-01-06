@@ -1,17 +1,22 @@
+// JMP Engine imports
+import RNG from "../../../../../src/utils/RNG.js";
+import Helper from "../../../../../src/utils/Helper.js";
+
+// Game Imports
 import BaseMap from "./BaseMap.js";
 
 import Constants from "../../Constants.js";
 import GameTileTypes from "../../levelgen/GameTileTypes.js";
 import GameTile from "../../levelgen/GameTile.js";
 
-import RNG from "../../../../../src/utils/RNG.js";
-import Helper from "../../../../../src/utils/Helper.js";
-
 import Snake from "../../actors/enemies/Snake.js";
 import Wolf from "../../actors/enemies/Wolf.js";
 import Bear from "../../actors/enemies/Bear.js";
 
 import ItemTypes from "../../items/ItemTypes.js";
+import Algos from "../../utils/Algos.js";
+import EffectPool from "../../animations/effects/EffectPool.js";
+import TileHighlight from "../../animations/effects/TileHighlight.js";
 
 class WorldScreen extends BaseMap {
 	constructor() {
@@ -63,7 +68,14 @@ class WorldScreen extends BaseMap {
 
 	begin() {
 		super.begin();
-		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.SPEAR);
+		this.getPlayer().getTileRelative(-1, -1).dropNewItem(ItemTypes.SPEAR);
+
+		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
+		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
+		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
+		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
+		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
+
 		this.getPlayer().getTileRelative(-1, 3).dropNewItem(ItemTypes.APPLE);
 		this.getPlayer().getTileRelative(-1, 4).dropNewItem(ItemTypes.BANANA);
 		this.getPlayer().getTileRelative(-1, 5).dropNewItem(ItemTypes.ORANGE);
@@ -71,6 +83,20 @@ class WorldScreen extends BaseMap {
 		this.getPlayer().getTileRelative(-1, 7).dropNewItem(ItemTypes.GRAPES);
 		this.getPlayer().getTileRelative(-1, 8).dropNewItem(ItemTypes.CHERRIES);
 		this.getPlayer().getTileRelative(-1, 9).dropNewItem(ItemTypes.MEAT);
+
+
+		let line = Algos.bresenham(11, 10, 15, 19);
+		for (let p of line) {
+			let tile = this.getTilemap().get(p.x, p.y);
+			let th = EffectPool.get(TileHighlight, tile);
+			th.layer = Constants.Layers.ABOVE_ACTORS;
+			if (tile.isFree()) {
+				th.setColor(0x00FFFF)
+			} else {
+				th.setColor(0xFF0000);
+			}
+			this.add(th);
+		}
 	}
 
 }

@@ -39,6 +39,11 @@
 				"w": 10,
 				"h": 10
 			},
+			"tile_highlights": {
+				"url": "./img/tile_highlights.png",
+				"w": 10,
+				"h": 10
+			},
 			"items": {
 				"url": "./img/items.png",
 				"w": 12,
