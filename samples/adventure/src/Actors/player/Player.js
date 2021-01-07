@@ -213,7 +213,7 @@ class Player extends BaseActor {
 		// only log a "looking" message if the old and new tile differ... stops the History from being spammed ;)
 		if (oldTile.getType() != newTile.getType()) {
 			let newTileType = newTile.getType();
-			let innerName = newTileType.text && newTileType.text.innerName || "nothing";
+			let innerName = newTileType.text && newTileType.text.innerName || "nothing";
 			let flavor = newTileType.text && newTileType.text.flavor || "Wow!";
 			UISystem.log(`${this} is sees ${innerName}. ${flavor}`);
 		}
