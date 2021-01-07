@@ -387,10 +387,12 @@ _create({
 	sprite: 58,
 	text: {
 		name: "Throwing Knifes",
-		innerName: "a set of throwing knifes",
+		article: "a",
+		innerName: "set of throwing knifes",
 		flavor: "A staple of carnival culture."
 	},
 	values: {
+		ammoType: "THROWING_KNIFES",
 		dmg: 0.5,
 		acc: 0.95,
 	}

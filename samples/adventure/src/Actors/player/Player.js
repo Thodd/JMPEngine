@@ -44,6 +44,9 @@ class Player extends BaseActor {
 
 		this._lastDir = "down";
 
+		// control scheme handling
+		this._controlScheme = "basic";
+
 		this.configSprite({
 			sheet: "player",
 
@@ -76,6 +79,46 @@ class Player extends BaseActor {
 				}
 			}
 		});
+	}
+
+	hasControlScheme(cs) {
+		return this._controlScheme === cs;
+	}
+
+	/**
+	 * Switches the control scheme.
+	 * Also does a sanity check if the control scheme can be applied, e.g.:
+	 * Switching to "shooting" without an equipped ranged weapon does nothing.
+	 *
+	 * @param {string} cs the new control scheme
+	 */
+	switchControlScheme(cs) {
+		let logMsg;
+
+		if (cs === Constants.ControlSchemes.BASIC) {
+			this._controlScheme = cs;
+			logMsg = `${this} is idly standing around.`;
+		} else if (cs === Constants.ControlSchemes.LOOKING) {
+			this._controlScheme = cs;
+			logMsg = `${this} is looking around.`;
+		} else if (cs === Constants.ControlSchemes.SHOOTING) {
+			let bp = this.getBackpack();
+			let rangedWeapon = bp.getItemFromSlot(Constants.EquipmentSlots.RANGED);
+
+			// we can only switch the control scheme when a ranged weapon is equipped
+			if (rangedWeapon) {
+				this._controlScheme = cs;
+				logMsg = `${this} readies their ${rangedWeapon.text.innerName}.`;
+			} else {
+				logMsg = `${this} does not have a ranged weapon equipped.`;
+			}
+		}
+
+		UISystem.log(logMsg);
+	}
+
+	logControlSchemeSwitch() {
+
 	}
 
 	added() {
@@ -116,24 +159,49 @@ class Player extends BaseActor {
 	}
 
 	/**
-	 * Update Loop
+	 * Update Loop.
+	 * Handles the different control schemes.
 	 */
 	update() {
+
 		if (PlayerState.yourTurn) {
-			// wait one turn
-			if (Keyboard.down(Keys.PERIOD)) {
-				PlayerState.endTurn();
-			} else if (Keyboard.down(Keys.G)) {
-				this.grabItemsFromFloor();
-			} else if (Keyboard.down(Keys.U)) {
-				this.useItemsFromFloor();
-			} else if (Keyboard.down(Keys.A)) {
-				this.quickSlotUsed(Constants.EquipmentSlots.QUICK_A);
-			} else if (Keyboard.down(Keys.S)) {
-				this.quickSlotUsed(Constants.EquipmentSlots.QUICK_S);
-			} else {
-				this.inputCheck_Movement();
+
+			if (this.hasControlScheme(Constants.ControlSchemes.BASIC)) { // BASIC
+
+				if (Keyboard.pressed(Keys.PERIOD)) {
+					// wait one turn
+					PlayerState.endTurn();
+				} else if (Keyboard.pressed(Keys.G)) {
+					this.grabItemsFromFloor();
+				} else if (Keyboard.pressed(Keys.U)) {
+					this.useItemsFromFloor();
+				} else if (Keyboard.pressed(Keys.A)) {
+					this.quickSlotUsed(Constants.EquipmentSlots.QUICK_A);
+				} else if (Keyboard.pressed(Keys.S)) {
+					this.quickSlotUsed(Constants.EquipmentSlots.QUICK_S);
+				} else if (Keyboard.pressed(Keys.F)) {
+					this.switchControlScheme(Constants.ControlSchemes.SHOOTING);
+				} else if (Keyboard.pressed(Keys.L)) {
+					this.switchControlScheme(Constants.ControlSchemes.LOOKING);
+				} else {
+					this.inputCheck_Movement();
+				}
+
+			} else if (this.hasControlScheme(Constants.ControlSchemes.SHOOTING)) { // SHOOTING
+				if (Keyboard.pressed(Keys.ESC)) {
+					this.switchControlScheme(Constants.ControlSchemes.BASIC);
+				} else if (Keyboard.pressed(Keys.F)) {
+					// TODO: Fire
+				} else if (Keyboard.pressed(Keys.R)) {
+					// TODO: reload
+				}
+
+			} else if (this.hasControlScheme(Constants.ControlSchemes.LOOKING)) { // LOOKING
+				if (Keyboard.pressed(Keys.ESC)) {
+					this.switchControlScheme(Constants.ControlSchemes.BASIC);
+				}
 			}
+
 		}
 
 		this.playAnimation({name: `${this._lastDir}`});

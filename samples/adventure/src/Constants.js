@@ -15,47 +15,54 @@ const Constants = {
 	},
 
 	Layers: {
-		TILES:    0,
-		BELOW_ACTORS: 1,
-		NPC:      2,
-		PLAYER:   3,
-		ABOVE_ACTORS: 4,
-		UI_BG:    6,
-		UI_TEXT:  7
+		TILES:          0,
+		BELOW_ACTORS:   1,
+		NPC:            2,
+		PLAYER:         3,
+		ABOVE_ACTORS:   4,
+		CURSOR:         5,
+		UI_BG:          6,
+		UI_TEXT:        7
 	},
 
 	Colors: {
-		BLACK: 0x22272a,
-		GRAY_DARK: 0x424242,
-		GRAY_LIGHT: 0xebe8ec,
-		WHITE: 0xffffff,
-		CREME: 0xfdf0d1,
-		GREEN_LIGHT: 0x5dc48c,
-		GREEN_DARK: 0x247458,
-		RED_LIGHT: 0xec4b00,
-		RED_DARK: 0xbe2632,
-		BLUE_LIGHT: 0x38a8f2,
-		BROWN_LIGHT: 0xaf6a55,
-		BROWN_DARK: 0x8c424b,
-		YELLOW_LIGHT: 0xf7d85d,
-		YELLOW_DARK: 0xfac800
+		BLACK:           0x22272a,
+		GRAY_DARK:       0x424242,
+		GRAY_LIGHT:      0xebe8ec,
+		WHITE:           0xffffff,
+		CREME:           0xfdf0d1,
+		GREEN_LIGHT:     0x5dc48c,
+		GREEN_DARK:      0x247458,
+		RED_LIGHT:       0xec4b00,
+		RED_DARK:        0xbe2632,
+		BLUE_LIGHT:      0x38a8f2,
+		BROWN_LIGHT:     0xaf6a55,
+		BROWN_DARK:      0x8c424b,
+		YELLOW_LIGHT:    0xf7d85d,
+		YELLOW_DARK:     0xfac800
 	},
 
 	Events: {
 		// events from game LOGIC -> UI
-		LOGIC_UPDATE_STATS: "logic_update_hp",
-		LOGIC_UPDATE_BACKPACK: "logic_update_backpack",
-		LOGIC_PLAYER_TURN_ENDED: "logic_player_turn_ended",
+		LOGIC_UPDATE_STATS:       "logic_update_hp",
+		LOGIC_UPDATE_BACKPACK:    "logic_update_backpack",
+		LOGIC_PLAYER_TURN_ENDED:  "logic_player_turn_ended",
 
 		// events from UI -> LOGIC
-		UI_UPDATE_BACKPACK: "ui_update_backpack"
+		UI_UPDATE_BACKPACK:       "ui_update_backpack"
 	},
 
 	EquipmentSlots: {
-		MELEE: "melee",
-		RANGED: "ranged",
-		QUICK_A: "quickA",
-		QUICK_S: "quickS"
+		MELEE:    "melee",
+		RANGED:   "ranged",
+		QUICK_A:  "quickA",
+		QUICK_S:  "quickS"
+	},
+
+	ControlSchemes: {
+		BASIC:     "basic",
+		SHOOTING:  "shooting",
+		LOOKING:   "looking"
 	}
 };
 

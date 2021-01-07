@@ -89,7 +89,7 @@ class WorldScreen extends BaseMap {
 		for (let p of line) {
 			let tile = this.getTilemap().get(p.x, p.y);
 			let th = EffectPool.get(TileHighlight, tile);
-			th.layer = Constants.Layers.ABOVE_ACTORS;
+			th.layer = Constants.Layers.CURSOR;
 			if (tile.isFree()) {
 				th.setColor(0x00FFFF)
 			} else {
