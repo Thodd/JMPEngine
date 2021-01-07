@@ -81,46 +81,6 @@ class Player extends BaseActor {
 		});
 	}
 
-	hasControlScheme(cs) {
-		return this._controlScheme === cs;
-	}
-
-	/**
-	 * Switches the control scheme.
-	 * Also does a sanity check if the control scheme can be applied, e.g.:
-	 * Switching to "shooting" without an equipped ranged weapon does nothing.
-	 *
-	 * @param {string} cs the new control scheme
-	 */
-	switchControlScheme(cs) {
-		let logMsg;
-
-		if (cs === Constants.ControlSchemes.BASIC) {
-			this._controlScheme = cs;
-			logMsg = `${this} is idly standing around.`;
-		} else if (cs === Constants.ControlSchemes.LOOKING) {
-			this._controlScheme = cs;
-			logMsg = `${this} is looking around.`;
-		} else if (cs === Constants.ControlSchemes.SHOOTING) {
-			let bp = this.getBackpack();
-			let rangedWeapon = bp.getItemFromSlot(Constants.EquipmentSlots.RANGED);
-
-			// we can only switch the control scheme when a ranged weapon is equipped
-			if (rangedWeapon) {
-				this._controlScheme = cs;
-				logMsg = `${this} readies their ${rangedWeapon.text.innerName}.`;
-			} else {
-				logMsg = `${this} does not have a ranged weapon equipped.`;
-			}
-		}
-
-		UISystem.log(logMsg);
-	}
-
-	logControlSchemeSwitch() {
-
-	}
-
 	added() {
 		// initial camera positioning
 		this.centerCamera();
@@ -167,9 +127,7 @@ class Player extends BaseActor {
 		if (PlayerState.yourTurn) {
 
 			if (this.hasControlScheme(Constants.ControlSchemes.BASIC)) { // BASIC
-
 				if (Keyboard.pressed(Keys.PERIOD)) {
-					// wait one turn
 					PlayerState.endTurn();
 				} else if (Keyboard.pressed(Keys.G)) {
 					this.grabItemsFromFloor();
@@ -201,10 +159,72 @@ class Player extends BaseActor {
 					this.switchControlScheme(Constants.ControlSchemes.BASIC);
 				}
 			}
-
 		}
 
 		this.playAnimation({name: `${this._lastDir}`});
+	}
+
+	hasControlScheme(cs) {
+		return this._controlScheme === cs;
+	}
+
+	/**
+	 * Switches the control scheme.
+	 * Also does a sanity check if the control scheme can be applied, e.g.:
+	 * Switching to "shooting" without an equipped ranged weapon does nothing.
+	 *
+	 * @param {string} cs the new control scheme
+	 */
+	switchControlScheme(cs) {
+		let logMsg;
+
+		if (cs === Constants.ControlSchemes.BASIC) {
+			this._controlScheme = cs;
+			logMsg = `${this} is idly standing around.`;
+			this.getCursor().hide();
+
+		} else if (cs === Constants.ControlSchemes.LOOKING) {
+			this._controlScheme = cs;
+			logMsg = `${this} is looking around.`;
+			this.getCursor().show(this.getTile(), this.lookAround.bind(this));
+
+		} else if (cs === Constants.ControlSchemes.SHOOTING) {
+			let bp = this.getBackpack();
+			let rangedWeapon = bp.getItemFromSlot(Constants.EquipmentSlots.RANGED);
+
+			// we can only switch the control scheme when a ranged weapon is equipped
+			if (rangedWeapon) {
+				this._controlScheme = cs;
+				logMsg = `${this} readies their ${rangedWeapon.text.innerName}.`;
+				this.getCursor().show(this.getTile(), this.aimRangedWeapon.bind(this));
+			} else {
+				logMsg = `${this} does not have a ranged weapon equipped.`;
+			}
+		}
+
+		UISystem.log(logMsg);
+	}
+
+	/**
+	 * LOOKING:
+	 * Callback function for cursor movement when control scheme is set to LOOKING.
+	 */
+	lookAround(oldTile, newTile) {
+		// only log a "looking" message if the old and new tile differ... stops the History from being spammed ;)
+		if (oldTile.getType() != newTile.getType()) {
+			let newTileType = newTile.getType();
+			let innerName = newTileType.text && newTileType.text.innerName || "nothing";
+			let flavor = newTileType.text && newTileType.text.flavor || "Wow!";
+			UISystem.log(`${this} is sees ${innerName}. ${flavor}`);
+		}
+	}
+
+	/**
+	 * SHOOTING:
+	 * Callback function for cursor movement when control scheme is set to SHOOTING.
+	 */
+	aimRangedWeapon() {
+
 	}
 
 	/**

@@ -6,6 +6,8 @@ import RNG from "../../../../../src/utils/RNG.js";
 import UISystem from "../../ui/UISystem.js";
 
 import GameController from "../../controller/GameController.js";
+import Cursor from "../../controller/Cursor.js";
+
 import Player from "../../actors/player/Player.js";
 import PlayerState from "../../actors/player/PlayerState.js";
 
@@ -79,17 +81,22 @@ class BaseMap extends Screen {
 
 	/**
 	 * Creates the Player & GameController.
+	 * All controllers are singletons inside their respective BaseMap context.
 	 */
 	initControllers() {
-		// Create Player instance
+		// Create Player controller instance
 		this._player = new Player({gameTile: this._tileMap.get(0, 0)});
 		this.add(this._player);
+
+		// Create Cursor controller instance
+		this._cursor = new Cursor();
+		this.add(this._cursor);
 
 		// initialize the global PlayerState singleton
 		// This happens always, but the class itself is guarded against multiple initializations
 		PlayerState.init();
 
-		// game controller
+		// Create game controller instance
 		this._gameController = new GameController(this);
 		exposeOnWindow("gc", this._gameController); // DEBUG reference of GC on window
 		this._gameController.addPlayer(this._player);
@@ -120,6 +127,10 @@ class BaseMap extends Screen {
 
 	getPlayer() {
 		return this._player;
+	}
+
+	getCursor() {
+		return this._cursor;
 	}
 
 	getGameController() {

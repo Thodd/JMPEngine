@@ -131,13 +131,14 @@ class BaseActor extends Entity {
 
 	/**
 	 * Convenience function to retrieve the currently active GameController instance.
+	 * One per BaseMap.
 	 */
 	getGameController() {
 		let screen = this.getScreen();
 		if (screen) {
 			return screen.getGameController();
 		} else {
-			error(`Cannot get GameController instance for actor ${this}. Actor is not added to a screen yet.`, "BaseActor");
+			error(`Cannot get GameController instance for actor ${this}. Actor is not added to a BaseMap instance yet.`, "BaseActor");
 		}
 	}
 
@@ -150,13 +151,27 @@ class BaseActor extends Entity {
 
 	/**
 	 * Convenience function to retrieve the currently active Tilemap instance.
+	 * One per BaseMap.
 	 */
 	getTilemap() {
 		let screen = this.getScreen();
 		if (screen) {
 			return screen.getTilemap();
 		} else {
-			error(`Cannot get Tilemap instance for Actor ${this}. Actor is not added to a screen yet.`, "BaseActor");
+			error(`Cannot get Tilemap instance for Actor ${this}. Actor is not added to a BaseMap instance yet.`, "BaseActor");
+		}
+	}
+
+	/**
+	 * Convenience function to retrieve the currently used Cursor instance.
+	 * One per BaseMap.
+	 */
+	getCursor() {
+		let screen = this.getScreen();
+		if (screen) {
+			return screen.getCursor();
+		} else {
+			error(`Cannot get Cursor instance for Actor ${this}. Actor is not added to a BaseMap instance yet.`, "BaseActor");
 		}
 	}
 

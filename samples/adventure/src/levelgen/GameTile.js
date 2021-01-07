@@ -171,6 +171,10 @@ class GameTile extends Tile {
 		this.set(newId);
 	}
 
+	getType() {
+		return this.type;
+	}
+
 	destroy() {
 		// get the destroy effect and add it to the screen
 		if (this.type.destroyEffect) {

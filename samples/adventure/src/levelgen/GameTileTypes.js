@@ -13,6 +13,11 @@ const Types = {
 	},
 	FLOOR: {
 		name: "FLOOR",
+		text: {
+			name: "Floor",
+			innerName: "a patch of grass",
+			flavor: "Yep. That's the ground alright."
+		},
 		id: [2, 3, 4, 5, 6],
 		probability: 0.1,
 		walkable: true
@@ -29,12 +34,22 @@ const Types = {
 	},
 	TREE: {
 		name: "TREE",
+		text: {
+			name: "Tree",
+			innerName: "a single tree",
+			flavor: "The bork is overgrown with moss."
+		},
 		id: [64, 66],
 		probability: 0.5,
 		walkable: false
 	},
 	BUSH: {
 		name: "BUSH",
+		text: {
+			name: "Bush",
+			innerName: "a bush",
+			flavor: "Looks like it can be cut down rather easily."
+		},
 		id: 70,
 		walkable: false,
 		destroyable: true,
