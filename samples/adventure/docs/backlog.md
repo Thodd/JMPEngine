@@ -1,0 +1,50 @@
+# Backlog
+
+---
+
+## Open
+
+### [ Game ] Ranged Weapons
+
+* [ ] Introduce Cursor Class
+* [ ] Draw Bresenham line when movin cursor
+* [ ] Fire projectile
+  * Iterate bresenham line and damage first enemy (or tile for destructive projectiles)
+* [ ] Projectile Movement animation
+  * Chain multiple MovementAnimations together, moving from one tile to the next in the chain
+* [ ] Visualize Magazine & Additional Ammo in UI
+
+### Look Command
+* [ ] Include Actors in Log
+
+### Maps
+* [ ] Teleport to new Map/Screen
+
+### Enemies
+* [ ] Wolf: Move back to spawen after the player is out of reach for a couple of turns
+* [ ] Spiders:
+  * Random movement if player is not around
+  * Move towards player if they are close
+  * Spits Webs which immobilize the player
+  * Poison?
+* [ ] Tentacle
+  * static enemy, only hurts the player if adjacent
+* [ ] Thorns
+  * static enemy --> TILE!
+  * only hurts the player if attacked, can be destroyed like a regular bush
+* [ ] Factory-Function to create Enemies?
+  * Constant class for accessing enemy types?
+
+### Weapons
+* [ ] Bombs
+
+### Items
+* [ ] Shovel :D
+
+### Random
+* [ ] Visualize "Ammo" for "Consumables"
+* [ ] **[ Art ]** Pixel new Tree
+
+---
+
+## Done
