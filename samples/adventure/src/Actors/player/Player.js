@@ -215,7 +215,7 @@ class Player extends BaseActor {
 			let newTileType = newTile.getType();
 			let innerName = newTileType.text && newTileType.text.innerName || "nothing";
 			let flavor = newTileType.text && newTileType.text.flavor || "Wow!";
-			UISystem.log(`${this} is sees ${innerName}. ${flavor}`);
+			UISystem.log(`${this} sees ${innerName}. ${flavor}`);
 		}
 	}
 
