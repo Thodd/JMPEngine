@@ -6,8 +6,14 @@
 
 ### [ Game ] Ranged Weapons
 
-* [ ] Introduce Cursor Class
-* [ ] Draw Bresenham line when movin cursor
+* [x] Introduce Cursor Class
+* [x] Draw Bresenham line when moving cursor
+* [x] Fix Colors of bresenham line
+* [ ] Clamp bresenham line calculation to the max size of the view-port...
+  * how to do this?
+* [ ] Render all "obstructed" line tiles red
+* [ ] Introduce "pass-projectile" flag on Tile Type
+  * Some tiles like water or a bush do not obstruct the targetting
 * [ ] Fire projectile
   * Iterate bresenham line and damage first enemy (or tile for destructive projectiles)
 * [ ] Projectile Movement animation
@@ -15,12 +21,21 @@
 * [ ] Visualize Magazine & Additional Ammo in UI
 
 ### Look Command
-* [ ] Include Actors in Log
+
+* [ ] Include Actors & Items in the History Log-Message when looking at a tile
+
+### UI
+
+* [ ] Make Map-Screen quadratic, 21x21 ???
+* [ ] Introduce Tabs for Backpack
+* [ ] Visualize "Ammo" for "Consumables"
 
 ### Maps
+
 * [ ] Teleport to new Map/Screen
 
 ### Enemies
+
 * [ ] Wolf: Move back to spawen after the player is out of reach for a couple of turns
 * [ ] Spiders:
   * Random movement if player is not around
@@ -36,15 +51,24 @@
   * Constant class for accessing enemy types?
 
 ### Weapons
+
 * [ ] Bombs
 
 ### Items
+
 * [ ] Shovel :D
 
-### Random
-* [ ] Visualize "Ammo" for "Consumables"
+### Art
+
 * [ ] **[ Art ]** Pixel new Tree
+
+### Random
+
+* [ ] Nothing
 
 ---
 
 ## Done
+
+Here I will keep some interesting or more complex Items I completed.
+Not necessarily all items. Smaller ones will just be deleted.

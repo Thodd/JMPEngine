@@ -83,20 +83,6 @@ class WorldScreen extends BaseMap {
 		this.getPlayer().getTileRelative(-1, 7).dropNewItem(ItemTypes.GRAPES);
 		this.getPlayer().getTileRelative(-1, 8).dropNewItem(ItemTypes.CHERRIES);
 		this.getPlayer().getTileRelative(-1, 9).dropNewItem(ItemTypes.MEAT);
-
-
-		let line = Algos.bresenham(11, 10, 15, 19);
-		for (let p of line) {
-			let tile = this.getTilemap().get(p.x, p.y);
-			let th = EffectPool.get(TileHighlight, tile);
-			th.layer = Constants.Layers.CURSOR;
-			if (tile.isFree()) {
-				th.setColor(0x00FFFF)
-			} else {
-				th.setColor(0xFF0000);
-			}
-			this.add(th);
-		}
 	}
 
 }

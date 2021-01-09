@@ -158,12 +158,17 @@ class Screen {
 		let isScheduled = e._isScheduledForAdding;
 
 		if (!e._screen && !isScheduled && !e._isDestroyed) {
+			// if the entity is scheduled for removal we just revert this change
+			// nothing to do further in this case
 			if (e._isScheduledForRemoval) {
 				Helper.remove(e, this._toBeRemoved);
 				e._isScheduledForRemoval = false;
+			} else {
+				// actually add a new entity
+				this._toBeAdded.push(e);
+				e._isScheduledForAdding = true;
 			}
-			this._toBeAdded.push(e);
-			e._isScheduledForAdding = true;
+
 			e._screen = this;
 
 			// add to type mapping
@@ -191,12 +196,17 @@ class Screen {
 		let isScheduled = e._isScheduledForRemoval;
 
 		if (e._screen == this && !isScheduled) {
+			// if the entity is scheduled for adding we just revert this change
+			// nothing to do further in this case
 			if (e._isScheduledForAdding) {
 				Helper.remove(e, this._toBeAdded);
 				e._isScheduledForAdding = false;
+			} else {
+				// actually remove the entity
+				this._toBeRemoved.push(e);
+				e._isScheduledForRemoval = true;
 			}
-			this._toBeRemoved.push(e);
-			e._isScheduledForRemoval = true;
+
 			e._screen = null;
 
 			if (e._types) {
@@ -396,6 +406,11 @@ class Screen {
 		this._toBeAdded = [];
 		for (let i = 0; i < lenA; i++) {
 			let ea = curA[i];
+
+			// reset scheduling flags
+			ea._isScheduledForAdding = false;
+			ea._isScheduledForRemoval = false;
+			
 			this._entities.push(ea);
 			//ea._screen = this;
 
@@ -423,6 +438,11 @@ class Screen {
 		this._toBeRemoved = [];
 		for (let j = 0; j < lenR; j++) {
 			let er = curR[j];
+			
+			// reset scheduling flags
+			er._isScheduledForAdding = false;
+			er._isScheduledForRemoval = false;
+
 			Helper.remove(er, this._entities);
 			//er._screen = null;
 

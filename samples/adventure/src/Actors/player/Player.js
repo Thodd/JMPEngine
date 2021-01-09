@@ -196,7 +196,7 @@ class Player extends BaseActor {
 			if (rangedWeapon) {
 				this._controlScheme = cs;
 				logMsg = `${this} readies their ${rangedWeapon.text.innerName}.`;
-				this.getCursor().show(this.getTile(), this.aimRangedWeapon.bind(this));
+				this.getCursor().show(this.getTile(), this.aimRangedWeapon.bind(this), true);
 			} else {
 				logMsg = `${this} does not have a ranged weapon equipped.`;
 			}
@@ -223,8 +223,15 @@ class Player extends BaseActor {
 	 * SHOOTING:
 	 * Callback function for cursor movement when control scheme is set to SHOOTING.
 	 */
-	aimRangedWeapon() {
-
+	aimRangedWeapon(oldTile, newTile, bresenhamLine) {
+		// draw a new line tile by tile
+		for (let p of bresenhamLine) {
+			if (p.tile.isFree()) {
+				p.tileHighlight.setColor(0x38a8f2)
+			} else {
+				p.tileHighlight.setColor(0xFF0000);
+			}
+		}
 	}
 
 	/**

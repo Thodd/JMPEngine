@@ -1,24 +1,19 @@
+import Constants from "../../Constants.js";
 import BaseEffect from "./BaseEffect.js";
 
 class TileHighlight extends BaseEffect {
 	constructor() {
 		super();
 
+		this.layer = Constants.Layers.ABOVE_ACTORS;
+
 		this.configSprite({
 			sheet: "tile_highlights",
-			animations: {
-				default: "idle",
-				idle: {
-					frames: [10, 11],
-					dt: 60
-				}
-			}
+			id: 10
 		});
 	}
 
-	reset() {
-
-	}
+	reset() {}
 }
 
 export default TileHighlight;
