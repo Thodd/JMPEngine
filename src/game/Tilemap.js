@@ -136,6 +136,49 @@ class Tilemap extends Entity {
 	}
 
 	/**
+	 * Retrieves the Viewport of the Tilemap counted in tiles.
+	 * Result is a rectangle described by 2 points: top-left to bottom-right
+	 * @return {object} an object containing two points: x1/y1 (top-left) and x2/y2 (bottom-right)
+	 */
+	getViewportRectInTiles() {
+		// calculate minimum X/Y offsets based on camera position
+		let baseX = this.x;
+		let baseY = this.y;
+		let camX = this._screen.cam.x;
+		let camY = this._screen.cam.y;
+
+		let diffX = Math.floor((camX - baseX) / this._tileWidth);
+		let diffY = Math.floor((camY - baseY) / this._tileHeight);
+
+		// Calculate the first and last visible column/row.
+		let colStart;
+		let colMax;
+		if (diffX > 0) {
+			colStart = diffX;
+			colMax = Math.min(colStart + this._screenWidthInTiles, this._mapWidth);
+		} else {
+			colStart = 0;
+			colMax = Math.min(diffX + this._screenWidthInTiles, this._mapWidth);
+		}
+		let rowStart;
+		let rowMax;
+		if (diffY > 0) {
+			rowStart = diffY;
+			rowMax = Math.min(rowStart + this._screenHeightInTiles, this._mapHeight);
+		} else {
+			rowStart = 0;
+			rowMax = Math.min(diffY + this._screenHeightInTiles, this._mapHeight);
+		}
+
+		return {
+			x1: colStart,
+			y1: rowStart,
+			x2: colMax,
+			y2: rowMax
+		};
+	}
+
+	/**
 	 * Updates the render information of the Tilemap.
 	 * Calculates which tiles are visible on screen based on the camera position.
 	 *

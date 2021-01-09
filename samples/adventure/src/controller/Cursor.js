@@ -128,7 +128,17 @@ class Cursor extends Entity {
 	moveRelative(dx, dy) {
 		// only move if not out of bounds
 		let tile = this.targetTile.getRelative(dx, dy);
+		let viewport = this.getTilemap().getViewportRectInTiles();
+
+		// we might not have a tile if the potential cursor position is outside the map
 		if (tile) {
+			// make sure the cursor does not leave the Viewport of the tilemap
+			if (tile.x < viewport.x1 || tile.x > viewport.x2 - 1 ||
+				tile.y < viewport.y1 || tile.y > viewport.y2 - 1) {
+					// cursor cannot be moved
+					return;
+			}
+
 			// argument for the callback
 			let bresenhamLine;
 

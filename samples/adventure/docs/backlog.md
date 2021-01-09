@@ -9,8 +9,7 @@
 * [x] Introduce Cursor Class
 * [x] Draw Bresenham line when moving cursor
 * [x] Fix Colors of bresenham line
-* [ ] Clamp bresenham line calculation to the max size of the view-port...
-  * how to do this?
+* [x] Clamp bresenham line calculation to the max size of the view-port...
 * [ ] Render all "obstructed" line tiles red
 * [ ] Introduce "pass-projectile" flag on Tile Type
   * Some tiles like water or a bush do not obstruct the targetting
