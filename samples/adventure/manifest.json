@@ -3,11 +3,11 @@
 
 	"startScreen": "./src/screens/game/Overworld.js",
 
-	"w": 210,
-	"h": 150,
+	"w": 170,
+	"h": 170,
 
 	"layers": 7,
-	"scale": 2,
+	"scale": 3,
 
 	"bg": "0x222222",
 	"skipIntro": true,

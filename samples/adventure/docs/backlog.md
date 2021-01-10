@@ -25,7 +25,6 @@
 
 ### UI
 
-* [ ] Make Map-Screen quadratic, 21x21 ???
 * [ ] Introduce Tabs for Backpack
 * [ ] Visualize "Ammo" for "Consumables"
 
@@ -71,3 +70,8 @@
 
 Here I will keep some interesting or more complex Items I completed.
 Not necessarily all items. Smaller ones will just be deleted.
+
+### UI
+
+* [x] Make Map-Screen quadratic, 21x21 ???
+* [x] Reorganize UI into a Grid system
