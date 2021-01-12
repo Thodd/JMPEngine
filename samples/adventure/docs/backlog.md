@@ -11,7 +11,7 @@
 * [x] Fix Colors of bresenham line
 * [x] Clamp bresenham line calculation to the max size of the view-port...
 * [x] Render all "obstructed" line tiles red
-* [ ] Fire projectile
+* [x] Fire projectile
   * Iterate bresenham line and damage first enemy (or tile for destructive projectiles)
 * [ ] Projectile Movement animation
   * Chain multiple MovementAnimations together, moving from one tile to the next in the chain
@@ -24,6 +24,10 @@
 * [ ] Include Actors & Items in the History Log-Message when looking at a tile
 * [ ] Implement Look-Command via Context Menu
 
+### Fixes
+
+* [ ] Move HP Indicator below an Actor if they are on the top row of the Screen-Viewport
+  * Otherwise the HP Indicator is rendered outside --> happens with Ranged Weapons
 ### UI
 
 * [ ] Introduce Tabs for Backpack

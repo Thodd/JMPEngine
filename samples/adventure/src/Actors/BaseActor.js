@@ -383,14 +383,24 @@ class BaseActor extends Entity {
 		}
 	}
 
+	/**
+	 * Performs a ranged attack against a given BaseActor.
+	 * @param {BaseActor} defender the actor that is shot
+	 */
 	rangeAttackActor(defender) {
 		// dead actors can't be damaged anymore...
 		if (!defender.isDead) {
 
 			// determine animation phase
-			let phase = this.isPlayer ? AnimationSystem.Phases.GENERAL : AnimationSystem.Phases.ENEMY_ATTACK;
+			let phase = this.isPlayer ? AnimationSystem.Phases.RANGED_ATTACKS_PLAYER : AnimationSystem.Phases.RANGED_ATTACKS_ENEMIES;
+
+
+
 
 			// TODO: Shooting animation -> Projectile flies
+
+
+
 
 			let battleResult = BattleCalculator.battle(this, Constants.EquipmentSlots.RANGED);
 			if (battleResult.damage == 0) {

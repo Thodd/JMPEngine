@@ -2,44 +2,51 @@ import { error } from "../../../../../src/utils/Log.js";
 import HPUpdateAnimation from "../HPUpdateAnimation.js";
 import AnimationPhase from "./AnimationPhase.js";
 
-// Create Phases
+
+// We decouple this from game logic, so the AI does not need to know if a player was hurt already.
+// This could be inefficient, but typically only a couple of Animations are scheduled
+// as an ENEMY_ATTACK per turn (incl. HPUpdateAnimation of the player).
+function _preprocessHealthUpdates() {
+	// Make sure we don't double schedule a HPUpdateAnimation for the player
+	let maxPlayerDamage = 0;
+	let firstPlayerHPUpdateAnimation;
+	for (let anim of this.animations) {
+		if (anim instanceof HPUpdateAnimation && anim.actor.isPlayer) {
+			maxPlayerDamage += anim.getHPDelta();
+			if (!firstPlayerHPUpdateAnimation) {
+				firstPlayerHPUpdateAnimation = anim;
+			} else {
+				// ignore all others
+				anim.done();
+			}
+		}
+	}
+	if (firstPlayerHPUpdateAnimation) {
+		firstPlayerHPUpdateAnimation.setNumber(maxPlayerDamage);
+	}
+}
+
+
+// ALL available animation phases
+const phaseRangedAttacksPlayer = new AnimationPhase({name: "RANGED_ATTACKS_PLAYER"});
+const phaseRangedAttacksEnemies = new AnimationPhase({
+	name: "RANGED_ATTACKS_ENEMIES",
+	preprocess: _preprocessHealthUpdates
+});
 const phaseGeneral = new AnimationPhase({name: "GENERAL"});
 const phaseItemUsage = new AnimationPhase({name: "ITEM_USAGE"});
 const phaseStatusEffects = new AnimationPhase({name: "STATUS_EFFECT"});
 const phaseEnemyAttack = new AnimationPhase({
 	name: "ENEMY_ATTACK",
-	preprocess: function() {
-		// We decouple this from game logic, so the AI does not need to know if a player was hurt already.
-		// This could be inefficient, but typically only a couple of Animations are scheduled
-		// as an ENEMY_ATTACK per turn (incl. HPUpdateAnimation of the player).
-
-		// ********** TODO ***********
-		// TODO: Refactor this so it respects ALL health changes
-		// Make sure we don't double schedule a HPUpdateAnimation for the player
-		let maxPlayerDamage = 0;
-		let firstPlayerHPUpdateAnimation;
-		for (let anim of this.animations) {
-			if (anim instanceof HPUpdateAnimation && anim.actor.isPlayer) {
-				maxPlayerDamage += anim.getHPDelta();
-				if (!firstPlayerHPUpdateAnimation) {
-					firstPlayerHPUpdateAnimation = anim;
-				} else {
-					// ignore all others
-					anim.done();
-				}
-			}
-		}
-		if (firstPlayerHPUpdateAnimation) {
-			firstPlayerHPUpdateAnimation.setNumber(maxPlayerDamage);
-		}
-		// ********** TODO ***********
-	}
+	preprocess: _preprocessHealthUpdates
 });
 const phaseEndOfTurn = new AnimationPhase({name: "END_OF_TURN"});
 
 // Maps the names of each phase to the instance
 // allows to decouple the constants used by the game logic from the implementation
 const _phaseMap = {
+	"RANGED_ATTACKS_PLAYER": phaseRangedAttacksPlayer,
+	"RANGED_ATTACKS_ENEMIES": phaseRangedAttacksEnemies,
 	"GENERAL": phaseGeneral,
 	"ITEM_USAGE": phaseItemUsage,
 	"STATUS_EFFECT": phaseStatusEffects,
@@ -48,14 +55,17 @@ const _phaseMap = {
 };
 
 // chain phases
-phaseGeneral
+phaseRangedAttacksPlayer
+	.then(phaseRangedAttacksEnemies)
+	.then(phaseGeneral)
 	.then(phaseItemUsage)
 	.then(phaseStatusEffects)
 	.then(phaseEnemyAttack)
 	.then(phaseEndOfTurn);
 
 // initial starting phase
-let _currentPhase = phaseGeneral;
+let _startPhase = phaseRangedAttacksPlayer;
+let _currentPhase = _startPhase;
 
 /**
  * The AnimationSystem handles the scheduling and updating of the AnimationPhases.
@@ -103,7 +113,7 @@ class AnimationSystem {
 				return this.update();
 			} else {
 				// no further phases, we're done and reset to the first phase
-				_currentPhase = phaseGeneral;
+				_currentPhase = _startPhase;
 				return true;
 			}
 		} else {
