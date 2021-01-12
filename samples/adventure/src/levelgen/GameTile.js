@@ -44,6 +44,15 @@ class GameTile extends Tile {
 	}
 
 	/**
+	 * Returns the topmost Actor of the given class, or <code>undefined</code> if none found.
+	 * @param {any} actorClass the BaseActor (sub-)class which should be checked for finding the topmost Actor
+	 * @returns {any|undefined} the result is either the topmost Actor of the given type class or <code>undefined</code> if none is found
+	 */
+	getTopmostActorByClass(ActorSubClass) {
+		return this._actors.find((a) => a instanceof ActorSubClass);
+	}
+
+	/**
 	 * Drops a NEW instance of the given ItemType on the tile.
 	 * @param {BaseItem} item the item entity instance to drop
 	 */

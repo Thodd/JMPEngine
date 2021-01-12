@@ -31,6 +31,7 @@ class Cursor extends Entity {
 
 		// optional flag to calculate a bresenham line on each cursor movement
 		this.calculateBresenhamLine = false;
+		this._lastBresenhamLine = [];
 
 		// a list of TileHighlight effect instances, which are reused when drawing a bresenham line
 		this._tileHighlights = [];
@@ -77,6 +78,7 @@ class Cursor extends Entity {
 		this.changeCallback = changeCallback;
 
 		this.calculateBresenhamLine = calculateBresenhamLine;
+		this._lastBresenhamLine = [];
 
 		this.active = true;
 		this.visible = true;
@@ -94,6 +96,7 @@ class Cursor extends Entity {
 		this.changeCallback = null;
 
 		this.calculateBresenhamLine = false;
+		this._lastBresenhamLine = [];
 
 		this.active = false;
 		this.visible = false;
@@ -139,19 +142,18 @@ class Cursor extends Entity {
 					return;
 			}
 
-			// argument for the callback
-			let bresenhamLine;
-
 			let oldTile = this.targetTile;
 			this.targetTile = tile;
 			this.updateVisualPosition();
 
 			// [optional]
 			if (this.calculateBresenhamLine) {
+
+
 				// make sure we first hide all tile-highlights
 				this.hideTileHighlights();
 
-				bresenhamLine = [];
+				this._lastBresenhamLine = [];
 				let line = Algos.bresenham(this.startTile.x, this.startTile.y, this.targetTile.x, this.targetTile.y);
 
 				for (let i = 0; i < line.length; i++) {
@@ -172,15 +174,23 @@ class Cursor extends Entity {
 					p.tileHighlight.setTile(p.tile);
 					p.tileHighlight.visible = true;
 
-					bresenhamLine.push(p);
+					this._lastBresenhamLine.push(p);
 				}
 			}
 
 			// [optional]
 			if (this.changeCallback) {
-				this.changeCallback(oldTile, this.targetTile, bresenhamLine);
+				this.changeCallback(oldTile, this.targetTile, this._lastBresenhamLine);
 			}
 		}
+	}
+
+	/**
+	 * Returns the last calculated bresenham line.
+	 * The result changes on each Cursor movement.
+	 */
+	getBresenhamLine() {
+		return this._lastBresenhamLine;
 	}
 
 	/**

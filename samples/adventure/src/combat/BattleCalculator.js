@@ -1,19 +1,18 @@
 import RNG from "../../../../src/utils/RNG.js";
 
 const BattleCalculator = {
-	battle(attacker, defender) {
+	battle(attacker, weaponSlot) {
 		let result = {
 			defenderWasHit: false,
-			damage: 0,
-			defenderDies: false
+			damage: 0
 		};
 
-		let attackWeapon = attacker.getBackpack().getItemFromSlot("melee");
+		let attackWeapon = attacker.getBackpack().getItemFromSlot(weaponSlot);
 
 		if (attackWeapon) {
 			let battleValues = attackWeapon.values;
 
-			// if the attacker hits, at least 1 dmg is dealt to the defender
+			// simple accuracy check :)
 			if (RNG.random() < battleValues.acc) {
 				result.defenderWasHit = true;
 				result.damage = battleValues.dmg;

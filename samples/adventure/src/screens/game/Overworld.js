@@ -52,7 +52,7 @@ class WorldScreen extends BaseMap {
 
 	populate() {
 		// some enemies
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 1; i++) {
 			let EnemyClass = Helper.choose([Snake, Wolf, Bear]);
 			this.enemy = new EnemyClass({gameTile: this._tileMap.get(7, 7)});
 			this.add(this.enemy);

@@ -39,12 +39,15 @@ class HPIndicator extends BitmapText {
 	 * Centers the text depending on the length of the number.
 	 */
 	center() {
-		let t = this.getText();
-		let fnt = this.getFont();
-		let textWidthDelta = Math.abs(Constants.TILE_WIDTH - t.length * fnt.w);
+		let tlen = this.getText().length;
+		let xDif = 0;
+		switch(tlen) {
+			case 1: xDif =  2; break; // e.g. "0", "1"
+			case 2: xDif = -1; break; // e.g. "-3", "+2"
+			case 4: xDif = -2; break; // e.g. "-1.5"
+		}
 
-		let half = Math.floor(textWidthDelta / 2);
-		this.x -= half;
+		this.x += xDif;
 	}
 }
 

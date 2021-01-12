@@ -15,7 +15,7 @@ import Stats from "./Stats.js";
 import ItemTypes from "../items/ItemTypes.js";
 
 // Battle
-import MeleeCalculator from "../combat/BattleCalculator.js";
+import BattleCalculator from "../combat/BattleCalculator.js";
 
 // Animation System
 import AnimationPool from "../animations/system/AnimationPool.js";
@@ -289,32 +289,28 @@ class BaseActor extends Entity {
 			delta = stats.hp_max - stats.hp;
 		}
 
-		if (delta != 0) {
-			stats.hp += delta;
+		stats.hp += delta;
 
-			// hp is now below 0 --> die
-			if (stats.hp <= 0) {
-				return this.die()
-			}
-
-			if (delta > 0) {
-				// track if this actor has healed somehow (e.g. potion, spell, ...)
-				this._sinceLastTurn.hasHealed = cause || true;
-				UISystem.log(`${this} gains ${delta} HP.`);
-			} else if (delta < 0) {
-				// track that this actor has taken damage by the given cause since its last turn (e.g. Player, Poison, Fire, ...)
-				this._sinceLastTurn.hasTakenDamage = cause || true;
-				UISystem.log(`${this} loses ${Math.abs(delta)} HP.`);
-			}
-
-			// create animation
-			// set the hp delta number indicator & schedule the animation
-			let hpUpdateAnim = AnimationPool.get(HPUpdateAnimation, this);
-			hpUpdateAnim.setNumber(delta);
-			return hpUpdateAnim;
-		} else {
-			// nothing to do, no health change needed
+		// hp is now below 0 --> die
+		if (stats.hp <= 0) {
+			return this.die()
 		}
+
+		if (delta > 0) {
+			// track if this actor has healed somehow (e.g. potion, spell, ...)
+			this._sinceLastTurn.hasHealed = cause || true;
+			UISystem.log(`${this} gains ${delta} HP.`);
+		} else if (delta < 0) {
+			// track that this actor has taken damage by the given cause since its last turn (e.g. Player, Poison, Fire, ...)
+			this._sinceLastTurn.hasTakenDamage = cause || true;
+			UISystem.log(`${this} loses ${Math.abs(delta)} HP.`);
+		}
+
+		// create animation
+		// set the hp delta number indicator & schedule the animation
+		let hpUpdateAnim = AnimationPool.get(HPUpdateAnimation, this);
+		hpUpdateAnim.setNumber(delta);
+		return hpUpdateAnim;
 	}
 
 	/**
@@ -355,17 +351,18 @@ class BaseActor extends Entity {
 			this.scheduleAnimation(bump, phase);
 
 			// now do the actual battle
-			let battleResult = MeleeCalculator.battle(this, defender);
+			let battleResult = BattleCalculator.battle(this, Constants.EquipmentSlots.MELEE);
 
 			UISystem.log(`${this} attacks ${defender}.`);
-			if (battleResult.defenderWasHit) {
-				// defender is hurt by this actor, schedule hurt animation
-				let hurtAnim = defender.updateHP(-battleResult.damage, this);
-				if (hurtAnim) {
-					this.scheduleAnimation(hurtAnim, phase);
-				}
-			} else {
+			if (battleResult.damage == 0) {
 				UISystem.log(`${this} misses!`);
+			}
+
+			// defender is hurt by this actor, schedule hurt animation
+			// can also be "0! for a miss!
+			let hurtAnim = defender.updateHP(-battleResult.damage, this);
+			if (hurtAnim) {
+				this.scheduleAnimation(hurtAnim, phase);
 			}
 		}
 	}

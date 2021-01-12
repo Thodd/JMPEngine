@@ -85,6 +85,7 @@ canvas {
 }
 
 .row1_col2 {
+	border-left: 3px solid #0453b7;
 	display: grid;
 	grid-template-rows: 136px 374px;
 }

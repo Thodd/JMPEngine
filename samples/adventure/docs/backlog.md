@@ -10,18 +10,19 @@
 * [x] Draw Bresenham line when moving cursor
 * [x] Fix Colors of bresenham line
 * [x] Clamp bresenham line calculation to the max size of the view-port...
-* [ ] Render all "obstructed" line tiles red
-* [ ] Introduce "pass-projectile" flag on Tile Type
-  * Some tiles like water or a bush do not obstruct the targetting
+* [x] Render all "obstructed" line tiles red
 * [ ] Fire projectile
   * Iterate bresenham line and damage first enemy (or tile for destructive projectiles)
 * [ ] Projectile Movement animation
   * Chain multiple MovementAnimations together, moving from one tile to the next in the chain
 * [ ] Visualize Magazine & Additional Ammo in UI
+* [ ] Introduce "pass-projectile" flag on Tile Type
+  * Some tiles like water or a bush do not obstruct the targetting
 
 ### Look Command
 
 * [ ] Include Actors & Items in the History Log-Message when looking at a tile
+* [ ] Implement Look-Command via Context Menu
 
 ### UI
 

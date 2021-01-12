@@ -149,7 +149,7 @@ class Player extends BaseActor {
 				if (Keyboard.pressed(Keys.ESC)) {
 					this.switchControlScheme(Constants.ControlSchemes.BASIC);
 				} else if (Keyboard.pressed(Keys.F)) {
-					// TODO: Fire
+					this.fireRangedWeapon();
 				} else if (Keyboard.pressed(Keys.R)) {
 					// TODO: reload
 				}
@@ -222,14 +222,47 @@ class Player extends BaseActor {
 	/**
 	 * SHOOTING:
 	 * Callback function for cursor movement when control scheme is set to SHOOTING.
+	 * Draws the line-of-sight for aiming.
 	 */
 	aimRangedWeapon(oldTile, newTile, bresenhamLine) {
-		// draw a new line tile by tile
+		// if the sight is blocked, all subsequent tiles will be drawn in red
+		let sightIsBlocked = false;
+
 		for (let p of bresenhamLine) {
-			if (p.tile.isFree()) {
-				p.tileHighlight.setColor(0x38a8f2)
+			// we ignore the first and last tile of a line:
+			// the first tile is the player's tile and the last one is the cursor
+			if (p.tile == this.gameTile || p.tile == this.getCursor().getTargetTile()) {
+				p.tileHighlight.visible = false;
 			} else {
-				p.tileHighlight.setColor(0xFF0000);
+				if (p.tile.isFree() && !sightIsBlocked) {
+					p.tileHighlight.setColor(0x38a8f2)
+				} else {
+					sightIsBlocked = true;
+					p.tileHighlight.setColor(0xFF0000);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Fires the currently equipped ranged weapon.
+	 */
+	fireRangedWeapon() {
+		let lineOfSight = this.getCursor().getBresenhamLine();
+
+		// only one entry means we shoot at ourselves...
+		if (lineOfSight.length == 1) {
+			UISystem.log(`That's a bit dark isn't it?`);
+		} else {
+			// we now loop along the line-of-sight and find the first hit
+			for (let p of lineOfSight) {
+				// we ignore the first entry: player tile
+				if (p.tile != this.gameTile) {
+					let topmostEnemy = p.tile.getTopmostActorByClass(Enemy);
+					if (topmostEnemy) {
+						// TODO: process hit
+					}
+				}
 			}
 		}
 	}
