@@ -368,6 +368,45 @@ class BaseActor extends Entity {
 	}
 
 	/**
+	 * Shoots a projectile along the given line.
+	 * @param {object} fireInfo contains the information needed to animate the shot
+	 * @param {object} fireInfo.tilesPassed the line along which the projectile should fly
+	 * @param {object} fireInfo.tileHit the final tile which is hit by the projectile
+	 * @param {object} fireInfo actorHit the actor which is hit by the projectile
+	 */
+	fireShotAlongLine(fireInfo) {
+		if (fireInfo.actorHit) {
+			UISystem.log(`${this} fires a shot at ${fireInfo.actorHit}.`);
+			this.rangeAttackActor(fireInfo.actorHit);
+		} else {
+			UISystem.log(`${this} hits ${fireInfo.tileHit.type.text ? fireInfo.tileHit.type.text.innerName : 'nothing'}.`);
+		}
+	}
+
+	rangeAttackActor(defender) {
+		// dead actors can't be damaged anymore...
+		if (!defender.isDead) {
+
+			// determine animation phase
+			let phase = this.isPlayer ? AnimationSystem.Phases.GENERAL : AnimationSystem.Phases.ENEMY_ATTACK;
+
+			// TODO: Shooting animation -> Projectile flies
+
+			let battleResult = BattleCalculator.battle(this, Constants.EquipmentSlots.RANGED);
+			if (battleResult.damage == 0) {
+				UISystem.log(`${this} misses!`);
+			}
+
+			// defender is hurt by this actor, schedule hurt animation
+			// can also be "0! for a miss!
+			let hurtAnim = defender.updateHP(-battleResult.damage, this);
+			if (hurtAnim) {
+				this.scheduleAnimation(hurtAnim, phase);
+			}
+		}
+	}
+
+	/**
 	 * Kills the actor.
 	 * Returns its dying animation.
 	 */

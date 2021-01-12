@@ -17,6 +17,7 @@ import BaseActor from "../BaseActor.js";
 import Enemy from "../enemies/Enemy.js";
 
 // own stuff
+import BattleCalculator from "../../combat/BattleCalculator.js";
 import PlayerState from "./PlayerState.js";
 import UISystem from "../../ui/UISystem.js";
 
@@ -250,20 +251,37 @@ class Player extends BaseActor {
 	fireRangedWeapon() {
 		let lineOfSight = this.getCursor().getBresenhamLine();
 
-		// only one entry means we shoot at ourselves...
-		if (lineOfSight.length == 1) {
+		// zero or one entry means we shoot at ourselves... (initial placement of the cursor)
+		if (lineOfSight.length == 0 || lineOfSight.length == 1) {
 			UISystem.log(`That's a bit dark isn't it?`);
 		} else {
-			// we now loop along the line-of-sight and find the first hit
+			// we now move the projectile along the line-of-sight and find the first hit
+			let tilesPassed = [];
 			for (let p of lineOfSight) {
-				// we ignore the first entry: player tile
+				// we ignore the first tile: always the player tile
 				if (p.tile != this.gameTile) {
-					let topmostEnemy = p.tile.getTopmostActorByClass(Enemy);
-					if (topmostEnemy) {
-						// TODO: process hit
+					tilesPassed.push(p.tile);
+					// we stop at the first tile we cannot pass with our projectile
+					if (!p.tile.isFree()) {
+						break;
 					}
 				}
 			}
+
+			// Last entry of all the passed tiles is the one we hit
+			let firstHitTile = tilesPassed[tilesPassed.length-1];
+			let topmostEnemy;
+			if (firstHitTile) {
+				topmostEnemy = firstHitTile.getTopmostActorByClass(Enemy);
+			}
+
+			this.fireShotAlongLine({
+				tilesPassed: tilesPassed,
+				tileHit: firstHitTile,
+				actorHit: topmostEnemy
+			});
+
+			PlayerState.endTurn();
 		}
 	}
 
@@ -385,7 +403,7 @@ class Player extends BaseActor {
 			let goalTile = this.getTilemap().get(startTile.x + xDif, startTile.y + yDif);
 
 			// if something happend during this turn, end the turn.
-			let didSomeInteraction = this.processTileInteraction(startTile, goalTile);
+			let didSomeInteraction = this.processMovementTileInteraction(startTile, goalTile);
 			if (didSomeInteraction) {
 				PlayerState.endTurn();
 			}
@@ -416,7 +434,7 @@ class Player extends BaseActor {
 	 * @param {GameTile} startTile the current tile of the player
 	 * @param {GameTile} goalTile the goal-tile to which the player wants to move
 	 */
-	processTileInteraction(startTile, goalTile) {
+	processMovementTileInteraction(startTile, goalTile) {
 		// this flag indicates if something has happend this turn
 		let didSomeInteraction = false;
 
