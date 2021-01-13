@@ -51,7 +51,7 @@ class BaseMap extends Screen {
 	 * Player instance is handling UI input events.
 	 */
 	begin() {
-		this.getPlayer().connectInputEventHandlers();
+		this.getPlayer().connectEventHandlers();
 	}
 
 	/**
@@ -60,7 +60,7 @@ class BaseMap extends Screen {
 	 * Player instance is handling UI input events.
 	 */
 	end() {
-		this.getPlayer().disconnectInputEventHandlers();
+		this.getPlayer().disconnectEventHandlers();
 	}
 
 	/**

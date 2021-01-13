@@ -17,7 +17,6 @@ import BaseActor from "../BaseActor.js";
 import Enemy from "../enemies/Enemy.js";
 
 // own stuff
-import BattleCalculator from "../../combat/BattleCalculator.js";
 import PlayerState from "./PlayerState.js";
 import UISystem from "../../ui/UISystem.js";
 
@@ -104,19 +103,21 @@ class Player extends BaseActor {
 	}
 
 	/**
-	 * Subscribes to the UI input events (e.g. Backpack/Equipment changes).
+	 * Subscribes to the events (e.g. UI input -> Backpack/Equipment changes).
 	 */
-	connectInputEventHandlers() {
+	connectEventHandlers() {
 		EventBus.subscribe(Constants.Events.UI_UPDATE_BACKPACK, this.inputCheck_fromUI.bind(this));
+		EventBus.subscribe(Constants.Events.LOGIC_PLAYER_TURN_STARTED, this.turnStart.bind(this));
 	}
 
 	/**
-	 * Unsubscribes from the UI input events.
+	 * Unsubscribes from events.
 	 * This is necessary since each screen has a separate Player class instance,
 	 * and only the currently active one should react to UI interactions.
 	 */
-	disconnectInputEventHandlers() {
+	disconnectEventHandlers() {
 		EventBus.unsubscribeAll(Constants.Events.UI_UPDATE_BACKPACK);
+		EventBus.unsubscribeAll(Constants.Events.LOGIC_PLAYER_TURN_STARTED);
 	}
 
 	/**
@@ -165,6 +166,10 @@ class Player extends BaseActor {
 		this.playAnimation({name: `${this._lastDir}`});
 	}
 
+	/**
+	 * Returns wheter the given control scheme is active.
+	 * @param {string} cs the cntrol scheme to check
+	 */
 	hasControlScheme(cs) {
 		return this._controlScheme === cs;
 	}
@@ -182,12 +187,12 @@ class Player extends BaseActor {
 		if (cs === Constants.ControlSchemes.BASIC) {
 			this._controlScheme = cs;
 			logMsg = `${this} is idly standing around.`;
-			this.getCursor().hide();
+			this.getCursor().deactivate();
 
 		} else if (cs === Constants.ControlSchemes.LOOKING) {
 			this._controlScheme = cs;
 			logMsg = `${this} is looking around.`;
-			this.getCursor().show(this.getTile(), this.lookAround.bind(this));
+			this.getCursor().activate(this.getTile(), this.lookAround.bind(this));
 
 		} else if (cs === Constants.ControlSchemes.SHOOTING) {
 			let bp = this.getBackpack();
@@ -197,13 +202,27 @@ class Player extends BaseActor {
 			if (rangedWeapon) {
 				this._controlScheme = cs;
 				logMsg = `${this} readies their ${rangedWeapon.text.innerName}.`;
-				this.getCursor().show(this.getTile(), this.aimRangedWeapon.bind(this), true);
+				this.getCursor().activate(this.getTile(), this.aimRangedWeapon.bind(this), true);
 			} else {
 				logMsg = `${this} does not have a ranged weapon equipped.`;
 			}
 		}
 
 		UISystem.log(logMsg);
+	}
+
+	/**
+	 * Called when a new Player turn starts.
+	 */
+	turnStart() {
+		// SHOOTING:
+		// When a turn starts and we are in the shooting control-scheme we display the cursor again
+		if (this.hasControlScheme(Constants.ControlSchemes.SHOOTING)) {
+			this.getCursor().show();
+			// redraw the line-of-sight after showing the cursor again
+			// after an enemy has moved/died/etc. the line-of-sight has probably changed -> some tiles might be (un)blocked now
+			this.aimRangedWeapon(undefined, undefined, this.getCursor().getBresenhamLine());
+		}
 	}
 
 	/**
@@ -224,6 +243,7 @@ class Player extends BaseActor {
 	 * SHOOTING:
 	 * Callback function for cursor movement when control scheme is set to SHOOTING.
 	 * Draws the line-of-sight for aiming.
+	 * Not actual gameplay logic, just changing the rendering!
 	 */
 	aimRangedWeapon(oldTile, newTile, bresenhamLine) {
 		// if the sight is blocked, all subsequent tiles will be drawn in red
@@ -246,6 +266,7 @@ class Player extends BaseActor {
 	}
 
 	/**
+	 * SHOOTING:
 	 * Fires the currently equipped ranged weapon.
 	 */
 	fireRangedWeapon() {
@@ -280,6 +301,8 @@ class Player extends BaseActor {
 				tileHit: firstHitTile,
 				actorHit: topmostEnemy
 			});
+
+			this.getCursor().hide();
 
 			PlayerState.endTurn();
 		}

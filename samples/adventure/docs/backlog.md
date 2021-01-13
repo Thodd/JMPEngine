@@ -13,6 +13,11 @@
 * [x] Render all "obstructed" line tiles red
 * [x] Fire projectile
   * Iterate bresenham line and damage first enemy (or tile for destructive projectiles)
+* [x] Hide Cursor on fire
+  * how to do this? Chain together with animations somehow?
+  * Yes: We hide the cursor on fire and show it again at the beginning of the next turn
+* [x] Update Bresenham Line visualization after fire
+  * If an enemy moves the line-of-sight might change (blue becomes read and vice-versa)
 * [ ] Projectile Movement animation
   * Chain multiple MovementAnimations together, moving from one tile to the next in the chain
 * [ ] Visualize Magazine & Additional Ammo in UI

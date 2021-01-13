@@ -69,6 +69,8 @@ const PlayerState = {
 	takeTurn() {
 		// GC has passed us priority so we activate input check during the game loop
 		PlayerState.yourTurn = true;
+
+		EventBus.publish(Constants.Events.LOGIC_PLAYER_TURN_STARTED, {});
 	},
 
 	endTurn() {

@@ -50,7 +50,7 @@ class Cursor extends Entity {
 			}
 		});
 
-		this.hide();
+		this.deactivate();
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Cursor extends Entity {
 	}
 
 	/**
-	 * Displays the cursor at the given tile.
+	 * Activates the cursor at the given tile.
 	 * An additional callback can be defined, which is invoked everytime the cursor is moved.
 	 *
 	 *
@@ -71,7 +71,9 @@ class Cursor extends Entity {
 	 * @param {function} [changeCallback] an optional callback function which is invoked everytime the cursor is moved to a new tile
 	 * @param {boolean} [calculateBresenhamLine] if set to true the cursor automatically calculates a bresenham based line from 'startTile' to the target tile
 	 */
-	show(startTile, changeCallback=null, calculateBresenhamLine=false) {
+	activate(startTile, changeCallback=null, calculateBresenhamLine=false) {
+		this.isActive = true;
+
 		this.startTile = startTile;
 		this.targetTile = startTile;
 
@@ -89,7 +91,9 @@ class Cursor extends Entity {
 	/**
 	 * Hides the cursor and deactivates movement input handling.
 	 */
-	hide() {
+	deactivate() {
+		this.isActive = false;
+
 		this.startTile = null;
 		this.targetTile = null;
 
@@ -101,7 +105,32 @@ class Cursor extends Entity {
 		this.active = false;
 		this.visible = false;
 
-		this.hideTileHighlights();
+		this.hideAllTileHighlights();
+	}
+
+	/**
+	 * Returns whether the Cursor is currently activated.
+	 */
+	isActive() {
+		return this.isActive;
+	}
+
+	/**
+	 * Displays the Cursor.
+	 * Purely visual, activation state is not changed.
+	 */
+	show() {
+		this.visible = true;
+		this._lastBresenhamLine.forEach((p) => {p.tileHighlight.visible = true;});
+	}
+
+	/**
+	 * Hides the Cursor.
+	 * Purely visual, activation state is not changed.
+	 */
+	hide() {
+		this.visible = false;
+		this._lastBresenhamLine.forEach((p) => {p.tileHighlight.visible = false;});
 	}
 
 	/**
@@ -116,7 +145,7 @@ class Cursor extends Entity {
 	/**
 	 * Hides all existing tile-highlights.
 	 */
-	hideTileHighlights() {
+	hideAllTileHighlights() {
 		this._tileHighlights.forEach(function(th) {
 			th.visible = false;
 		})
@@ -149,9 +178,8 @@ class Cursor extends Entity {
 			// [optional]
 			if (this.calculateBresenhamLine) {
 
-
 				// make sure we first hide all tile-highlights
-				this.hideTileHighlights();
+				this.hideAllTileHighlights();
 
 				this._lastBresenhamLine = [];
 				let line = Algos.bresenham(this.startTile.x, this.startTile.y, this.targetTile.x, this.targetTile.y);
