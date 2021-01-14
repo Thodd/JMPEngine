@@ -217,7 +217,7 @@ class Player extends BaseActor {
 	turnStart() {
 		// SHOOTING:
 		// When a turn starts and we are in the shooting control-scheme we display the cursor again
-		if (this.hasControlScheme(Constants.ControlSchemes.SHOOTING)) {
+		if (!this.isDead && this.hasControlScheme(Constants.ControlSchemes.SHOOTING)) {
 			this.getCursor().show();
 			// redraw the line-of-sight after showing the cursor again
 			// after an enemy has moved/died/etc. the line-of-sight has probably changed -> some tiles might be (un)blocked now

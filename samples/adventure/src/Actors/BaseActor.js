@@ -24,6 +24,8 @@ import MovementAnimation from "../animations/MovementAnimation.js";
 import HPUpdateAnimation from "../animations/HPUpdateAnimation.js";
 import DeathAnimation from "../animations/DeathAnimation.js";
 import BumpAnimation from "../animations/BumpAnimation.js";
+import ChainAnimation from "../animations/ChainAnimation.js";
+import ProjectileAnimation from "../animations/ProjectileAnimation.js";
 import Backpack from "../items/Backpack.js";
 
 let _ID = 0;
@@ -375,9 +377,26 @@ class BaseActor extends Entity {
 	 * @param {object} fireInfo actorHit the actor which is hit by the projectile
 	 */
 	fireShotAlongLine(fireInfo) {
+
+		// determine animation phase
+		let phase = this.isPlayer ? AnimationSystem.Phases.RANGED_ATTACKS_PLAYER : AnimationSystem.Phases.RANGED_ATTACKS_ENEMIES;
+
+		// animation chain (projectile + optional hurt animation)
+		let chainAnimation = AnimationPool.get(ChainAnimation, this);
+		this.scheduleAnimation(chainAnimation, phase);
+
+		// projectile animation
+		let goalTile = fireInfo.tileHit;
+		let projAnim = AnimationPool.get(ProjectileAnimation, this);
+		projAnim.moveFromTo(this.gameTile, goalTile);
+		chainAnimation.add(projAnim);
+
 		if (fireInfo.actorHit) {
 			UISystem.log(`${this} fires a shot at ${fireInfo.actorHit}.`);
-			this.rangeAttackActor(fireInfo.actorHit);
+			let hurtAnim = this.rangeAttackActor(fireInfo.actorHit);
+			if (hurtAnim) {
+				chainAnimation.add(hurtAnim);
+			}
 		} else {
 			UISystem.log(`${this} hits ${fireInfo.tileHit.type.text ? fireInfo.tileHit.type.text.innerName : 'nothing'}.`);
 		}
@@ -390,29 +409,14 @@ class BaseActor extends Entity {
 	rangeAttackActor(defender) {
 		// dead actors can't be damaged anymore...
 		if (!defender.isDead) {
-
-			// determine animation phase
-			let phase = this.isPlayer ? AnimationSystem.Phases.RANGED_ATTACKS_PLAYER : AnimationSystem.Phases.RANGED_ATTACKS_ENEMIES;
-
-
-
-
-			// TODO: Shooting animation -> Projectile flies
-
-
-
-
 			let battleResult = BattleCalculator.battle(this, Constants.EquipmentSlots.RANGED);
 			if (battleResult.damage == 0) {
 				UISystem.log(`${this} misses!`);
 			}
 
-			// defender is hurt by this actor, schedule hurt animation
+			// defender is hurt by this actor, return a HurtAnimation instance
 			// can also be "0! for a miss!
-			let hurtAnim = defender.updateHP(-battleResult.damage, this);
-			if (hurtAnim) {
-				this.scheduleAnimation(hurtAnim, phase);
-			}
+			return defender.updateHP(-battleResult.damage, this);
 		}
 	}
 

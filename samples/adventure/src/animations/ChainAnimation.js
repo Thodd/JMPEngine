@@ -1,4 +1,4 @@
-import AnimationPool from "./AnimationPool.js";
+import AnimationPool from "./system/AnimationPool.js";
 import BaseAnimation from "./BaseAnimation.js";
 
 /**
