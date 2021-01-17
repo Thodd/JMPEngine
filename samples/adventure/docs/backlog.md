@@ -20,8 +20,8 @@
   * If an enemy moves the line-of-sight might change (blue becomes read and vice-versa)
 * [x] Projectile Movement animation
   * Chain multiple MovementAnimations together, moving from one tile to the next in the chain
-* [ ] Create projectile sprites for different weapons
-* [ ] Rotate projectile
+* [x] Create projectile sprites for different weapons
+* [x] Rotate projectile
 * [ ] Visualize Magazine & Additional Ammo in UI
 * [ ] Introduce "pass-projectile" flag on Tile Type
   * Some tiles like water or a bush do not obstruct the targetting
@@ -35,10 +35,12 @@
 
 * [ ] Move HP Indicator below an Actor if they are on the top row of the Screen-Viewport
   * Otherwise the HP Indicator is rendered outside --> happens with Ranged Weapons
+* [ ] Enemy/Actor dies before the projectile hits? When is the death animation scheduled?
 ### UI
 
 * [ ] Introduce Tabs for Backpack
-* [ ] Visualize "Ammo" for "Consumables"
+* [ ] Visualize "Ammo" for "Consumables"?
+  * is this needed???
 
 ### Maps
 

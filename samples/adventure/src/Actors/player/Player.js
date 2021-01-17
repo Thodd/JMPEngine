@@ -296,10 +296,14 @@ class Player extends BaseActor {
 				topmostEnemy = firstHitTile.getTopmostActorByClass(Enemy);
 			}
 
+			// get the projectile type from the ranged weapon definition
+			let rangedWeapon = this.getBackpack().getItemFromSlot(Constants.EquipmentSlots.RANGED);
+
 			this.fireShotAlongLine({
 				tilesPassed: tilesPassed,
 				tileHit: firstHitTile,
-				actorHit: topmostEnemy
+				actorHit: topmostEnemy,
+				projectileType: rangedWeapon.values.projectileType
 			});
 
 			this.getCursor().hide();

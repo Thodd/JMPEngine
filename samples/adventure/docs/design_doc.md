@@ -45,7 +45,7 @@
 | Name                   | Damage | Acc  | Mag-Size | Description                         |
 |------------------------|--------|------|----------|-------------------------------------|
 | Throwing Knife         |   0.5  |  95% |    /     | Basic ranged weapon. Easy to use. Throwing wastes a knife. |
-| Pistol                 |   1    | 100% |    8     | Simple weapon. Accurate but weak. Better than Knife, but reload takes a turn.   |
+| Pistol                 |   1    | 100% |    6     | Simple weapon. Accurate but weak. Better than Knife, but reload takes a turn.   |
 | Javelin                |   1.5  |  80% |    /     | Good throwing weapon, but harder to use than a throwing knife. |
 | Bow                    |   2    |  75% |   12     | Anachronistic weapon. Big quiver, good damage but inaccurate. |
 | Revolver               |   2    |  90% |    5     | More damage than pistol, but less accurate. Smaller magazine. |

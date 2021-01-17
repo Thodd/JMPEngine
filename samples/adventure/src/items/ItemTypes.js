@@ -387,14 +387,69 @@ _create({
 	sprite: 58,
 	text: {
 		name: "Throwing Knifes",
-		article: "a",
-		innerName: "set of throwing knifes",
-		flavor: "A staple of carnival culture."
+		innerName: "a set of throwing knifes",
+		flavor: "Nothing special, just a staple of carnival culture."
 	},
 	values: {
 		ammoType: "THROWING_KNIFES",
+		magazine: 0,
+		projectileType: Constants.ProjectileTypes.THROWING_KNIFES,
 		dmg: 0.5,
 		acc: 0.95,
+	}
+});
+_create({
+	id: "PISTOL",
+	category: categories.WEAPON,
+	equippableAs: [Constants.EquipmentSlots.RANGED],
+	sprite: 7,
+	text: {
+		name: "Pistol",
+		innerName: "a pistol",
+		flavor: "The most common ranged weapon in these parts. Conveniently semi-automatic."
+	},
+	values: {
+		ammoType: "BULLETS",
+		magazine: 6,
+		projectileType: Constants.ProjectileTypes.BULLET,
+		dmg: 1,
+		acc: 1,
+	}
+});
+_create({
+	id: "JAVELIN",
+	category: categories.WEAPON,
+	equippableAs: [Constants.EquipmentSlots.RANGED],
+	sprite: 84,
+	text: {
+		name: "Javelin",
+		innerName: "a javelin",
+		flavor: "Don't underestimate the javelin. From the death of Baldr to the rise and fall of the roman empire, this weapon has seen it all."
+	},
+	values: {
+		ammoType: "JAVELIN",
+		magazine: 0,
+		projectileType: Constants.ProjectileTypes.JAVELIN,
+		dmg: 1.5,
+		acc: 0.8,
+	}
+});
+_create({
+	id: "BOW",
+	category: categories.WEAPON,
+	equippableAs: [Constants.EquipmentSlots.RANGED],
+	sprite: 46,
+	text: {
+		name: "Bow",
+		innerName: "a bow",
+		flavor: "It is not made of gold, but somewhere Artemis is smiling."
+	},
+	values: {
+		ammoType: "ARROW",
+		magazine: 12,
+		projectileType: Constants.ProjectileTypes.ARROW,
+		dmg: 2,
+		acc: 0.75,
 	}
 });
 

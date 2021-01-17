@@ -76,6 +76,10 @@ class WorldScreen extends BaseMap {
 		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
 		this.getPlayer().getTileRelative(-1, 0).dropNewItem(ItemTypes.THROWING_KNIFES);
 
+		this.getPlayer().getTileRelative(+1, 0).dropNewItem(ItemTypes.BOW);
+		this.getPlayer().getTileRelative(+1, 1).dropNewItem(ItemTypes.JAVELIN);
+		this.getPlayer().getTileRelative(+1, 2).dropNewItem(ItemTypes.PISTOL);
+
 		this.getPlayer().getTileRelative(-1, 3).dropNewItem(ItemTypes.APPLE);
 		this.getPlayer().getTileRelative(-1, 4).dropNewItem(ItemTypes.BANANA);
 		this.getPlayer().getTileRelative(-1, 5).dropNewItem(ItemTypes.ORANGE);

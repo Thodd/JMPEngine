@@ -60,6 +60,13 @@ const Constants = {
 		QUICK_S:  "quickS"
 	},
 
+	ProjectileTypes: {
+		ARROW: "arrow",
+		BULLET: "bullet",
+		JAVELIN: "javelin",
+		THROWING_KNIFES: "throwing_knifes"
+	},
+
 	ControlSchemes: {
 		BASIC:     "basic",
 		SHOOTING:  "shooting",

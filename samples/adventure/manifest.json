@@ -48,6 +48,11 @@
 				"url": "./img/items.png",
 				"w": 12,
 				"h": 12
+			},
+			"projectiles": {
+				"url": "./img/projectiles.png",
+				"w": 12,
+				"h": 12
 			}
 		},
 		"fonts": {

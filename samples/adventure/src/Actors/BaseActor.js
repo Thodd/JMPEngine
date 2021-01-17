@@ -374,6 +374,7 @@ class BaseActor extends Entity {
 	 * @param {object} fireInfo contains the information needed to animate the shot
 	 * @param {object} fireInfo.tilesPassed the line along which the projectile should fly
 	 * @param {object} fireInfo.tileHit the final tile which is hit by the projectile
+	 * @param {string} fireInfo.projectileType the type of projectile, e.g. Arrow, Bullet...
 	 * @param {object} fireInfo actorHit the actor which is hit by the projectile
 	 */
 	fireShotAlongLine(fireInfo) {
@@ -388,7 +389,7 @@ class BaseActor extends Entity {
 		// projectile animation
 		let goalTile = fireInfo.tileHit;
 		let projAnim = AnimationPool.get(ProjectileAnimation, this);
-		projAnim.moveFromTo(this.gameTile, goalTile);
+		projAnim.moveFromTo(this.gameTile, goalTile, fireInfo.projectileType);
 		chainAnimation.add(projAnim);
 
 		if (fireInfo.actorHit) {
