@@ -1,9 +1,8 @@
+import EventBus from "../../../../src/utils/EventBus.js";
+import Constants from "./Constants.js";
 class TileChooser {
     constructor() {
-
-        // listeneres
-        this._onClickListeners = [];
-
+        // dom elements
         this._contentDOM = document.getElementById("tc_content");
         this._cursor = document.getElementById("tc_cursor");
 
@@ -17,11 +16,11 @@ class TileChooser {
             let newX = (event.clientX - bounds.left);
             let newY = (event.clientY - bounds.top);
 
-            newX -= (newX % 16);
-            newY -= (newY % 16);
+            newX -= (newX % Constants.TILE_WIDTH);
+            newY -= (newY % Constants.TILE_HEIGHT);
 
-            this._cursor.tile_x = newX / 16;
-            this._cursor.tile_y = newY / 16;
+            this._cursor.tile_x = newX / Constants.TILE_WIDTH;
+            this._cursor.tile_y = newY / Constants.TILE_HEIGHT;
 
             this._cursor.style.left = newX + "px";
             this._cursor.style.top = newY + "px";
@@ -37,18 +36,16 @@ class TileChooser {
         this._cursor.addEventListener("click", (event) => {
             event.preventDefault();
 
-            this._onClickListeners.forEach((listener) => {
-                listener(this._cursor.tile_x, this._cursor.tile_y);
-            })
+            EventBus.publish("TILE_CHANGE", {
+                x: this._cursor.tile_x,
+                y: this._cursor.tile_y,
+                id: this._cursor.tile_y * Constants.TILES_PER_ROW + this._cursor.tile_x
+            });
         });
     }
 
     getTilesetImage() {
         return this._contentDOM.firstElementChild;
-    }
-
-    onClick(listener) {
-        this._onClickListeners.push(listener);
     }
 }
 

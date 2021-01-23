@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "testing.json",
+    "activeFile": "town.json",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -38,10 +38,10 @@
         },
         "center_corners_free.json": {
             "scale": 1.5,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 197.33333333333331,
-                "y": 230.33333333333334
+                "x": 189.99999999999997,
+                "y": 232.66666666666663
             }
         },
         "sample_map.json": {
@@ -61,19 +61,19 @@
             }
         },
         "testing.json": {
-            "scale": 1.4977,
+            "scale": 1.49,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 196.9686853174868,
-                "y": 223.3424584362689
+                "x": 136.91275167785236,
+                "y": 222.81879194630875
             }
         },
         "tile_animation_tests.json": {
             "scale": 1.47,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200,
-                "y": 200.34013605442175
+                "x": 199.99999999999997,
+                "y": 200.68027210884355
             }
         },
         "tileset10.json": {
@@ -88,8 +88,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200,
-                "y": 200.33333333333334
+                "x": 194.66666666666663,
+                "y": 231.33333333333337
             }
         },
         "untitled.json": {
@@ -113,18 +113,18 @@
     "map.width": 25,
     "openFiles": [
         "tileset16.json",
-        "town.json",
         "testing.json",
-        "tile_animation_tests.json"
+        "center_corners_free.json",
+        "town.json"
     ],
     "project": "ARPG.tiled-project",
     "property.type": "string",
     "recentFiles": [
         "tileset16.json",
-        "town.json",
-        "tile_animation_tests.json",
         "testing.json",
         "center_corners_free.json",
+        "town.json",
+        "tile_animation_tests.json",
         "10x10.json",
         "untitled.json",
         "Tileset.json",

@@ -4,7 +4,7 @@
         <link href="./css/base.css" rel="stylesheet">
         <link href="./css/tile_chooser.css" rel="stylesheet">
         <link href="./css/tile_properties.css" rel="stylesheet">
-        <script src="./main.js" type="module"></script>
+        <script src="./MapEditor.js" type="module"></script>
     </head>
     <body>
         <!-- tile chooser -->
@@ -32,32 +32,32 @@
                 <!-- id -->
                 <div class="tp_row">
                     <span class="tp_label">ID: </span>
-                    <input class="tp_value" data-bind="id" disabled />
+                    <input id="tp_value_id" class="tp_value" disabled />
                 </div>
                 <!-- name -->
                 <div class="tp_row">
                     <span class="tp_label">Name: </span>
-                    <input class="tp_value" data-bind="name" />
+                    <input id="tp_value_name" class="tp_value" />
                 </div>
                 <!-- blocking -->
                 <div class="tp_row">
                     <span class="tp_label">is blocking: </span>
-                    <input type="checkbox" class="tp_value" data-bind="blocking" />
+                    <input id="tp_value_blocking" type="checkbox" class="tp_value"  />
                 </div>
                 <!-- water -->
                 <div class="tp_row">
                     <span class="tp_label">is water: </span>
-                    <input type="checkbox" class="tp_value" data-bind="water" />
+                    <input id="tp_value_water" type="checkbox" class="tp_value"  />
                 </div>
                 <!-- animation frames -->
                 <div class="tp_row">
                     <span class="tp_label">Animation frames: </span>
-                    <input class="tp_value" data-bind="animation/frames" />
+                    <input id="tp_value_animationFrames" class="tp_value" frames" />
                 </div>
                 <!-- animation timing -->
                 <div class="tp_row">
                     <span class="tp_label">Animation timing: </span>
-                    <input class="tp_value" data-bind="animation/dt" />
+                    <input id="tp_value_animationTiming" class="tp_value" />
                 </div>
             </div>
         </div>
