@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="./css/base.css" rel="stylesheet">
+        <link href="./css/tile_chooser.css" rel="stylesheet">
+        <link href="./css/tile_properties.css" rel="stylesheet">
+        <script src="./main.js" type="module"></script>
+    </head>
+    <body>
+        <!-- tile chooser -->
+        <div class="wnd" id="tileChooser">
+            <div class="wnd_title">
+                Tileset
+            </div>
+            <div class="wnd_content" id="tc_content">
+                <img src="../../img/tileset16.png" draggable="false"/>
+                <div id="tc_cursor"></div>
+            </div>
+        </div>
+
+        <!-- tile properties -->
+        <div class="wnd" id="tileProperties">
+            <div class="wnd_title">
+                Tile Properties
+            </div>
+            <div class="wnd_content tp_form">
+                <!-- img -->
+                <div class="tp_row">
+                    <span class="tp_label">Sprite: </span>
+                    <img src="../../img/tileset16.png" width="32px" height="32" />
+                </div>
+                <!-- id -->
+                <div class="tp_row">
+                    <span class="tp_label">ID: </span>
+                    <input class="tp_value" data-bind="id" disabled />
+                </div>
+                <!-- name -->
+                <div class="tp_row">
+                    <span class="tp_label">Name: </span>
+                    <input class="tp_value" data-bind="name" />
+                </div>
+                <!-- blocking -->
+                <div class="tp_row">
+                    <span class="tp_label">is blocking: </span>
+                    <input type="checkbox" class="tp_value" data-bind="blocking" />
+                </div>
+                <!-- water -->
+                <div class="tp_row">
+                    <span class="tp_label">is water: </span>
+                    <input type="checkbox" class="tp_value" data-bind="water" />
+                </div>
+                <!-- animation frames -->
+                <div class="tp_row">
+                    <span class="tp_label">Animation frames: </span>
+                    <input class="tp_value" data-bind="animation/frames" />
+                </div>
+                <!-- animation timing -->
+                <div class="tp_row">
+                    <span class="tp_label">Animation timing: </span>
+                    <input class="tp_value" data-bind="animation/dt" />
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

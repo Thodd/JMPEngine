@@ -1,0 +1,20 @@
+#tc_content {
+    cursor: none;
+    position: relative;
+
+    width: 640px;
+    height: 640px;
+}
+
+#tc_cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    border: 2px solid #FF0085;
+    box-shadow: 2px 2px 0px #000000;
+    margin: -2px;
+
+    width: 16px;
+    height: 16px;
+}

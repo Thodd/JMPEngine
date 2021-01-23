@@ -1,0 +1,10 @@
+.tp_form {
+    width: 400px;
+}
+
+.tp_row {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 170px auto;
+    margin: 5px;
+}
