@@ -36,6 +36,25 @@
                 "y": 180.75
             }
         },
+        "center/center_00.json": {
+            "scale": 1.79,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 191.62011173184356,
+                "y": 199.4413407821229
+            }
+        },
+        "center/center_01.json": {
+            "scale": 1.5484999999999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 185.34065224410722,
+                "y": 182.75750726509526
+            }
+        },
+        "center/tileset16.json": {
+            "scaleInDock": 1
+        },
         "center_corners_free.json": {
             "scale": 1.5,
             "selectedLayer": 0,
@@ -64,8 +83,8 @@
             "scale": 1.49,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 136.91275167785236,
-                "y": 222.81879194630875
+                "x": 200,
+                "y": 200
             }
         },
         "tile_animation_tests.json": {
@@ -89,7 +108,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 194.66666666666663,
-                "y": 231.33333333333337
+                "y": 277.33333333333337
             }
         },
         "untitled.json": {
@@ -98,6 +117,102 @@
             "viewCenter": {
                 "x": 205.10204081632654,
                 "y": 218.70748299319726
+            }
+        },
+        "waterEdges/BL_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/BR_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/B_00.json": {
+            "scale": 1.79,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.17877094972064,
+                "y": 199.99999999999997
+            }
+        },
+        "waterEdges/L_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 201.16484103660167,
+                "y": 210.61180870959123
+            }
+        },
+        "waterEdges/R_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/TL_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/TR_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 193.94068928666843,
+                "y": 198.38632113278118
+            }
+        },
+        "waterEdges/T_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/corner_BL_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/corner_BR_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/corner_TL_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
+            }
+        },
+        "waterEdges/corner_TR_00.json": {
+            "scale": 1.7995192307692307,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.27357734437618,
+                "y": 200.05343307507349
             }
         }
     },
@@ -120,17 +235,18 @@
     "project": "ARPG.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "tileset16.json",
+        "center/center_01.json",
         "testing.json",
-        "center_corners_free.json",
-        "town.json",
-        "tile_animation_tests.json",
-        "10x10.json",
-        "untitled.json",
-        "Tileset.json",
-        "algo_tests.json",
-        "tileset10.json",
-        "smaller.json"
+        "waterEdges/B_00.json",
+        "waterEdges/T_00.json",
+        "waterEdges/R_00.json",
+        "waterEdges/L_00.json",
+        "waterEdges/corner_BL_00.json",
+        "waterEdges/corner_TR_00.json",
+        "waterEdges/TR_00.json",
+        "waterEdges/BR_00.json",
+        "waterEdges/TL_00.json",
+        "waterEdges/BL_00.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",

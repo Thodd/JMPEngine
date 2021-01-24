@@ -1,4 +1,4 @@
-import { error, warn, assert } from "../../../../src/utils/Log.js";
+import { warn, assert } from "../../../../src/utils/Log.js";
 import JSONCache from "../../../../src/assets/JSONCache.js";
 
 let _initialized;

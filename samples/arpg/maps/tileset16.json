@@ -14,7 +14,7 @@
  "name":"tileset16",
  "spacing":0,
  "tilecount":1600,
- "tiledversion":"1.4.2",
+ "tiledversion":"1.4.3",
  "tileheight":16,
  "tiles":[
         {
