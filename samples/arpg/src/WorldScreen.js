@@ -10,6 +10,7 @@ import MapLoader from "./mapgen/MapLoader.js";
 import Player from "./actors/Player.js";
 import Constants from "./Constants.js";
 import Sign from "./actors/interactables/Sign.js";
+import OverworldGenerator from "./mapgen/OverworldGenerator.js";
 
 class WorldScreen extends Screen {
 	constructor() {
@@ -17,10 +18,13 @@ class WorldScreen extends Screen {
 
 		//Entity.RENDER_HITBOX = 0xFF0000;
 
+		OverworldGenerator.generate();
+		this.add(OverworldGenerator.minimap);
+
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/center/center_01.json" } //tile_animation_tests, center_corners_free
+			"sampleMap": { url: "./maps/center/center_00.json" } //tile_animation_tests, center_corners_free
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({

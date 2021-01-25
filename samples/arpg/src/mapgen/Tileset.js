@@ -107,9 +107,6 @@ const Tileset = {
 			// release the unused data, we have copied everything we needed
 			JSONCache.release("tileset16");
 		}
-
-		// init not needed anymore
-		delete this.init;
 	},
 
 	/**

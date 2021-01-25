@@ -28,6 +28,11 @@
 				"w": 16,
 				"h": 16
 			},
+			"minimap_tiles": {
+				"url": "./img/minimap_tiles.png",
+				"w": 6,
+				"h": 6
+			},
 			"tileBasedEffects": {
 				"url": "./img/tileBasedEffects.png",
 				"w": 24,
