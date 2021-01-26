@@ -1,6 +1,6 @@
 const Constants = {
-	MAP_WIDTH:   25,
-	MAP_HEIGHT:  25,
+	MAP_WIDTH:   31,
+	MAP_HEIGHT:  31,
 
 	TILE_WIDTH:  16,
 	TILE_HEIGHT: 16,
