@@ -37,27 +37,27 @@
             }
         },
         "center/center_00.json": {
-            "scale": 1.8,
+            "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 201.11111111111111,
-                "y": 193.33333333333331
+                "x": 253.99999999999997,
+                "y": 274.66666666666663
             }
         },
         "center/center_01.json": {
-            "scale": 1.8,
+            "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 202.22222222222226,
-                "y": 218.88888888888886
+                "x": 252.66666666666663,
+                "y": 273.99999999999994
             }
         },
         "center/center_02.json": {
-            "scale": 1.7995192307692307,
+            "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 192.27357734437618,
-                "y": 200.05343307507349
+                "x": 239.99999999999997,
+                "y": 289.33333333333337
             }
         },
         "center/tileset16.json": {
@@ -123,8 +123,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 194.66666666666663,
-                "y": 277.33333333333337
+                "x": 256.66666666666663,
+                "y": 289.33333333333337
             }
         },
         "untitled.json": {
@@ -353,8 +353,10 @@
         "town.json"
     ],
     "project": "ARPG.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
+        "center/center_00.json",
+        "testing/ideas.json",
         "water/corner_B_00.json",
         "water/xxxW_00.json",
         "water/NxxW_00.json",
@@ -364,9 +366,7 @@
         "water/xExx_00.json",
         "water/xESx_00.json",
         "water/Nxxx_00.json",
-        "water/NExx_00.json",
-        "water/BLxR_00.json",
-        "center/center_00.json"
+        "water/NExx_00.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",

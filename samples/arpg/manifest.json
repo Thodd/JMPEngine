@@ -28,10 +28,10 @@
 				"w": 16,
 				"h": 16
 			},
-			"minimap_tiles": {
-				"url": "./img/minimap_tiles.png",
-				"w": 6,
-				"h": 6
+			"autotile": {
+				"url": "./img/autotile.png",
+				"w": 10,
+				"h": 10
 			},
 			"tileBasedEffects": {
 				"url": "./img/tileBasedEffects.png",
