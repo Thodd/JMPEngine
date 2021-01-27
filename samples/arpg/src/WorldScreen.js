@@ -64,7 +64,7 @@ class WorldScreen extends Screen {
 			this.addText();
 
 			// init daylight
-			// this.setDaylight();
+			//this.setDaylight();
 
 			this.centerCameraAround(this.player);
 		});
