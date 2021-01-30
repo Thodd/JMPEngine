@@ -4,15 +4,14 @@
 
 ### Art
 
-* [ ] Walkways with water edge -> for ponds
-* [ ] Redesign flowers
+* [ ] Shallow -> Deep Water Edges
+* [ ] Gravestones
 * [ ] New additional trees
   * [ ] Palm tree
   * [ ] "tangly" tree with vines going to the bottom
   * [ ] Additional 2x1 tall tree, like a pine tree
 * [ ] Two-story buildings
 * [ ] Desert Bush (Cactus?)
-* [ ] Gravestones
 * [x] Redesign Mountains and hills (less Z-like)
 * [x] Walkable planks -> stilts in water (like for Adventure tileset?)
 * [x] Make new fence tiles connected by planks

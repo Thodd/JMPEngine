@@ -44,7 +44,7 @@ class TileBasedEffect extends Actor {
 		let type = tile.type;
 		let anim = this.animations[tile.type];
 
-		// check if we are on an animated tile
+		// check we have an animation for the tile's type
 		if (anim) {
 			// update the step count and advance the animation if the threshold is reached
 			this.animations.stepcount += +moved;

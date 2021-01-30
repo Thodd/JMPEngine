@@ -1,5 +1,6 @@
 import { warn, assert } from "../../../../src/utils/Log.js";
 import JSONCache from "../../../../src/assets/JSONCache.js";
+import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 
 let _initialized;
 
@@ -24,7 +25,9 @@ const types = {
 	WATER_DEEP: "water_deep",
 	WATER_SHALLOW: "water_shallow",
 
-	STAIRS: "stairs"
+	STAIRS: "stairs",
+
+	CLIFF_TOP: "cliff_top"
 };
 const _typeValues = Object.values(types);
 
@@ -57,6 +60,8 @@ const parseProperty = function(tile, prop) {
 		}
 		tile.animation = tile.animation || {};
 		tile.animation.synchronize = prop.value || false;
+	} else if (prop.name === "hitbox") {
+		tile.hitbox = JSON.parse(prop.value);
 	} else {
 		// validate type values
 		if (prop.name === "type") {
@@ -95,7 +100,7 @@ const Tileset = {
 					let prop = tileRaw.properties[p];
 					parseProperty(tileInfo, prop);
 
-					// track tile by type too
+					// track tile by type so we can retrieve the tiles properties
 					// if parseProperty() has not failed, we assume a valid tile type here
 					if (prop.name === "type") {
 						_tilePropertiesByType[prop.value] = _tilePropertiesByType[prop.value] || [];
@@ -131,5 +136,7 @@ const Tileset = {
 }
 
 Tileset.Types = types;
+
+exposeOnWindow("Tileset", Tileset);
 
 export default Tileset;

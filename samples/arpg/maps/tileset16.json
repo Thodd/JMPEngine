@@ -1122,42 +1122,6 @@
                 }]
         }, 
         {
-         "id":240,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":241,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":242,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":243,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
          "id":253,
          "properties":[
                 {
@@ -1213,51 +1177,6 @@
         }, 
         {
          "id":260,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":280,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":281,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":282,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":283,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":284,
          "properties":[
                 {
                  "name":"isBlocking",
@@ -1545,51 +1464,6 @@
                 }]
         }, 
         {
-         "id":404,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":405,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":406,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":407,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
-         "id":408,
-         "properties":[
-                {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
-                }]
-        }, 
-        {
          "id":427,
          "properties":[
                 {
@@ -1611,29 +1485,9 @@
          "id":440,
          "properties":[
                 {
-                 "name":"anim_frames",
-                 "type":"string",
-                 "value":"440,441,440,442"
-                }, 
-                {
-                 "name":"anim_synchronize",
-                 "type":"bool",
-                 "value":true
-                }, 
-                {
-                 "name":"anim_time",
-                 "type":"int",
-                 "value":15
-                }, 
-                {
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"water_deep"
                 }]
         }, 
         {
@@ -1643,11 +1497,6 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"water_deep"
                 }]
         }, 
         {
@@ -1657,11 +1506,24 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
-                }, 
+                }]
+        }, 
+        {
+         "id":443,
+         "properties":[
                 {
-                 "name":"type",
-                 "type":"string",
-                 "value":"water_deep"
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":444,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
                 }]
         }, 
         {
@@ -1722,33 +1584,36 @@
          "id":480,
          "properties":[
                 {
-                 "name":"anim_frames",
-                 "type":"string",
-                 "value":"480,481"
-                }, 
-                {
-                 "name":"anim_synchronize",
+                 "name":"isBlocking",
                  "type":"bool",
                  "value":true
-                }, 
-                {
-                 "name":"anim_time",
-                 "type":"int",
-                 "value":30
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"water_shallow"
                 }]
         }, 
         {
          "id":481,
          "properties":[
                 {
-                 "name":"type",
-                 "type":"string",
-                 "value":"water_shallow"
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":482,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":483,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
                 }]
         }, 
         {
@@ -1824,12 +1689,41 @@
                 }]
         }, 
         {
-         "id":560,
+         "id":524,
          "properties":[
                 {
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }]
+        }, 
+        {
+         "id":560,
+         "properties":[
+                {
+                 "name":"anim_frames",
+                 "type":"string",
+                 "value":"560,561,560,562"
+                }, 
+                {
+                 "name":"anim_synchronize",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"anim_time",
+                 "type":"int",
+                 "value":15
+                }, 
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_deep"
                 }]
         }, 
         {
@@ -1839,28 +1733,141 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_deep"
+                }]
+        }, 
+        {
+         "id":562,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_deep"
                 }]
         }, 
         {
          "id":600,
          "properties":[
                 {
-                 "name":"isBlocking",
+                 "name":"anim_frames",
+                 "type":"string",
+                 "value":"600,601"
+                }, 
+                {
+                 "name":"anim_synchronize",
                  "type":"bool",
                  "value":true
+                }, 
+                {
+                 "name":"anim_time",
+                 "type":"int",
+                 "value":30
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_shallow"
                 }]
         }, 
         {
          "id":601,
          "properties":[
                 {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
+                 "name":"type",
+                 "type":"string",
+                 "value":"water_shallow"
                 }]
         }, 
         {
-         "id":640,
+         "id":617,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\":0,\n\"y\":0,\n\"w\":16,\n\"h\":4\n},\n{\n\"x\":0,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}\n]"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":618,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"{\n\"x\":0,\n\"y\":0,\n\"w\":16,\n\"h\":4\n}"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":619,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\":0,\n\"y\":0,\n\"w\":16,\n\"h\":4\n},\n{\n\"x\":12,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}\n]"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":657,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"{\n\"x\":0,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":658,
+         "properties":[
+                {
+                 "name":"comment",
+                 "type":"string",
+                 "value":"The \"cliff_top\" tiles have a hitbox assigned.\nThe corners use a hitbox perpendicular to the sides e.g.\n----\n|     |\n----\n\nThis leaves a small gap between the tiles.\nHowever the player's hitbox is bigger than the gap so they don't slip through :)"
+                }]
+        }, 
+        {
+         "id":659,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"{\n\"x\":12,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":680,
          "properties":[
                 {
                  "name":"isBlocking",
@@ -1869,7 +1876,7 @@
                 }]
         }, 
         {
-         "id":641,
+         "id":681,
          "properties":[
                 {
                  "name":"isBlocking",
@@ -1878,7 +1885,121 @@
                 }]
         }, 
         {
-         "id":642,
+         "id":682,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":683,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":697,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\":0,\n\"y\":0,\n\"w\":4,\n\"h\":16\n},\n{\n\"x\":0,\n\"y\":12,\n\"w\":16,\n\"h\":4\n}]"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":698,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"{\n\"x\":0,\n\"y\":12,\n\"w\":16,\n\"h\":4\n}"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":699,
+         "properties":[
+                {
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\":12,\n\"y\":0,\n\"w\":4,\n\"h\":16\n},\n{\n\"x\":0,\n\"y\":12,\n\"w\":16,\n\"h\":4\n}]"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top"
+                }]
+        }, 
+        {
+         "id":720,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":721,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":760,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":761,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":800,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":801,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":802,
          "properties":[
                 {
                  "name":"isBlocking",

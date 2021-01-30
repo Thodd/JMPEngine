@@ -40,24 +40,24 @@
             "scale": 1.48,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 254.05405405405403,
-                "y": 274.99999999999994
+                "x": 252.027027027027,
+                "y": 272.97297297297297
             }
         },
         "center/center_01.json": {
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 251.33333333333334,
-                "y": 272.66666666666663
+                "x": 244.66666666666663,
+                "y": 287.99999999999994
             }
         },
         "center/center_02.json": {
-            "scale": 1.5027,
+            "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 246.22346443069142,
-                "y": 260.8637785319758
+                "x": 245.33333333333334,
+                "y": 259.99999999999994
             }
         },
         "center/foo.json": {
@@ -103,6 +103,14 @@
                 "y": 200
             }
         },
+        "testing/cliffs.json": {
+            "scale": 1.46,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 240.4109589041096,
+                "y": 248.63013698630135
+            }
+        },
         "testing/ideas.json": {
             "scale": 1.7995192307692307,
             "selectedLayer": 0,
@@ -110,6 +118,9 @@
                 "x": 201.16484103660167,
                 "y": 203.38765695965802
             }
+        },
+        "testing/tileset16.json": {
+            "scaleInDock": 1
         },
         "tile_animation_tests.json": {
             "scale": 1.47,
@@ -183,6 +194,14 @@
                 "y": 200.3740315255143
             }
         },
+        "water/corner_A_00.json": {
+            "scale": 1.8715,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 200.3740315255143,
+                "y": 200.3740315255143
+            }
+        },
         "water/corner_BL_00.json": {
             "scale": 1.8715,
             "selectedLayer": 0,
@@ -192,6 +211,22 @@
             }
         },
         "water/corner_B_00.json": {
+            "scale": 1.8715,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 200.3740315255143,
+                "y": 200.3740315255143
+            }
+        },
+        "water/corner_C_00.json": {
+            "scale": 1.8715,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 200.3740315255143,
+                "y": 200.3740315255143
+            }
+        },
+        "water/corner_D_00.json": {
             "scale": 1.8715,
             "selectedLayer": 0,
             "viewCenter": {
@@ -363,18 +398,18 @@
     "project": "ARPG.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "center/center_03.json",
-        "center/center_00.json",
-        "water/NExx_00.json",
-        "foo.json",
-        "center/foo.json",
-        "tileset16.json",
-        "testing/ideas.json",
+        "town.json",
+        "testing/testing.json",
+        "water/corner_A_00.json",
         "water/corner_B_00.json",
-        "water/xxxW_00.json",
+        "water/corner_C_00.json",
+        "water/corner_D_00.json",
+        "water/NExx_00.json",
         "water/NxxW_00.json",
+        "water/Nxxx_00.json",
         "water/xESW_00.json",
-        "water/xxSx_00.json"
+        "water/xESx_00.json",
+        "water/xExx_00.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",

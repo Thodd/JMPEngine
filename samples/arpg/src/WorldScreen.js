@@ -11,12 +11,13 @@ import Player from "./actors/Player.js";
 import Constants from "./Constants.js";
 import Sign from "./actors/interactables/Sign.js";
 import OverworldGenerator from "./mapgen/overworld/OverworldGenerator.js";
+import { exposeOnWindow } from "../../../src/utils/Helper.js";
 
 class WorldScreen extends Screen {
 	constructor() {
 		super();
 
-		//Entity.RENDER_HITBOX = 0xFF0000;
+		Entity.RENDER_HITBOX = 0xFF0000;
 
 		OverworldGenerator.generate();
 		//this.add(OverworldGenerator.minimap);
@@ -24,7 +25,7 @@ class WorldScreen extends Screen {
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/center/center_01.json" } //tile_animation_tests, center_corners_free
+			"sampleMap": { url: "./maps/testing/cliffs.json" }
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({
@@ -41,12 +42,15 @@ class WorldScreen extends Screen {
 			let mapData = maps["sampleMap"];
 			let globalIndex = 0;
 			this._tilemap.each((tile) => {
-				// The Tiled editor adds 1 to the tile-id, 0 is empty.
+				// The mapeditor "Tiled" adds 1 to the tile-id, 0 is empty.
 				// However the JMP Engine regards 0 as the first tile and -1 as empty.
 				let tileId = mapData.tiles[globalIndex] - 1;
 
 				// set visuals
 				tile.set(tileId);
+
+				// check if the tile has a hitbox defined in the tileset
+				tile._hitbox = Tileset.getProperties(tileId).hitbox;
 
 				globalIndex++;
 			});
@@ -59,6 +63,7 @@ class WorldScreen extends Screen {
 			// player
 			this.player = new Player(this.width / 2 + Constants.TILE_WIDTH, this.height / 2 + Constants.TILE_HEIGHT*2);
 			this.add(this.player);
+			exposeOnWindow("player", this.player);
 
 			// some sample text
 			this.addText();
@@ -104,16 +109,16 @@ class WorldScreen extends Screen {
 		});
 		this.add(e2);
 
-		let textShadow = new BitmapText({
+		this.uiText = new BitmapText({
 			font: "font0",
-			text: `<3 <3 <3 [x] [y]   UI goes here`,
+			text: `pt: ???`,
 			leading: 3,
 			color: 0xff0000,
 			x: 4,
 			y: 4
 		});
-		textShadow.layer = Constants.Layers.UI;
-		this.add(textShadow);
+		this.uiText.layer = Constants.Layers.UI;
+		this.add(this.uiText);
 	}
 
 	setDaylight() {
@@ -139,6 +144,9 @@ class WorldScreen extends Screen {
 		// we can only do this if the placer is present after map loading
 		if (this.player) {
 			this.centerCameraAround(this.player);
+
+			let playerTile = this.player.getClosestTile();
+			this.uiText.setText(`pt: ${playerTile.id}`);
 		}
 	}
 
