@@ -32,6 +32,24 @@
                 }]
         }, 
         {
+         "id":8,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"grass"
+                }]
+        }, 
+        {
+         "id":9,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"grass"
+                }]
+        }, 
+        {
          "id":10,
          "properties":[
                 {
@@ -291,6 +309,24 @@
                  "name":"type",
                  "type":"string",
                  "value":"bush_cut"
+                }]
+        }, 
+        {
+         "id":48,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"grass"
+                }]
+        }, 
+        {
+         "id":49,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"grass"
                 }]
         }, 
         {

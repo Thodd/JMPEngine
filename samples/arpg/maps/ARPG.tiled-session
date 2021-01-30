@@ -48,8 +48,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 251.99999999999997,
-                "y": 273.33333333333337
+                "x": 251.33333333333334,
+                "y": 272.66666666666663
             }
         },
         "center/center_02.json": {
@@ -361,7 +361,7 @@
         "town.json"
     ],
     "project": "ARPG.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
         "center/center_03.json",
         "center/center_00.json",
