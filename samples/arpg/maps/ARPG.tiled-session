@@ -37,27 +37,35 @@
             }
         },
         "center/center_00.json": {
-            "scale": 1.5,
+            "scale": 1.48,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 253.99999999999997,
-                "y": 274.66666666666663
+                "x": 254.05405405405403,
+                "y": 274.99999999999994
             }
         },
         "center/center_01.json": {
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 252.66666666666663,
-                "y": 273.99999999999994
+                "x": 251.99999999999997,
+                "y": 273.33333333333337
             }
         },
         "center/center_02.json": {
-            "scale": 1.5,
+            "scale": 1.5027,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 239.99999999999997,
-                "y": 289.33333333333337
+                "x": 246.22346443069142,
+                "y": 260.8637785319758
+            }
+        },
+        "center/foo.json": {
+            "scale": 3.59,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 96.10027855153203,
+                "y": 100.00000000000001
             }
         },
         "center/tileset16.json": {
@@ -123,8 +131,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 256.66666666666663,
-                "y": 289.33333333333337
+                "x": 255.33333333333334,
+                "y": 287.99999999999994
             }
         },
         "untitled.json": {
@@ -152,11 +160,11 @@
             }
         },
         "water/NExx_00.json": {
-            "scale": 1.8715,
+            "scale": 1.87,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200.3740315255143,
-                "y": 200.3740315255143
+                "x": 199.4652406417112,
+                "y": 199.4652406417112
             }
         },
         "water/NxxW_00.json": {
@@ -338,14 +346,14 @@
     },
     "frame.defaultDuration": 200,
     "map.fixedSize": true,
-    "map.height": 25,
+    "map.height": 31,
     "map.lastUsedExportFilter": "Json-Kartendateien (*.json)",
     "map.lastUsedFormat": "json",
     "map.orientation": 1,
     "map.renderOrder": 2,
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 25,
+    "map.width": 31,
     "openFiles": [
         "tileset16.json",
         "testing.json",
@@ -355,18 +363,18 @@
     "project": "ARPG.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "center/center_03.json",
         "center/center_00.json",
+        "water/NExx_00.json",
+        "foo.json",
+        "center/foo.json",
+        "tileset16.json",
         "testing/ideas.json",
         "water/corner_B_00.json",
         "water/xxxW_00.json",
         "water/NxxW_00.json",
         "water/xESW_00.json",
-        "water/xxSx_00.json",
-        "water/xxSW_00.json",
-        "water/xExx_00.json",
-        "water/xESx_00.json",
-        "water/Nxxx_00.json",
-        "water/NExx_00.json"
+        "water/xxSx_00.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",
