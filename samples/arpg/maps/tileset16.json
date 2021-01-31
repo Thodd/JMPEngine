@@ -1212,6 +1212,42 @@
                 }]
         }, 
         {
+         "id":274,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":275,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":276,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":277,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
          "id":293,
          "properties":[
                 {
@@ -1299,6 +1335,42 @@
                  "name":"type",
                  "type":"string",
                  "value":"cliff_top_E"
+                }]
+        }, 
+        {
+         "id":314,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":315,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":316,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":317,
+         "properties":[
+                {
+                 "name":"isBlocking",
+                 "type":"bool",
+                 "value":true
                 }]
         }, 
         {
@@ -1512,9 +1584,9 @@
          "id":401,
          "properties":[
                 {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\": 8,\n\"y\": 0,\n\"w\": 8,\n\"h\": 16\n}]"
                 }]
         }, 
         {
@@ -1530,9 +1602,9 @@
          "id":403,
          "properties":[
                 {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\": 0,\n\"y\": 0,\n\"w\": 8,\n\"h\": 16\n}]"
                 }]
         }, 
         {
@@ -1665,9 +1737,9 @@
          "id":481,
          "properties":[
                 {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\": 8,\n\"y\": 0,\n\"w\": 8,\n\"h\": 16\n}]"
                 }]
         }, 
         {
@@ -1683,9 +1755,9 @@
          "id":483,
          "properties":[
                 {
-                 "name":"isBlocking",
-                 "type":"bool",
-                 "value":true
+                 "name":"hitbox",
+                 "type":"string",
+                 "value":"[{\n\"x\":0,\n\"y\": 0,\n\"w\": 8,\n\"h\": 16\n}]"
                 }]
         }, 
         {

@@ -25,7 +25,7 @@ class WorldScreen extends Screen {
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/testing/cliffs.json" }
+			"sampleMap": { url: "./maps/center/center_00.json" }
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({

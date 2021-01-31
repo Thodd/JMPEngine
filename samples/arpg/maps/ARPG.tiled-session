@@ -37,11 +37,11 @@
             }
         },
         "center/center_00.json": {
-            "scale": 1.48,
+            "scale": 1.5251,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 252.027027027027,
-                "y": 272.97297297297297
+                "x": 220.9691167792276,
+                "y": 262.2778834174808
             }
         },
         "center/center_01.json": {
@@ -107,8 +107,8 @@
             "scale": 1.46,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 240.4109589041096,
-                "y": 248.63013698630135
+                "x": 233.56164383561645,
+                "y": 271.917808219178
             }
         },
         "testing/ideas.json": {
@@ -399,10 +399,10 @@
     "project": "ARPG.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "center/center_00.json",
         "testing/cliffs.json",
         "center/center_02.json",
         "center/center_01.json",
-        "center/center_00.json",
         "tileset16.json",
         "town.json",
         "testing/testing.json",
