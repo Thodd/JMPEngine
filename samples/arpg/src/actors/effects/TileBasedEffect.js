@@ -1,7 +1,7 @@
 import { warn } from "../../../../../src/utils/Log.js";
 import Actor from "../Actor.js";
 import Constants from "../../Constants.js";
-import Tileset from "../../mapgen/Tileset.js";
+import TileTypes from "../../mapgen/TileTypes.js";
 
 class TileBasedEffect extends Actor {
 	constructor(actor) {
@@ -58,8 +58,8 @@ class TileBasedEffect extends Actor {
 			// 1. Set animation sprite
 			// 2. change visibility based on the tile.type
 			switch (type) {
-				case Tileset.Types.GRASS:
-				case Tileset.Types.WATER_SHALLOW:
+				case TileTypes.GRASS:
+				case TileTypes.WATER_SHALLOW:
 					_id = anim.frames[this.animations.index % anim.frames.length];
 
 					this.configSprite({

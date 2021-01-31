@@ -2,6 +2,8 @@ import { warn, assert } from "../../../../src/utils/Log.js";
 import JSONCache from "../../../../src/assets/JSONCache.js";
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 
+import TileTypes from "./TileTypes.js";
+
 let _initialized;
 
 // The list of tile properties, ordered by the ID.
@@ -9,131 +11,6 @@ const _tilePropertiesByID = [];
 
 // the list of tile properties ordered by type (only known types are included).
 const _tilePropertiesByType = {};
-
-/**
- * All currently implemented types.
- * The Tileset parsing routine checks the tile's type against this map
- * and logs an error if an unknown type is used.
- */
-const types = {
-	GRASS: "grass",
-	GRASS_CUT: "grass_cut",
-
-	BUSH: "bush",
-	BUSH_CUT: "bush_cut",
-
-	WATER_DEEP: "water_deep",
-	WATER_SHALLOW: "water_shallow",
-
-	STAIRS: "stairs",
-
-	CLIFF_TOP_N: "cliff_top_N",
-	CLIFF_TOP_NE: "cliff_top_NE",
-	CLIFF_TOP_E: "cliff_top_E",
-	CLIFF_TOP_SE: "cliff_top_SE",
-	CLIFF_TOP_S: "cliff_top_S",
-	CLIFF_TOP_SW: "cliff_top_SW",
-	CLIFF_TOP_W: "cliff_top_W",
-	CLIFF_TOP_NW: "cliff_top_NW",
-
-};
-const _typeValues = Object.values(types);
-
-/**
- * We track some additional tile properties in Code instead of the tileset JSON.
- * Stuff like Hitboxes are easier maintained here than in Tiled.
- */
-const _additionalProperties = {
-	"cliff_top_N": {
-		hitbox: [{
-			"x":0,
-			"y":0,
-			"w":16,
-			"h":4
-		}]
-	},
-	"cliff_top_NE": {
-		hitbox: [{
-			"x":0,
-			"y":0,
-			"w":16,
-			"h":4
-		},
-		{
-			"x":12,
-			"y":0,
-			"w":4,
-			"h":16
-		}]
-	},
-	"cliff_top_E": {
-		hitbox: [{
-			"x":12,
-			"y":0,
-			"w":4,
-			"h":16
-		}]
-	},
-	"cliff_top_SE": {
-		hitbox: [{
-			"x":12,
-			"y":0,
-			"w":4,
-			"h":16
-		},
-		{
-			"x":0,
-			"y":12,
-			"w":16,
-			"h":4
-		}]
-	},
-	"cliff_top_S": {
-		hitbox: [{
-			"x":0,
-			"y":12,
-			"w":16,
-			"h":4
-		}]
-	},
-	"cliff_top_SW": {
-		hitbox: [{
-			"x":0,
-			"y":0,
-			"w":4,
-			"h":16
-		},
-		{
-			"x":0,
-			"y":12,
-			"w":16,
-			"h":4
-		}]
-	},
-	"cliff_top_W": {
-		hitbox: [{
-			"x":0,
-			"y":0,
-			"w":4,
-			"h":16
-		}]
-	},
-	"cliff_top_NW": {
-		hitbox: [{
-			"x":0,
-			"y":0,
-			"w":16,
-			"h":4
-		},
-		{
-			"x":0,
-			"y":0,
-			"w":4,
-			"h":16
-		}]
-	}
-};
-
 
 /**
  * Parses the tileset.json information for each tile.
@@ -169,7 +46,7 @@ const parseProperty = function(tile, prop) {
 	} else {
 		// validate type values
 		if (prop.name === "type") {
-			assert(_typeValues.indexOf(prop.value) >= 0, `Error detected: unknown type-value '${prop.value}' for tile #${tile.id}.`, "Tileset")
+			assert(TileTypes.ALL_TYPE_VALUES.indexOf(prop.value) >= 0, `Error detected: unknown type-value '${prop.value}' for tile #${tile.id}.`, "Tileset")
 		}
 
 		// standard properties, no special logic required
@@ -213,7 +90,7 @@ const Tileset = {
 				}
 
 				// after we have processed all properties, we make a look-up for additional properties
-				let addtlProps = _additionalProperties[tileInfo.type];
+				let addtlProps = TileTypes.ADDITIONAL_PROPERTIES[tileInfo.type];
 				if (addtlProps) {
 					// we just copy over the additional props
 					// BEWARE: for objects this is only a shallow copy!
@@ -227,27 +104,29 @@ const Tileset = {
 	},
 
 	/**
-	 * Returns the properties defined in the tileset for the given tile-ID.
+	 * Returns the properties defined in the tileset for the given tile-ID, tile-type or GameTile instance.
 	 *
 	 * If a tile type is used, the tile properties might be ambiguos since a tile type can be used by multiple tiles.
 	 * All tiles sharing a tile-type are considered equal with respect to their properties, the only difference being their
 	 * visuals.
 	 * If multiple tiles for a type exist, the first entry is returned (loweset ID).
 	 *
-	 * @param {int|string} t the tile-ID or tile-Type for which the properties should be retrieved
+	 * @param {int|string|GameTile} t the tile-ID, tile-Type or GameTile instance for which the properties should be retrieved
 	 * @returns {object} the tile's properties. Or an empty object if no properties were found.
 	 */
 	getProperties(t) {
 		if (typeof t === "string") {
 			let tiles = _tilePropertiesByType[t] || [];
 			return tiles[0];
+		} else if (typeof t === "number") {
+			// return at least an empty object if no information is defined in the tileset
+			return _tilePropertiesByID[t] || {};
+		} else {
+			// assume we have a tile instance
+			return _tilePropertiesByID[t.id];
 		}
-		// return at least an empty object if no information is defined in the tileset
-		return _tilePropertiesByID[t] || {};
 	}
 }
-
-Tileset.Types = types;
 
 exposeOnWindow("Tileset", Tileset);
 

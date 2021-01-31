@@ -1,5 +1,6 @@
 import Actor from "../Actor.js";
 import Tileset from "../../mapgen/Tileset.js";
+import TileTypes from "../../mapgen/TileTypes.js";
 import SmallEffect from "../effects/SmallEffect.js";
 
 const allPositions = {
@@ -57,7 +58,7 @@ class SwordAttack extends Actor {
 		let tile = this.getClosestTile();
 		let showEffect = false;
 
-		if (tile.type === Tileset.Types.GRASS || tile.type === Tileset.Types.BUSH) {
+		if (tile.type === TileTypes.GRASS || tile.type === TileTypes.BUSH) {
 			let tileInfo = Tileset.getProperties(`${tile.type}_cut`);
 			tile.set(tileInfo.id);
 			showEffect = true;

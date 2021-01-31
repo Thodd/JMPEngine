@@ -1,5 +1,7 @@
 import { warn } from "../utils/Log.js";
 
+const dummyTile = {isBlocking: false};
+
 export default {
 	/**
 	 * Checks if Entity e1 collides with Entity e2.
@@ -63,8 +65,6 @@ export default {
 		let right = x + e._hitbox.x + e._hitbox.w - 1;
 		let top = y + e._hitbox.y;
 		let bottom = y + e._hitbox.y + e._hitbox.h - 1;
-
-		let dummyTile = {isBlocking: false};
 
 		let tileTopRight = t.get(Math.floor(right / w), Math.floor(top / h)) || dummyTile;
 		let tileTopLeft = t.get(Math.floor(left / w), Math.floor(top / h)) || dummyTile;
