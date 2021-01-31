@@ -4,6 +4,9 @@
 
 ### Art
 
+* [ ] Move Mountain Tiles to the right
+  * [ ] Brown/Sandy Mountain Top (in addition to the grass)
+  * [ ] Try different rock style for the bottom part
 * [ ] Shallow -> Deep Water Edges
 * [ ] Gravestones
 * [ ] New additional trees

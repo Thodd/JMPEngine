@@ -1185,6 +1185,33 @@
                 }]
         }, 
         {
+         "id":269,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_NW"
+                }]
+        }, 
+        {
+         "id":270,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_N"
+                }]
+        }, 
+        {
+         "id":271,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_NE"
+                }]
+        }, 
+        {
          "id":293,
          "properties":[
                 {
@@ -1254,6 +1281,24 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }]
+        }, 
+        {
+         "id":309,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_W"
+                }]
+        }, 
+        {
+         "id":311,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_E"
                 }]
         }, 
         {
@@ -1335,6 +1380,33 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }]
+        }, 
+        {
+         "id":349,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_SW"
+                }]
+        }, 
+        {
+         "id":350,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_S"
+                }]
+        }, 
+        {
+         "id":351,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_SE"
                 }]
         }, 
         {
@@ -1788,85 +1860,6 @@
                 }]
         }, 
         {
-         "id":617,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"[{\n\"x\":0,\n\"y\":0,\n\"w\":16,\n\"h\":4\n},\n{\n\"x\":0,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}\n]"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
-         "id":618,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"{\n\"x\":0,\n\"y\":0,\n\"w\":16,\n\"h\":4\n}"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
-         "id":619,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"[{\n\"x\":0,\n\"y\":0,\n\"w\":16,\n\"h\":4\n},\n{\n\"x\":12,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}\n]"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
-         "id":657,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"{\n\"x\":0,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
-         "id":658,
-         "properties":[
-                {
-                 "name":"comment",
-                 "type":"string",
-                 "value":"The \"cliff_top\" tiles have a hitbox assigned.\nThe corners use a hitbox perpendicular to the sides e.g.\n----\n|     |\n----\n\nThis leaves a small gap between the tiles.\nHowever the player's hitbox is bigger than the gap so they don't slip through :)"
-                }]
-        }, 
-        {
-         "id":659,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"{\n\"x\":12,\n\"y\":0,\n\"w\":4,\n\"h\":16\n}"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
          "id":680,
          "properties":[
                 {
@@ -1900,48 +1893,6 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
-                }]
-        }, 
-        {
-         "id":697,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"[{\n\"x\":0,\n\"y\":0,\n\"w\":4,\n\"h\":16\n},\n{\n\"x\":0,\n\"y\":12,\n\"w\":16,\n\"h\":4\n}]"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
-         "id":698,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"{\n\"x\":0,\n\"y\":12,\n\"w\":16,\n\"h\":4\n}"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
-                }]
-        }, 
-        {
-         "id":699,
-         "properties":[
-                {
-                 "name":"hitbox",
-                 "type":"string",
-                 "value":"[{\n\"x\":12,\n\"y\":0,\n\"w\":4,\n\"h\":16\n},\n{\n\"x\":0,\n\"y\":12,\n\"w\":16,\n\"h\":4\n}]"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"cliff_top"
                 }]
         }, 
         {

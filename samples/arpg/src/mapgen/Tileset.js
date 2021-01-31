@@ -27,9 +27,112 @@ const types = {
 
 	STAIRS: "stairs",
 
-	CLIFF_TOP: "cliff_top"
+	CLIFF_TOP_N: "cliff_top_N",
+	CLIFF_TOP_NE: "cliff_top_NE",
+	CLIFF_TOP_E: "cliff_top_E",
+	CLIFF_TOP_SE: "cliff_top_SE",
+	CLIFF_TOP_S: "cliff_top_S",
+	CLIFF_TOP_SW: "cliff_top_SW",
+	CLIFF_TOP_W: "cliff_top_W",
+	CLIFF_TOP_NW: "cliff_top_NW",
+
 };
 const _typeValues = Object.values(types);
+
+/**
+ * We track some additional tile properties in Code instead of the tileset JSON.
+ * Stuff like Hitboxes are easier maintained here than in Tiled.
+ */
+const _additionalProperties = {
+	"cliff_top_N": {
+		hitbox: [{
+			"x":0,
+			"y":0,
+			"w":16,
+			"h":4
+		}]
+	},
+	"cliff_top_NE": {
+		hitbox: [{
+			"x":0,
+			"y":0,
+			"w":16,
+			"h":4
+		},
+		{
+			"x":12,
+			"y":0,
+			"w":4,
+			"h":16
+		}]
+	},
+	"cliff_top_E": {
+		hitbox: [{
+			"x":12,
+			"y":0,
+			"w":4,
+			"h":16
+		}]
+	},
+	"cliff_top_SE": {
+		hitbox: [{
+			"x":12,
+			"y":0,
+			"w":4,
+			"h":16
+		},
+		{
+			"x":0,
+			"y":12,
+			"w":16,
+			"h":4
+		}]
+	},
+	"cliff_top_S": {
+		hitbox: [{
+			"x":0,
+			"y":12,
+			"w":16,
+			"h":4
+		}]
+	},
+	"cliff_top_SW": {
+		hitbox: [{
+			"x":0,
+			"y":0,
+			"w":4,
+			"h":16
+		},
+		{
+			"x":0,
+			"y":12,
+			"w":16,
+			"h":4
+		}]
+	},
+	"cliff_top_W": {
+		hitbox: [{
+			"x":0,
+			"y":0,
+			"w":4,
+			"h":16
+		}]
+	},
+	"cliff_top_NW": {
+		hitbox: [{
+			"x":0,
+			"y":0,
+			"w":16,
+			"h":4
+		},
+		{
+			"x":0,
+			"y":0,
+			"w":4,
+			"h":16
+		}]
+	}
+};
 
 
 /**
@@ -61,6 +164,7 @@ const parseProperty = function(tile, prop) {
 		tile.animation = tile.animation || {};
 		tile.animation.synchronize = prop.value || false;
 	} else if (prop.name === "hitbox") {
+		// a hitbox can be defined in the tileset JSON, but for most tiles it's part of the "additional-properties" (if any)
 		tile.hitbox = JSON.parse(prop.value);
 	} else {
 		// validate type values
@@ -106,6 +210,14 @@ const Tileset = {
 						_tilePropertiesByType[prop.value] = _tilePropertiesByType[prop.value] || [];
 						_tilePropertiesByType[prop.value].push(tileInfo);
 					}
+				}
+
+				// after we have processed all properties, we make a look-up for additional properties
+				let addtlProps = _additionalProperties[tileInfo.type];
+				if (addtlProps) {
+					// we just copy over the additional props
+					// BEWARE: for objects this is only a shallow copy!
+					Object.assign(tileInfo, addtlProps);
 				}
 			}
 
