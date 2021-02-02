@@ -10,14 +10,25 @@ const allPositions = {
 	right: [{ x:   0, y: -16 }, { x: +16, y: -16 }, { x:  16, y:   0 }]
 }
 
+/**
+ * Implements the Sword-Slashing Animation.
+ * The timing is coordinated by the Player animation.
+ */
 class SwordAttack extends Actor {
 	constructor(player) {
 		super();
 		this.player = player;
 
+		this.active = false;
+
 		this.updateHitbox({
 			w: 18,
 			h: 18
+		});
+
+		this.configSprite({
+			sheet: "attacks",
+			id: 0
 		});
 
 		this.cfg = {positions: allPositions.down, index: 0};
@@ -51,7 +62,14 @@ class SwordAttack extends Actor {
 		// reminder: also enables the debug rendering of the hitbox
 		this.setCollidable(true);
 
+		this.visible = true;
+
 		this.checkTileBasedCollision();
+	}
+
+	hide() {
+		this.setCollidable(false);
+		this.visible = false;
 	}
 
 	checkTileBasedCollision() {

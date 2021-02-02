@@ -19,7 +19,7 @@
 	"assets": {
 		"spritesheets": {
 			"player": {
-				"url": "./img/player16.png",
+				"url": "./img/player2.png",
 				"w": 48,
 				"h": 48
 			},
@@ -40,6 +40,11 @@
 			},
 			"smallEffects": {
 				"url": "./img/smallEffects.png",
+				"w": 16,
+				"h": 16
+			},
+			"attacks": {
+				"url": "./img/attacks.png",
 				"w": 16,
 				"h": 16
 			}

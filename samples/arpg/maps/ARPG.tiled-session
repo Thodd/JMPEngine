@@ -37,27 +37,27 @@
             }
         },
         "center/center_00.json": {
-            "scale": 1.5251,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": 220.9691167792276,
-                "y": 262.2778834174808
-            }
-        },
-        "center/center_01.json": {
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 244.66666666666663,
-                "y": 287.99999999999994
+                "x": 252.66666666666663,
+                "y": 269.99999999999994
+            }
+        },
+        "center/center_01.json": {
+            "scale": 1.6062,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 253.39310173079315,
+                "y": 285.1450628813348
             }
         },
         "center/center_02.json": {
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 245.33333333333334,
-                "y": 259.99999999999994
+                "x": 248.66666666666663,
+                "y": 279.99999999999994
             }
         },
         "center/foo.json": {
@@ -107,8 +107,8 @@
             "scale": 1.46,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 233.56164383561645,
-                "y": 271.917808219178
+                "x": 251.36986301369865,
+                "y": 286.98630136986304
             }
         },
         "testing/ideas.json": {
@@ -171,11 +171,11 @@
             }
         },
         "water/NExx_00.json": {
-            "scale": 1.87,
+            "scale": 1.8,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 199.4652406417112,
-                "y": 199.4652406417112
+                "x": 200.00000000000003,
+                "y": 201.1111111111111
             }
         },
         "water/NxxW_00.json": {
@@ -235,11 +235,11 @@
             }
         },
         "water/xESW_00.json": {
-            "scale": 1.8715,
+            "scale": 1.87,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200.3740315255143,
-                "y": 200.3740315255143
+                "x": 199.99999999999997,
+                "y": 200
             }
         },
         "water/xESx_00.json": {
@@ -397,8 +397,10 @@
         "testing/cliffs.json"
     ],
     "project": "ARPG.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
+        "water/xESW_00.json",
+        "water/NExx_00.json",
         "center/center_00.json",
         "testing/cliffs.json",
         "center/center_02.json",
@@ -408,9 +410,7 @@
         "testing/testing.json",
         "water/corner_A_00.json",
         "water/corner_B_00.json",
-        "water/corner_C_00.json",
-        "water/corner_D_00.json",
-        "water/NExx_00.json"
+        "water/corner_C_00.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",

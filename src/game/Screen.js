@@ -410,7 +410,7 @@ class Screen {
 			// reset scheduling flags
 			ea._isScheduledForAdding = false;
 			ea._isScheduledForRemoval = false;
-			
+
 			this._entities.push(ea);
 			//ea._screen = this;
 
@@ -438,7 +438,7 @@ class Screen {
 		this._toBeRemoved = [];
 		for (let j = 0; j < lenR; j++) {
 			let er = curR[j];
-			
+
 			// reset scheduling flags
 			er._isScheduledForAdding = false;
 			er._isScheduledForRemoval = false;
@@ -521,10 +521,24 @@ class Screen {
 				let cx = !cameraFixed ? camX : 0;
 				let cy = !cameraFixed ? camY : 0;
 
-				// TODO: respect the offset for the current animation frame! Currently only the default offset is respected.
+				// Read the animation offset from the currently applied animation frame (if any)
+				let aX = 0;
+				let aY = 0;
+				if (e._currentAnimation) {
+					let defaultAnimOffset = e._currentAnimation.offset;
+					let frameDef = e._currentAnimation.frames[e._currentAnimation.currentFrame];
+					if (frameDef.offset) {
+						aX = frameDef.offset.x;
+						aY = frameDef.offset.y;
+					}
+					aX = aX || defaultAnimOffset.x || 0;
+					aY = aY || defaultAnimOffset.y || 0;
+				}
+
 				// shift normal entities
-				e._pixiSprite.x = e.x + e._spriteConfig.offset.x - cx;
-				e._pixiSprite.y = e.y + e._spriteConfig.offset.y - cy;
+				// the offsets are relative to eachother, animation offsets are based on the base-sprite offset
+				e._pixiSprite.x = e.x + e._spriteConfig.offset.x + aX - cx;
+				e._pixiSprite.y = e.y + e._spriteConfig.offset.y + aY - cy;
 
 				// Debugging: if a hitbox is defined we also move it along with the camera
 				if (e._hitbox._gfx) {

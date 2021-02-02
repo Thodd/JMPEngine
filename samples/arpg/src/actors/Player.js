@@ -28,8 +28,9 @@ class Player extends Actor {
 		this.configSprite({
 			sheet: "player",
 
-			// the player sprites are offset by 16x16 pixels in the spritesheet
-			// we need to remove the mostly transparent pixels by providing a default offset for all animations
+			// The player sprites are offset by 16x16 pixels in the spritesheet.
+			// We need to remove the mostly transparent pixels by providing a default offset for all animations.
+			// Animations additionally can have a relative offset based on this default offset.
 			offset: {
 				x: -16,
 				y: -16
@@ -46,7 +47,7 @@ class Player extends Actor {
 					frames: [0]
 				},
 				"slash_down": {
-					frames: [12, 13, {id: 14, dt: 4}],
+					frames: [10, {id: 10, offset: {y: +1}}, {id: 10, offset: {y: +2}, dt: 4}],
 					dt: 1
 				},
 
@@ -58,7 +59,7 @@ class Player extends Actor {
 					frames: [3]
 				},
 				"slash_up": {
-					frames: [15, 16, {id: 17, dt: 4}],
+					frames: [4, {id: 4, offset: {y: -2}}, {id: 4, offset: {y: -3}, dt: 4}],
 					dt: 1
 				},
 
@@ -70,7 +71,7 @@ class Player extends Actor {
 					frames: [6]
 				},
 				"slash_left": {
-					frames: [18, 19, {id: 20, dt: 4}],
+					frames: [7, {id: 7, offset: {x: -1}}, {id: 12, offset: {x: -2}, dt: 4}],
 					dt: 1
 				},
 
@@ -82,7 +83,7 @@ class Player extends Actor {
 					frames: [8]
 				},
 				"slash_right": {
-					frames: [21, 22, {id: 23, dt: 4}],
+					frames: [9, {id: 9, offset: {x: +1}}, {id: 13, offset: {x: +2}, dt: 4}],
 					dt: 1
 				},
 			}
@@ -140,7 +141,7 @@ class Player extends Actor {
 					},
 					done: () => {
 						// make sure the sword hitbox is not active anymore
-						this.swordAttack.setCollidable(false);
+						this.swordAttack.hide();
 						// reactivate movement of player
 						this._isAttacking = false;
 						this.playAnimation({name: `idle_${this.dir}`});

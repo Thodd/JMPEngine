@@ -376,6 +376,10 @@ class Entity {
 					anim.color = anim.color || config.color;
 					anim._defaultColor = anim.color;
 
+					// default offset of (0,0)
+					// Offsets are relative to the Base-Sprite offset
+					anim.offset = Object.assign({x:0, y:0}, anim.offset);
+
 					// if no delay is given, we assume the animation is a "freeze-frame", e.g. an idle-frame
 					//anim.delayCounter = new FrameCounter(anim.dt);
 					this._animationTimer.setMaxFrames(anim.dt);

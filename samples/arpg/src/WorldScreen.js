@@ -17,7 +17,7 @@ class WorldScreen extends Screen {
 	constructor() {
 		super();
 
-		//Entity.RENDER_HITBOX = 0xFF0000;
+		Entity.RENDER_HITBOX = 0x00FF85;
 
 		OverworldGenerator.generate();
 		//this.add(OverworldGenerator.minimap);
