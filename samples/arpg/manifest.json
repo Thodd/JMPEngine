@@ -19,7 +19,7 @@
 	"assets": {
 		"spritesheets": {
 			"player": {
-				"url": "./img/player2.png",
+				"url": "./img/player.png",
 				"w": 48,
 				"h": 48
 			},

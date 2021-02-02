@@ -297,9 +297,8 @@ class Entity {
 	 */
 	configSprite(config) {
 		// we merge the new config with at least an empty offset object
-		this._spriteConfig = Object.assign({
-			offset: {x: 0, y: 0}
-		}, config);
+		this._spriteConfig = config;
+		this._spriteConfig.offset = Object.assign({x: 0, y:0}, this._spriteConfig.offset);
 
 		// Figure out what the new BitmapTexture should be
 		let newTexture;

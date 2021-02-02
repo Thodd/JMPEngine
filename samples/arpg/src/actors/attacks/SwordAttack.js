@@ -12,7 +12,8 @@ const allPositions = {
 
 /**
  * Implements the Sword-Slashing Animation.
- * The timing is coordinated by the Player animation.
+ * The timing of the Sword animation is synchronized by the Player animation.
+ * This way the Attacks don't rely on a separate timing, but are controlled by the Player's sprite animation.
  */
 class SwordAttack extends Actor {
 	constructor(player) {
@@ -26,9 +27,15 @@ class SwordAttack extends Actor {
 			h: 18
 		});
 
+		/**
+		 *
+		 * TODO: Store sprite config per position: {id: 0, offset: {x: -4, y: 2}} etc.
+		 *
+		 */
+
 		this.configSprite({
 			sheet: "attacks",
-			id: 0
+			id: 15
 		});
 
 		this.cfg = {positions: allPositions.down, index: 0};
