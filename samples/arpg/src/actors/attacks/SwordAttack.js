@@ -3,12 +3,68 @@ import Tileset from "../../mapgen/Tileset.js";
 import TileTypes from "../../mapgen/TileTypes.js";
 import SmallEffect from "../effects/SmallEffect.js";
 
-const allPositions = {
-	up:    [{ x:  16, y:   0 }, { x:  16, y: -16 }, { x:   0, y: -16 }],
-	down:  [{ x: -16, y:   0 }, { x: -16, y:  16 }, { x:   0, y:  16 }],
-	left:  [{ x:   0, y: -16 }, { x: -16, y: -16 }, { x: -16, y:   0 }],
-	right: [{ x:   0, y: -16 }, { x: +16, y: -16 }, { x:  16, y:   0 }]
-}
+/**
+ * Key-Frame definitions for Sword slashing animation.
+ * Also tracks the positioning of the hitbox for damaging enemies etc.
+ */
+const allFrames = {
+	up: [
+		{
+			sprite: {sheet: "attacks", id: 4},
+			hitbox: { x:  16, y:   0 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 2, offset: {x: -3, y: +2}},
+			hitbox: { x:  16, y: -16 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 1, offset: {x: -4}},
+			hitbox: { x:   0, y: -16 }
+		}
+	],
+	down: [
+		{
+			sprite: {sheet: "attacks", id: 3},
+			hitbox: { x: -16, y:   0 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 5, offset: {x: +4, y: -2}},
+			hitbox: { x: -16, y:  16 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 6, offset: {x: +4, y: +1}},
+			hitbox: { x:   0, y:  16 }
+		}
+	],
+	left: [
+		{
+			sprite: {sheet: "attacks", id: 1},
+			hitbox: { x:   0, y: -16 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 0, offset: {x: 0, y: +3}},
+			hitbox: { x: -16, y: -16 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 3, offset: {x: 0, y: +2}},
+			hitbox: { x: -18, y:   0 }
+		}
+	],
+	right: [
+		{
+			sprite: {sheet: "attacks", id: 8},
+			hitbox: { x:   0, y: -16 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 7, offset: {x: -1, y: +3}},
+			hitbox: { x: +16, y: -16 }
+		},
+		{
+			sprite: {sheet: "attacks", id: 9, offset: {x: +2, y: +2}},
+			hitbox: { x:  16, y:   0 }
+		}
+	]
+};
 
 /**
  * Implements the Sword-Slashing Animation.
@@ -38,33 +94,44 @@ class SwordAttack extends Actor {
 			id: 15
 		});
 
-		this.cfg = {positions: allPositions.down, index: 0};
+		this.cfg = {frames: allFrames.down, index: 0};
 
 		this.setCollidable(false);
 	}
 
-	nextPosition() {
+	next() {
 		if (this.cfg.index < 3) {
 			this.cfg.index++;
 		} else {
 			this.cfg.index = 0;
 		}
-		let posData = this.cfg.positions[this.cfg.index];
-		if (posData) {
-			this.x = this.player.x + posData.x;
-			this.y = this.player.y + posData.y;
-		}
+
+		let frameData = this.cfg.frames[this.cfg.index];
+		this._updateVisuals(frameData);
 
 		this.checkTileBasedCollision();
 	}
 
+	/**
+	 * Sets the given key-frame definition.
+	 * Updates the hitbox position and the Sprites.
+	 * @param {object} frameData a frame data object from the "allFrames" map
+	 */
+	_updateVisuals(frameData) {
+		if (frameData) {
+			this.x = this.player.x + frameData.hitbox.x;
+			this.y = this.player.y + frameData.hitbox.y;
+			this.configSprite(frameData.sprite);
+		}
+	}
+
 	reset(dir) {
 		this.cfg = {
-			positions: allPositions[dir],
+			frames: allFrames[dir],
 			index: 0
 		};
-		this.x = this.player.x + this.cfg.positions[0].x;
-		this.y = this.player.y + this.cfg.positions[0].y;
+
+		this._updateVisuals(this.cfg.frames[0]);
 
 		// reminder: also enables the debug rendering of the hitbox
 		this.setCollidable(true);

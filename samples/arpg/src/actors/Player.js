@@ -46,7 +46,7 @@ class Player extends Actor {
 				"idle_down": {
 					frames: [0]
 				},
-				"slash_down": {
+				"attack_down": {
 					frames: [10, {id: 10, offset: {y: +1}}, {id: 10, offset: {y: +2}, dt: 4}],
 					dt: 1
 				},
@@ -58,7 +58,7 @@ class Player extends Actor {
 				"idle_up": {
 					frames: [3]
 				},
-				"slash_up": {
+				"attack_up": {
 					frames: [4, {id: 4, offset: {y: -2}}, {id: 4, offset: {y: -3}, dt: 4}],
 					dt: 1
 				},
@@ -70,7 +70,7 @@ class Player extends Actor {
 				"idle_left": {
 					frames: [6]
 				},
-				"slash_left": {
+				"attack_left": {
 					frames: [7, {id: 7, offset: {x: -1}}, {id: 12, offset: {x: -2}, dt: 4}],
 					dt: 1
 				},
@@ -82,7 +82,7 @@ class Player extends Actor {
 				"idle_right": {
 					frames: [8]
 				},
-				"slash_right": {
+				"attack_right": {
 					frames: [9, {id: 9, offset: {x: +1}}, {id: 13, offset: {x: +2}, dt: 4}],
 					dt: 1
 				},
@@ -134,10 +134,10 @@ class Player extends Actor {
 				this.swordAttack.reset(this.dir);
 
 				this.playAnimation({
-					name: `slash_${this.dir}`,
+					name: `attack_${this.dir}`,
 					reset: true,
 					change: () => {
-						this.swordAttack.nextPosition();
+						this.swordAttack.next();
 					},
 					done: () => {
 						// make sure the sword hitbox is not active anymore
