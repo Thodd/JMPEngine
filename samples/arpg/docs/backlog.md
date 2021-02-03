@@ -2,25 +2,26 @@
 
 # Gameplay
 
-* [ ] Refactor Animation handling for slashing etc.
-  * [ ] Make Sword visible again
-    * Add Sword animation frames to the nextPosition -> Update
-  * Should be easier in the end to maintain
 * [ ] Hearts
 * [ ] Text-Box System
 * [ ] Enemies
+  * [ ] Walk around randomly
   * [ ] Hurt by Slash
     * [ ] Knockback
   * [ ] Hurts player on touch
 * [ ] Weapons
   * [ ] Make Sword an item
-  * [ ] New Weapon Item: Spear
+  * [x] New Weapon Item: Spear
 * [ ] Swimming
   * [ ] Without "Swim-License" -> drown ?
 * [ ] Inventory System
   * [ ] Equip different items/weapons
 * [ ] Refactor "SmallEffect" to a Pool
   * [ ] Keep effect instances in the Screen and not remove them after the Animation is finished
+* [x] Refactor Animation handling for slashing etc.
+  * [x] Make Sword visible again
+    * Add Sword animation frames to the nextPosition -> Update
+  * Should be easier in the end to maintain
 
 ### Art
 
@@ -45,8 +46,8 @@
 
 ### Mapgen
 
-* [x] First draft for Island overworld generation
 * [ ] Tunnel from one room to another (?)
 * [ ] Track Objects/Actors/Enemies in a Room
 * [ ] Reset a Room when the player is 1 Room away
   * [ ] Reset = Respawn Enemies, Grass, Bushes, ...
+* [x] First draft for Island overworld generation

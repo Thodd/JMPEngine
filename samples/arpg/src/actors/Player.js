@@ -2,11 +2,14 @@ import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
 //import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
-import Actor from "./Actor.js";
-import SwordAttack from "./attacks/SwordAttack.js";
-import TileBasedEffect from "./effects/TileBasedEffect.js";
 import Constants from "../Constants.js";
+import Actor from "./Actor.js";
+import TileBasedEffect from "./effects/TileBasedEffect.js";
 
+// attacks
+import Attack from "./attacks/Attack.js";
+import SwordAttack from "./attacks/SwordAttack.js";
+import SpearAttack from "./attacks/SpearAttack.js";
 class Player extends Actor {
 	constructor(x, y) {
 		super(x, y);
@@ -92,7 +95,7 @@ class Player extends Actor {
 		// create associated entities
 		// we add these as a composition of the Player class to keep the already complex
 		// Player class as easy readable as possible
-		this.swordAttack = new SwordAttack(this);
+		this.attack = new Attack(this);
 		this.tileBasedEffect = new TileBasedEffect(this);
 
 		//this.blink = new FrameCounter(5);
@@ -100,14 +103,14 @@ class Player extends Actor {
 
 	added() {
 		// once a Player instance is added we also add its associated entities like Attacks or Effects
-		this.getScreen().add(this.swordAttack);
+		this.getScreen().add(this.attack);
 		this.getScreen().add(this.tileBasedEffect);
 	}
 
 	destroy() {
 		super.destroy();
 		// also clean up all associated entities
-		this.swordAttack.destroy();
+		this.attack.destroy();
 		this.tileBasedEffect.destroy();
 	}
 
@@ -131,17 +134,17 @@ class Player extends Actor {
 			if (Keyboard.pressed(Keys.S)) {
 				this._isAttacking = true;
 
-				this.swordAttack.reset(this.dir);
+				this.attack.reset(SpearAttack, this.dir);
 
 				this.playAnimation({
 					name: `attack_${this.dir}`,
 					reset: true,
 					change: () => {
-						this.swordAttack.next();
+						this.attack.next();
 					},
 					done: () => {
 						// make sure the sword hitbox is not active anymore
-						this.swordAttack.hide();
+						this.attack.hide();
 						// reactivate movement of player
 						this._isAttacking = false;
 						this.playAnimation({name: `idle_${this.dir}`});
