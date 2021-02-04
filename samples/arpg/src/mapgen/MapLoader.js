@@ -46,10 +46,17 @@ const MapLoader = {
 						};
 						maps[mapName].objects.push(obj);
 
+
+						/**
+						 * TODO: Make object type sanity check
+						 */
+
 						// we unwrap the object's properties again, since Tiled is nesting them a bit too deep for my taste...
-						orgObj.properties.forEach((prop) => {
-							obj[prop.name] = prop.value;
-						});
+						if (orgObj.properties) {
+							orgObj.properties.forEach((prop) => {
+								obj[prop.name] = prop.value;
+							});
+						}
 					});
 				}
 			})

@@ -47,6 +47,11 @@
 				"url": "./img/attacks.png",
 				"w": 16,
 				"h": 16
+			},
+			"enemies": {
+				"url": "./img/enemies.png",
+				"w": 32,
+				"h": 32
 			}
 		},
 		"fonts": {},

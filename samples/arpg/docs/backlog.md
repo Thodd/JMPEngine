@@ -5,6 +5,10 @@
 * [ ] Hearts
 * [ ] Text-Box System
 * [ ] Enemies
+  * [x] Rener initial Enemy
+  * [ ] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js
+    * Is each Enemy a separate type?
+    * Or just 1 type == Enemy, and then spawn different kinds of enemy based on some random logic (e.g. distance to spawn, player weapon progression -> stronger weapon == stronger enemies?)
   * [ ] Walk around randomly
   * [ ] Hurt by Slash
     * [ ] Knockback
@@ -13,7 +17,9 @@
   * [ ] Make Sword an item
   * [x] New Weapon Item: Spear
 * [ ] Swimming
-  * [ ] Without "Swim-License" -> drown ?
+  * [ ] Always allow swimming, skip 1 frame (so its slow)
+  * [ ] Swim-Training -> faster swimming
+  * [ ] Diving ???
 * [ ] Inventory System
   * [ ] Equip different items/weapons
 * [ ] Refactor "SmallEffect" to a Pool

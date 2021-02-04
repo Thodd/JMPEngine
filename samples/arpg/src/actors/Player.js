@@ -16,6 +16,8 @@ class Player extends Actor {
 
 		this.layer = Constants.Layers.PLAYER;
 
+		this.RENDER_HITBOX = 0x00FF85;
+
 		// we need to reduce the size of the hitbox a bit, so the player has more room for error
 		this.updateHitbox({
 			x: 3,

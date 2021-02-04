@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objecttypes>
- <objecttype name="Sign" color="#fc3507">
+ <objecttype name="Enemy" color="#ff0000"/>
+ <objecttype name="Sign" color="#00ceec">
   <property name="directions" type="string" default="down"/>
   <property name="msg" type="string"/>
  </objecttype>

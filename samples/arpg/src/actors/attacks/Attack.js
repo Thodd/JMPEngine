@@ -16,6 +16,8 @@ class Attack extends Actor {
 
 		this.active = false;
 
+		this.RENDER_HITBOX = 0x0085FF;
+
 		this.updateHitbox({
 			w: 18,
 			h: 18
