@@ -6,7 +6,7 @@
 * [ ] Text-Box System
 * [ ] Enemies
   * [x] Rener initial Enemy
-  * [ ] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js
+  * [x] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js
     * Is each Enemy a separate type?
     * Or just 1 type == Enemy, and then spawn different kinds of enemy based on some random logic (e.g. distance to spawn, player weapon progression -> stronger weapon == stronger enemies?)
   * [ ] Walk around randomly

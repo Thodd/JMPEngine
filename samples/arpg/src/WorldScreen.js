@@ -16,6 +16,8 @@ import OverworldGenerator from "./mapgen/overworld/OverworldGenerator.js";
 import Player from "./actors/Player.js";
 import Sign from "./actors/interactables/Sign.js";
 import Enemy from "./actors/enemies/Enemy.js";
+import ObjectTypes from "./mapgen/ObjectTypes.js";
+import EnemyTypes from "./actors/enemies/EnemyTypes.js";
 class WorldScreen extends Screen {
 	constructor() {
 		super();
@@ -26,7 +28,7 @@ class WorldScreen extends Screen {
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/center/center_00.json" }
+			"sampleMap": { url: "./maps/center/center_01.json" }
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({
@@ -56,13 +58,16 @@ class WorldScreen extends Screen {
 				globalIndex++;
 			});
 
-			// create objects
+			// The constructor calls are "yolo" since the MapLoader has made a sanity check on each loaded Map file.
+			// If something fails here the MapLoader has a bug :)
 			mapData.objects.forEach((obj) => {
-				switch(obj.type) {
-					case "Sign": this.add(new Sign(obj.x, obj.y, obj["msg"])); break;
-					case "Enemy": this.add(new Enemy(obj.x, obj.y)); break;
-				}
+				if (obj.type === ObjectTypes.SIGN) {
+					this.add(new Sign(obj.x, obj.y, obj["msg"]));
+				} else if (obj.type === ObjectTypes.ENEMY) {
 
+					let EnemyClass = EnemyTypes[obj.name];
+					this.add(new EnemyClass(obj.x, obj.y));
+				}
 			});
 
 			// player

@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"center_what.json"
+        }
+    },
  "height":31,
  "infinite":false,
  "layers":[
@@ -20,15 +28,56 @@
          "name":"Object Layer 1",
          "objects":[
                 {
-                 "height":16,
-                 "id":1,
-                 "name":"",
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
+                 "id":11,
+                 "name":"Wolf",
+                 "template":"..\/objects\/enemies\/Enemy.json",
+                 "x":224,
                  "y":144
+                }, 
+                {
+                 "id":18,
+                 "name":"Chest",
+                 "properties":[
+                        {
+                         "name":"msg",
+                         "type":"string",
+                         "value":"Seems to be locked.\nSadly you don't have a\nlockpick :("
+                        }],
+                 "template":"..\/objects\/Sign.json",
+                 "x":128,
+                 "y":64
+                }, 
+                {
+                 "id":19,
+                 "name":"Door",
+                 "properties":[
+                        {
+                         "name":"msg",
+                         "type":"string",
+                         "value":"Looks like nobody is home..."
+                        }],
+                 "template":"..\/objects\/Sign.json",
+                 "x":256,
+                 "y":48
+                }, 
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"msg",
+                         "type":"string",
+                         "value":"Lookout\n5min north."
+                        }],
+                 "template":"..\/objects\/Sign.json",
+                 "x":336,
+                 "y":352
+                }, 
+                {
+                 "id":21,
+                 "name":"Wolf",
+                 "template":"..\/objects\/enemies\/Enemy.json",
+                 "x":112,
+                 "y":224
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -37,7 +86,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":2,
+ "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"left-down",
  "tiledversion":"1.4.3",
