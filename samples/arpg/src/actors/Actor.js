@@ -11,6 +11,13 @@ class Actor extends Entity {
 	}
 
 	/**
+	 * Convenience function to get the Tilemap on which this Actor is placed.
+	 */
+	getTilemap() {
+		return this.getScreen().getTilemap();
+	}
+
+	/**
 	 * Gets the closest Tile to this actor's hitbox origin (x,y).
 	 * The parameters dy and dy can be used to shift the origin.
 	 * By default the center of the hitbox is taken.

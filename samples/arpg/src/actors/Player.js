@@ -174,7 +174,7 @@ class Player extends Actor {
 				}
 
 				// retrieve tilemap from the screen for collision detection
-				let tm = this.getScreen().getTilemap();
+				let tm = this.getTilemap();
 
 				// regular movement
 				if (dx != 0) {

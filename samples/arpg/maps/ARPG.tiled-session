@@ -41,15 +41,15 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 213,
-                "y": 263.99999999999994
+                "y": 262.66666666666663
             }
         },
         "center/center_01.json": {
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 249.66666666666666,
-                "y": 243.99999999999997
+                "x": 251.66666666666666,
+                "y": 255.99999999999997
             }
         },
         "center/center_02.json": {
@@ -174,16 +174,16 @@
             "scale": 1.8,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200.00000000000003,
+                "x": 200.27777777777777,
                 "y": 201.1111111111111
             }
         },
         "water/NxxW_00.json": {
-            "scale": 1.8715,
+            "scale": 1.8,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200.3740315255143,
-                "y": 200.3740315255143
+                "x": 194.72222222222223,
+                "y": 228.33333333333331
             }
         },
         "water/Nxxx_00.json": {
@@ -198,7 +198,7 @@
             "scale": 1.8715,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 200.3740315255143,
+                "x": 200.64119690088165,
                 "y": 200.3740315255143
             }
         },
@@ -399,18 +399,18 @@
     "project": "ARPG.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "water/NExx_00.json",
+        "water/NxxW_00.json",
+        "water/corner_A_00.json",
         "center/center_01.json",
         "center/center_02.json",
         "testing/cliffs.json",
         "tileset16.json",
         "center/center_00.json",
         "water/xESW_00.json",
-        "water/NExx_00.json",
         "town.json",
         "testing/testing.json",
-        "water/corner_A_00.json",
-        "water/corner_B_00.json",
-        "water/corner_C_00.json"
+        "water/corner_B_00.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",
