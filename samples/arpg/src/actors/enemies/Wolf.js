@@ -1,5 +1,6 @@
 // engine imports
 import Helper from "../../../../../src/utils/Helper.js";
+import RNG from "../../../../../src/utils/RNG.js";
 
 // game imports
 import Constants from "../../Constants.js";
@@ -17,24 +18,50 @@ class Wolf extends Enemy {
 				y: -8
 			},
 			animations: {
-				default: "west",
-				"west": {
+				default: "idle_west",
+				"move_north": {
 					frames: [0, 1],
+					dt: 10
+				},
+				"idle_north": {
+					frames: [0, 2],
 					dt: 30
 				},
-				"east": {
-					frames: [2, 3],
+				"move_east": {
+					frames: [3, 4],
+					dt: 10
+				},
+				"idle_east": {
+					frames: [3, 5],
+					dt: 30
+				},
+				"move_south": {
+					frames: [3, 4],
+					dt: 10
+				},
+				"idle_south": {
+					frames: [3, 5],
+					dt: 30
+				},
+				"move_west": {
+					frames: [0, 1],
+					dt: 10
+				},
+				"idle_west": {
+					frames: [0, 2],
 					dt: 30
 				}
 			}
 		});
 
 		this.AI = {
+			behavior: "move",
 			spawn: {
 				x: x,
 				y: y
 			},
-			currentDir: Constants.Directions.S,
+			movementDir: Constants.Directions.S,
+			spriteDir: "west",
 			steps: {
 				start: 4 * Constants.TILE_WIDTH,
 				current: 4 * Constants.TILE_WIDTH
@@ -45,29 +72,46 @@ class Wolf extends Enemy {
 
 	update() {
 		if (this.AI.steps.current > 0) {
-			let xx = this.x + this.AI.currentDir.x;
-			let yy = this.y + this.AI.currentDir.y;
+			this.AI.steps.current--;
 
-			if (xx < this.x) {
-				this.playAnimation({name: "west"});
-			} else {
-				this.playAnimation({name: "east"});
-			}
+			if (this.AI.behavior === "move") {
+				let xx = this.x + this.AI.movementDir.x;
+				let yy = this.y + this.AI.movementDir.y;
+				let moved = false;
 
-			// only move if we are less than 5 tiles away from the spawn
-			if (AITools.inRange(xx, yy, this.AI.spawn.x, this.AI.spawn.y, this.AI.maxDistanceToSpawn)) {
-					// check for collision before move
-				let tm = this.getTilemap();
-				if (!this.collidesWith(tm, xx, yy)) {
-					this.x = xx;
-					this.y = yy;
+				// only move if we are less than 5 tiles away from the spawn
+				if (AITools.inRange(xx, yy, this.AI.spawn.x, this.AI.spawn.y, this.AI.maxDistanceToSpawn)) {
+						// check for collision before move
+					let tm = this.getTilemap();
+					if (!this.collidesWith(tm, xx, yy)) {
+						this.x = xx;
+						this.y = yy;
+						moved = true;
+					}
+				}
+
+				if (!moved) {
+					this.AI.behavior = "idle";
 				}
 			}
 
-			this.AI.steps.current--;
+			// animation is composed of the {behaviorName}_{directionName}
+			this.playAnimation({name: `${this.AI.behavior}_${this.AI.movementDir.name}`});
 		} else {
 			this.AI.steps.current = this.AI.steps.start;
-			this.AI.currentDir = Helper.choose(Constants.Directions.CARDINAL);
+
+			// 25% of the time we just stand around idling
+			if (RNG.random() < 0.25) {
+				this.AI.behavior = "idle";
+			} else {
+				this.AI.behavior = "move";
+				// choose a non-blocking random cardinal direction to move
+				let freeDirections = Constants.Directions.CARDINAL.filter((dir) => {
+					return !this.collidesWith(this.getTilemap(), this.x + dir.x, this.y + dir.y);
+				});
+				this.AI.movementDir = Helper.choose(freeDirections);
+			}
+
 		}
 	}
 }

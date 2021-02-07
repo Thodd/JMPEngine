@@ -46,7 +46,7 @@
         },
         "center/center_01.json": {
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 251.66666666666666,
                 "y": 255.99999999999997

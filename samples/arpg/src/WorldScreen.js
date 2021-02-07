@@ -15,7 +15,6 @@ import OverworldGenerator from "./mapgen/overworld/OverworldGenerator.js";
 // object types
 import Player from "./actors/Player.js";
 import Sign from "./actors/interactables/Sign.js";
-import Enemy from "./actors/enemies/Enemy.js";
 import ObjectTypes from "./mapgen/ObjectTypes.js";
 import EnemyTypes from "./actors/enemies/EnemyTypes.js";
 class WorldScreen extends Screen {
@@ -28,7 +27,7 @@ class WorldScreen extends Screen {
 		Tileset.init();
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/center/center_01.json" }
+			"sampleMap": { url: "./maps/center/center_00.json" }
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({

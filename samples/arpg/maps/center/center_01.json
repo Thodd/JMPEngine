@@ -87,8 +87,15 @@
                  "id":21,
                  "name":"Wolf",
                  "template":"..\/objects\/enemies\/Enemy.json",
-                 "x":368,
-                 "y":464
+                 "x":416,
+                 "y":240
+                }, 
+                {
+                 "id":22,
+                 "name":"Wolf",
+                 "template":"..\/objects\/enemies\/Enemy.json",
+                 "x":49.3333333333333,
+                 "y":76.6666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -97,7 +104,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":22,
+ "nextobjectid":23,
  "orientation":"orthogonal",
  "renderorder":"left-down",
  "tiledversion":"1.4.3",

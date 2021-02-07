@@ -15,29 +15,18 @@ const Constants = {
 		UI: 7
 	},
 
+	/**
+	 * Directions contain relative x/y-modifiers and names for all compass directions.
+	 */
 	Directions: {
-		N:  {x: 0, y:-1},
-		E:  {x: 1, y: 0},
-		S:  {x: 0, y: 1},
-		W:  {x:-1, y:0},
-		NE: {x: 1, y:-1},
-		SE: {x: 1, y: 1},
-		SW: {x:-1, y: 1},
-		NW: {x:-1, y:-1},
-		/**
-		 * Names for all compass directions.
-		 * Can be used for logging or animation naming.
-		 */
-		Names: {
-			N:  "north",
-			E:  "east",
-			S:  "south",
-			W:  "west",
-			NE: "north_east",
-			SE: "south_east",
-			SW: "south_west",
-			NW: "north_west"
-		}
+		N:  {x: 0, y:-1, name: "north"},
+		E:  {x: 1, y: 0, name: "east"},
+		S:  {x: 0, y: 1, name: "south"},
+		W:  {x:-1, y: 0, name: "west"},
+		NE: {x: 1, y:-1, name: "north_east"},
+		SE: {x: 1, y: 1, name: "south_east"},
+		SW: {x:-1, y: 1, name: "south_west"},
+		NW: {x:-1, y:-1, name: "north_west"}
 	}
 };
 

@@ -9,7 +9,7 @@
   * [x] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js
     * Is each Enemy a separate type?
     * Or just 1 type == Enemy, and then spawn different kinds of enemy based on some random logic (e.g. distance to spawn, player weapon progression -> stronger weapon == stronger enemies?)
-  * [ ] Walk around randomly
+  * [x] Walk around randomly
   * [ ] Hurt by Slash
     * [ ] Knockback
   * [ ] Hurts player on touch
@@ -22,6 +22,8 @@
   * [ ] Diving ???
 * [ ] Inventory System
   * [ ] Equip different items/weapons
+* [ ] Tilebased Effects for NPCs
+  * [ ] Introduce a Pool, and just take an effect from the pool if an Actor is on a grass/shallow_water tile
 * [ ] Refactor "SmallEffect" to a Pool
   * [ ] Keep effect instances in the Screen and not remove them after the Animation is finished
 * [x] Refactor Animation handling for slashing etc.
