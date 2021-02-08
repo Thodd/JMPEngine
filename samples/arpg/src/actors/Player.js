@@ -8,7 +8,7 @@ import TileBasedEffect from "./effects/TileBasedEffect.js";
 
 // attacks
 import Attack from "./attacks/Attack.js";
-import SwordAttack from "./attacks/SwordAttack.js";
+//import SwordAttack from "./attacks/SwordAttack.js";
 import SpearAttack from "./attacks/SpearAttack.js";
 class Player extends Actor {
 	constructor(x, y) {
@@ -16,7 +16,7 @@ class Player extends Actor {
 
 		this.layer = Constants.Layers.PLAYER;
 
-		this.RENDER_HITBOX = 0x00FF85;
+		//this.RENDER_HITBOX = 0x00FF85;
 
 		// we need to reduce the size of the hitbox a bit, so the player has more room for error
 		this.updateHitbox({
@@ -99,8 +99,6 @@ class Player extends Actor {
 		// Player class as easy readable as possible
 		this.attack = new Attack(this);
 		this.tileBasedEffect = new TileBasedEffect(this);
-
-		//this.blink = new FrameCounter(5);
 	}
 
 	added() {
@@ -117,15 +115,10 @@ class Player extends Actor {
 	}
 
 	update() {
+		super.update();
 
 		// flag might be set to true during movement checks
 		let moved = false;
-
-		// if (this.blink.isReady()) {
-		// 	this.visible = false;
-		// } else {
-		// 	this.visible = true;
-		// }
 
 		if (this._isAttacking) {
 			// do nothing

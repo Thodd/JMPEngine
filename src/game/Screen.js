@@ -277,7 +277,7 @@ class Screen {
 					let e2 = entries[j];
 					// only perform check for collidable entities
 					// we can save some function calls this way, which is relevant for a big amount of entities
-					if (e._hitbox._collidable) {
+					if (e2._hitbox._collidable) {
 						if (Collision.checkAtPosition(e, e2, x, y)) {
 							if (returnAll) {
 								result.push(e2);

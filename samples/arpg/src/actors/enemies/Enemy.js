@@ -12,10 +12,8 @@ class Enemy extends Actor {
 			w: 12,
 			h: 12
 		});
-	}
 
-	update() {
-		// do nothing, just stand around for now
+		this.setTypes(["enemy"]);
 	}
 }
 

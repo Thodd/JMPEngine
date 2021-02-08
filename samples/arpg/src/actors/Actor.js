@@ -1,13 +1,101 @@
 import Entity from "../../../../src/game/Entity.js";
+import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
 import Constants from "../Constants.js";
-
 class Actor extends Entity {
 	constructor(x, y) {
 		super(x, y);
 
 		// looking direction
 		this.dir = "down";
+
+		// knockback animation (non-blocking, can be performed simultaneous to other things)
+		this._knockback = {
+			possible: true,
+			active: false,
+			// (1) Tile knockback == 8 Frames * 2 pixels
+			fc: new FrameCounter(Math.ceil(Constants.TILE_HEIGHT * 0.75)),
+			slope: 1
+		};
+
+		// hurting animation (non-blocking, can be performed simultaneous to other things)
+		this._hurting = {
+			possible: true,
+			active: false,
+			// invincibility frames  for ~1 second
+			fc: new FrameCounter(60),
+			// blink every other frame
+			blink: new FrameCounter(1)
+		};
+
+		this.stats = {
+			hp_mx: 2,
+			hp: 2,
+			dmg: 0.5
+		};
+	}
+
+	/**
+	 *
+	 * @param {number} damage the amount of damage
+	 * @param {Actor} source the Actor from which the damage was received
+	 */
+	takeDamage(damage, source) {
+		if (damage > 0) {
+			// activate hurting animation
+			// deal damage only when hurting is possible and no "invincibility frames"
+			if (this._hurting.possible && !this._hurting.active) {
+				this.stats.hp -= damage;
+				this._hurting.active = true;
+			}
+
+			// activate knockback (only if possible for this Actor)
+			// multiple knockbacks after successive hits are OK though.
+			// Allows the Player to "whop around" the Actor.
+			if (this._knockback.possible) {
+				// TODO: Make some margin for cardinal knockback (e.g. tolerance of 8 pixels???)
+				this._knockback.x = this.x > source.x ? 2 : -2;
+				this._knockback.y = this.y > source.y ? 2 : -2;
+				this._knockback.active = true;
+			}
+		}
+	}
+
+	/**
+	 * Standard implementations for Actor update lifecylce:
+	 * - Hurting Animation
+	 * - Knockback Animation
+	 */
+	update() {
+		if (this._hurting.active) {
+			// blink
+			if (this._hurting.blink.isReady()) {
+				this.visible = !this.visible;
+			}
+			this._hurting.active = !this._hurting.fc.isReady();
+
+			// hurting state has changed this frame: reset visiblity & blink-fc
+			if (!this._hurting.active) {
+				this.visible = true;
+				this._hurting.blink.reset();
+			}
+		}
+
+		if (this._knockback.active) {
+			// once the knockback time is over we stop the movement
+			this._knockback.active = !this._knockback.fc.isReady();
+
+			let x = this.x + this._knockback.x;
+			let y = this.y + this._knockback.y;
+
+			let tm = this.getTilemap();
+			if (!this.collidesWith(tm, x, this.y)) {
+				this.x = x;
+			}
+			if (!this.collidesWith(tm, this.x, y)) {
+				this.y = y;
+			}
+		}
 	}
 
 	/**
@@ -47,36 +135,36 @@ class Actor extends Entity {
 		}
 	}
 
-	// /**
-	//  * Returns all Tiles this actor is touching wrt. its hitbox.
-	//  * Touching means ALL tiles, no matter if they are
-	//  */
-	// getTouchingTiles() {
-	// 	let screen = this.getScreen();
-	// 	let tm = screen.getTilemap();
+	/**
+	 * Returns all Tiles this actor is touching wrt. its hitbox.
+	 * Touching means ALL tiles, no matter if they are
+	 */
+	getTouchingTiles() {
+		let screen = this.getScreen();
+		let tm = screen.getTilemap();
 
-	// 	let w = Constants.TILE_WIDTH;
-	// 	let h = Constants.TILE_HEIGHT;
+		let w = Constants.TILE_WIDTH;
+		let h = Constants.TILE_HEIGHT;
 
-	// 	let left = this.x + this._hitbox.x;
-	// 	let right = this.x + this._hitbox.x + this._hitbox.w - 1;
-	// 	let top = this.y + this._hitbox.y;
-	// 	let bottom = this.y + this._hitbox.y + this._hitbox.h - 1;
+		let left = this.x + this._hitbox.x;
+		let right = this.x + this._hitbox.x + this._hitbox.w - 1;
+		let top = this.y + this._hitbox.y;
+		let bottom = this.y + this._hitbox.y + this._hitbox.h - 1;
 
-	// 	let tileTopRight = tm.get(Math.floor(right / w), Math.floor(top / h));
-	// 	let tileTopLeft = tm.get(Math.floor(left / w), Math.floor(top / h));
+		let tileTopRight = tm.get(Math.floor(right / w), Math.floor(top / h));
+		let tileTopLeft = tm.get(Math.floor(left / w), Math.floor(top / h));
 
-	// 	let tileBottomRight = tm.get(Math.floor(right / w), Math.floor(bottom / h));
-	// 	let tileBottomLeft = tm.get(Math.floor(left / w), Math.floor(bottom / h));
+		let tileBottomRight = tm.get(Math.floor(right / w), Math.floor(bottom / h));
+		let tileBottomLeft = tm.get(Math.floor(left / w), Math.floor(bottom / h));
 
-	// 	let result = [];
-	// 	tileTopRight ? result.push(tileTopRight) : undefined;
-	// 	tileTopLeft ? result.push(tileTopLeft) : undefined;
-	// 	tileBottomRight ? result.push(tileBottomRight) : undefined;
-	// 	tileBottomLeft ? result.push(tileBottomLeft) : undefined;
+		let result = [];
+		tileTopRight ? result.push(tileTopRight) : undefined;
+		tileTopLeft ? result.push(tileTopLeft) : undefined;
+		tileBottomRight ? result.push(tileBottomRight) : undefined;
+		tileBottomLeft ? result.push(tileBottomLeft) : undefined;
 
-	// 	return result;
-	// }
+		return result;
+	}
 }
 
 export default Actor;

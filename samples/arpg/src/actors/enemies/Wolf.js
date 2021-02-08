@@ -4,7 +4,7 @@ import RNG from "../../../../../src/utils/RNG.js";
 
 // game imports
 import Constants from "../../Constants.js";
-import AITools from "./AITools.js";
+import M4th from "../../utils/M4th.js";
 import Enemy from "./Enemy.js";
 
 class Wolf extends Enemy {
@@ -63,7 +63,7 @@ class Wolf extends Enemy {
 			movementDir: Constants.Directions.S,
 			spriteDir: "west",
 			steps: {
-				start: 4 * Constants.TILE_WIDTH,
+				movementTime: 4 * Constants.TILE_WIDTH,
 				current: 4 * Constants.TILE_WIDTH
 			},
 			maxDistanceToSpawn: 5 * Constants.TILE_WIDTH,
@@ -71,6 +71,8 @@ class Wolf extends Enemy {
 	}
 
 	update() {
+		super.update();
+
 		if (this.AI.steps.current > 0) {
 			this.AI.steps.current--;
 
@@ -80,7 +82,7 @@ class Wolf extends Enemy {
 				let moved = false;
 
 				// only move if we are less than 5 tiles away from the spawn
-				if (AITools.inRange(xx, yy, this.AI.spawn.x, this.AI.spawn.y, this.AI.maxDistanceToSpawn)) {
+				if (M4th.inRange(xx, yy, this.AI.spawn.x, this.AI.spawn.y, this.AI.maxDistanceToSpawn)) {
 						// check for collision before move
 					let tm = this.getTilemap();
 					if (!this.collidesWith(tm, xx, yy)) {
@@ -98,7 +100,7 @@ class Wolf extends Enemy {
 			// animation is composed of the {behaviorName}_{directionName}
 			this.playAnimation({name: `${this.AI.behavior}_${this.AI.movementDir.name}`});
 		} else {
-			this.AI.steps.current = this.AI.steps.start;
+			this.AI.steps.current = this.AI.steps.movementTime;
 
 			// 25% of the time we just stand around idling
 			if (RNG.random() < 0.25) {

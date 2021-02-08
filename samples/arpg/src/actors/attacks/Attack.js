@@ -31,6 +31,19 @@ class Attack extends Actor {
 		this.setCollidable(false);
 	}
 
+	update() {
+		let collidingEnemies = this.collidesWithTypes(["enemy"], true);
+		if (collidingEnemies) {
+			collidingEnemies.forEach((enemy) => {
+				// TODO: Change damage based on Player Weapon
+				enemy.takeDamage(1, this);
+			});
+		}
+	}
+
+	/**
+	 * Positions the Attack Hitbox at the next animation position.
+	 */
 	next() {
 		if (this._currentAttackInfo.index < 3) {
 			this._currentAttackInfo.index++;
@@ -50,6 +63,7 @@ class Attack extends Actor {
 	hide() {
 		this.setCollidable(false);
 		this.visible = false;
+		this.active = false;
 	}
 
 	/**
@@ -69,9 +83,10 @@ class Attack extends Actor {
 
 		this.visible = true;
 
+		this.active = true;
+
 		this.checkTileBasedCollision();
 	}
-
 
 	/**
 	 * Sets the given key-frame definition.
@@ -94,6 +109,7 @@ class Attack extends Actor {
 		let tile = this.getClosestTile();
 		let showEffect = false;
 
+		// replace tile with it's "destroyed/cut" counter part
 		if (tile.type === TileTypes.GRASS || tile.type === TileTypes.BUSH) {
 			let tileInfo = Tileset.getProperties(`${tile.type}_cut`);
 			tile.set(tileInfo.id);
