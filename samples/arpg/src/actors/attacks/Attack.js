@@ -28,17 +28,19 @@ class Attack extends Actor {
 			id: 15
 		});
 
+		this.setTypes(["attack"]);
+
 		this.setCollidable(false);
 	}
 
 	update() {
-		let collidingEnemies = this.collidesWithTypes(["enemy"], true);
-		if (collidingEnemies) {
-			collidingEnemies.forEach((enemy) => {
-				// TODO: Change damage based on Player Weapon
-				enemy.takeDamage(1, this);
-			});
-		}
+		// IMPORTANT: no super call
+		// the Attack-Actors don't need hit detection and knockback themselves
+
+		// keep attack positioned at the player's coordinates
+		// this way the weapon is not left behind if the player is knocked back during attacking
+		let frameData = this._currentAttackInfo.frames[this._currentAttackInfo.index];
+		this._updateVisuals(frameData);
 	}
 
 	/**

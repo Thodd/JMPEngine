@@ -16,7 +16,7 @@ class Player extends Actor {
 
 		this.layer = Constants.Layers.PLAYER;
 
-		//this.RENDER_HITBOX = 0x00FF85;
+		this.RENDER_HITBOX = 0x00FF85;
 
 		// we need to reduce the size of the hitbox a bit, so the player has more room for error
 		this.updateHitbox({
@@ -26,9 +26,11 @@ class Player extends Actor {
 			h: 10
 		});
 
-		this.dir = "down";
-
+		// collision detection with enemies
+		this._damagedByTypes = ["enemy"];
 		this.setTypes(["player"]);
+
+		this.dir = "down";
 
 		this.configSprite({
 			sheet: "player",
@@ -121,7 +123,7 @@ class Player extends Actor {
 		let moved = false;
 
 		if (this._isAttacking) {
-			// do nothing
+			// no input handling
 		} else {
 			let dir = null;
 

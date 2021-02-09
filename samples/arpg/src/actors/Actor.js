@@ -6,6 +6,9 @@ class Actor extends Entity {
 	constructor(x, y) {
 		super(x, y);
 
+		// no hit detection by default
+		this._damagedByTypes = null;
+
 		// looking direction
 		this.dir = "down";
 
@@ -62,6 +65,28 @@ class Actor extends Entity {
 	}
 
 	/**
+	 * Returns the damage done by this Actor.
+	 * By default it's the base-stats damage modifier.
+	 */
+	getDamageOutput() {
+		return this.stats.dmg;
+	}
+
+	/**
+	 * Lifecycle Hook for hit detection.
+	 * only called if the Actor has no iframes.
+	 */
+	hitDetection() {
+		// hit detection (if not already hurting)
+		if (!this._hurting.active && this._damagedByTypes) {
+			let collidingActor = this.collidesWithTypes(this._damagedByTypes);
+			if (collidingActor) {
+				this.takeDamage(collidingActor.getDamageOutput(), collidingActor);
+			}
+		}
+	}
+
+	/**
 	 * Standard implementations for Actor update lifecylce:
 	 * - Hurting Animation
 	 * - Knockback Animation
@@ -79,6 +104,8 @@ class Actor extends Entity {
 				this.visible = true;
 				this._hurting.blink.reset();
 			}
+		} else {
+			this.hitDetection();
 		}
 
 		if (this._knockback.active) {

@@ -10,12 +10,11 @@
     * Is each Enemy a separate type?
     * Or just 1 type == Enemy, and then spawn different kinds of enemy based on some random logic (e.g. distance to spawn, player weapon progression -> stronger weapon == stronger enemies?)
   * [x] Walk around randomly
-  * [x] Hurt by Slash
+  * [ ] Hurt by Slash
     * [x] Knockback
-  * [ ] Hurts player on touch
-* [ ] Attacks
-  * [ ] Decouple Attack class from Actor class
-    * Only relevant function --> getClosestTile
+    * [ ] Make Knockback better --> respect center of hitbox not top-level pixel
+    * [ ] Make IV-Frames configurable for each Actor
+  * [x] Hurts player on touch
 * [ ] Weapons
   * [ ] Make Sword an item
   * [x] New Weapon Item: Spear
