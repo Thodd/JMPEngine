@@ -3,39 +3,44 @@ import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
 import Constants from "../Constants.js";
 class Actor extends Entity {
-	constructor(x, y) {
+	constructor(x, y, config) {
 		super(x, y);
 
-		// no hit detection by default
-		this._damagedByTypes = null;
-
-		// looking direction
+		// default looking direction
 		this.dir = "down";
 
-		// knockback animation (non-blocking, can be performed simultaneous to other things)
-		this._knockback = {
+		// default basic values
+		config = config || {};
+
+		// no hit detection by default
+		this._damagedByTypes = config.damagedByTypes || null;
+
+		// knockback config
+		this._knockback = Object.assign({
+			x: 0,
+			y: 0,
 			possible: true,
 			active: false,
-			// (1) Tile knockback == 8 Frames * 2 pixels
-			fc: new FrameCounter(Math.ceil(Constants.TILE_HEIGHT * 0.75)),
-			slope: 1
-		};
+			duration: Math.ceil(Constants.TILE_HEIGHT * 0.75)
+		}, config.knockback);
+		this._knockback.fc = new FrameCounter(this._knockback.duration);
 
 		// hurting animation (non-blocking, can be performed simultaneous to other things)
-		this._hurting = {
+		this._hurting = Object.assign({
 			possible: true,
 			active: false,
-			// invincibility frames  for ~1 second
-			fc: new FrameCounter(60),
+			duration: 60,
 			// blink every other frame
 			blink: new FrameCounter(1)
-		};
+		}, config.hurting);
+		this._hurting.fc = new FrameCounter(this._hurting.duration);
 
-		this.stats = {
+		// stats config
+		this.stats = Object.assign({
 			hp_mx: 2,
 			hp: 2,
 			dmg: 0.5
-		};
+		}, config.stats);
 	}
 
 	/**
@@ -56,7 +61,6 @@ class Actor extends Entity {
 			// multiple knockbacks after successive hits are OK though.
 			// Allows the Player to "whop around" the Actor.
 			if (this._knockback.possible) {
-				// TODO: Make some margin for cardinal knockback (e.g. tolerance of 8 pixels???)
 				this._knockback.x = this.x > source.x ? 2 : -2;
 				this._knockback.y = this.y > source.y ? 2 : -2;
 				this._knockback.active = true;
@@ -105,6 +109,7 @@ class Actor extends Entity {
 				this._hurting.blink.reset();
 			}
 		} else {
+			// only done if the hurting animation is not active
 			this.hitDetection();
 		}
 

@@ -7,9 +7,20 @@ import Constants from "../../Constants.js";
 import M4th from "../../utils/M4th.js";
 import Enemy from "./Enemy.js";
 
+const WOLF_CONFIG = {
+	// IV Frames
+	hurting: {
+		duration: 30
+	},
+	stats: {
+		hp_max: 2,
+		hp: 2,
+		dmg: 1
+	}
+};
 class Wolf extends Enemy {
 	constructor(x, y) {
-		super(x, y);
+		super(x, y, WOLF_CONFIG);
 
 		this.configSprite({
 			sheet: "enemies",

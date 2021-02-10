@@ -11,10 +11,11 @@ import SmallEffect from "../effects/SmallEffect.js";
  */
 class Attack extends Actor {
 	constructor(player) {
-		super();
+		super(0, 0);
 		this.player = player;
 
 		this.active = false;
+		this.visible = false;
 
 		this.RENDER_HITBOX = 0x0085FF;
 
@@ -78,6 +79,8 @@ class Attack extends Actor {
 		dir = dir || "down";
 		this._currentAttackInfo = {frames: type.allFrames[dir], index: 0};
 
+		// TODO: Set the damage stats of the Attack class to the  one defined on the Attack-Type
+
 		this._updateVisuals(this._currentAttackInfo.frames[0]);
 
 		// reminder: also enables the debug rendering of the hitbox
@@ -97,8 +100,10 @@ class Attack extends Actor {
 	 */
 	_updateVisuals(frameData) {
 		if (frameData) {
-			this.x = this.player.x + frameData.hitbox.x;
-			this.y = this.player.y + frameData.hitbox.y;
+			this.x = this.player.x;
+			this.y = this.player.y;
+			this.updateHitbox(frameData.hitbox);
+
 			this.configSprite(frameData.sprite);
 		}
 	}
@@ -111,20 +116,26 @@ class Attack extends Actor {
 		let tile = this.getClosestTile();
 		let showEffect = false;
 
-		// replace tile with it's "destroyed/cut" counter part
-		if (tile.type === TileTypes.GRASS || tile.type === TileTypes.BUSH) {
-			let tileInfo = Tileset.getProperties(`${tile.type}_cut`);
-			tile.set(tileInfo.id);
-			showEffect = true;
-		}
+		if (tile) {
+			// replace tile with it's "destroyed/cut" counter part
+			if (tile.type === TileTypes.GRASS || tile.type === TileTypes.BUSH) {
+				let tileInfo = Tileset.getProperties(`${tile.type}_cut`);
+				tile.set(tileInfo.id);
+				showEffect = true;
+			}
 
-		if (showEffect) {
-			// create grass cutting effect and position it on the screen
-			let grassCuttingEffect = SmallEffect.get();
-			grassCuttingEffect.x = tile.screenX;
-			grassCuttingEffect.y = tile.screenY;
-			grassCuttingEffect.show();
-			this.getScreen().add(grassCuttingEffect);
+			if (showEffect) {
+				// create grass cutting effect and position it on the screen
+				let grassCuttingEffect = SmallEffect.get();
+				grassCuttingEffect.x = tile.screenX;
+				grassCuttingEffect.y = tile.screenY;
+				grassCuttingEffect.show();
+				this.getScreen().add(grassCuttingEffect);
+			}
+		} else {
+			// happened before... could not find out why :(
+			// eslint-disable-next-line no-debugger
+			debugger;
 		}
 	}
 }

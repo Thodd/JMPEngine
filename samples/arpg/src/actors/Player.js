@@ -8,7 +8,7 @@ import TileBasedEffect from "./effects/TileBasedEffect.js";
 
 // attacks
 import Attack from "./attacks/Attack.js";
-//import SwordAttack from "./attacks/SwordAttack.js";
+// import SwordAttack from "./attacks/SwordAttack.js";
 import SpearAttack from "./attacks/SpearAttack.js";
 class Player extends Actor {
 	constructor(x, y) {

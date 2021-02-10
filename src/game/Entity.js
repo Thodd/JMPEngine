@@ -189,8 +189,8 @@ class Entity {
 	 */
 	updateHitbox(cfg) {
 		this._hitbox._collidable = true;
-		this._hitbox.x = cfg.x || this._hitbox.x;
-		this._hitbox.y = cfg.y || this._hitbox.y;
+		this._hitbox.x = cfg.x != undefined ? cfg.x : this._hitbox.x;
+		this._hitbox.y = cfg.y != undefined ? cfg.y : this._hitbox.y;
 		this._hitbox.w = cfg.w || this._hitbox.w;
 		this._hitbox.h = cfg.h || this._hitbox.h;
 

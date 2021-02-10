@@ -4,17 +4,6 @@
 
 * [ ] Hearts
 * [ ] Text-Box System
-* [ ] Enemies
-  * [x] Rener initial Enemy
-  * [x] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js
-    * Is each Enemy a separate type?
-    * Or just 1 type == Enemy, and then spawn different kinds of enemy based on some random logic (e.g. distance to spawn, player weapon progression -> stronger weapon == stronger enemies?)
-  * [x] Walk around randomly
-  * [ ] Hurt by Slash
-    * [x] Knockback
-    * [ ] Make Knockback better --> respect center of hitbox not top-level pixel
-    * [ ] Make IV-Frames configurable for each Actor
-  * [x] Hurts player on touch
 * [ ] Weapons
   * [ ] Make Sword an item
   * [x] New Weapon Item: Spear
@@ -28,6 +17,20 @@
   * [ ] Introduce a Pool, and just take an effect from the pool if an Actor is on a grass/shallow_water tile
 * [ ] Refactor "SmallEffect" to a Pool
   * [ ] Keep effect instances in the Screen and not remove them after the Animation is finished
+
+## done
+
+* [x] Enemies
+  * [x] Rener initial Enemy
+  * [x] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js
+    * Is each Enemy a separate type?
+    * Or just 1 type == Enemy, and then spawn different kinds of enemy based on some random logic (e.g. distance to spawn, player weapon progression -> stronger weapon == stronger enemies?)
+  * [x] Walk around randomly
+  * [x] Hurt by Slash
+    * [x] Knockback
+    * [x] Make Knockback better --> respect center of hitbox not top-level pixel
+    * [x] Make IV-Frames configurable for each Actor
+  * [x] Hurts player on touch
 * [x] Refactor Animation handling for slashing etc.
   * [x] Make Sword visible again
     * Add Sword animation frames to the nextPosition -> Update
