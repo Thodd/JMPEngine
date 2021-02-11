@@ -20,7 +20,6 @@ import Player from "./actors/Player.js";
 import Sign from "./actors/interactables/Sign.js";
 import ObjectTypes from "./mapgen/ObjectTypes.js";
 import EnemyTypes from "./actors/enemies/EnemyTypes.js";
-import { log } from "../../../src/utils/Log.js";
 class WorldScreen extends Screen {
 	constructor() {
 		super();
@@ -82,7 +81,7 @@ class WorldScreen extends Screen {
 
 			this.centerCameraAround(this.player);
 
-			this.addDebugUI();
+			this.setupUI();
 		});
 	}
 
@@ -121,22 +120,59 @@ class WorldScreen extends Screen {
 
 	update() {}
 
+	setupUI() {
+		// Hearts are rendered as a BitmapText for simplicity
+		this.hearts = new BitmapText({
+			font: "hearts",
+			text: `a a a b c c`,
+			x: -1,
+			y: -3
+		});
+		this.hearts.layer = Constants.Layers.UI;
+		this.add(this.hearts);
+
+		// initial render of hearts
+		this.updateHearts();
+
+		this.addDebugUI();
+	}
+
 	updateUI() {
+		this.updateHearts();
+	}
+
+	updateHearts() {
 		// render Hearts
+		// OK so this is a bit janky but works just fine :)
+		// The player might be "overkilled" but we still want to render an empty hearts-bar
+		if (PlayerState.stats.hp > 0) {
+			let hearts = "";
+			let playerHP = PlayerState.stats.hp | 0;
+			let playerHP_half = PlayerState.stats.hp - playerHP > 0;
+			let playerHP_Max_Delta = PlayerState.stats.hp_max - playerHP;
 
-		// TODO: Render Hearts
-		// TODO: Use Hearts as a BitmapText --> no pool needed... :D
+			// full hearts
+			for (let i = 0; i < playerHP; i++) {
+				hearts += "a ";
+			}
 
-		// for (let i = 0; i < 4; i++) {
-		// 	let heart = new Entity(i*14, 0);
-		// 	heart.layer = Constants.Layers.UI;
-		// 	heart.configSprite({
-		// 		sheet: "UI",
-		// 		id: 2
-		// 	});
-		// 	this.add(heart);
-		// }
-		log(`Player HP: ${PlayerState.stats.hp}`);
+			// 1 or 0 half hearts
+			playerHP_half ? (hearts += "b ") : undefined;
+
+			// empty hearts
+			for (let i = playerHP_half ? 1 : 0; i < playerHP_Max_Delta; i++) {
+				hearts += "c ";
+			}
+
+			this.hearts.setText(hearts);
+		} else {
+			// empty hearts
+			let hearts = "";
+			for (let i = 0; i < PlayerState.stats.hp_max; i++) {
+				hearts += "c ";
+			}
+			this.hearts.setText(hearts);
+		}
 	}
 
 	endOfFrame() {

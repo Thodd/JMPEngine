@@ -2,7 +2,6 @@
 
 # Gameplay
 
-* [ ] Hearts
 * [ ] Text-Box System
 * [ ] Weapons
   * [ ] Make Sword an item
@@ -19,7 +18,7 @@
   * [ ] Keep effect instances in the Screen and not remove them after the Animation is finished
 
 ## done
-
+* [x] Hearts
 * [x] Enemies
   * [x] Rener initial Enemy
   * [x] Make Map-Object Types sanity check --> similar to tile-types in Tileset.js

@@ -59,7 +59,17 @@
 				"h": 32
 			}
 		},
-		"fonts": {},
+		"fonts": {
+			"hearts": {
+				"spritesheet": "UI",
+				"charOrder": " 012abc",
+				"kerning": {
+					"spacing": -4
+				},
+				"w": 16,
+				"h": 16
+			}
+		},
 		"json": {
 			"tileset16": {
 				"url": "./maps/tileset16.json"

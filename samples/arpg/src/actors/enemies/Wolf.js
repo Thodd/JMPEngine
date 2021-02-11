@@ -15,7 +15,7 @@ const WOLF_CONFIG = {
 	stats: {
 		hp_max: 2,
 		hp: 2,
-		dmg: 1
+		dmg: 1.5
 	}
 };
 class Wolf extends Enemy {
