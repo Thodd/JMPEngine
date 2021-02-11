@@ -1,5 +1,6 @@
 import Entity from "../../../../src/game/Entity.js";
 import FrameCounter from "../../../../src/utils/FrameCounter.js";
+import { log } from "../../../../src/utils/Log.js";
 
 import Constants from "../Constants.js";
 class Actor extends Entity {
@@ -48,12 +49,19 @@ class Actor extends Entity {
 	 * @param {number} damage the amount of damage
 	 * @param {Actor} source the Actor from which the damage was received
 	 */
-	takeDamage(damage, source) {
-		if (damage > 0) {
+	hurt(source) {
+		let potentialDamage = source.getDamageOutput();
+		if (potentialDamage > 0) {
 			// activate hurting animation
 			// deal damage only when hurting is possible and no "invincibility frames"
 			if (this._hurting.possible && !this._hurting.active) {
-				this.stats.hp -= damage;
+
+				// TODO: handle death animation ???
+				let dies = this.takeDamage(potentialDamage);
+				if (dies) {
+					log(`${this} died.`);
+				}
+
 				this._hurting.active = true;
 			}
 
@@ -77,6 +85,17 @@ class Actor extends Entity {
 	}
 
 	/**
+	 * Actor takes damage.
+	 * Returns whether the Actor dies after taking the hit.
+	 * @param {number} dmg the damage taken
+	 * @returns whether the Actor dies
+	 */
+	takeDamage(dmg) {
+		this.stats.hp -= dmg;
+		return this.stats.hp <= 0;
+	}
+
+	/**
 	 * Lifecycle Hook for hit detection.
 	 * only called if the Actor has no iframes.
 	 */
@@ -85,7 +104,7 @@ class Actor extends Entity {
 		if (!this._hurting.active && this._damagedByTypes) {
 			let collidingActor = this.collidesWithTypes(this._damagedByTypes);
 			if (collidingActor) {
-				this.takeDamage(collidingActor.getDamageOutput(), collidingActor);
+				this.hurt(collidingActor);
 			}
 		}
 	}

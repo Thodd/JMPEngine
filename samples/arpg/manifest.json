@@ -18,6 +18,11 @@
 
 	"assets": {
 		"spritesheets": {
+			"UI": {
+				"url": "./img/UI.png",
+				"w": 16,
+				"h": 16
+			},
 			"player": {
 				"url": "./img/player.png",
 				"w": 48,

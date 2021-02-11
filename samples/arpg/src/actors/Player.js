@@ -5,11 +5,13 @@ import Keys from "../../../../src/input/Keys.js";
 import Constants from "../Constants.js";
 import Actor from "./Actor.js";
 import TileBasedEffect from "./effects/TileBasedEffect.js";
+import PlayerState from "./PlayerState.js";
 
 // attacks
 import Attack from "./attacks/Attack.js";
 // import SwordAttack from "./attacks/SwordAttack.js";
 import SpearAttack from "./attacks/SpearAttack.js";
+
 class Player extends Actor {
 	constructor(x, y) {
 		super(x, y);
@@ -114,6 +116,15 @@ class Player extends Actor {
 		// also clean up all associated entities
 		this.attack.destroy();
 		this.tileBasedEffect.destroy();
+	}
+
+	takeDamage(dmg) {
+		// delegate to PlayerState
+		return PlayerState.takeDamage(dmg);
+	}
+
+	getDamageOutput() {
+		return PlayerState.getDamageOutput();
 	}
 
 	update() {

@@ -27,6 +27,10 @@ const Constants = {
 		SE: {x: 1, y: 1, name: "south_east"},
 		SW: {x:-1, y: 1, name: "south_west"},
 		NW: {x:-1, y:-1, name: "north_west"}
+	},
+
+	Events: {
+		UPDATE_UI: "UPDATE_UI"
 	}
 };
 
