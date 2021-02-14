@@ -25,6 +25,10 @@ const TileTypes = {
 	CLIFF_TOP_NW: "cliff_top_NW"
 };
 
+// destroyable(TileTypes.GRASS, TileTypes.GRASS_CUT, Leaves);
+// water(TileTypes.WATER_DEEP);
+// water_shallow(TileTypes.WATER_SHALLOW);
+
 /**
  * The list of all type values (strings) are used for sanity checks on the loaded maps.
  * This helps prevent errors when designing maps via Tiled.

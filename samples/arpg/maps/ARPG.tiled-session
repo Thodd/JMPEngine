@@ -40,8 +40,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 213,
-                "y": 262.66666666666663
+                "x": 247.66666666666666,
+                "y": 293.99999999999994
             }
         },
         "center/center_01.json": {
@@ -107,7 +107,7 @@
             "scale": 1.46,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 248.97260273972606,
+                "x": 249.65753424657532,
                 "y": 313.01369863013696
             }
         },
@@ -117,6 +117,14 @@
             "viewCenter": {
                 "x": 201.16484103660167,
                 "y": 203.38765695965802
+            }
+        },
+        "testing/testing.json": {
+            "scale": 1.4882056451612904,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 248.28557881189462,
+                "y": 279.5312605838922
             }
         },
         "testing/tileset16.json": {
@@ -397,14 +405,14 @@
         "center/center_00.json"
     ],
     "project": "ARPG.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
+        "testing/cliffs.json",
         "water/NExx_00.json",
         "water/NxxW_00.json",
         "water/corner_A_00.json",
         "center/center_01.json",
         "center/center_02.json",
-        "testing/cliffs.json",
         "tileset16.json",
         "center/center_00.json",
         "water/xESW_00.json",

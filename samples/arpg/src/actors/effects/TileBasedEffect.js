@@ -41,8 +41,8 @@ class TileBasedEffect extends Actor {
 		this.x = this.actor.x;
 		this.y = this.actor.y;
 
-		let type = tile.type;
-		let anim = this.animations[tile.type];
+		let type = tile.getProperties().type;
+		let anim = this.animations[type];
 
 		// check we have an animation for the tile's type
 		if (anim) {

@@ -2,6 +2,16 @@
 
 # Gameplay
 
+* [x] Introduce destroy() function to GameTile class
+  * [x] Now in Attack.js -> move to GameTile
+  * Makes for an easier "drop-rate" implementation
+* [ ] General Item Drop system
+  * [ ] Trigger on destroy of tile
+  * [ ] Trigger on death of Enemies
+  * Use internal ItemPool
+    * Keep or remove Iiem Entities??? : Hearts, Gold and Ammo will be reused anyway...
+  * dropItemsOnTile(t:GameTile)
+  * dropItemAt(x:int, y:int)
 * [ ] Text-Box System
 * [ ] Weapons
   * [ ] Make Sword an item
@@ -16,6 +26,7 @@
   * [ ] Introduce a Pool, and just take an effect from the pool if an Actor is on a grass/shallow_water tile
 * [ ] Refactor "SmallEffect" to a Pool
   * [ ] Keep effect instances in the Screen and not remove them after the Animation is finished
+  * [ ] Code the destroy effect-type into the Tileset, e.g. destroy_effect_type = "leaves"
 
 ## done
 * [x] Hearts

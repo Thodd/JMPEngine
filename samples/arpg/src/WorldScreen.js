@@ -32,7 +32,7 @@ class WorldScreen extends Screen {
 		EventBus.subscribe(Constants.Events.UPDATE_UI, this.updateUI.bind(this));
 
 		MapLoader.load({
-			"sampleMap": { url: "./maps/center/center_00.json" }
+			"sampleMap": { url: "./maps/testing/testing.json" }
 		}).then((maps) => {
 			// create the tilemap
 			this._tilemap = new Tilemap({
@@ -54,10 +54,11 @@ class WorldScreen extends Screen {
 				let tileId = mapData.tiles[globalIndex] - 1;
 
 				// set visuals
-				tile.set(tileId);
+				tile.setProperties(Tileset.getProperties(tileId));
+				//tile.set(tileId);
 
 				// check if the tile has a hitbox defined in the tileset
-				tile._hitbox = Tileset.getProperties(tileId).hitbox;
+				//tile._hitbox = Tileset.getProperties(tileId).hitbox;
 
 				globalIndex++;
 			});

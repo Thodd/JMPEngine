@@ -1,7 +1,6 @@
 import Actor from "../Actor.js";
 import Tileset from "../../mapgen/Tileset.js";
 import TileTypes from "../../mapgen/TileTypes.js";
-import SmallEffect from "../effects/SmallEffect.js";
 
 /**
  * Defines the basic lifecycle of Attacks.
@@ -114,24 +113,10 @@ class Attack extends Actor {
 	 */
 	checkTileBasedCollision() {
 		let tile = this.getClosestTile();
-		let showEffect = false;
 
 		if (tile) {
-			// replace tile with it's "destroyed/cut" counter part
-			if (tile.type === TileTypes.GRASS || tile.type === TileTypes.BUSH) {
-				let tileInfo = Tileset.getProperties(`${tile.type}_cut`);
-				tile.set(tileInfo.id);
-				showEffect = true;
-			}
-
-			if (showEffect) {
-				// create grass cutting effect and position it on the screen
-				let grassCuttingEffect = SmallEffect.get();
-				grassCuttingEffect.x = tile.screenX;
-				grassCuttingEffect.y = tile.screenY;
-				grassCuttingEffect.show();
-				this.getScreen().add(grassCuttingEffect);
-			}
+			// might not do something, depending on the tile
+			tile.destroy();
 		} else {
 			// happened before... could not find out why :(
 			// eslint-disable-next-line no-debugger

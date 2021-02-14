@@ -35,6 +35,16 @@
          "id":8,
          "properties":[
                 {
+                 "name":"destroyable",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"destroyed_type",
+                 "type":"string",
+                 "value":"grass_cut"
+                }, 
+                {
                  "name":"type",
                  "type":"string",
                  "value":"grass"
@@ -44,6 +54,16 @@
          "id":9,
          "properties":[
                 {
+                 "name":"destroyable",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"destroyed_type",
+                 "type":"string",
+                 "value":"grass_cut"
+                }, 
+                {
                  "name":"type",
                  "type":"string",
                  "value":"grass"
@@ -52,6 +72,16 @@
         {
          "id":10,
          "properties":[
+                {
+                 "name":"destroyable",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"destroyed_type",
+                 "type":"string",
+                 "value":"grass_cut"
+                }, 
                 {
                  "name":"type",
                  "type":"string",
@@ -287,6 +317,16 @@
          "id":40,
          "properties":[
                 {
+                 "name":"destroyable",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"destroyed_type",
+                 "type":"string",
+                 "value":"bush_cut"
+                }, 
+                {
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
@@ -315,6 +355,16 @@
          "id":48,
          "properties":[
                 {
+                 "name":"destroyable",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"destroyed_type",
+                 "type":"string",
+                 "value":"grass_cut"
+                }, 
+                {
                  "name":"type",
                  "type":"string",
                  "value":"grass"
@@ -323,6 +373,16 @@
         {
          "id":49,
          "properties":[
+                {
+                 "name":"destroyable",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"destroyed_type",
+                 "type":"string",
+                 "value":"grass_cut"
+                }, 
                 {
                  "name":"type",
                  "type":"string",
@@ -1662,6 +1722,33 @@
                 }]
         }, 
         {
+         "id":389,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_NW"
+                }]
+        }, 
+        {
+         "id":390,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_N"
+                }]
+        }, 
+        {
+         "id":391,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_NE"
+                }]
+        }, 
+        {
          "id":394,
          "properties":[
                 {
@@ -1731,6 +1818,24 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }]
+        }, 
+        {
+         "id":429,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_W"
+                }]
+        }, 
+        {
+         "id":431,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_E"
                 }]
         }, 
         {
@@ -1833,6 +1938,33 @@
                 }]
         }, 
         {
+         "id":469,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_SW"
+                }]
+        }, 
+        {
+         "id":470,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_S"
+                }]
+        }, 
+        {
+         "id":471,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_SE"
+                }]
+        }, 
+        {
          "id":480,
          "properties":[
                 {
@@ -1905,6 +2037,33 @@
                 }]
         }, 
         {
+         "id":509,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_NW"
+                }]
+        }, 
+        {
+         "id":510,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_N"
+                }]
+        }, 
+        {
+         "id":511,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_NE"
+                }]
+        }, 
+        {
          "id":520,
          "properties":[
                 {
@@ -1947,6 +2106,24 @@
                  "name":"isBlocking",
                  "type":"bool",
                  "value":true
+                }]
+        }, 
+        {
+         "id":549,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_W"
+                }]
+        }, 
+        {
+         "id":551,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_E"
                 }]
         }, 
         {
@@ -2004,6 +2181,33 @@
                  "name":"type",
                  "type":"string",
                  "value":"water_deep"
+                }]
+        }, 
+        {
+         "id":589,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_SW"
+                }]
+        }, 
+        {
+         "id":590,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_S"
+                }]
+        }, 
+        {
+         "id":591,
+         "properties":[
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"cliff_top_SE"
                 }]
         }, 
         {

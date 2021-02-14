@@ -45,6 +45,7 @@ const parseProperty = function(tile, prop) {
 		tile.hitbox = JSON.parse(prop.value);
 	} else {
 		// validate type values
+		// unknown types are rejected, if a type is defined on a tile it has to be known
 		if (prop.name === "type") {
 			assert(TileTypes.ALL_TYPE_VALUES.indexOf(prop.value) >= 0, `Error detected: unknown type-value '${prop.value}' for tile #${tile.id}.`, "Tileset")
 		}
@@ -120,7 +121,7 @@ const Tileset = {
 			return tiles[0];
 		} else if (typeof t === "number") {
 			// return at least an empty object if no information is defined in the tileset
-			return _tilePropertiesByID[t] || {};
+			return _tilePropertiesByID[t] || {id: t};
 		} else {
 			// assume we have a tile instance
 			return _tilePropertiesByID[t.id];
