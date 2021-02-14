@@ -1,5 +1,5 @@
 import Tile from "../../../../src/game/Tile.js";
-import Tileset from "./Tileset.js";
+import TileTypes from "./TileTypes.js";
 
 import SmallEffect from "../actors/effects/SmallEffect.js";
 class GameTile extends Tile {
@@ -21,37 +21,39 @@ class GameTile extends Tile {
 
 			// if there is no animation defined in the Tileset for this tile,
 			// the setAnimation() call will just reset the animation info for this tile instance
-			let tileProps = Tileset.getProperties(id);
+			let tileProps = TileTypes.getProperties(id);
 			this.setAnimation(tileProps.animation || null);
 		}
 	}
 
 	/**
 	 * Changes the properties of the tile.
-	 * @param {object} props a map containing the properties of a tile
+	 * @param {int|object} the id or TileType object to which this tile should be changed
 	 */
-	setProperties(props) {
-		if (typeof props === "number") {
-			props = Tileset.getProperties(props);
+	change(id) {
+		// get the id from the TileType object
+		if (typeof id === "object") {
+			id = id.id;
+			this._props = id;
+		} else {
+			this._props = TileTypes.getProperties(id);
 		}
 
-		this._props = props;
-
 		// change rendering
-		this.set(props.id);
+		this.set(id);
 
 		// collision detection
 		// engine internal stuff, has to be set on the instance for automatic collision detection
 		// the engine does not know about any additional tile properties
-		this.isBlocking = props.isBlocking;
-		this._hitbox = props.hitbox || null;
+		this.isBlocking = this._props.isBlocking;
+		this._hitbox = this._props.hitbox || null;
 	}
 
 	/**
 	 * Returns the current tile properties.
 	 */
 	getProperties() {
-		return this._props || Tileset.getProperties(this.id);
+		return this._props || TileTypes.getProperties(this.id);
 	}
 
 	/**
@@ -65,17 +67,17 @@ class GameTile extends Tile {
 		// we only look at destroyable tiles
 		let tileProps = this.getProperties();
 		if (tileProps && tileProps.destroyable) {
-			if (tileProps.destroyed_type) {
-				let destroyedTileProps = Tileset.getProperties(tileProps.destroyed_type);
-				this.setProperties(destroyedTileProps);
+			let destroyedTileProps = TileTypes[tileProps.destroyed_replacement];
 
-				// create grass cutting effect and position it on the screen
-				let grassCuttingEffect = SmallEffect.get();
-				grassCuttingEffect.x = this.screenX;
-				grassCuttingEffect.y = this.screenY;
-				grassCuttingEffect.show();
-				this.getTilemap().getScreen().add(grassCuttingEffect);
-			}
+			// change to destroyed tile
+			this.change(destroyedTileProps);
+
+			// create grass cutting effect and position it on the screen
+			let grassCuttingEffect = SmallEffect.get();
+			grassCuttingEffect.x = this.screenX;
+			grassCuttingEffect.y = this.screenY;
+			grassCuttingEffect.show();
+			this.getTilemap().getScreen().add(grassCuttingEffect);
 		}
 	}
 }

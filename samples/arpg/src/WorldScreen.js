@@ -53,12 +53,8 @@ class WorldScreen extends Screen {
 				// However the JMP Engine regards 0 as the first tile and -1 as empty.
 				let tileId = mapData.tiles[globalIndex] - 1;
 
-				// set visuals
-				tile.setProperties(Tileset.getProperties(tileId));
-				//tile.set(tileId);
-
-				// check if the tile has a hitbox defined in the tileset
-				//tile._hitbox = Tileset.getProperties(tileId).hitbox;
+				// set tile type & visuals
+				tile.change(tileId);
 
 				globalIndex++;
 			});

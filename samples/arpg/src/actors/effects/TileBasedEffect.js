@@ -13,7 +13,7 @@ class TileBasedEffect extends Actor {
 		this.animations = {
 			stepcount: 0,
 			index: 0,
-			grass: {
+			GRASS: {
 				layer: Constants.Layers.PLAYER_OVER,
 				offset: {
 					x: -3,
@@ -22,7 +22,7 @@ class TileBasedEffect extends Actor {
 				frames: [0, 1],
 				speed: 10
 			},
-			water_shallow: {
+			WATER_SHALLOW: {
 				layer: Constants.Layers.PLAYER_UNDER,
 				offset: {
 					x: -4,
@@ -41,8 +41,9 @@ class TileBasedEffect extends Actor {
 		this.x = this.actor.x;
 		this.y = this.actor.y;
 
-		let type = tile.getProperties().type;
-		let anim = this.animations[type];
+		// check if we have a type name
+		let typeName = tile.getProperties().typeName;
+		let anim = this.animations[typeName];
 
 		// check we have an animation for the tile's type
 		if (anim) {
@@ -53,14 +54,12 @@ class TileBasedEffect extends Actor {
 				this.animations.index++;
 			}
 
-			let _id;
-
 			// 1. Set animation sprite
-			// 2. change visibility based on the tile.type
-			switch (type) {
-				case TileTypes.GRASS:
-				case TileTypes.WATER_SHALLOW:
-					_id = anim.frames[this.animations.index % anim.frames.length];
+			// 2. change visibility based on the tile type's name
+			switch (typeName) {
+				case TileTypes.GRASS.typeName:
+				case TileTypes.WATER_SHALLOW.typeName: {
+					let _id = anim.frames[this.animations.index % anim.frames.length];
 
 					this.configSprite({
 						sheet: "tileBasedEffects",
@@ -72,11 +71,13 @@ class TileBasedEffect extends Actor {
 
 					this.visible = true;
 					break;
-				default:
+				}
+				default: {
 					// unknown type
-					warn(`Unknown tile type ${type}. Tile: (${tile.x}/${tile.y})`, "TileBasedEffect");
+					warn(`Unknown tile type ${typeName}. Tile: (${tile.x}/${tile.y})`, "TileBasedEffect");
 					this.visible = false;
 					break;
+				}
 			}
 		} else {
 			// no effect found for the tile type

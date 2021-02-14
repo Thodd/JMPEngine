@@ -1,6 +1,4 @@
 import Actor from "../Actor.js";
-import Tileset from "../../mapgen/Tileset.js";
-import TileTypes from "../../mapgen/TileTypes.js";
 
 /**
  * Defines the basic lifecycle of Attacks.
