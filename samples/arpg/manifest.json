@@ -57,6 +57,11 @@
 				"url": "./img/enemies.png",
 				"w": 32,
 				"h": 32
+			},
+			"drops": {
+				"url": "./img/drops.png",
+				"w": 16,
+				"h": 16
 			}
 		},
 		"fonts": {

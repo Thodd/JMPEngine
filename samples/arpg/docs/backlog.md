@@ -3,10 +3,11 @@
 * [ ] General Item Drop system
   * [ ] Trigger on destroy of tile
   * [ ] Trigger on death of Enemies
-  * Use internal ItemPool
+  * [x] Use internal ItemPool
     * Keep or remove Iiem Entities??? : Hearts, Gold and Ammo will be reused anyway...
-  * dropItemsOnTile(t:GameTile)
-  * dropItemAt(x:int, y:int)
+  * [x] First Item type: HEART -> restore HP.
+  * [x] dropItemsOnTile(t:GameTile)
+  * [x] dropItemAt(x:int, y:int)
 ---
 * [ ] Text-Box System
 ---

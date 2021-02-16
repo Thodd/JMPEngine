@@ -1,4 +1,4 @@
-import { warn, assert } from "../../../../src/utils/Log.js";
+import { assert } from "../../../../src/utils/Log.js";
 import JSONCache from "../../../../src/assets/JSONCache.js";
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 

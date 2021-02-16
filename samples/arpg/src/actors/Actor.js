@@ -77,6 +77,15 @@ class Actor extends Entity {
 	}
 
 	/**
+	 * Heals the Actor for the given amount of HP.
+	 * @param {number} hpPlus the amount of HP which should be healed
+	 */
+	heal(hpPlus) {
+		this.stats.hp += hpPlus;
+		this.stats.hp = Math.max(this.stats.hp, this.stats.hp_max);
+	}
+
+	/**
 	 * Returns the damage done by this Actor.
 	 * By default it's the base-stats damage modifier.
 	 */

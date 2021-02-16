@@ -11,6 +11,7 @@ import PlayerState from "./PlayerState.js";
 import Attack from "./attacks/Attack.js";
 // import SwordAttack from "./attacks/SwordAttack.js";
 import SpearAttack from "./attacks/SpearAttack.js";
+import DropTypes from "./drops/DropTypes.js";
 
 class Player extends Actor {
 	constructor(x, y) {
@@ -118,6 +119,11 @@ class Player extends Actor {
 		this.tileBasedEffect.destroy();
 	}
 
+	heal(hpPlus) {
+		// delegate to PlayerState
+		PlayerState.heal(hpPlus);
+	}
+
 	takeDamage(dmg) {
 		// delegate to PlayerState
 		return PlayerState.takeDamage(dmg);
@@ -137,6 +143,11 @@ class Player extends Actor {
 			// no input handling
 		} else {
 			let dir = null;
+
+			// TODO: Remove Debugging Command for dropping a Heart
+			if (Keyboard.pressed(Keys.D)) {
+				this.getScreen().getDropSystem().dropAtTile(DropTypes.HEART, this.getClosestTile());
+			}
 
 			// attacking
 			if (Keyboard.pressed(Keys.S)) {

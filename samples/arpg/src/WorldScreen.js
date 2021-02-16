@@ -20,16 +20,20 @@ import Player from "./actors/Player.js";
 import Sign from "./actors/interactables/Sign.js";
 import ObjectTypes from "./mapgen/ObjectTypes.js";
 import EnemyTypes from "./actors/enemies/EnemyTypes.js";
+import DropSystem from "./actors/drops/DropSystem.js";
 class WorldScreen extends Screen {
 	constructor() {
 		super();
+
+		EventBus.subscribe(Constants.Events.UPDATE_UI, this.updateUI.bind(this));
 
 		OverworldGenerator.generate();
 		//this.add(OverworldGenerator.minimap);
 
 		Tileset.init();
 
-		EventBus.subscribe(Constants.Events.UPDATE_UI, this.updateUI.bind(this));
+		// initialiaze DropSystem. One instance per map screen.
+		this._dropSystem = new DropSystem(this);
 
 		MapLoader.load({
 			"sampleMap": { url: "./maps/testing/testing.json" }
@@ -65,7 +69,6 @@ class WorldScreen extends Screen {
 				if (obj.type === ObjectTypes.SIGN) {
 					this.add(new Sign(obj.x, obj.y, obj["msg"]));
 				} else if (obj.type === ObjectTypes.ENEMY) {
-
 					let EnemyClass = EnemyTypes[obj.name];
 					this.add(new EnemyClass(obj.x, obj.y));
 				}
@@ -100,6 +103,10 @@ class WorldScreen extends Screen {
 
 	getTilemap() {
 		return this._tilemap;
+	}
+
+	getDropSystem() {
+		return this._dropSystem;
 	}
 
 	addDebugUI() {
