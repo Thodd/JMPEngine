@@ -1,6 +1,6 @@
 import domReady from "../utils/domReady.js";
 import { log, error, fail } from "../utils/Log.js";
-import { exposeOnWindow } from "../utils/Helper.js";
+import DebugMode from "../utils/DebugMode.js";
 import Manifest from "../assets/Manifest.js";
 import AssetLoader from "../assets/AssetLoader.js";
 import BuiltInAssets from "../assets/BuiltInAssets.js";
@@ -26,13 +26,10 @@ let nextScreen = null;
 // timing
 let last;
 
-// debug flag
-let _debugMode = false;
-
 // performance stats
 let stats;
 async function setupStats() {
-	if (_debugMode) {
+	if (DebugMode.enabled) {
 		// @Stats: Simple performance tracking
 		let StatsModule = await import("../../libs/stats.module.js");
 		stats = new StatsModule.default();
@@ -53,7 +50,7 @@ let _skipFrame = true;
  */
 const gameloop = () => {
 	// start perf trace
-	if (_debugMode) {
+	if (DebugMode.enabled) {
 		stats.begin();
 	}
 
@@ -93,7 +90,7 @@ const gameloop = () => {
 
 
 	// end perf trace
-	if (_debugMode) {
+	if (DebugMode.enabled) {
 		stats.end();
 	}
 };
@@ -198,7 +195,7 @@ function setupCSS(containerID) {
  * Setup debug UI if debug flag is set
  */
 function setupDebugUI() {
-	if (_debugMode) {
+	if (DebugMode.enabled) {
 
 		// find debug placeholder if defined
 		let dbg = document.getElementById("__jmp_debugUI");
@@ -293,11 +290,6 @@ const Engine = {
 			error("Aborted.", "Engine");
 			return;
 		}
-
-		// url params for debugging
-		let urlParams = new URLSearchParams(window.location.search);
-		_debugMode = urlParams.get("debug");
-		exposeOnWindow("_debugMode", _debugMode);
 
 		// retrieve manifest
 		await Manifest.init(manifest);

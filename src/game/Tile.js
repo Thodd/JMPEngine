@@ -45,8 +45,20 @@ class Tile {
 		return this.y * this.tilemap._tileHeight;
 	}
 
+	/**
+	 * Returns the Tilemap to which this Tile instance belongs.
+	 * @returns {Tilemap}
+	 */
 	getTilemap() {
 		return this.tilemap;
+	}
+
+	/**
+	 * Returns the Screen instance with which this Tile is associated.
+	 * @returns {Screen|undefined} the associated Screen instance or undefined if the parent Tilemap is not added to a Screen.
+	 */
+	getScreen() {
+		return this.tilemap.getScreen();
 	}
 
 	/**

@@ -1,3 +1,4 @@
+import DebugMode from "../../../../../src/utils/DebugMode.js";
 import Actor from "../Actor.js";
 
 /**
@@ -14,7 +15,9 @@ class Attack extends Actor {
 		this.active = false;
 		this.visible = false;
 
-		this.RENDER_HITBOX = 0x0085FF;
+		if (DebugMode.enabled) {
+			this.RENDER_HITBOX = 0x0085FF;
+		}
 
 		this.updateHitbox({
 			w: 18,

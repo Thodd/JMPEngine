@@ -1,10 +1,13 @@
+import DebugMode from "../../../../../src/utils/DebugMode.js";
 import Actor from "../Actor.js";
 
 class Enemy extends Actor {
 	constructor(x, y, config) {
 		super(x, y, config);
 
-		this.RENDER_HITBOX = 0xFF0000;
+		if (DebugMode.enabled) {
+			this.RENDER_HITBOX = 0xFF0000;
+		}
 
 		this.updateHitbox({
 			x: 2,

@@ -2,6 +2,9 @@ import Tile from "../../../../src/game/Tile.js";
 import TileTypes from "./TileTypes.js";
 
 import SmallEffect from "../actors/effects/SmallEffect.js";
+import DropSystem from "../actors/drops/DropSystem.js";
+import DropTypes from "../actors/drops/DropTypes.js";
+import RNG from "../../../../src/utils/RNG.js";
 class GameTile extends Tile {
 	/**
 	 * Changes the tile's rendering ID.
@@ -72,12 +75,25 @@ class GameTile extends Tile {
 			// change to destroyed tile
 			this.change(destroyedTileProps);
 
-			// create grass cutting effect and position it on the screen
-			let grassCuttingEffect = SmallEffect.get();
-			grassCuttingEffect.x = this.screenX;
-			grassCuttingEffect.y = this.screenY;
-			grassCuttingEffect.show();
-			this.getTilemap().getScreen().add(grassCuttingEffect);
+			// drop default loot
+			let screen = this.getScreen();
+			if (screen) {
+
+				// ~33% drop chance for random standard loot
+				let dropSystem = screen.getDropSystem();
+				if (RNG.random() < 0.33) {
+					// TODO: Add Money and Ammo to the loot pool
+					dropSystem.dropAtTile(DropTypes.HEART, this);
+				}
+
+				// TODO: Make this based on the Tile Type (not always Leaves :)
+				// create grass cutting effect and position it on the screen
+				let grassCuttingEffect = SmallEffect.get();
+				grassCuttingEffect.x = this.screenX;
+				grassCuttingEffect.y = this.screenY;
+				grassCuttingEffect.show();
+				screen.add(grassCuttingEffect);
+			}
 		}
 	}
 }

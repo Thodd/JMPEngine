@@ -1,6 +1,7 @@
+import DebugMode from "../../../../../src/utils/DebugMode.js";
+
 import Actor from "../Actor.js";
 import Constants from "../../Constants.js";
-import { log } from "../../../../../src/utils/Log.js";
 
 const _hitboxOffset = {
 	"down": {
@@ -43,11 +44,16 @@ class Interactable extends Actor {
 			}
 		}
 
+		if (DebugMode.enabled) {
+			this.RENDER_HITBOX = 0x0085FF;
+		}
+
 		// size
 		this.updateHitbox({
 			w: Constants.TILE_WIDTH/2,
 			h: Constants.TILE_HEIGHT/2
 		});
+
 		// position
 		this.updateHitbox(_hitboxOffset.down);
 	}

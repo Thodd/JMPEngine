@@ -1,3 +1,4 @@
+import DebugMode from "../../../../src/utils/DebugMode.js";
 import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
 //import FrameCounter from "../../../../src/utils/FrameCounter.js";
@@ -9,7 +10,7 @@ import PlayerState from "./PlayerState.js";
 
 // attacks
 import Attack from "./attacks/Attack.js";
-// import SwordAttack from "./attacks/SwordAttack.js";
+import SwordAttack from "./attacks/SwordAttack.js";
 import SpearAttack from "./attacks/SpearAttack.js";
 import DropTypes from "./drops/DropTypes.js";
 
@@ -19,7 +20,9 @@ class Player extends Actor {
 
 		this.layer = Constants.Layers.PLAYER;
 
-		this.RENDER_HITBOX = 0x00FF85;
+		if (DebugMode.enabled) {
+			this.RENDER_HITBOX = 0x00FF85;
+		}
 
 		// we need to reduce the size of the hitbox a bit, so the player has more room for error
 		this.updateHitbox({
@@ -57,7 +60,7 @@ class Player extends Actor {
 					frames: [0]
 				},
 				"attack_down": {
-					frames: [10, {id: 10, offset: {y: +1}}, {id: 10, offset: {y: +2}, dt: 4}],
+					frames: [10, {id: 10, offset: {y: +1}}, {id: 10, offset: {y: +2}, dt: 8}],
 					dt: 1
 				},
 
@@ -69,7 +72,7 @@ class Player extends Actor {
 					frames: [3]
 				},
 				"attack_up": {
-					frames: [4, {id: 4, offset: {y: -2}}, {id: 4, offset: {y: -3}, dt: 4}],
+					frames: [4, {id: 4, offset: {y: -2}}, {id: 4, offset: {y: -3}, dt: 8}],
 					dt: 1
 				},
 
@@ -81,7 +84,7 @@ class Player extends Actor {
 					frames: [6]
 				},
 				"attack_left": {
-					frames: [7, {id: 7, offset: {x: -1}}, {id: 12, offset: {x: -2}, dt: 4}],
+					frames: [7, {id: 7, offset: {x: -1}}, {id: 12, offset: {x: -2}, dt: 8}],
 					dt: 1
 				},
 
@@ -93,7 +96,7 @@ class Player extends Actor {
 					frames: [8]
 				},
 				"attack_right": {
-					frames: [9, {id: 9, offset: {x: +1}}, {id: 13, offset: {x: +2}, dt: 4}],
+					frames: [9, {id: 9, offset: {x: +1}}, {id: 13, offset: {x: +2}, dt: 8}],
 					dt: 1
 				},
 			}
@@ -153,7 +156,7 @@ class Player extends Actor {
 			if (Keyboard.pressed(Keys.S)) {
 				this._isAttacking = true;
 
-				this.attack.reset(SpearAttack, this.dir);
+				this.attack.reset(SwordAttack, this.dir);
 
 				this.playAnimation({
 					name: `attack_${this.dir}`,

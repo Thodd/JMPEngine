@@ -1,3 +1,4 @@
+import DebugMode from "../../../../../src/utils/DebugMode.js";
 import Entity from "../../../../../src/game/Entity.js";
 
 class DropItem extends Entity {
@@ -6,7 +7,10 @@ class DropItem extends Entity {
 
 		this._release = release;
 
-		this.RENDER_HITBOX = 0xFFFF00;
+		if (DebugMode.enabled) {
+			this.RENDER_HITBOX = 0xFFFF00;
+		}
+
 		this.updateHitbox({
 			x: 2,
 			y: 2,

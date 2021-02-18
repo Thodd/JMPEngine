@@ -1,7 +1,18 @@
 # Engine and Gameplay
 
+---
 * [ ] General Item Drop system
-  * [ ] Trigger on destroy of tile
+  * [ ] More Loot Items
+    * [ ] Add Money
+      * [ ] Add visualization to UI
+    * [ ] Add Ammo
+      * [ ] Add visualization to UI
+    * [ ] Add Ammo and Money to the loot pool
+      * [ ] GameTile.js#destroy()
+  * [ ] Items despawn after a certain amount of time
+    * [ ] Blink animation before despawn
+    * Return them back to the Pool
+  * [x] Trigger on destroy of tile
   * [ ] Trigger on death of Enemies
   * [x] Use internal ItemPool
     * Keep or remove Iiem Entities??? : Hearts, Gold and Ammo will be reused anyway...
@@ -12,7 +23,10 @@
 * [ ] Text-Box System
 ---
 * [ ] Weapons
-  * [ ] Make Sword an item
+  * [ ] Gun
+  * [ ] Bow
+  * [ ] Other weapons ?
+  * [ ] Make Weapons an item
   * [x] New Weapon Item: Spear
 ---
 * [ ] Swimming
