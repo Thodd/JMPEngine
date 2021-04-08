@@ -28,6 +28,11 @@
 				"w": 48,
 				"h": 48
 			},
+			"characters": {
+				"url": "./img/characters.png",
+				"w": 24,
+				"h": 24
+			},
 			"tileset": {
 				"url": "./img/tileset16.png",
 				"w": 16,

@@ -82,8 +82,8 @@ const MapLoader = {
 					// process all objects one by one
 					objectLayer.forEach((orgObj) => {
 						let obj = {
-							x: orgObj.x,
-							y: orgObj.y,
+							x: Math.floor(orgObj.x),
+							y: Math.floor(orgObj.y),
 							name: (orgObj.name || "").toUpperCase(), // optional name (relevant for Enemies)
 							type: parseObjectType(orgObj.template) || UNKNOWN_OBJ_TYPE // the template file path from Tiled
 						};

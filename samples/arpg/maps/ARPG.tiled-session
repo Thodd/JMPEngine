@@ -3,8 +3,14 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "center/center_00.json",
+    "activeFile": "tileset16.json",
     "expandedProjectPaths": [
+        "center",
+        "water",
+        "objects",
+        ".",
+        "testing",
+        "objects/enemies"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -41,7 +47,7 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 247.66666666666666,
-                "y": 293.99999999999994
+                "y": 292.66666666666663
             }
         },
         "center/center_01.json": {
@@ -67,6 +73,10 @@
                 "x": 96.10027855153203,
                 "y": 100.00000000000001
             }
+        },
+        "center/tileset10.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "center/tileset16.json": {
             "scaleInDock": 1
@@ -120,11 +130,11 @@
             }
         },
         "testing/testing.json": {
-            "scale": 1.4882056451612904,
-            "selectedLayer": 1,
+            "scale": 1.48,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 248.28557881189462,
-                "y": 279.5312605838922
+                "x": 248.3108108108108,
+                "y": 278.3783783783784
             }
         },
         "testing/tileset16.json": {
@@ -139,12 +149,12 @@
             }
         },
         "tileset10.json": {
-            "scaleInDock": 2,
-            "scaleInEditor": 1
+            "scaleInDock": 1.3876,
+            "scaleInEditor": 1.32
         },
         "tileset16.json": {
             "scaleInDock": 1,
-            "scaleInEditor": 1.22
+            "scaleInEditor": 1.32
         },
         "town.json": {
             "scale": 1.5,
@@ -398,27 +408,26 @@
     "map.tileWidth": 16,
     "map.width": 31,
     "openFiles": [
-        "tileset16.json",
+        "center/center_00.json",
         "center/center_01.json",
-        "center/center_02.json",
-        "testing/cliffs.json",
-        "center/center_00.json"
+        "testing/testing.json",
+        "tileset16.json"
     ],
     "project": "ARPG.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "center/center_00.json",
+        "center/center_01.json",
+        "testing/testing.json",
+        "tileset16.json",
+        "tileset10.json",
+        "testing/test_10x10.json",
+        "center/tileset10.json",
         "testing/cliffs.json",
         "water/NExx_00.json",
         "water/NxxW_00.json",
         "water/corner_A_00.json",
-        "center/center_01.json",
-        "center/center_02.json",
-        "tileset16.json",
-        "center/center_00.json",
-        "water/xESW_00.json",
-        "town.json",
-        "testing/testing.json",
-        "water/corner_B_00.json"
+        "center/center_02.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "Tiled-Tilesetdateien (*.tsx)",
