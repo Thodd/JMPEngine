@@ -1,0 +1,245 @@
+body {
+	background: #316fbb;
+	color: #222222;
+	user-select: none;
+}
+
+p {
+	margin: 1px;
+	padding: 2px;
+}
+
+button {
+	background: #acc9ec;
+	border: 0px solid #0253b7;
+	border-radius: 2px;
+	box-shadow: 0px 2px 0px #0253b7;
+	outline: none;
+}
+
+button:active {
+	box-shadow: 0 0 #000;
+	margin-top: 3px;
+}
+
+/* Containers */
+
+.wnd_title {
+	font-family: monospace;
+
+	color: #ffffff;
+	text-shadow: 0px 0px 2px #000000;
+
+	background: #0253b7;
+	text-align: center;
+	border-bottom: 1px solid #001f46;
+
+	font-size: 12px;
+	height: 17px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+}
+
+.wnd_container {
+	display: grid;
+	grid-template-rows: 22px auto;
+	background: #e2eaec;
+	font-family: monospace;
+}
+
+.wnd_container.noTitle {
+	grid-template-rows: auto; /* 1 row: Content */
+}
+
+.wnd_content {
+	overflow: scroll;
+	padding: 5px;
+}
+
+.wnd_content.noScroll {
+	overflow: hidden;
+}
+
+canvas {
+	margin-bottom: -3px;
+}
+
+#gameOuterContainer {
+	position: fixed;
+	left: 20px;
+	top: 100px;
+}
+
+#uiContainer {
+	display: grid;
+	grid-template-rows: 510px auto;
+
+	border: 3px solid #0453b7;
+	box-shadow: 5px 5px 0px #000000;
+}
+
+.row1 {
+	display: grid;
+	grid-template-columns: auto 280px;
+}
+
+.row1_col2 {
+	border-left: 3px solid #0453b7;
+	display: grid;
+	grid-template-rows: 136px 374px;
+}
+
+
+/**
+ * Context Menu
+ */
+#adv_contextMenu {
+	position: fixed;
+	width: fit-content;
+	min-width: 100px;
+
+	border: 2px solid #ff8d01;
+	box-shadow: 3px 3px 0px;
+}
+
+#adv_contextMenu .wnd_title {
+	background: #ff8d01;
+}
+
+.contextMenuEntry {
+	display: grid;
+	align-content: center;
+
+	border-bottom: 1px solid #d1ddec;
+	height: 22px;
+}
+
+.contextMenuEntry:hover {
+	background: #fdd4a2;
+}
+
+/* General */
+
+.hidden {
+	display: none;
+}
+
+.even {
+	background: #e8f1f3;
+	border-bottom: 1px solid #d1ddec;
+}
+
+/* Log UI */
+#adv_history .wnd_content {
+	height: 144px; /* 5 lines */
+}
+
+/**
+ * Stats & Health
+ */
+
+/* Health Bar */
+#adv_stats {
+	display: grid;
+	grid-template-columns: 27px auto;
+
+	margin-bottom: 10px;
+}
+
+.adv_health_bar {
+	position: relative;
+	width: 100%;
+	height: 16px;
+	background: #732930;
+}
+.adv_health_bar_filling {
+	background: #be2632;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.adv_health_bar_text {
+	color: #ffffff;
+	text-shadow: 1px 1px 0px #000000;
+	font-family: monospace;
+	position: absolute;
+	width: 100%;
+
+	text-align: center;
+	margin-top: -1px;
+}
+
+/**
+ * Backpack
+ */
+.adv_backpack_entry {
+	display: grid;
+	grid-template-columns: 32px 32px auto;
+	column-gap: 2px;
+	grid-template-rows: 34px;
+	border-bottom: 1px solid #d1ddec;
+}
+
+.adv_backpack_entry:hover {
+	background: #cde4ff;
+}
+
+.adv_backpack_entry .column {
+	align-self: center;
+	justify-self: center;
+}
+
+.adv_backpack_entry .container .content {
+	margin: auto;
+}
+
+/* amount is aligend to the right */
+.adv_backpack_entry .amount {
+	justify-self: self-end;
+}
+
+.adv_backpack_entry .icon {
+	width: 24px;
+	height: 24px;
+}
+
+/* item text is justified to the left */
+.adv_backpack_entry .itemName {
+	justify-self: start;
+}
+
+/**
+ * Equipment
+ */
+#adv_equipment .slotTitles {
+	display: grid;
+	grid-template-columns: 25% 25% 25% 25%;
+	font-size: 10px;
+	justify-items: center;
+}
+
+#adv_equipment .slots {
+	display: grid;
+	grid-template-columns: 25% 25% 25% 25%;
+}
+
+.adv_equipment_entry {
+	width: 56px;
+	height: 56px;
+
+	display: grid;
+
+	border: 1px solid #d1ddec;
+
+	justify-self: center;
+	align-self: center;
+
+	justify-content: center;
+	align-content: center;
+}
+
+.adv_equipment_entry:hover {
+	background: #cde4ff;
+}

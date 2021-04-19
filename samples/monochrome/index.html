@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>DeskAdv</title>
+		<link href="../demo.css" rel="stylesheet"></link>
+
+		<link href="./src/ui/adv_ui.css" rel="stylesheet"></link>
+
+		<!-- PIXI.js rendering library -->
+		<script src="../../libs/pixi.min.js"></script>
+
+		<!-- JMP Game Engine bootstrap -->
+		<script src="../../src/jmp-bootstrap.js"
+				type="module"
+				data-jmp-manifest="./manifest.json"
+				data-jmp-container="adv_game">
+		</script>
+
+	</head>
+	<body>
+		<div id="gameOuterContainer">
+			<div id="uiContainer">
+				<div class="row1">
+					<div class="row1_col1">
+						<!-- Map -->
+						<div id="adv_game"></div>
+					</div>
+					<div class="row1_col2">
+						<!-- Equipment -->
+						<div id="adv_equipment" class="wnd_container">
+							<div class="wnd_title">Thor</div>
+							<div class="wnd_content">
+								<!-- HP Bar -->
+								<div id="adv_stats">
+									<div class="labelText">HP:</div>
+									<div id="adv_stats_hp"></div>
+								</div>
+
+								<div class="row slots">
+									<div class="adv_equipment_entry" id="adv_equipment_melee_slot"   data-adv-slot="melee"  data-adv-context="equipment"></div>
+									<div class="adv_equipment_entry" id="adv_equipment_ranged_slot"  data-adv-slot="ranged" data-adv-context="equipment"></div>
+									<div class="adv_equipment_entry" id="adv_equipment_quick_slot_A" data-adv-slot="quickA" data-adv-context="equipment"></div>
+									<div class="adv_equipment_entry" id="adv_equipment_quick_slot_S" data-adv-slot="quickS" data-adv-context="equipment"></div>
+								</div>
+
+								<div class="row slotTitles">
+									<div>Melee</div>
+									<div>Ranged(F)</div>
+									<div>Quick(A)</div>
+									<div>Quick(S)</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Backpack -->
+						<div id="adv_backpack" class="wnd_container">
+							<div class="wnd_title">
+								Backpack
+							</div>
+							<div class="wnd_content">
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row2">
+					<!-- history messages -->
+					<div id="adv_history" class="wnd_container">
+						<div class="wnd_title">
+							History
+						</div>
+						<div class="wnd_content">
+							<p class="even">Web Adventures!</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- global context menu -->
+		<div id="adv_contextMenu" class="wnd_container hidden">
+			<div class="wnd_title">
+				ctx
+			</div>
+			<div class="wnd_content">
+
+			</div>
+		</div>
+
+		<!-- debug -->
+		<div id="adv_dbg" class="wnd_container hidden">
+			<div class="wnd_title">
+				dbg
+			</div>
+			<div class="wnd_content" id="__jmp_debugUI">
+			</div>
+		</div>
+
+
+	</body>
+</html>

@@ -16,6 +16,7 @@ class Tile {
 		this.x = x;
 		this.y = y;
 		this.id = -1;
+		this._color = 0xFFFFFF;
 
 		/**
 		 * Whether the tile takes part in a collision detection on the tilemap.
@@ -71,6 +72,14 @@ class Tile {
 	set(id=-1, isAnimationUpdate=false) {
 		isAnimationUpdate; // unused in base implementation
 		this.id = id;
+	}
+
+	/**
+	 * Tints the tile in the given color, e.g. 0xFF0085.
+	 * @param {int} c tint color value
+	 */
+	setColor(c) {
+		this._color = c || undefined;
 	}
 
 	/**
