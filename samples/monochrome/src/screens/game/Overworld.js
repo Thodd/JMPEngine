@@ -44,7 +44,7 @@ class WorldScreen extends BaseMap {
 		});
 		this._tileMap.get(12,12).setType(GameTileTypes.TREE);
 		this._tileMap.get(14,12).setType(GameTileTypes.TREE);
-		this._tileMap.get(10,8).setType(GameTileTypes.SIGN).setColor(0xFF0000);
+		this._tileMap.get(10,8).setType(GameTileTypes.SIGN);
 
 		this._tileMap.get(12,8).setType(GameTileTypes.BUSH);
 		this._tileMap.get(13,8).setType(GameTileTypes.BUSH);

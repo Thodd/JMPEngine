@@ -162,8 +162,11 @@ class GameTile extends Tile {
 
 		this.type = type;
 
-		// set visuals (not used right now)
-		// this.color = this.type.color;
+		// set FG (and later BG) color
+		// 0x000000 is a valid color but falsy!
+		if (this.type?.colors?.fg != undefined) {
+			this.setColor(this.type.colors.fg);
+		}
 
 		// set id
 		let newId = this.type.id;
