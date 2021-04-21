@@ -19,7 +19,7 @@ const Types = {
 			innerName: "a patch of grass",
 			flavor: "Yep. That's the ground alright."
 		},
-		id: [32, 33],
+		id: [43, 33],
 		probability: 0.1,
 		colors: {
 			fg: Constants.Colors.GREEN_DARK

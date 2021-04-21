@@ -12,8 +12,8 @@
     * [x] transparent BG
     * [x] 18x18 sprites -> 1px border around
       * [x] Offset x/y in game by -1px
-  * [ ] Tiles
-    * [ ] Draw colored tiles
+  * [x] Tiles
+    * [x] Draw colored tiles
   * [ ] Enemies (GFX)
     * [ ] Bear
     * [ ] Wolf
@@ -21,9 +21,11 @@
     * [ ] oh boy that needs some effort :D
   * [ ] Projectiles
     * [ ] Hit bush -> trigger destroy
-  * [x] Tile Highlights
+  * [ ] Leaves
+    * [ ] Missing tint
+  * [ ] Tile Highlights
+    * [ ] Missing tint
   * [x] Blood
-  * [x] Leaves
 
 ### [ Game ] Ranged Weapons
 
