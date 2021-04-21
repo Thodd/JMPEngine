@@ -41,10 +41,11 @@ class Cursor extends Entity {
 
 		this.configSprite({
 			sheet: "tile_effects",
+			color: Constants.Colors.YELLOW_LIGHT,
 			animations: {
 				default: "idle",
 				idle: {
-					frames: [32]
+					frames: [10]
 				}
 			}
 		});

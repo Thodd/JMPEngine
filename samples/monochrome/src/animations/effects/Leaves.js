@@ -1,4 +1,5 @@
 
+import Constants from "../../Constants.js";
 import BaseEffect from "./BaseEffect.js";
 
 class Leaves extends BaseEffect {
@@ -7,10 +8,11 @@ class Leaves extends BaseEffect {
 
 		this.configSprite({
 			sheet: "tile_effects",
+			color: Constants.Colors.GREEN_DARK,
 			animations: {
 				default: "scatter",
 				scatter: {
-					frames: [5,6,7,8, 9],
+					frames: [0,1,2,3,4],
 					dt: 2
 				}
 			}

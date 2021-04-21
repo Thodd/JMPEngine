@@ -21,11 +21,12 @@
     * [ ] oh boy that needs some effort :D
   * [ ] Projectiles
     * [ ] Hit bush -> trigger destroy
-  * [ ] Leaves
-    * [ ] Missing tint
-  * [ ] Tile Highlights
-    * [ ] Missing tint
+  * [x] Leaves
+    * [x] Missing tint
+  * [x] Tile Highlights
+    * [x] Cursor
   * [x] Blood
+    * [x] Missing tint
 
 ### [ Game ] Ranged Weapons
 

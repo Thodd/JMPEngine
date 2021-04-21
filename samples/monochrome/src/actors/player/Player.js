@@ -251,10 +251,10 @@ class Player extends BaseActor {
 				p.tileHighlight.visible = false;
 			} else {
 				if (p.tile.isFree() && !sightIsBlocked) {
-					p.tileHighlight.set(TileHighlight.CURSOR_BLUE);
+					p.tileHighlight.set(Constants.Colors.BLUE_LIGHT);
 				} else {
 					sightIsBlocked = true;
-					p.tileHighlight.set(TileHighlight.CURSOR_RED);
+					p.tileHighlight.set(Constants.Colors.RED_LIGHT);
 				}
 			}
 		}

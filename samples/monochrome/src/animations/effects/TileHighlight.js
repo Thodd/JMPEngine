@@ -9,7 +9,8 @@ class TileHighlight extends BaseEffect {
 
 		this.configSprite({
 			sheet: "tile_effects",
-			id: TileHighlight.CURSOR_ORANGE
+			id: 10,
+			color: Constants.Colors.YELLOW_LIGHT
 		});
 	}
 
@@ -17,18 +18,12 @@ class TileHighlight extends BaseEffect {
 	set(style) {
 		this.configSprite({
 			sheet: "tile_effects",
-			id: style
+			id: 10,
+			color: style
 		});
 	}
 
 	reset() {}
 }
-
-// tile constants
-TileHighlight.CURSOR_RED = 31;
-TileHighlight.CURSOR_ORANGE = 32;
-TileHighlight.CURSOR_GREEN_DARK = 33;
-TileHighlight.CURSOR_GREEN_LIGHT = 34;
-TileHighlight.CURSOR_BLUE = 35;
 
 export default TileHighlight;
