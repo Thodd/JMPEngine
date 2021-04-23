@@ -1,3 +1,4 @@
+import PIXI from "../../../src/core/PIXIWrapper.js";
 import Manifest from "../../../src/assets/Manifest.js";
 import Screen from "../../../src/game/Screen.js";
 import BitmapText from "../../../src/game/BitmapText.js";
@@ -8,46 +9,49 @@ import Keys from "../../../src/input/Keys.js";
 import M4th from "./M4th.js";
 import Helper from "../../../src/utils/Helper.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
+import Entity from "../../../src/game/Entity.js";
 
-let width = Manifest.get("/w");
-let height = Manifest.get("/h");
-let timePerFrame = 16.7;
+const width = Manifest.get("/w");
+const height = Manifest.get("/h");
+const scale = Manifest.get("/scale");
+const timePerFrame = 16.7;
 
-let segments = [];
-let roadWidth     = 700;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
-let segmentLength = 100;                     // length of a single segment
-let rumbleLength  = 4;                       // number of segments per red/white rumble strip
-let trackLength   = null;                    // z length of entire track (computed)
-let lanes         = 2;                       // number of lanes
-let fieldOfView   = 100;                     // angle (degrees) for field of view
-let cameraHeight  = 700;                    // z height of camera
-let cameraDepth   = null;                    // z distance camera is from screen (computed)
-let drawDistance  = 300;                     // number of segments to draw
-let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-let playerZ       = null;                    // player relative z distance from camera (computed)
-let fogDensity    = 5;                       // exponential fog density
-let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
-let speed         = 0;                       // current speed
-let maxSpeed      = (segmentLength * 1.5)/timePerFrame;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-let centrifugal   = 0.50;
-let accel         =  maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
-let breaking      = -maxSpeed;               // deceleration rate when braking
-let decel         = -maxSpeed/8;             // 'natural' deceleration rate when neither accelerating, nor braking
-let offRoadLimit  =  maxSpeed/8;
+let dt = 16.7;
+const segments = [];
+const roadWidth     = 700;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+const segmentLength = 100;                     // length of a single segment
+const rumbleLength  = 4;                       // number of segments per red/white rumble strip
+const lanes         = 2;                       // number of lanes
+const fieldOfView   = 100;                     // angle (degrees) for field of view
+const drawDistance  = 300;                     // number of segments to draw
+const fogDensity    = 5;                       // exponential fog density
+const maxSpeed      = (segmentLength * 1.5)/timePerFrame;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+const centrifugal   = 0.55;
+const accel         =  maxSpeed/2000;             // acceleration rate - tuned until it 'felt' right
+const breaking      = -maxSpeed/1000;               // deceleration rate when braking
+const decel         = -maxSpeed/2000;             // 'natural' deceleration rate when neither accelerating, nor braking
+const offRoadLimit  =  maxSpeed/3000;
 
 const PLAYER_SCALE = 0.3 * (1/43);
 const playerW = 43 * PLAYER_SCALE;
 
+let cameraHeight  = 700;                    // z height of camera
+let trackLength   = null;                    // z length of entire track (computed)
+let cameraDepth   = null;                    // z distance camera is from screen (computed)
+let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+let playerZ       = null;                    // player relative z distance from camera (computed)
+let position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
+let speed         = 0;                       // current speed
+
 const COLORS = {
-	SKY:  'linear-gradient(rgb(255, 188, 0), rgb(255, 255, 255))',
-	TREE: '#005108',
-	FOG:  '#86a81f',
-	LIGHT:  { road: '#939393', grass: '#9ec725', rumble: '#FFFFFF', lane: '#ffffff'  },
-	DARK:   { road: '#909090', grass: '#98bf23', rumble: '#be2632'                   },
-	TUNNEL_LIGHT: { road: '#737373', grass: '#737373', rumble: '#DDDDDD', lane: '#DDDDDD'  },
-	TUNNEL_DARK:  { road: '#707070', grass: '#707070', rumble: '#7d1820'                   },
-	START:  { road: 'white',   grass: 'white',   rumble: 'white'                     },
-	FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
+	TREE: 0x005108,
+	FOG:  0x86a81f,
+	LIGHT:  { road: 0x939393, grass: 0x9ec725, rumble: 0xFFFFFF, lane: 0xffffff  },
+	DARK:   { road: 0x909090, grass: 0x98bf23, rumble: 0xbe2632                   },
+	TUNNEL_LIGHT: { road: 0x737373, grass: 0x737373, rumble: 0xDDDDDD, lane: 0xDDDDDD  },
+	TUNNEL_DARK:  { road: 0x707070, grass: 0x707070, rumble: 0x7d1820                   },
+	START:  { road: 0xFFFFFF,   grass: 0xFFFFFF,   rumble: 0xFFFFFF                     },
+	FINISH: { road: 0x000000,   grass: 0x000000,   rumble: 0x000000                     }
 };
 
 const ROAD = {
@@ -56,22 +60,11 @@ const ROAD = {
 	CURVE:  { NONE: 0, EASY:    2, MEDIUM:   4, HARD:    6 }
 };
 
-/**
- * Layers:
- * 0: Background
- * 1: Road
- * 2: Car
- * 3: UI
- */
-
-const Layers = {
-	BG: 0,
-	Grass: 1,
-	Road: 2,
-	Fog: 3,
-	Things: 4,
-	Car: 5,
-	UI: 6
+const LAYERS = {
+	TRACK: 0,
+	THINGS: 1,
+	CAR: 2,
+	UI: 3
 };
 
  class RaceTrack extends Screen {
@@ -96,12 +89,78 @@ const Layers = {
 
 		this.bounceTimer = new FrameCounter(10);
 
-		this.resetRoad();
+		this.createTrack();
+
+		this.initGFX();
+
+		//this.render();
+	}
+
+	/**
+	 * Creates the PIXI rendering objects
+	 */
+	initGFX() {
+		// Create Graphics entity
+		let e = new Entity();
+		this._gfx = new PIXI.Graphics();
+		e.configSprite({
+			replaceWith: this._gfx
+		});
+		e.layer = LAYERS.TRACK;
+		this.add(e);
+
+		// create a gradient as a texture for the sky
+		let c = document.createElement("canvas");
+		c.width = width * scale;
+		c.width = height * scale;
+		let ctx = c.getContext("2d");
+		let gradient = ctx.createLinearGradient(0,0,width,height);
+		gradient.addColorStop(0, "#010044");
+		gradient.addColorStop(1, "#2d032c");
+		ctx.fillStyle = gradient;
+		ctx.fillRect(0, 0, width*2, height*2);
+		this._skyTexture = new PIXI.Texture.from(c);
+
+		// Sprites
+		// Car
+		this._carEntity = new Entity();
+		// outside the view initially
+		this._carEntity.x = -1000;
+		this._carEntity.y = -1000;
+		this._carEntity.configSprite({
+			sheet: "car",
+			animations: {
+				default: "idle",
+				idle: {
+					frames: [0]
+				},
+				left: {
+					frames: [4]
+				},
+				right: {
+					frames: [8]
+				}
+			}
+		});
+		this._carEntity._pixiSprite.width *= 2;
+		this._carEntity._pixiSprite.height *= 2;
+		this._carEntity.layer = LAYERS.CAR;
+		this.add(this._carEntity);
+
+		// The sprite layer will initially z-sorts its entities.
+		// This is a hack, because the JMP Engine doesn't normally account for the PIXI.js based z-sorting.
+		// In the JMP Engine, the number of layers is typically limit as a design choice for each game individually.
+		// The PIXI.js z-sorting only happens once initial, because the sprite's zIndex is not
+		// modified afterwards. So no performance drawback.
+		this._layers[LAYERS.THINGS].sortableChildren = true;
 	}
 
 	checkGameStart() {
 		if (!this.started) {
 			if (Keyboard.down(Keys.ENTER)) {
+				// lower camera a bit
+				cameraHeight = 350;
+				this.render();
 				this.started = true;
 				this.timing.start = performance.now();
 			}
@@ -165,14 +224,6 @@ const Layers = {
 	}
 
 	update() {
-
-		var dt = 16.7;
-
-		// change camera to cockpit view  -->  TODO: F1 Cockpit or Wheel view?
-		if (Keyboard.pressed(Keys.C)) {
-			cameraHeight = 300;
-		}
-
 		this.checkGameStart();
 		this.clearCheckpoint();
 
@@ -187,7 +238,7 @@ const Layers = {
 
 		// find player segment first
 		let playerSegment = this.findSegment(position + playerZ);
-		let dx = dt * 1.5;
+		let dx = dt / 1000;
 		let speedPercent  = speed/maxSpeed;
 
 		// check if we "animate" a bounce back onto the road
@@ -197,8 +248,9 @@ const Layers = {
 				this.bounce = false;
 				this.bounceTimer.reset();
 			}
-			playerX = playerX - dx * 3 * this.bounceDir;
+			playerX = playerX - dx * 6 * this.bounceDir;
 			position = M4th.increase(position, dt * speed, trackLength);
+			this.render();
 			return;
 		}
 
@@ -231,8 +283,8 @@ const Layers = {
 		}
 
 		// decelerate if the player is off the road
-		if (((playerX < -0.9) || (playerX > 0.9)) && (speed > offRoadLimit)) {
-			speed = M4th.accelerate(speed, -speed, dt);
+		if (((playerX < -1) || (playerX > 0.9)) && (speed > offRoadLimit)) {
+			speed = M4th.accelerate(speed, -speed/500, dt);
 		}
 
 
@@ -251,7 +303,7 @@ const Layers = {
 							// bounce back
 							this.bounce = true;
 							this.bounceDir = Math.sign(playerX);
-							speed = -maxSpeed/4;
+							speed = decel;
 							break;
 						}
 					}
@@ -264,6 +316,8 @@ const Layers = {
 
 		// finally update the player position on the track
 		position = M4th.increase(position, dt * speed, trackLength);
+
+		this.render();
 	}
 
 	collides(x1, w1, x2, w2) {
@@ -274,8 +328,24 @@ const Layers = {
 		return false;
 	}
 
+	createSpriteEntity(spec) {
+		let e = new Entity();
+		e.configSprite({
+			sheet: spec.sheet,
+			id: spec.id
+		});
+		e.visible = false;
+		e.active = false;
+		e.layer = LAYERS.THINGS;
+		e._pixiSprite.zIndex = spec.zIndex;
+		this.add(e);
+		Object.assign(e, spec);
+		return e;
+	}
+
 	addSegment(curve, y) {
 		let n = segments.length;
+		let zIndex = 1000 - n;
 		let alternate = Math.floor(n/rumbleLength)%2;
 
 		segments.push({
@@ -292,30 +362,32 @@ const Layers = {
 		// spectators
 		if ((n >= 100 && n < 200) || (n >= 2000 && n < 2300) || (n >= 4000 && n < 4200)) {
 			if (n%10 == 0) {
-				let sprLeft = {
+				let sprLeft = this.createSpriteEntity({
 					sheet: "sprites",
 					id: 3,
+					zIndex: zIndex,
 					offset: Helper.choose([-1.25, - 1.5, -1.75, -2]),
 					w: 100,
 					h: 100,
 					scale: PLAYER_SCALE * 2,
 					collisionData: []
-				};
+				});
 				sprLeft.collisionData.push({
 					x: -2,
 					w: 1.2
 				});
 				segments[n].sprites.push(sprLeft);
 
-				let sprRight = {
+				let sprRight = this.createSpriteEntity({
 					sheet: "sprites",
 					id: 2,
+					zIndex: zIndex,
 					offset: Helper.choose([1.25, 1.5, 1.75, 2]),
 					w: 100,
 					h: 100,
 					scale: PLAYER_SCALE * 2,
 					collisionData: []
-				};
+				});
 				sprRight.collisionData.push({
 					x: 2,
 					w: 1.2
@@ -325,9 +397,10 @@ const Layers = {
 		} else if ((n > 300 && n < 400) || (n > 500 && n < 700) || (n > 3700 && n < 4000)) {
 			// three tunnels
 			segments[n].color = alternate ? COLORS.TUNNEL_DARK : COLORS.TUNNEL_LIGHT;
-			segments[n].sprites.push({
+			segments[n].sprites.push(this.createSpriteEntity({
 				sheet: "tunnel",
 				id: 0,
+				zIndex: zIndex,
 				offset: -1,
 				// for collision we only care about the horizontal dimensions of the sprite...
 				w: 200,
@@ -342,17 +415,18 @@ const Layers = {
 					x: 1.6,
 					w: 30 * 0.01
 				}]
-			});
+			}));
 		} else if (n%200 == 0) {
-			let sprLeft = {
+			let sprLeft = this.createSpriteEntity({
 				sheet: "billboards",
 				id: 0,
+				zIndex: zIndex,
 				offset: Helper.choose([-1.25, - 1.5, -1.75]),
 				w: 100,
 				h: 100,
 				scale: PLAYER_SCALE*2,
 				collisionData: []
-			};
+			});
 			let sprScaledWidth = sprLeft.w * sprLeft.scale;
 			sprLeft.collisionData.push({
 				x: sprLeft.offset + sprScaledWidth * Math.sign(sprLeft.offset),
@@ -360,15 +434,16 @@ const Layers = {
 			});
 			segments[n].sprites.push(sprLeft);
 		}  else if (n%350 == 0) {
-			let sprRight = {
+			let sprRight = this.createSpriteEntity({
 				sheet: "billboards",
 				id: 0,
+				zIndex: zIndex,
 				offset: Helper.choose([1.25, 1.5, 1.75]),
 				w: 100,
 				h: 100,
 				scale: PLAYER_SCALE * 2,
 				collisionData: []
-			};
+			});
 			let sprScaledWidth = sprRight.w * sprRight.scale;
 			sprRight.collisionData.push({
 				x: sprRight.offset + sprScaledWidth * Math.sign(sprRight.offset),
@@ -377,15 +452,16 @@ const Layers = {
 			segments[n].sprites.push(sprRight);
 		} else {
 			if (n%5 == 0) {
-				let sprLeft = {
+				let sprLeft = this.createSpriteEntity({
 					sheet: "sprites",
 					id: Helper.choose([0, 0, 0, 1]),
+					zIndex: zIndex,
 					offset: Helper.choose([-1.25, - 1.5, -1.75, -2, -2.5, -3, -4]),
 					w: 100,
 					h: 100,
 					scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
 					collisionData: []
-				};
+				});
 				let sprScaledWidth = sprLeft.w * sprLeft.scale;
 				sprLeft.collisionData.push({
 					x: sprLeft.offset + sprScaledWidth * Math.sign(sprLeft.offset),
@@ -393,15 +469,16 @@ const Layers = {
 				});
 				segments[n].sprites.push(sprLeft);
 
-				let sprRight = {
+				let sprRight = this.createSpriteEntity({
 					sheet: "sprites",
 					id: Helper.choose([0, 0, 0, 1]),
+					zIndex: zIndex,
 					offset: Helper.choose([1.25, 1.5, 1.75, 2, 2.5, 3, 4]),
 					w: 100,
 					h: 100,
 					scale: Helper.choose([PLAYER_SCALE, 0.01, 0.008, 0.015]),
 					collisionData: []
-				};
+				});
 				sprScaledWidth = sprRight.w * sprRight.scale;
 				sprRight.collisionData.push({
 					x: sprRight.offset + sprScaledWidth * Math.sign(sprRight.offset),
@@ -438,9 +515,7 @@ const Layers = {
 		}
 	}
 
-	resetRoad() {
-		segments = [];
-
+	createTrack() {
 		//straight and easy curve
 		this.addRoad(100,  75, 50, 0,  0);			//   0
 		this.addRoad(50, 100, 50, 2, 75);			//  75
@@ -529,28 +604,35 @@ const Layers = {
 		return segments[Math.floor(z/segmentLength) % segments.length];
 	}
 
-	renderSegment(g, width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
+	/**
+	 * Stupidly simple polygon rendering ;)
+	 */
+	polyf(p1, p2, p3, p4, color) {
+		this._gfx.beginFill(color);
+		this._gfx.moveTo(Math.max(p1.x, 0), Math.max(p1.y, 0));
+		this._gfx.lineTo(Math.max(p2.x, 0), Math.max(p2.y, 0));
+		this._gfx.lineTo(Math.max(p3.x, 0), Math.max(p3.y, 0));
+		this._gfx.lineTo(Math.max(p4.x, 0), Math.max(p4.y, 0));
+	}
+
+	renderSegment(width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
-		let r1 = this.calculateRumbleWidth(w1, lanes)/2;      //basic: *0.8;  raw: /2;
-		let r2 = this.calculateRumbleWidth(w2, lanes)/2;      //basic: *0.8;  raw: /2;
+		let r1 = this.calculateRumbleWidth(w1, lanes);      //basic: *0.8;  raw: /2;
+		let r2 = this.calculateRumbleWidth(w2, lanes);      //basic: *0.8;  raw: /2;
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes)*1;  //basic: *2;  raw: *1
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes)*1;  //basic: *2;  raw: *1
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes)*2;  //basic: *2;  raw: *1
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes)*2;  //basic: *2;  raw: *1
 
 		// for rendering grass we use a Basic Mode layer underneath the road
 		// this optimizes the performance on higher resolutions
-		GFX.get(Layers.Grass).rectf(0, y2, width, y1 - y2, color.grass);
-
-		// raw
-		g.polyf(x1-w1,       y1, w1*2,    x2-w2,       y2, w2*2, color.road);
-		g.polyf(x1-w1-r1+1,  y1, r1,      x2-w2-r2+1,  y2, r2, color.rumble); // left
-		g.polyf(x1+w1-1,     y1, r1+1,    x2+w2-1,     y2, r2+1, color.rumble); // right
+		this._gfx.beginFill(color.grass);
+		this._gfx.drawRect(0, y2, width, y1 - y2);
 
 		// basic
-		// g.polyf([{x:x1-w1-r1+1, y:y1}, {x:x1-w1+1, y:y1}, {x:x2-w2+1, y:y2}, {x:x2-w2-r2+1, y:y2}], 0, 0, color.rumble);
-		// g.polyf([{x:x1+w1+r1-1, y:y1}, {x:x1+w1-1, y:y1}, {x:x2+w2-1, y:y2}, {x:x2+w2+r2-1, y:y2}], 0, 0, color.rumble);
-		// g.polyf([{x:x1-w1,    y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2-w2,    y:y2}], 0, 0, color.road);
+		this.polyf({x:x1-w1-r1, y:y1}, {x:x1-w1, y:y1}, {x:x2-w2, y:y2}, {x:x2-w2-r2, y:y2}, color.rumble);
+		this.polyf({x:x1+w1+r1, y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2+w2+r2, y:y2}, color.rumble);
+		this.polyf({x:x1-w1,    y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2-w2,    y:y2}, color.road);
 
 		if (color.lane) {
 			lanew1 = w1*2/lanes;
@@ -558,17 +640,14 @@ const Layers = {
 			lanex1 = x1 - w1 + lanew1;
 			lanex2 = x2 - w2 + lanew2;
 			for(lane = 1 ; lane < lanes ; lanex1 += lanew1, lanex2 += lanew2, lane++) {
-				// g.polyf([{x:lanex1 - l1/2, y:y1}, {x:lanex1 + l1/2, y:y1}, {x:lanex2 + l2/2, y:y2}, {x:lanex2 - l2/2, y:y2}], 0, 0, color.lane);
-				g.polyf(lanex1-l1/2, y1, l1*2,  lanex2+l2/2, y2, Math.ceil(l2*2),  color.lane);
+				this.polyf({x:lanex1 - l1/2, y:y1}, {x:lanex1 + l1/2, y:y1}, {x:lanex2 + l2/2, y:y2}, {x:lanex2 - l2/2, y:y2}, color.lane);
 			}
 		}
 
+		// render some fog in the distance to mask artifacts, silent hill style :)
 		if (fog < 1) {
-			let g = GFX.get(Layers.Fog);
-			let oldAlpha = g.alpha();
-			g.alpha(1-fog)
-			g.rectf(0, y1, width, y2-y1, COLORS.FOG);
-			g.alpha(oldAlpha);
+			this._gfx.beginFill(COLORS.FOG, 1-fog);
+			this._gfx.drawRect(0, y1, width, y2-y1);
 		}
 	}
 
@@ -593,7 +672,12 @@ const Layers = {
 		let x  = 0;
 		let dx = -(baseSegment.curve * basePercent);
 
-		let g = GFX.get(Layers.Road);
+		// reset screen before drawing
+		this._gfx.clear();
+
+		// render Sky BG
+		this._gfx.beginTextureFill({texture: this._skyTexture});
+		this._gfx.drawRect(0, 0, width*scale, height*scale);
 
 		for(let n = 0 ; n < drawDistance ; n++) {
 			let segment    = segments[(baseSegment.index + n) % segments.length];
@@ -613,7 +697,7 @@ const Layers = {
 				continue;
 			}
 
-			this.renderSegment(g, width, lanes,
+			this.renderSegment(width, lanes,
 							segment.p1.screen.x,
 							segment.p1.screen.y,
 							segment.p1.screen.w,
@@ -627,7 +711,8 @@ const Layers = {
 		}
 
 		// sprites
-		for(let n = ((drawDistance*0.8)-1) ; n > 0 ; n--) {
+		//for(let n = ((drawDistance*0.8)-1) ; n > 0 ; n--) {
+		for(let n = 0; n < ((drawDistance*0.8)-1); n++) {
 			let segment = segments[(baseSegment.index + n) % segments.length];
 
 			for(let i = 0 ; i < segment.sprites.length ; i++) {
@@ -646,8 +731,8 @@ const Layers = {
 				let spriteY     = segment.p1.screen.y;
 
 
-				let destW  = (spriteWidth * spriteScale * width) * (sprite.scale * roadWidth);
-				let destH  = (spriteHeight * spriteScale * width) * (sprite.scale * roadWidth);
+				let destW  = Math.floor((spriteWidth * spriteScale * width) * (sprite.scale * roadWidth));
+				let destH  = Math.floor((spriteHeight * spriteScale * width) * (sprite.scale * roadWidth));
 
 				let clipY = segment.clip;
 
@@ -658,62 +743,69 @@ const Layers = {
 
 				var clipH = clipY ? Math.max(0, destY+destH-clipY) : 0;
 				if (clipH < destH) {
-					GFX.get(Layers.Things).spr_ext(sprite.sheet, sprite.id, 0, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
+					if (sprite instanceof Entity) {
+						sprite.visible = true;
+						sprite.x = Math.floor(destX);
+						sprite.y = Math.floor(destY);
+						sprite._pixiSprite.width = destW;
+						sprite._pixiSprite.height = (destH - clipH);
+					}
+					//GFX.get(Layers.Things).spr_ext(sprite.sheet, sprite.id, 0, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
+				} else {
+					if (sprite instanceof Entity) {
+						sprite.visible = false;
+					}
 				}
 			}
 
-			// render player in between sprites
 			if (segment == playerSegment) {
 				let carW = 43;
 				let carH = 23;
-				let carID = 0;
-				if (this.dir == "left") {
-					carID = 4;
-				} else if (this.dir == "right") {
-					carID = 8;
-				}
-				GFX.get(Layers.Things).spr("car", carID, width/2 - carW/2, height - carH - 5);
+				let carDir = this.dir || "idle";
+				this._carEntity.playAnimation({name: carDir});
+				this._carEntity.x = width/2 - carW/2;
+				this._carEntity.y = height - carH - 35;
 			}
 		}
 
 		/*********+ UI ***********/
 
-		let _gfx = GFX.get(Layers.UI);
+		// let _gfx = GFX.get(Layers.UI);
 
-		// laps
-		let laps = this.timing.laptimes.length + 1;
-		_gfx.text("font1", 2, height-10, `Lap:${laps}/3`);
+		// // laps
+		// let laps = this.timing.laptimes.length + 1;
+		// _gfx.text("font1", 2, height-10, `Lap:${laps}/3`);
 
-		// timing
-		_gfx.text("vfr95_blue", 2, 2, `#${laps}: ${this.timing.total}`);
-		for (let i = 0; i < this.timing.laptimes.length; i++) {
-			_gfx.alpha(1/(i+2));
-			let timing = this.timing.laptimes[i];
-			_gfx.text("font1", 2, 12 + i * 10, `#${timing.lap}: ${timing.time}`);
-		}
-		_gfx.alpha(1);
+		// // timing
+		// _gfx.text("vfr95_blue", 2, 2, `#${laps}: ${this.timing.total}`);
+		// for (let i = 0; i < this.timing.laptimes.length; i++) {
+		// 	_gfx.alpha(1/(i+2));
+		// 	let timing = this.timing.laptimes[i];
+		// 	_gfx.text("font1", 2, 12 + i * 10, `#${timing.lap}: ${timing.time}`);
+		// }
+		// _gfx.alpha(1);
 
-		// tacho and speed number
-		let speedPercent  = Math.max(0, speed/maxSpeed);
-		let tachoXoffset = width - 28;
-		// The countach has a max speed of 333km/h :O, though our car accelerates a bit faster than 100km/h in 3.6s
-		let kmhStr = `${Math.ceil(333*speedPercent)}`.padStart(3, "0");
+		// // tacho and speed number
+		// let speedPercent  = Math.max(0, speed/maxSpeed);
+		// let tachoXoffset = width - 28;
+		// // The countach has a max speed of 333km/h :O, though our car accelerates a bit faster than 100km/h in 3.6s
+		// let kmhStr = `${Math.ceil(333*speedPercent)}`.padStart(3, "0");
 
-		_gfx.text("font1", width - 34, height - 10, "km/h");
+		// _gfx.text("font1", width - 34, height - 10, "km/h");
 
-		// fill tacho
-		let fill = Math.ceil(speedPercent * 60);
-		let tachoHeight = height - fill;
-		_gfx.text("font1", tachoXoffset-1, tachoHeight - 22, kmhStr);
-		_gfx.alpha(0.7);
-		_gfx.spr_ext("tacho", 0, 0, 60 - fill, undefined, undefined, tachoXoffset, tachoHeight - 12);
-		_gfx.alpha(1);
+		// // fill tacho
+		// let fill = Math.ceil(speedPercent * 60);
+		// let tachoHeight = height - fill;
+		// _gfx.text("font1", tachoXoffset-1, tachoHeight - 22, kmhStr);
+		// _gfx.alpha(0.7);
+		// _gfx.spr_ext("tacho", 0, 0, 60 - fill, undefined, undefined, tachoXoffset, tachoHeight - 12);
+		// _gfx.alpha(1);
 
-		// intro
-		if (!this.started) {
-			_gfx.rectf(0, height/2 - 10, width, 10, "#000000");
-			_gfx.text("font1", 20, height/2 - 9, "Press ENTER to start!");
-		}
+		// // intro
+		// if (!this.started) {
+		// 	_gfx.rectf(0, height/2 - 10, width, 10, "#000000");
+		// 	_gfx.text("font1", 20, height/2 - 9, "Press ENTER to start!");
+		// }
 	}
 }
 
