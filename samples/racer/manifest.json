@@ -9,14 +9,14 @@
 	"scale": 2,
 
 	"hideCursor": true,
-	"skipIntro": false,
+	"skipIntro": true,
 
 	"assets": {
 		"spritesheets": {
 			"car": {
-				"url": "./img/car.png",
-				"w": 43,
-				"h": 23
+				"url": "./img/car_big.png",
+				"w": 86,
+				"h": 46
 			},
 			"tacho": {
 				"url": "./img/tacho.png",

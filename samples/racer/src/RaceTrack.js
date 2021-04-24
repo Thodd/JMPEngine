@@ -71,6 +71,9 @@ const LAYERS = {
 	constructor() {
 		super();
 
+		// initial car direction
+		this.dir = "idle";
+
 		// time tracking
 		this.timing = {
 			maxLaps: 3,
@@ -142,8 +145,8 @@ const LAYERS = {
 				}
 			}
 		});
-		this._carEntity._pixiSprite.width *= 2;
-		this._carEntity._pixiSprite.height *= 2;
+		this._carEntity._pixiSprite.width *= 1.25;
+		this._carEntity._pixiSprite.height *= 1.25;
 		this._carEntity.layer = LAYERS.CAR;
 		this.add(this._carEntity);
 
@@ -273,7 +276,7 @@ const LAYERS = {
 		// handle acceleration and deceleration
 		if (Keyboard.down(Keys.UP)) {
 			speed = M4th.accelerate(speed, accel, dt);
-		} else if (Keyboard.down(Keys.DOWN) || Keyboard.down(Keys.SPACE)) {
+		} else if ((Keyboard.down(Keys.DOWN) || Keyboard.down(Keys.SPACE))) {
 			speed = M4th.accelerate(speed, breaking, dt);
 			speed = M4th.limit(speed, 0, maxSpeed);
 		} else {
@@ -581,7 +584,7 @@ const LAYERS = {
 	addCurve(num, curve) {
 		num    = num    || ROAD.LENGTH.MEDIUM;
 		curve  = curve  || ROAD.CURVE.MEDIUM;
-		height = height || ROAD.HILL.NONE;
+		let height = height || ROAD.HILL.NONE;
 		this.addRoad(num, num, num, curve, height);
 	}
 
@@ -609,10 +612,10 @@ const LAYERS = {
 	 */
 	polyf(p1, p2, p3, p4, color) {
 		this._gfx.beginFill(color);
-		this._gfx.moveTo(Math.max(p1.x, 0), Math.max(p1.y, 0));
-		this._gfx.lineTo(Math.max(p2.x, 0), Math.max(p2.y, 0));
-		this._gfx.lineTo(Math.max(p3.x, 0), Math.max(p3.y, 0));
-		this._gfx.lineTo(Math.max(p4.x, 0), Math.max(p4.y, 0));
+		this._gfx.moveTo(p1.x, p1.y);
+		this._gfx.lineTo(p2.x, p2.y);
+		this._gfx.lineTo(p3.x, p3.y);
+		this._gfx.lineTo(p4.x, p4.y);
 	}
 
 	renderSegment(width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
@@ -759,12 +762,15 @@ const LAYERS = {
 			}
 
 			if (segment == playerSegment) {
-				let carW = 43;
-				let carH = 23;
-				let carDir = this.dir || "idle";
+				let carW = 86 * 1.25;
+				let carH = 26 * 1.25;
+				let carDir = "idle";
+				if ((segment.curve > 1 || segment.curve < 0) && this.dir != "idle") {
+					carDir = this.dir;
+				}
 				this._carEntity.playAnimation({name: carDir});
 				this._carEntity.x = width/2 - carW/2;
-				this._carEntity.y = height - carH - 35;
+				this._carEntity.y = height - carH - 30 - Helper.choose([0,1]);
 			}
 		}
 
