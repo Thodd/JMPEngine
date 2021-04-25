@@ -1,5 +1,7 @@
 * [ ] HUD
 * [ ] Car -> Scale2x vergrößern und dann schöner machen?
+* [ ] Goal Flag
+  * [ ] Paticle Effect, Confetti
 * [ ] Parallax Scrolling for Background
   * [ ] Add a moon?
   * [ ] Stars ?
