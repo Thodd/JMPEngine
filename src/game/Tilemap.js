@@ -22,7 +22,7 @@ class Tilemap extends Entity {
 		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn'tile be much of an issue
 		this._pixiSprite.destroy();
 
-		// create a continer for all single tile sprites
+		// create a container for all single tile sprites
 		this._pixiSprite = new PIXI.Container();
 
 		// sheet from which we will render the tiles
@@ -185,7 +185,7 @@ class Tilemap extends Entity {
 	 * The rendering is pretty fast since the calculation for the visible tiles is quick and
 	 * we only need to update the textures and positions of a fixed set of sprites.
 	 *
-	 * Additionally we have a very limited memory consumption and startup performance since we don'tile
+	 * Additionally we have a very limited memory consumption and startup performance since we don't
 	 * need to prerender a big map. So the Tilemap rendering is independet from the actual map size.
 	 * Cool.
 	 */

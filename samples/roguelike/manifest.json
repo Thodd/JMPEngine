@@ -1,10 +1,10 @@
 {
-	"title": "Monochrome",
+	"title": "Roguelike 2",
 
 	"startScreen": "./src/screens/game/Overworld.js",
 
-	"w": 272,
-	"h": 208,
+	"w": 400,
+	"h": 240,
 
 	"layers": 7,
 	"scale": 2,
@@ -15,43 +15,12 @@
 	"assets": {
 		"spritesheets": {
 			"tileset": {
-				"url": "./img/tileset.png",
-				"w": 16,
-				"h": 16
-			},
-			"characters": {
-				"url": "./img/characters.png",
-				"w": 18,
-				"h": 18
-			},
-			"enemies": {
-				"url": "./img/enemies.png",
-				"w": 18,
-				"h": 18
-			},
-			"tile_effects": {
-				"url": "./img/tile_effects.png",
-				"w": 16,
-				"h": 16
-			},
-			"items": {
-				"url": "./img/items.png",
-				"w": 12,
-				"h": 12
-			},
-			"projectiles": {
-				"url": "./img/tileset.png",
-				"w": 16,
-				"h": 16
+				"url": "./img/8x8.png",
+				"w": 8,
+				"h": 8
 			}
 		},
 		"fonts": {
-			"FontDamage": {
-				"url": "./fnt/font_damage.json"
-			},
-			"FontHeal": {
-				"url": "./fnt/font_heal.json"
-			}
 		}
 	}
 }

@@ -545,6 +545,11 @@ class Screen {
 					e._hitbox._gfx.x = e.x + e._hitbox.x - cx;
 					e._hitbox._gfx.y = e.y + e._hitbox.y - cy;
 				}
+
+				// FINALLY: If forward the render info update if needed
+				if (e._updateRenderInfos) {
+					e._updateRenderInfos();
+				}
 			}
 		}
 	}

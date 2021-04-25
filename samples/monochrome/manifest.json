@@ -1,0 +1,57 @@
+{
+	"title": "Monochrome",
+
+	"startScreen": "./src/screens/game/Overworld.js",
+
+	"w": 272,
+	"h": 208,
+
+	"layers": 7,
+	"scale": 2,
+
+	"bg": "0x222222",
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"tileset": {
+				"url": "./img/tileset.png",
+				"w": 16,
+				"h": 16
+			},
+			"characters": {
+				"url": "./img/characters.png",
+				"w": 18,
+				"h": 18
+			},
+			"enemies": {
+				"url": "./img/enemies.png",
+				"w": 18,
+				"h": 18
+			},
+			"tile_effects": {
+				"url": "./img/tile_effects.png",
+				"w": 16,
+				"h": 16
+			},
+			"items": {
+				"url": "./img/items.png",
+				"w": 12,
+				"h": 12
+			},
+			"projectiles": {
+				"url": "./img/tileset.png",
+				"w": 16,
+				"h": 16
+			}
+		},
+		"fonts": {
+			"FontDamage": {
+				"url": "./fnt/font_damage.json"
+			},
+			"FontHeal": {
+				"url": "./fnt/font_heal.json"
+			}
+		}
+	}
+}
