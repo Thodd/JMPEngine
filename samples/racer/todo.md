@@ -1,5 +1,10 @@
+# todo
+
 * [ ] HUD
 * [ ] Car -> Scale2x vergrößern und dann schöner machen?
+* [ ] ParticleEmitter in core Engine package
+* [ ] Tunnel
+  * [ ] Alternate colors
 * [ ] Goal Flag
   * [ ] Paticle Effect, Confetti
 * [ ] Parallax Scrolling for Background
@@ -23,3 +28,8 @@
   * [ ] Blue overlay?
 * [ ] Sound
 * [ ] Music
+
+# ideas
+
+* Pseudo 3D flat racing game, no ground, just dirt/desert ?
+* Sprites change position and scaling depending on player x/y/z

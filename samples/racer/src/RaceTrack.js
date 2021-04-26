@@ -26,14 +26,14 @@ const fieldOfView   = 100;                     // angle (degrees) for field of v
 const drawDistance  = 300;                     // number of segments to draw
 const fogDensity    = 5;                       // exponential fog density
 const maxSpeed      = (segmentLength * 1.5)/timePerFrame;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-const centrifugal   = 0.55;
+const centrifugal   = 0.65;
 const accel         =  maxSpeed/2000;             // acceleration rate - tuned until it 'felt' right
 const breaking      = -maxSpeed/1000;               // deceleration rate when braking
 const decel         = -maxSpeed/2000;             // 'natural' deceleration rate when neither accelerating, nor braking
 const offRoadLimit  =  maxSpeed/3000;
 
-const PLAYER_SCALE = 0.3 * (1/43);
-const playerW = 43 * PLAYER_SCALE;
+const PLAYER_SCALE = 0.3 * (1/86);
+const playerW = 86 * PLAYER_SCALE;
 
 let cameraHeight  = 700;                    // z height of camera
 let trackLength   = null;                    // z length of entire track (computed)
@@ -96,7 +96,7 @@ const LAYERS = {
 
 		this.initGFX();
 
-		//this.render();
+		this.render();
 	}
 
 	/**
@@ -156,6 +156,31 @@ const LAYERS = {
 		// The PIXI.js z-sorting only happens once initial, because the sprite's zIndex is not
 		// modified afterwards. So no performance drawback.
 		this._layers[LAYERS.THINGS].sortableChildren = true;
+
+		// #UI Texts
+		// Laps
+		let lapsCount = new BitmapText({
+			font: "font1",
+			text: `Lap:1/3`,
+			x: 2,
+			y: height-10
+		});
+		lapsCount.layer = LAYERS.UI;
+		this.add(lapsCount);
+
+		let lapsTiming = new BitmapText({
+			font: "vfr95_blue",
+			text: `#0: ${this.timing.total}`,
+			x: 2,
+			y: 2
+		});
+		lapsTiming.layer = LAYERS.UI;
+		this.add(lapsTiming);
+
+		this._ui = {
+			lapsCount,
+			lapsTiming
+		};
 	}
 
 	checkGameStart() {
@@ -774,22 +799,21 @@ const LAYERS = {
 			}
 		}
 
-		/*********+ UI ***********/
+		/********** #UI ***********/
 
-		// let _gfx = GFX.get(Layers.UI);
+		// laps
+		let laps = this.timing.laptimes.length + 1;
+		this._ui.lapsCount.setText(`Lap:${laps}/3`);
 
-		// // laps
-		// let laps = this.timing.laptimes.length + 1;
-		// _gfx.text("font1", 2, height-10, `Lap:${laps}/3`);
+		// timing
+		let lapTimingString = `#${laps}: ${this.timing.total}`;
 
-		// // timing
-		// _gfx.text("vfr95_blue", 2, 2, `#${laps}: ${this.timing.total}`);
-		// for (let i = 0; i < this.timing.laptimes.length; i++) {
-		// 	_gfx.alpha(1/(i+2));
-		// 	let timing = this.timing.laptimes[i];
-		// 	_gfx.text("font1", 2, 12 + i * 10, `#${timing.lap}: ${timing.time}`);
-		// }
-		// _gfx.alpha(1);
+		for (let i = 0; i < this.timing.laptimes.length; i++) {
+			//_gfx.alpha(1/(i+2));
+			let timing = this.timing.laptimes[i];
+			lapTimingString += `\n#${timing.lap}: ${timing.time}`;
+		}
+		this._ui.lapsTiming.setText(lapTimingString);
 
 		// // tacho and speed number
 		// let speedPercent  = Math.max(0, speed/maxSpeed);
