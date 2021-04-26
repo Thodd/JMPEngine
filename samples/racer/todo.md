@@ -1,12 +1,11 @@
 # todo
 
-* [ ] HUD
-* [ ] Car -> Scale2x vergrößern und dann schöner machen?
+* [x] HUD
 * [ ] ParticleEmitter in core Engine package
 * [ ] Tunnel
-  * [ ] Alternate colors
+  * [ ] Alternate colors -> Lights on top
 * [ ] Goal Flag
-  * [ ] Paticle Effect, Confetti
+  * [ ] Particle Effect, Confetti
 * [ ] Parallax Scrolling for Background
   * [ ] Add a moon?
   * [ ] Stars ?

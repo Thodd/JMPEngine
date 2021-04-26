@@ -28,8 +28,8 @@
 				"w": 100,
 				"h": 100
 			},
-			"billboards": {
-				"url": "./img/billboards.png",
+			"advertisement": {
+				"url": "./img/advertisement.png",
 				"w": 100,
 				"h": 100
 			},

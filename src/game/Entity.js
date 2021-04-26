@@ -98,6 +98,19 @@ class Entity {
 		}
 	}
 
+	set alpha(a) {
+		if (this._pixiSprite) {
+			this._pixiSprite.alpha = a != undefined ? a : 1;
+		}
+	}
+
+	get alpha() {
+		if (this._pixiSprite) {
+			return this._pixiSprite.alpha;
+		}
+		return 1;
+	}
+
 	/**
 	 * Returns the Screen instance to which this Entity is added.
 	 * If the Entity is not added to a Screen, <code>null</code> is returned.

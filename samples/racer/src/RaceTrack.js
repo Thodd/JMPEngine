@@ -2,7 +2,6 @@ import PIXI from "../../../src/core/PIXIWrapper.js";
 import Manifest from "../../../src/assets/Manifest.js";
 import Screen from "../../../src/game/Screen.js";
 import BitmapText from "../../../src/game/BitmapText.js";
-import Engine from "../../../src/core/Engine.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -14,7 +13,6 @@ import Entity from "../../../src/game/Entity.js";
 const width = Manifest.get("/w");
 const height = Manifest.get("/h");
 const scale = Manifest.get("/scale");
-const timePerFrame = 16.7;
 
 let dt = 16.7;
 const segments = [];
@@ -25,11 +23,11 @@ const lanes         = 2;                       // number of lanes
 const fieldOfView   = 100;                     // angle (degrees) for field of view
 const drawDistance  = 300;                     // number of segments to draw
 const fogDensity    = 5;                       // exponential fog density
-const maxSpeed      = (segmentLength * 1.5)/timePerFrame;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+const maxSpeed      = (segmentLength * 1.5)/dt;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 const centrifugal   = 0.65;
-const accel         =  maxSpeed/2000;             // acceleration rate - tuned until it 'felt' right
-const breaking      = -maxSpeed/1000;               // deceleration rate when braking
-const decel         = -maxSpeed/2000;             // 'natural' deceleration rate when neither accelerating, nor braking
+const accel         =  maxSpeed/3000; // acceleration of course
+const breaking      = -maxSpeed/1000; // pulling the breaks is more effective then just letting go of the gas
+const decel         = -maxSpeed/2000; // if the player presses nothing the car automatically decelerates
 const offRoadLimit  =  maxSpeed/3000;
 
 const PLAYER_SCALE = 0.3 * (1/86);
@@ -45,13 +43,13 @@ let speed         = 0;                       // current speed
 
 const COLORS = {
 	TREE: 0x005108,
-	FOG:  0x86a81f,
+	FOG:  0x2f484e,
 	LIGHT:  { road: 0x939393, grass: 0x9ec725, rumble: 0xFFFFFF, lane: 0xffffff  },
 	DARK:   { road: 0x909090, grass: 0x98bf23, rumble: 0xbe2632                   },
-	TUNNEL_LIGHT: { road: 0x737373, grass: 0x737373, rumble: 0xDDDDDD, lane: 0xDDDDDD  },
-	TUNNEL_DARK:  { road: 0x707070, grass: 0x707070, rumble: 0x7d1820                   },
+	TUNNEL_LIGHT: { road: 0x737373, grass: 0x2f484e, rumble: 0xDDDDDD, lane: 0xDDDDDD  },
+	TUNNEL_DARK:  { road: 0x707070, grass: 0x2f484e, rumble: 0x7d1820                   },
 	START:  { road: 0xFFFFFF,   grass: 0xFFFFFF,   rumble: 0xFFFFFF                     },
-	FINISH: { road: 0x000000,   grass: 0x000000,   rumble: 0x000000                     }
+	GOAL: { road: 0x000000,   grass: 0x000000,   rumble: 0x000000                     }
 };
 
 const ROAD = {
@@ -119,7 +117,7 @@ const LAYERS = {
 		let ctx = c.getContext("2d");
 		let gradient = ctx.createLinearGradient(0,0,width,height);
 		gradient.addColorStop(0, "#010044");
-		gradient.addColorStop(1, "#2d032c");
+		gradient.addColorStop(1, "#163d6d");
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0, 0, width*2, height*2);
 		this._skyTexture = new PIXI.Texture.from(c);
@@ -158,7 +156,8 @@ const LAYERS = {
 		this._layers[LAYERS.THINGS].sortableChildren = true;
 
 		// #UI Texts
-		// Laps
+
+		// Laps Count
 		let lapsCount = new BitmapText({
 			font: "font1",
 			text: `Lap:1/3`,
@@ -168,6 +167,7 @@ const LAYERS = {
 		lapsCount.layer = LAYERS.UI;
 		this.add(lapsCount);
 
+		// Laps timing
 		let lapsTiming = new BitmapText({
 			font: "vfr95_blue",
 			text: `#0: ${this.timing.total}`,
@@ -177,9 +177,50 @@ const LAYERS = {
 		lapsTiming.layer = LAYERS.UI;
 		this.add(lapsTiming);
 
+		//static "km/h" text
+		let kmhTextFixed = new BitmapText({
+			font: "font1",
+			x: width - 34,
+			y: height - 10,
+			text: "km/h"
+		});
+		this.add(kmhTextFixed);
+
+		// dynamic speed string
+		let tachoOffsetX = width - 28;
+		let currentSpeed = new BitmapText({
+			font: "font1",
+			x: tachoOffsetX - 2,
+			y: height-20,
+			text: "000"
+		});
+		currentSpeed.layer = LAYERS.UI;
+		this.add(currentSpeed);
+
+		// tachometer box
+		let tachoBox = new Entity();
+		tachoBox.configSprite({
+			sheet: "tacho"
+		});
+		tachoBox.layer = LAYERS.UI;
+		tachoBox.alpha = 0.5;
+		tachoBox.x = tachoOffsetX;
+		tachoBox.y = height - 70;
+		this.add(tachoBox);
+
+		let tachoBoxMask = new PIXI.Graphics();
+
+		let tacho = {
+			currentSpeed,
+			tachoBox,
+			tachoBoxMask,
+			kmhTextFixed
+		};
+
 		this._ui = {
 			lapsCount,
-			lapsTiming
+			lapsTiming,
+			tacho
 		};
 	}
 
@@ -260,9 +301,6 @@ const LAYERS = {
 		}
 
 		this.trackTime();
-
-		// limit dt to max frame time for stable updates
-		dt = M4th.limit(dt, 0, timePerFrame);
 
 		// find player segment first
 		let playerSegment = this.findSegment(position + playerZ);
@@ -429,9 +467,9 @@ const LAYERS = {
 				sheet: "tunnel",
 				id: 0,
 				zIndex: zIndex,
-				offset: -1,
+				offset: -3,
 				// for collision we only care about the horizontal dimensions of the sprite...
-				w: 200,
+				w: 600,
 				// ... for depth scaling however we also need the height
 				h: 130,
 				scale: 0.01,
@@ -446,8 +484,8 @@ const LAYERS = {
 			}));
 		} else if (n%200 == 0) {
 			let sprLeft = this.createSpriteEntity({
-				sheet: "billboards",
-				id: 0,
+				sheet: "advertisement",
+				id: Helper.choose([0, 1, 2, 3]),
 				zIndex: zIndex,
 				offset: Helper.choose([-1.25, - 1.5, -1.75]),
 				w: 100,
@@ -463,8 +501,8 @@ const LAYERS = {
 			segments[n].sprites.push(sprLeft);
 		}  else if (n%350 == 0) {
 			let sprRight = this.createSpriteEntity({
-				sheet: "billboards",
-				id: 0,
+				sheet: "advertisement",
+				id: Helper.choose([0, 1, 2, 3]),
 				zIndex: zIndex,
 				offset: Helper.choose([1.25, 1.5, 1.75]),
 				w: 100,
@@ -595,7 +633,7 @@ const LAYERS = {
 		segments[this.findSegment(playerZ).index + 2].color = COLORS.START;
 		segments[this.findSegment(playerZ).index + 3].color = COLORS.START;
 		for(var n = 0 ; n < rumbleLength ; n++) {
-			segments[segments.length-1-n].color = COLORS.FINISH;
+			segments[segments.length-1-n].color = COLORS.GOAL;
 		}
 
 		trackLength = segments.length * segmentLength;
@@ -815,21 +853,21 @@ const LAYERS = {
 		}
 		this._ui.lapsTiming.setText(lapTimingString);
 
-		// // tacho and speed number
-		// let speedPercent  = Math.max(0, speed/maxSpeed);
-		// let tachoXoffset = width - 28;
-		// // The countach has a max speed of 333km/h :O, though our car accelerates a bit faster than 100km/h in 3.6s
-		// let kmhStr = `${Math.ceil(333*speedPercent)}`.padStart(3, "0");
+		// tacho and speed number
+		let speedPercent  = Math.max(0, speed/maxSpeed);
+		let kmhStr = `${Math.ceil(350*speedPercent)}`.padStart(3, "0");
+		let fill = Math.ceil(speedPercent * 60);
+		let tachoHeight = height - fill;
+		this._ui.tacho.currentSpeed.setText(kmhStr);
+		this._ui.tacho.currentSpeed.y = tachoHeight - 20;
 
-		// _gfx.text("font1", width - 34, height - 10, "km/h");
-
-		// // fill tacho
-		// let fill = Math.ceil(speedPercent * 60);
-		// let tachoHeight = height - fill;
-		// _gfx.text("font1", tachoXoffset-1, tachoHeight - 22, kmhStr);
-		// _gfx.alpha(0.7);
-		// _gfx.spr_ext("tacho", 0, 0, 60 - fill, undefined, undefined, tachoXoffset, tachoHeight - 12);
-		// _gfx.alpha(1);
+		// fill tacho
+		// this is some rather dirty PIXI mask magic :D
+		this._ui.tacho.tachoBoxMask.clear();
+		this._ui.tacho.tachoBoxMask.beginFill(0x000000);
+		this._ui.tacho.tachoBoxMask.drawRect(this._ui.tacho.tachoBox.x, this._ui.tacho.tachoBox.y + 60 - fill, 22, fill);
+		this._ui.tacho.tachoBoxMask.endFill();
+		this._ui.tacho.tachoBox._pixiSprite.mask = this._ui.tacho.tachoBoxMask;
 
 		// // intro
 		// if (!this.started) {
