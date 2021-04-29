@@ -20,15 +20,15 @@ class Overworld extends Screen {
 			}
 		});
 		firstMap.each((tile) => {
-			tile.set(35);
-			tile.setColor(0x444444);
+			tile.id = 35;
+			tile.color = 0x444444;
 		});
 		this.add(firstMap);
 
 		this.add(new BitmapText({
-			font: "font1",
-			text: "Hello World! :D",
-			x: Constants.TILE_WIDTH,
+			font: "simple",
+			text: "Inventory\n> Pistol (3/6)\nMedkit (+)",
+			x: Constants.TILE_WIDTH * 50,
 			y: Constants.TILE_HEIGHT,
 			color: 0x0085FF
 		}));

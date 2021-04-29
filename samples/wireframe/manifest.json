@@ -1,0 +1,19 @@
+{
+	"name": "Tennis",
+
+	"w": "600",
+	"h": "432",
+	"scale": 1,
+
+	"bg": "0x272d37",
+
+	"skipIntro": true,
+
+	"startScreen": "./src/Main.js",
+
+	"assets": {
+		"spritesheets": {
+		}
+	}
+
+}

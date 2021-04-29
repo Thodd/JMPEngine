@@ -3,11 +3,11 @@
 
 	"startScreen": "./src/screens/game/Overworld.js",
 
-	"w": 400,
-	"h": 240,
+	"w": 800,
+	"h": 400,
 
 	"layers": 7,
-	"scale": 2,
+	"scale": 1,
 
 	"bg": "0x222222",
 	"skipIntro": true,
@@ -15,12 +15,16 @@
 	"assets": {
 		"spritesheets": {
 			"tileset": {
-				"url": "./img/8x8.png",
-				"w": 8,
-				"h": 8
+				"url": "./img/simple_mood_16x16.png",
+				"w": 16,
+				"h": 16
 			}
 		},
 		"fonts": {
+			"simple": {
+				"spritesheet": "tileset",
+				"charOrder": "???????????????????????????????? !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}"
+			}
 		}
 	}
 }

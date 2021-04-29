@@ -33,7 +33,7 @@ const offRoadLimit  =  maxSpeed/3000;
 const PLAYER_SCALE = 0.3 * (1/86);
 const playerW = 86 * PLAYER_SCALE;
 
-let cameraHeight  = 700;                    // z height of camera
+let cameraHeight  = 350;                    // z height of camera
 let trackLength   = null;                    // z length of entire track (computed)
 let cameraDepth   = null;                    // z distance camera is from screen (computed)
 let playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
@@ -74,7 +74,7 @@ const LAYERS = {
 
 		// time tracking
 		this.timing = {
-			maxLaps: 3,
+			maxLaps: 1,
 			start: 0,
 			current: 0,
 			minutes: "00",
@@ -159,7 +159,7 @@ const LAYERS = {
 
 		// Laps Count
 		let lapsCount = new BitmapText({
-			font: "font1",
+			font: "vfr95_blue",
 			text: `Lap:1/3`,
 			x: 2,
 			y: height-10
@@ -202,6 +202,8 @@ const LAYERS = {
 		tachoBox.configSprite({
 			sheet: "tacho"
 		});
+		tachoBox.active = false;
+		tachoBox.visible = false;
 		tachoBox.layer = LAYERS.UI;
 		tachoBox.alpha = 0.5;
 		tachoBox.x = tachoOffsetX;
@@ -227,8 +229,6 @@ const LAYERS = {
 	checkGameStart() {
 		if (!this.started) {
 			if (Keyboard.down(Keys.ENTER)) {
-				// lower camera a bit
-				cameraHeight = 350;
 				this.render();
 				this.started = true;
 				this.timing.start = performance.now();
@@ -296,16 +296,21 @@ const LAYERS = {
 		this.checkGameStart();
 		this.clearCheckpoint();
 
-		if (!this.started || this.finished) {
+		// do nothing until the player presses ENTER
+		if (!this.started) {
 			return;
 		}
 
-		this.trackTime();
+		// we only track time while the race is on
+		if (!this.finished) {
+			this.trackTime();
+		}
+
+		this.updateUI();
 
 		// find player segment first
 		let playerSegment = this.findSegment(position + playerZ);
 		let dx = dt / 1000;
-		let speedPercent  = speed/maxSpeed;
 
 		// check if we "animate" a bounce back onto the road
 		if (this.bounce) {
@@ -322,28 +327,35 @@ const LAYERS = {
 
 		// check horizontal movement
 		// we can always move horizontally since it makes for a more fun arcade game
-		if (Keyboard.down(Keys.LEFT)) {
-			playerX = playerX - dx;
-			this.dir = "left";
-		} else if (Keyboard.down(Keys.RIGHT)) {
-			playerX = playerX + dx;
-			this.dir = "right";
-		} else {
-			this.dir = "idle";
-		}
+		if (!this.finished) {
+			if (Keyboard.down(Keys.LEFT)) {
+				playerX = playerX - dx;
+				this.dir = "left";
+			} else if (Keyboard.down(Keys.RIGHT)) {
+				playerX = playerX + dx;
+				this.dir = "right";
+			} else {
+				this.dir = "idle";
+			}
 
-		// Apply centrifugal force based on curve and the current speed:
-		// If the player has no speed we of course don't apply any additional force
-		playerX = playerX - (dx * speedPercent * playerSegment.curve * centrifugal);
+			// Apply centrifugal force based on curve and the current speed:
+			// If the player has no speed we of course don't apply any additional force
+			let speedPercent  = Math.max(0, speed/maxSpeed);
+			playerX = playerX - (dx * speedPercent * playerSegment.curve * centrifugal);
 
-		// handle acceleration and deceleration
-		if (Keyboard.down(Keys.UP)) {
-			speed = M4th.accelerate(speed, accel, dt);
-		} else if ((Keyboard.down(Keys.DOWN) || Keyboard.down(Keys.SPACE))) {
-			speed = M4th.accelerate(speed, breaking, dt);
-			speed = M4th.limit(speed, 0, maxSpeed);
+			// handle acceleration and deceleration
+			if (Keyboard.down(Keys.UP)) {
+				speed = M4th.accelerate(speed, accel, dt);
+			} else if ((Keyboard.down(Keys.DOWN) || Keyboard.down(Keys.SPACE))) {
+				speed = M4th.accelerate(speed, breaking, dt);
+				speed = M4th.limit(speed, 0, maxSpeed);
+			} else {
+				// no pedal pressed: decelerate slowly
+				speed = M4th.accelerate(speed, decel, dt);
+				speed = M4th.limit(speed, 0, maxSpeed);
+			}
 		} else {
-			// no pedal pressed: decelerate slowly
+			// slowly roll to a stop after finishing the race
 			speed = M4th.accelerate(speed, decel, dt);
 			speed = M4th.limit(speed, 0, maxSpeed);
 		}
@@ -352,7 +364,6 @@ const LAYERS = {
 		if (((playerX < -1) || (playerX > 0.9)) && (speed > offRoadLimit)) {
 			speed = M4th.accelerate(speed, -speed/500, dt);
 		}
-
 
 		// collision detection
 		for(let n = 0 ; n < playerSegment.sprites.length ; n++) {
@@ -383,7 +394,44 @@ const LAYERS = {
 		// finally update the player position on the track
 		position = M4th.increase(position, dt * speed, trackLength);
 
+		// and now we rerender the road
 		this.render();
+	}
+
+	/**
+	 * Updates the UI, e.g. HUD
+	 */
+	updateUI() {
+		// laps
+		let laps = this.timing.laptimes.length + 1;
+		this._ui.lapsCount.setText(`Lap:${laps}/${this.timing.maxLaps}`);
+
+		// timing
+		let lapTimingString = `#${laps}: ${this.timing.total}`;
+
+		for (let i = 0; i < this.timing.laptimes.length; i++) {
+			//_gfx.alpha(1/(i+2));
+			let timing = this.timing.laptimes[i];
+			lapTimingString += `\n#${timing.lap}: ${timing.time}`;
+		}
+		this._ui.lapsTiming.setText(lapTimingString);
+
+		// tacho and speed number
+		let speedPercent  = Math.max(0, speed/maxSpeed);
+		let kmhStr = `${Math.ceil(350*speedPercent)}`.padStart(3, "0");
+		let fill = Math.ceil(speedPercent * 60);
+		let tachoHeight = height - fill;
+		this._ui.tacho.currentSpeed.setText(kmhStr);
+		this._ui.tacho.currentSpeed.y = tachoHeight - 20;
+
+		// fill tacho
+		this._ui.tacho.tachoBox.visible = true;
+		// this is some rather dirty PIXI mask magic :D
+		this._ui.tacho.tachoBoxMask.clear();
+		this._ui.tacho.tachoBoxMask.beginFill(0x000000);
+		this._ui.tacho.tachoBoxMask.drawRect(this._ui.tacho.tachoBox.x, this._ui.tacho.tachoBox.y + 60 - fill, 22, fill);
+		this._ui.tacho.tachoBoxMask.endFill();
+		this._ui.tacho.tachoBox._pixiSprite.mask = this._ui.tacho.tachoBoxMask;
 	}
 
 	collides(x1, w1, x2, w2) {
@@ -836,44 +884,6 @@ const LAYERS = {
 				this._carEntity.y = height - carH - 30 - Helper.choose([0,1]);
 			}
 		}
-
-		/********** #UI ***********/
-
-		// laps
-		let laps = this.timing.laptimes.length + 1;
-		this._ui.lapsCount.setText(`Lap:${laps}/3`);
-
-		// timing
-		let lapTimingString = `#${laps}: ${this.timing.total}`;
-
-		for (let i = 0; i < this.timing.laptimes.length; i++) {
-			//_gfx.alpha(1/(i+2));
-			let timing = this.timing.laptimes[i];
-			lapTimingString += `\n#${timing.lap}: ${timing.time}`;
-		}
-		this._ui.lapsTiming.setText(lapTimingString);
-
-		// tacho and speed number
-		let speedPercent  = Math.max(0, speed/maxSpeed);
-		let kmhStr = `${Math.ceil(350*speedPercent)}`.padStart(3, "0");
-		let fill = Math.ceil(speedPercent * 60);
-		let tachoHeight = height - fill;
-		this._ui.tacho.currentSpeed.setText(kmhStr);
-		this._ui.tacho.currentSpeed.y = tachoHeight - 20;
-
-		// fill tacho
-		// this is some rather dirty PIXI mask magic :D
-		this._ui.tacho.tachoBoxMask.clear();
-		this._ui.tacho.tachoBoxMask.beginFill(0x000000);
-		this._ui.tacho.tachoBoxMask.drawRect(this._ui.tacho.tachoBox.x, this._ui.tacho.tachoBox.y + 60 - fill, 22, fill);
-		this._ui.tacho.tachoBoxMask.endFill();
-		this._ui.tacho.tachoBox._pixiSprite.mask = this._ui.tacho.tachoBoxMask;
-
-		// // intro
-		// if (!this.started) {
-		// 	_gfx.rectf(0, height/2 - 10, width, 10, "#000000");
-		// 	_gfx.text("font1", 20, height/2 - 9, "Press ENTER to start!");
-		// }
 	}
 }
 
