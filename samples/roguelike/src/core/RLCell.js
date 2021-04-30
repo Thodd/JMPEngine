@@ -9,7 +9,7 @@ class RLCell {
 		this._renderInfo = {
 			id: 0,
 			color: 0xFFFFFF,
-			bg: undefined
+			background: undefined
 		};
 	}
 

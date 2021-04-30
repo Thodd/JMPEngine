@@ -7,7 +7,7 @@ class RLActor {
 		this._renderInfo = {
 			id: 0,
 			color: 0xFFFFFF,
-			bg: undefined
+			background: undefined
 		};
 	}
 
@@ -37,8 +37,18 @@ class RLActor {
 	 * Moves the actor to the given RLCell.
 	 * @param {RLCell} cell the new cell
 	 */
-	moveTo() {
+	moveTo(cell) {
+		this.removeFromCell();
+		cell.addActor(this);
+	}
 
+	/**
+	 * Removes the actor from its RLCell (if its added).
+	 */
+	removeFromCell() {
+		if (this._cell) {
+			this._cell.removeActor(this);
+		}
 	}
 
 	set id(v) {

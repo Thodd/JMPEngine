@@ -1,5 +1,5 @@
 import PIXI from "../../../../src/core/PIXIWrapper.js";
-import { fail, warn } from "../../../../src/utils/Log.js";
+import { fail } from "../../../../src/utils/Log.js";
 import Spritesheets from "../../../../src/assets/Spritesheets.js";
 import Entity from "../../../../src/game/Entity.js";
 
@@ -23,18 +23,13 @@ class RLMap extends Entity {
 
 		super(x, y);
 
-		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn'tile be much of an issue
-		this._pixiSprite.destroy();
-
-		// create a continer for all single tile sprites
-		this._pixiSprite = new PIXI.Container();
-
 		// sheet from which we will render the tiles
 		this._sheet = Spritesheets.getSheet(sheet);
 
-		// Map setup
+		// setup
 		this._configure(w, h, cellClass, viewport);
 		this._initMap();
+		this._initSprites();
 	}
 
 	/**
@@ -53,7 +48,8 @@ class RLMap extends Entity {
 				w: 10,
 				h: 10
 			},
-			isDirty: false
+			// dirty flag for optimized rerendering
+			isDirty: true
 		};
 
 		// copy initially given viewport values
@@ -64,7 +60,6 @@ class RLMap extends Entity {
 		// and we can take care of the dirty checking for rerendering.
 		this.viewport = {
 			set x(v) {
-				v = Math.max(v, 0);
 				_config.isDirty = true;
 				_config.viewport.x = v;
 			},
@@ -72,7 +67,6 @@ class RLMap extends Entity {
 				return _config.viewport.x;
 			},
 			set y(v) {
-				v = Math.max(v, 0);
 				_config.isDirty = true;
 				_config.viewport.y = v;
 			},
@@ -80,7 +74,6 @@ class RLMap extends Entity {
 				return _config.viewport.y;
 			},
 			set w(v) {
-				v = Math.max(v, 0);
 				_config.isDirty = true;
 				_config.viewport.w = v;
 			},
@@ -88,7 +81,6 @@ class RLMap extends Entity {
 				return _config.viewport.w;
 			},
 			set h(v) {
-				v = Math.max(v, 0);
 				_config.isDirty = true;
 				_config.viewport.h = v;
 			},
@@ -107,6 +99,17 @@ class RLMap extends Entity {
 	}
 
 	/**
+	 * Returns the RLCell at (x,y).
+	 * undefined in out of bounds.
+	 * @param {int} x x-coordinate
+	 * @param {int} y y-coordinate
+	 * @returns {RLCell|undefined} the RLCell at (x,y)
+	 */
+	get(x, y) {
+		return this._map[x] && this._map[x][y];
+	}
+
+	/**
 	 * Iterate all tiles from top-left to bottom-right order.
 	 * @param {*} fn callback function, called for each RLCell instance.
 	 */
@@ -116,13 +119,6 @@ class RLMap extends Entity {
 				fn(this._map[x][y]);
 			}
 		}
-	}
-
-	/**
-	 * Not supported.
-	 */
-	configSprite() {
-		warn("configSprite is not supported for RLMaps. Tileset can only be configured initially via the constructor.", "RLMap");
 	}
 
 	/**
@@ -138,6 +134,34 @@ class RLMap extends Entity {
 		}
 	}
 
+	_initSprites() {
+		// Create PIXI Containers
+		let pixiMainContainer = new PIXI.Container();
+		let pixiTileLayer = new PIXI.Container();
+		let pixiBackgroundLayer = new PIXI.Container();
+		pixiMainContainer.addChild(pixiBackgroundLayer);
+		pixiMainContainer.addChild(pixiTileLayer);
+
+		// Failsafe: remove configSprite function, so it cannot be modified from outside
+		this.configSprite({
+			replaceWith: pixiMainContainer
+		});
+		this.configSprite = function() {};
+
+		// Create Sprites for the viewport
+		let maxSprites = this.viewport.w * this.viewport.h;
+		this._spritesPool = [];
+		for (let i = 0; i < maxSprites; i++) {
+			let spr = new PIXI.Sprite();
+			this._spritesPool.push(spr);
+			pixiTileLayer.addChild(spr);
+		}
+
+		// create BG graphic, used for rendering Tile background rectangles
+		this._backgroundGFX = new PIXI.Graphics();
+		pixiBackgroundLayer.addChild(this._backgroundGFX);
+	}
+
 	/**
 	 * Hook for updating the nested sprites graphics for each tile.
 	 * If the RLMap Entity was shifted with via (x,y), the tiles are already correctly
@@ -145,8 +169,59 @@ class RLMap extends Entity {
 	 * Only the textures need to be updated now based on the RLMaps viewport.
 	 */
 	_updateRenderInfos() {
-		if (this._isDirty) {
-			// TODO: update PIXI sprites based on map viewport
+		if (this._config.isDirty) {
+			this._backgroundGFX.clear();
+
+			// set the correct texture and position the sprite
+			let vpX = this.viewport.x;
+			let vpY = this.viewport.y;
+			let vpW = this.viewport.w;
+			let vpH = this.viewport.h;
+			let i = 0;
+			for (let x = 0; x < vpW; x++) {
+				for (let y = 0; y < vpH; y++) {
+					// get sprite from pool and update texture
+					let spr = this._spritesPool[i];
+
+					// we just make everything invisible at first,
+					// this way we don't have left-over tiles outside the viewport
+					spr.visible = false;
+
+					// position sprite on screen
+					spr.x = x * this._sheet.w;
+					spr.y = y * this._sheet.h;
+
+					// get cell, make sure to not go out of bounds
+					let cell = this._map[vpX+x] ? this._map[vpX+x][vpY+y] : undefined;
+					if (cell) {
+						let cellRenderInfo = cell._renderInfo;
+						let actor = cell.getTopActor();
+						let actorRenderInfo = actor ? actor._renderInfo : {};
+
+						let id = actorRenderInfo.id || cellRenderInfo.id;
+						let color = actorRenderInfo.color || cellRenderInfo.color;
+						let background = actorRenderInfo.background || cellRenderInfo.background;
+
+						// update tile texture
+						spr.visible = true;
+						spr.texture = this._sheet.textures[id];
+
+						// FG coloring
+						spr.tint = color;
+
+						// draw BG if needed
+						if (background) {
+							this._backgroundGFX.beginFill(background);
+							this._backgroundGFX.drawRect(spr.x, spr.y, this._sheet.w, this._sheet.h);
+							this._backgroundGFX.endFill();
+						}
+					}
+
+					i++;
+				}
+			}
+
+			this._config.isDirty = false;
 		}
 	}
 }
