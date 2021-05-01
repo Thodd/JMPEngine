@@ -1,11 +1,24 @@
 import { randomInteger, random } from "./RNG.js";
 
+/**
+ * Returns a random element from the given array.
+ * If an optional range (a, b) is given, the element is taken randomly out of that range.
+ * @param {Array} array the array of possible values
+ * @param {int} [a] start index
+ * @param {int} [b] end index
+ * @returns a random element from the given array, inside the given range (a, b)
+ */
 function choose(array, a, b) {
 	a = a || 0;
 	b = b || array.length - 1;
 	return array[randomInteger(a,b)];
 }
 
+/**
+ * Randomizes the order of elements in the given Array.
+ * @param {Array} a the array to shuffle
+ * @returns the shuffled array
+ */
 function shuffle(a) {
 	let i = 0;
 	let j = 0;

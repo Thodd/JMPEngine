@@ -25,14 +25,14 @@ class Overworld extends Screen {
 		});
 		firstMap.each((tile) => {
 			tile.id = char2id(".");
-			tile.color = 0x111111;
-			tile.background = 0x000001;
+			tile.color = 0x55532a;
+			tile.background = 0x050011;
 		});
 		this.add(firstMap);
 
 		let player = new RLActor();
 		player.id = char2id("@");
-		player.color = 0x0085FF;
+		player.color = 0x4c889e;
 		player.moveTo(firstMap.get(2, 3));
 
 		window.player = player;
@@ -43,7 +43,7 @@ class Overworld extends Screen {
 			text: "Inventory\n> Pistol (3/6)\nMedkit (+)",
 			x: xx(30),
 			y: yy(1),
-			color: 0x0085FF
+			color: 0x4c889e
 		}));
 	}
 }

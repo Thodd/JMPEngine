@@ -1,5 +1,11 @@
 import Helper from "../../../src/utils/Helper.js";
+import { interpolate, easeIn, easeOut, easeInOut } from "../../../src/utils/M4th.js";
 
+/**
+ * Functions are either part;
+ *  - from the built-in JMP M4th lib, e.g. Easing
+ *  - taken from https://github.com/jakesgordon/javascript-racer/, MIT License
+ */
 const M4th = {
 
 	project(p, cameraX, cameraY, cameraZ, cameraDepth, width, height, roadWidth) {
@@ -14,10 +20,6 @@ const M4th = {
 
 	exponentialFog(distance, density) {
 		return 1 / (Math.pow(Math.E, (distance * distance * density)));
-	},
-
-	fov(angle) {
-		return 1/Math.tan(angle/2);
 	},
 
 	accelerate(v, acc, dt) {
@@ -35,24 +37,12 @@ const M4th = {
 		return result;
 	},
 
-	interpolate(a,b,percent) {
-		return a + (b-a)*percent;
-	},
+	interpolate: interpolate,
 
 	limit: Helper.clamp,
 
 	percentRemaining(n, total) {
 		return (n%total)/total;
-	},
-
-	toInt(obj, def) {
-		if (obj !== null) {
-			var x = parseInt(obj, 10);
-			if (!isNaN(x)) {
-				return x;
-			}
-		}
-		return M4th.toInt(def, 0);
 	},
 
 	collides(x1, w1, x2, w2) {
@@ -65,17 +55,11 @@ const M4th = {
 		return !((max1 < min2) || (min1 > max2));
 	},
 
-	easeIn(a,b,percent) {
-		return a + (b-a)*Math.pow(percent,2);
-	},
+	easeIn: easeIn,
 
-	easeOut(a,b,percent) {
-		return a + (b-a)*(1-Math.pow(1-percent,2));
-	},
+	easeOut: easeOut,
 
-	easeInOut(a,b,percent) {
-		return a + (b-a)*((-Math.cos(percent*Math.PI)/2) + 0.5);
-	}
+	easeInOut: easeInOut
 };
 
 export default M4th;

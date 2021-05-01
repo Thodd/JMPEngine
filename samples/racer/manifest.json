@@ -13,10 +13,10 @@
 
 	"assets": {
 		"spritesheets": {
-			"car": {
-				"url": "./img/car_big.png",
-				"w": 86,
-				"h": 46
+			"racecar": {
+				"url": "./img/racecar.png",
+				"w": 128,
+				"h": 48
 			},
 			"tacho": {
 				"url": "./img/tacho.png",
