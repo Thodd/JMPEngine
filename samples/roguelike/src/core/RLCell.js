@@ -1,3 +1,9 @@
+const FOV_LEVEL = {
+	DARK: 0,
+	SHADOW: 1,
+	LIT: 2
+};
+
 class RLCell {
 	constructor(map, x, y) {
 		this._map = map;
@@ -9,7 +15,12 @@ class RLCell {
 		this._renderInfo = {
 			id: 0,
 			color: 0xFFFFFF,
-			background: undefined
+			background: undefined,
+			fov: {
+				level: FOV_LEVEL.LIT,
+				color: 0xFFFFFF,
+				background: undefined
+			}
 		};
 	}
 
@@ -70,5 +81,7 @@ class RLCell {
 		}
 	}
 }
+
+RLCell.FOV_LEVEL = FOV_LEVEL;
 
 export default RLCell;

@@ -1,5 +1,11 @@
 # Backlog
 
+## open
+
+* Integrate "monochrome" features into grid-based engine
+  * Refactor Animation System to fit the grid based style
+    * Animation instance gets: Map, Actor or Cell
+  * Control-Schemes
 ## ideas
 
 * Room-Structure for overworld
@@ -12,13 +18,11 @@
   * Animated?
     * Blinks in 2 colors to signal an important character
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
-## open
 
-* [ ] Event-Based input handling
-  * Extend Keyboard class to collect events until the end of frame and then fire an Event with multiple pressed keys
-  *
 ## done
 
+* [x] Event-Based input handling
+  * Extend Keyboard class to collect events until the end of frame and then fire an Event with multiple pressed keys
 * [x] Render RLMap
   * RLMap Viewport is defined in Tiles (NOT Pixels)
   * 2 Layers (_pixiSprite = Outer Container + 2 * PIXI.Container):
