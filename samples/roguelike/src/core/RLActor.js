@@ -1,3 +1,5 @@
+import { warn } from "../../../../src/utils/Log.js";
+
 class RLActor {
 	constructor() {
 		this._cell = null;
@@ -38,8 +40,12 @@ class RLActor {
 	 * @param {RLCell} cell the new cell
 	 */
 	moveTo(cell) {
-		this.removeFromCell();
-		cell.addActor(this);
+		if (cell) {
+			this.removeFromCell();
+			cell.addActor(this);
+		} else {
+			warn("Actor cannot be moved to undefined cell!", "RLActor")
+		}
 	}
 
 	/**
@@ -49,6 +55,10 @@ class RLActor {
 		if (this._cell) {
 			this._cell.removeActor(this);
 		}
+	}
+
+	getCell() {
+		return this._cell;
 	}
 
 	set id(v) {

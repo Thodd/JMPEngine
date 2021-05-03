@@ -1,12 +1,15 @@
 import { contains, remove } from "../utils/Helper.js";
-import { log, warn } from "../utils/Log.js";
+import { log } from "../utils/Log.js";
 
-let keyDownList = [];
-let pressedList = [];
+const keyDownList = [];
+const pressedList = [];
 let pressedCount = 0;
-let symbolicNames = [];
+const symbolicNames = [];
 
-let eventHandlers = {
+const endOfFrameHandlers = [];
+let scheduledEndOfFrameHandlers = false;
+
+const eventHandlers = {
 	"all": []
 };
 
@@ -20,14 +23,16 @@ function keyDownHandlerImpl(evt) {
 	// registered handlers on specific keys
 	if (eventHandlers[evt.keyCode]) {
 		eventHandlers[evt.keyCode].forEach(function(fn) {
-			fn();
+			fn(evt.keyCode);
 		});
 	}
 
 	// handlers on "all" keys
 	eventHandlers["all"].forEach(function(fn) {
-		fn();
+		fn(evt.keyCode);
 	});
+
+	scheduledEndOfFrameHandlers=true;
 }
 
 //keeps track of upped keys
@@ -54,9 +59,10 @@ function init() {
  * Register to a browser keydown event.
  * The handlers are directly called once a browser event occurs.
  * However you can call the Keyboard polling functions to check the state of all pressed/down keys.
+ * If the parameter 'key' is set to 'all' or undefined, each keyboard event is propagated.
  *
- * @param {*} key
- * @param {*} handler
+ * @param {string} key
+ * @param {function} handler
  */
 function register(key, handler) {
 	// no key given -> register to a general keydown event
@@ -74,8 +80,8 @@ function register(key, handler) {
 /**
  * Deregisters a previously registered Keyboard event handler.
  *
- * @param {*} key
- * @param {*} handler
+ * @param {string} key
+ * @param {function} handler
  */
 function deregister(key, handler) {
 	// no key given -> deregister to a general keydown event
@@ -88,6 +94,25 @@ function deregister(key, handler) {
 	if (list) {
 		remove(handler, eventHandlers[key]);
 	}
+}
+
+/**
+ * Registers a keyboard event handler to be called at the end of the current frame.
+ * The currently pressed keys can be polled with Keyboard.isDown(...) etc.
+ * @param {function} handler the function to be called at the end of a frame after a native keypress event
+ */
+ function registerEndOfFrameHandler(handler) {
+	if (!contains(handler, endOfFrameHandlers)) {
+		endOfFrameHandlers.push(handler);
+	}
+}
+
+/**
+ * Deregisters a previously registered end-of-frame handler.
+ * @param {function} handler the end-of-frame handler which will be deregistered
+ */
+function deregisterEndOfFrameHandler(handler) {
+	remove(handler, endOfFrameHandlers);
 }
 
 //Define symbolic names (strings) as placeholders for Key-Values
@@ -134,6 +159,13 @@ function _reset() {
 		pressedList[pressedCount] = 0;
 	}
 	pressedCount = 0;
+
+	if (scheduledEndOfFrameHandlers) {
+		endOfFrameHandlers.forEach(function(fn) {
+			fn();
+		});
+		scheduledEndOfFrameHandlers = false;
+	}
 }
 
 /*
@@ -212,5 +244,7 @@ export default {
 	pressed,
 	wasPressedOrIsDown,
 	register,
-	deregister
+	deregister,
+	registerEndOfFrameHandler,
+	deregisterEndOfFrameHandler
 };

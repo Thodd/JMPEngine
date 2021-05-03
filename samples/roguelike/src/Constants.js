@@ -7,8 +7,8 @@ const Constants = {
 	MAP_WIDTH: 100,
 	MAP_HEIGHT: 100,
 
-	MAP_VIEWPORT_WIDTH: 21,
-	MAP_VIEWPORT_HEIGHT: 21
+	MAP_VIEWPORT_WIDTH: 48,
+	MAP_VIEWPORT_HEIGHT: 38
 };
 
 export default Constants;

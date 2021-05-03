@@ -1,15 +1,15 @@
 {
 	"title": "Roguelike 2",
 
-	"startScreen": "./src/screens/game/Overworld.js",
+	"startScreen": "./src/game/GameScreen.js",
 
 	"w": 800,
-	"h": 368,
+	"h": 640,
 
 	"layers": 7,
 	"scale": 1,
 
-	"bg": "0x392a20",
+	"bg": "0x47341b",
 	"skipIntro": true,
 
 	"assets": {
