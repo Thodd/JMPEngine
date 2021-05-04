@@ -1,5 +1,7 @@
 // Engine imports
 import PIXI from "../../../../../src/core/PIXIWrapper.js";
+import Manifest from "../../../../../src/assets/Manifest.js";
+import Spritesheets from "../../../../../src/assets/Spritesheets.js";
 import Screen from "../../../../../src/game/Screen.js";
 import BitmapText from "../../../../../src/game/BitmapText.js";
 
@@ -44,27 +46,36 @@ class GameScreen extends Screen {
 			color: Colors[7]
 		}));
 
+		// sizes
+		let w = Manifest.get("/w");
+		let h = Manifest.get("/h");
+		let sheet = Spritesheets.getSheet("tileset");
+		let tw = sheet.w;
+		let th = sheet.h;
+
 		let textBG = new Entity();
 		let pixiTextBG = new PIXI.Graphics();
-		pixiTextBG.beginFill(Colors[10]);
-		pixiTextBG.drawRect(-5, -5, 215, 40);
+		pixiTextBG.beginFill(Colors[9]);
+		pixiTextBG.drawRect(0, 0, w - 2 * tw, 6 * th);
 		pixiTextBG.endFill();
 		textBG.configSprite({
 			replaceWith: pixiTextBG
 		});
-		textBG.x = xx(23);
-		textBG.y = yy(10);
+		textBG.x = xx(1);
+		textBG.y = yy(33);
 		this.add(textBG);
 
 		this.add(new BitmapText({
-			font: "font1",
+			font: "rlfont",
 			leading: 3,
 			text:
-`Damn. I broke my wrench.
+`Dr Strand:
+Damn. I broke my wrench.
 Guess I'm just too strong.
-Ah, what ya gonna do? ;)`,
-			x: xx(23),
-			y: yy(10),
+Ah, what ya gonna do, eh?
+Would you mind helping me find a new one?`,
+			x: xx(1),
+			y: yy(33),
 			color: Colors[0]
 		}));
 	}

@@ -1,4 +1,3 @@
-import Helper from "../../../../../src/utils/Helper.js";
 import { char2id } from "../../utils/RLHelper.js";
 
 import MapBase from "./MapBase.js";
@@ -26,9 +25,14 @@ class Overworld extends MapBase {
 	 */
 	_generate() {
 		this.each((tile) => {
-			tile.id = Helper.choose([char2id("."), char2id("."), char2id("."), char2id("."), char2id("."),char2id(","), char2id("."), char2id("."), char2id("."), char2id("♠")]);
-			// tile.id = Helper.choose([36, 36, 36, 44, 44, 44, 44, 44, 33, 33, 33, 33, 96]);
-			tile.color = Colors[11];
+			let r = Math.random();
+			if (r < 0.05) {
+				tile.id = char2id("♠");
+				tile.color = Colors[11];
+			} else {
+				tile.id = char2id(".");
+				tile.color = Colors[10];
+			}
 			tile.background = Colors[9];
 		});
 	}
@@ -38,7 +42,7 @@ class Overworld extends MapBase {
 	 */
 	_placePlayer() {
 		let player = this.getPlayerActor();
-		this.get(10, 10).addActor(player);
+		this.get(15, 15).addActor(player);
 	}
 }
 

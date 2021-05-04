@@ -51,6 +51,8 @@ class GameController {
 		} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
 			dy = +1;
 		}
+		this._map.viewport.x += dx;
+		this._map.viewport.y += dy;
 		this._player.moveTo(this._map.get(c.x + dx, c.y + dy));
 	}
 }
