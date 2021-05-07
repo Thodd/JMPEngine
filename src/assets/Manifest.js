@@ -52,7 +52,10 @@ async function init(manifest) {
 
 				// resolve manifest base URL
 				let u = new URL(manifest, window.location);
-				_baseURL = new URL(u.href.replace("manifest.json", ""));
+				// get manifest.json file name
+				// BEWARE: URL parameters and search query is not taken care of!
+				let s = u.href.substr(u.href.lastIndexOf("/")+1);
+				_baseURL = new URL(u.href.replace(s, ""));
 
 			} else if (manifest && typeof manifest === "object") {
 				log("Using manifest from static object. Cloning manifest ...", "Manifest");

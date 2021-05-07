@@ -3,13 +3,13 @@
 
 	"startScreen": "./src/game/screens/GameScreen.js",
 
-	"w": 800,
-	"h": 640,
+	"w": 992,
+	"h": 784,
 
 	"layers": 7,
 	"scale": 1,
 
-	"bg": "0x47341b",
+	"bg": "0x170b0b",
 	"skipIntro": true,
 
 	"assets": {
@@ -18,6 +18,11 @@
 				"url": "./img/simple_mood_16x16.png",
 				"w": 16,
 				"h": 16
+			},
+			"minimap": {
+				"url": "./img/8x8.png",
+				"w": 8,
+				"h": 8
 			}
 		},
 		"fonts": {

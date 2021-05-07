@@ -1,7 +1,7 @@
 import RLMap from "../../core/RLMap.js";
-
-import RLActor from "../../core/RLActor.js";
+import ActorBase from "../actors/ActorBase.js";
 import { char2id } from "../../utils/RLHelper.js";
+
 import Colors from "../../Colors.js";
 
 /**
@@ -13,13 +13,13 @@ class MapBase extends RLMap {
 		super(spec);
 
 		// setup default player actor (can be overwritten or changed if needed)
-		this._playerActor = new RLActor();
+		this._playerActor = new ActorBase();
 		this._playerActor.id = char2id("@");
 		this._playerActor.color = Colors[0];
 
-		this._generate();
-		this._populate();
-		this._placePlayer();
+		this.generate();
+		this.populate();
+		this.placePlayer();
 	}
 
 	/**
@@ -33,19 +33,19 @@ class MapBase extends RLMap {
 	/**
 	 * Hook to generate a map.
 	 */
-	_generate() {}
+	generate() {}
 
 	/**
 	 * Hook to populate the generated map with NPCs.
 	 */
-	_populate() {}
+	populate() {}
 
 	/**
 	 * Hook to place the player RLActor instance in the map.
 	 * Can also be used to change the player RLActor instance to something else.
 	 * Or simply use getPlayerActor() to retrieve the default instance.
 	 */
-	_placePlayer() {}
+	placePlayer() {}
 }
 
 export default MapBase;

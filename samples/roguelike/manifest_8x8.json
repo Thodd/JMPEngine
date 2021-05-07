@@ -1,0 +1,35 @@
+{
+	"title": "Roguelike 2",
+
+	"startScreen": "./src/game/screens/GameScreen.js",
+
+	"w": 496,
+	"h": 392,
+
+	"layers": 7,
+	"scale": 1,
+
+	"bg": "0x170b0b",
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"tileset": {
+				"url": "./img/8x8.png",
+				"w": 8,
+				"h": 8
+			},
+			"minimap": {
+				"url": "./img/8x8.png",
+				"w": 8,
+				"h": 8
+			}
+		},
+		"fonts": {
+			"rlfont": {
+				"spritesheet": "tileset",
+				"charOrder": " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
+			}
+		}
+	}
+}

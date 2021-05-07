@@ -8,11 +8,22 @@ const Constants = {
 	TILE_WIDTH: sheet.w,
 	TILE_HEIGHT: sheet.h,
 
-	MAP_WIDTH: 100,
-	MAP_HEIGHT: 100,
+	// the number of rooms in columns and rows
+	OVERWORLD_ROOM_COLUMNS: 11,
+	OVERWORLD_ROOM_ROWS: 11,
 
-	MAP_VIEWPORT_WIDTH: 31,
-	MAP_VIEWPORT_HEIGHT: 31
+	// viewport & room size
+	VIEWPORT_WIDTH: 60,
+	VIEWPORT_HEIGHT: 40,
+
+	// Rendering Layers
+	Layers: {
+		// 1
+		// 2
+		MAP: 3,
+		// 4
+		UI: 5
+	}
 };
 
 export default Constants;
