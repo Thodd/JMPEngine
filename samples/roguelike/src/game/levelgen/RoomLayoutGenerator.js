@@ -1,64 +1,20 @@
 import Tilemap from "../../../../../src/game/Tilemap.js";
 import Helper from "../../../../../src/utils/Helper.js";
-import { log, warn } from "../../../../../src/utils/Log.js";
+import { log } from "../../../../../src/utils/Log.js";
 import RNG from "../../../../../src/utils/RNG.js";
 import Colors from "../../Colors.js";
 
 import Constants from "../../Constants.js";
 import { char2id } from "../../utils/RLHelper.js";
 
-const _adjacentMapping = {
-	"0-1":  "N",
-	"1-1":  "NE",
-	"10":   "E",
-	"11":   "SE",
-	"01":   "S",
-	"-11":  "SW",
-	"-10":  "W",
-	"-1-1": "NW"
-};
-
-class Room {
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
-
-		// directional references to all adjacent rooms
-		// can be accessed roomInstance["SW"] or via getAdjacent(0, -1).
-		this.N = null;
-		this.NE = null;
-		this.E = null;
-		this.SE = null;
-		this.S = null;
-		this.SW = null;
-		this.W = null;
-		this.NW = null;
-
-		this.isFilled = false;
-	}
-
-	/**
-	 * Safely retrieves an adjacent Room to this instance.
-	 * Only Rooms in the Moore neighborhood can be retrieved this way.
-	 * @param {int} x x delta: 0, 1 or -1
-	 * @param {int} y y delta: 0, 1 or -1
-	 * @returns {Room|null} the adjacent room or null if no room is present at the given coordinates
-	 */
-	getAdjacent(x, y) {
-		let dir = _adjacentMapping[`${x}${y}`];
-		if (dir) {
-			return this[dir];
-		} else {
-			warn(`Cannot get adjacent Room outside the Moore neighborhood: (${x},${y}).`, "RoomLayoutGenerator.Room");
-		}
-	}
-}
+import Room from "./Room.js";
 
 /**
  * Generates a Room Layout.
  */
 class RoomLayoutGenerator {
-	constructor(mapRoomColumns, mapRoomRows) {
+	constructor(rlMap, mapRoomColumns, mapRoomRows) {
+		this.rlMap = rlMap;
 		this.mapRoomColumns = mapRoomColumns;
 		this.mapRoomRows = mapRoomRows;
 
@@ -72,9 +28,21 @@ class RoomLayoutGenerator {
 		for (let x = 0; x < this.mapRoomColumns; x++) {
 			this.world[x] = [];
 			for (let y = 0; y < this.mapRoomRows; y++) {
-				this.world[x][y] = new Room(x, y);
+				this.world[x][y] = new Room(this.rlMap, x, y);
 			}
 		}
+
+		// connect adjacent rooms. We now can use each() :)
+		this.each((r) => {
+			r.N  = this.getValidRoom(r.x + 0, r.y - 1);
+			r.NE = this.getValidRoom(r.x + 1, r.y - 1);
+			r.E  = this.getValidRoom(r.x + 1, r.y + 0);
+			r.SE = this.getValidRoom(r.x + 1, r.y + 1);
+			r.S  = this.getValidRoom(r.x + 0, r.y + 1);
+			r.SW = this.getValidRoom(r.x - 1, r.y + 1);
+			r.W  = this.getValidRoom(r.x - 1, r.y + 0);
+			r.NW = this.getValidRoom(r.x - 1, r.y - 1);
+		});
 	}
 
 	/**
@@ -111,18 +79,18 @@ class RoomLayoutGenerator {
 		this.minimap.layer = Constants.Layers.UI;
 
 		this.each((r) => {
-			let id = r.isFilled ? char2id("♠") : char2id("≈");
-			let color = r.isFilled ? Colors[3] : Colors[2];
+			let id = r.isFilled ? char2id("♠") : char2id("▲");
+			let color = r.isFilled ? Colors[3] : Colors[8];
 			let tile = this.minimap.get(r.x, r.y);
 			tile.set(id);
 			tile.setColor(color);
 		});
 
 		this.minimap.get(5,5).set(char2id("⌂"));
-		this.minimap.get(5,5).setColor("0xeeeeee");
+		this.minimap.get(5,5).setColor(Colors[5]);
 
 		this.minimap.get(3,5).set(char2id("@"));
-		this.minimap.get(3,5).setColor(Colors[6]);
+		this.minimap.get(3,5).setColor(Colors[0]);
 	}
 
 	/**
@@ -153,7 +121,7 @@ class RoomLayoutGenerator {
 	 * Returns all game relevant rooms.
 	 * Ignores rooms which are just edges for making the world cohesive.
 	 */
-	getRooms() {
+	getFilledRooms() {
 		return this._roomList;
 	}
 

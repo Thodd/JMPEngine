@@ -45,11 +45,8 @@ class Overworld extends MapBase {
 	 */
 	generate() {
 		// create a random room layout
-		this.roomLayoutGenerator = new RoomLayoutGenerator(Constants.OVERWORLD_ROOM_COLUMNS, Constants.OVERWORLD_ROOM_ROWS);
+		this.roomLayoutGenerator = new RoomLayoutGenerator(this, Constants.OVERWORLD_ROOM_COLUMNS, Constants.OVERWORLD_ROOM_ROWS);
 		this.roomLayoutGenerator.generate();
-
-		// TODO: enrich Rooms with actual tile-coordinate information for scrolling.
-		//       The RoomLayoutGenerator should not do this, it only operates on a smaller scaled grid (rows/cols)
 
 		// TODO: Make this based on the room list, NOT the complete map
 		// fill with tiles
@@ -67,11 +64,22 @@ class Overworld extends MapBase {
 	}
 
 	/**
-	 * Place the player on the Overworld the first time.
+	 * Place the player on the Overworld for the first time.
 	 */
 	placePlayer() {
+		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
+		let dim = centerRoom.dimensions;
+
+		// place player in their first room
 		let player = this.getPlayerActor();
-		this.get(15, 15).addActor(player);
+		player.setRoom(centerRoom);
+
+		// place player in the overall map
+		this.get(dim.x_min + 15, dim.y_min + 15).addActor(player);
+
+		// initial viewport is in the centerRoom of the world map
+		this.viewport.x = dim.x_min;
+		this.viewport.y = dim.y_min;
 	}
 }
 

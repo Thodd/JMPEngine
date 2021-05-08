@@ -8,8 +8,10 @@ class GameController {
 		// safe to keep shorthand references to the RLMap and the player RLActor instance
 		this._gameScreen = gameScreen;
 		this._map = gameScreen.getMap();
-		this._roomLayoutGenerator = this._map.getRoomLayoutGenerator();
 		this._player = this._map.getPlayerActor();
+
+		// initially we start with the room the player was placed in
+		this._currentRoom = this._player.getRoom();
 
 		// register event handler for input
 		Keyboard.registerEndOfFrameHandler(this.handleInput.bind(this));
@@ -26,20 +28,29 @@ class GameController {
 	}
 
 	update() {
+
+		// TODO: Get scrolling to work somehow...
+
+
 		let pc = this._player.getCell();
-		if (pc.x == 60) {
+		let dim = this._currentRoom.dimensions;
+		if (pc.x < dim.x_min || pc.x > dim.x_max) {
 			this._canMove = false;
 		} else {
 			return;
 		}
 
+		let dx = pc.x < dim.x_min ? -1 : 1;
+
 		this._i = this._i || 0;
 		this._i++;
 		if (this._i <= 60) {
-			this._map.viewport.x++;
+			this._map.viewport.x += dx;
 		} else {
 			this._canMove = true;
 		}
+
+
 
 		// during the animation phase we update the system
 		if (this.animationsRunning) {
