@@ -1,7 +1,7 @@
 {
-	"title": "Roguelike 2",
+	"title": "Roguelike 8x8",
 
-	"startScreen": "./src/game/screens/GameScreen.js",
+	"startScreen": "./src/screens/game/GameScreen.js",
 
 	"w": 496,
 	"h": 392,

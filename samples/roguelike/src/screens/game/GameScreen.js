@@ -6,42 +6,29 @@ import BitmapText from "../../../../../src/game/BitmapText.js";
 import Entity from "../../../../../src/game/Entity.js";
 
 // RL Stuff
-import { xx, yy } from "../../utils/RLHelper.js";
+import { xx, yy } from "../../utils/RLTools.js";
 import Constants from "../../Constants.js";
 import Colors from "../../Colors.js";
 
 // map gen
-import Overworld from "../levelgen/Overworld.js";
+import OverworldMap from "./overworld/OverworldMap.js";
 
-// controllers
-import GameController from "../controller/GameController.js";
 class GameScreen extends Screen {
 	constructor() {
 		super();
 
 		// create world map and place it on the screen
-		this._map = new Overworld();
+		this._map = new OverworldMap();
 		this._map.x = xx(1);
 		this._map.y = yy(1);
 		this.add(this._map);
 
 		this._initUIElements();
-
-		this._initControllers();
 	}
 
-	getMap() {
-		return this._map;
-	}
-
-	_initControllers() {
-		this._gameController = new GameController(this);
-	}
-
-	update() {
-		this._gameController.update();
-	}
-
+	/**
+	 * Just some debugging information and UI Element design drafts
+	 */
 	_initUIElements() {
 		// sizes
 		let sheet = Spritesheets.getSheet("tileset");
@@ -76,7 +63,7 @@ class GameScreen extends Screen {
 		this.add(new BitmapText({
 			font: "rlfont",
 			leading: 2,
-			text: "HP: ▓▓▓▓▓░░░░░",
+			text: "HP: █████░░░░░",
 			x: xx(1),
 			y: yy(44),
 			color: Colors[7]

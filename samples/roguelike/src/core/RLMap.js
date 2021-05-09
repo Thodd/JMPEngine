@@ -4,6 +4,7 @@ import Spritesheets from "../../../../src/assets/Spritesheets.js";
 import Entity from "../../../../src/game/Entity.js";
 
 import RLCell from "./RLCell.js";
+import RLMapController from "./controller/RLMapController.js";
 
 /**
  * Responsible for rendering a roguelike optimized Tilemap.
@@ -15,7 +16,16 @@ import RLCell from "./RLCell.js";
  * is used for scrolling.
  */
 class RLMap extends Entity {
-	constructor({sheet, x=0, y=0, w=50, h=50, cellClass=RLCell, viewport={}}) {
+	constructor({
+		sheet,
+		x=0,
+		y=0,
+		w=50,
+		h=50,
+		cellClass=RLCell,
+		controllerClass=RLMapController,
+		viewport={}
+	}) {
 
 		if (!sheet) {
 			fail(`The spritesheet ${sheet} does not exist! A Tilemap Entity cannot be created without a spritesheet!`, "Tilemap");
@@ -30,7 +40,108 @@ class RLMap extends Entity {
 		this._configure(w, h, cellClass, viewport);
 		this._initMap();
 		this._initSprites();
+
+		// create an instance of the associated Controller class
+		this._controller = new controllerClass(this);
+
+		// call public lifecycle hooks for Map generation & population
+		this.generate();
+		this.populate();
+		this._playerActor = this.createPlayerActor();
+		this.placePlayer();
+
+		// initialize the controller after the map was fully created
+		this._controller.init();
 	}
+
+	/**
+	 * Mark RLMap as dirty.
+	 * Forces a rerender of all tiles at the end of the frame.
+	 * @public
+	 */
+	dirty() {
+		this._config.isDirty = true;
+	}
+
+	/**
+	 * Returns the RLCell at (x,y).
+	 * undefined in out of bounds.
+	 * @param {int} x x-coordinate
+	 * @param {int} y y-coordinate
+	 * @returns {RLCell|undefined} the RLCell at (x,y)
+	 * @public
+	 */
+	get(x, y) {
+		return this._map[x] && this._map[x][y];
+	}
+
+	/**
+	 * Iterate all tiles from top-left to bottom-right order.
+	 * @param {*} fn callback function, called for each RLCell instance.
+	 * @public
+	 */
+	each(fn) {
+		for(let x = 0; x < this._config.w; x++) {
+			for (let y = 0; y < this._config.h; y++) {
+				fn(this._map[x][y]);
+			}
+		}
+	}
+
+	/**
+	 * Returns the RLMapController instance.
+	 * @returns {RLMapController}
+	 */
+	getController() {
+		return this._controller;
+	}
+
+	/**
+	 * JMP Engine update hook.
+	 */
+	update() {
+		// forward the update to the controller
+		this._controller.update();
+	}
+
+	/**
+	 * Hook to generate a map.
+	 * @public
+	 */
+	generate() {}
+
+	/**
+	 * Hook to populate the generated map with NPCs.
+	 * Add the NPCs to the RLMapController's timeline.
+	 * @public
+	 */
+	populate() {}
+
+	/**
+	 * Hook to create a player actor.
+	 * Optional if no player is needed.
+	 * In this case the getPlayerActor() function will return null;
+	 * @public
+	 */
+	createPlayerActor() {}
+
+	/**
+	 * Returns the created player actor.
+	 * Or null if none was created.
+	 * @returns {RLActor|null} the player actor instance or null
+	 * @public
+	 */
+	getPlayerActor() {
+		return this._playerActor || null;
+	}
+
+	/**
+	 * Hook to place the player RLActor instance in the map.
+	 * Can also be used to change the player RLActor instance to something else.
+	 * Or simply use getPlayerActor() to retrieve the default instance.
+	 * @public
+	 */
+	placePlayer() {}
 
 	/**
 	 * Process the RLMap's initial config.
@@ -91,37 +202,6 @@ class RLMap extends Entity {
 	}
 
 	/**
-	 * Mark RLMap as dirty.
-	 * Forces a rerender of all tiles at the end of the frame.
-	 */
-	dirty() {
-		this._config.isDirty = true;
-	}
-
-	/**
-	 * Returns the RLCell at (x,y).
-	 * undefined in out of bounds.
-	 * @param {int} x x-coordinate
-	 * @param {int} y y-coordinate
-	 * @returns {RLCell|undefined} the RLCell at (x,y)
-	 */
-	get(x, y) {
-		return this._map[x] && this._map[x][y];
-	}
-
-	/**
-	 * Iterate all tiles from top-left to bottom-right order.
-	 * @param {*} fn callback function, called for each RLCell instance.
-	 */
-	each(fn) {
-		for(let x = 0; x < this._config.w; x++) {
-			for (let y = 0; y < this._config.h; y++) {
-				fn(this._map[x][y]);
-			}
-		}
-	}
-
-	/**
 	 * Initialize the map and create all RLCell instances.
 	 */
 	_initMap() {
@@ -134,6 +214,11 @@ class RLMap extends Entity {
 		}
 	}
 
+	/**
+	 * Initialize the internal sprite pool.
+	 * Each sprite represents a single tile on the RLMap.
+	 * The viewport size ultimately defines the number of tile sprite created.
+	 */
 	_initSprites() {
 		// Create PIXI Containers
 		let pixiMainContainer = new PIXI.Container();
@@ -195,8 +280,9 @@ class RLMap extends Entity {
 					let cell = this._map[vpX+x] ? this._map[vpX+x][vpY+y] : undefined;
 					if (cell) {
 						let cellRenderInfo = cell._renderInfo;
+						// we check if there is an Actor on the Cell AND if it's visible
 						let actor = cell.getTopActor();
-						let actorRenderInfo = actor ? actor._renderInfo : {};
+						let actorRenderInfo = actor && actor.isVisible ? actor._renderInfo : {};
 
 						let id = actorRenderInfo.id || cellRenderInfo.id;
 						let color = actorRenderInfo.color || cellRenderInfo.color;

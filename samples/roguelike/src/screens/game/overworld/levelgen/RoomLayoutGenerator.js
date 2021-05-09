@@ -1,11 +1,11 @@
-import Tilemap from "../../../../../src/game/Tilemap.js";
-import Helper from "../../../../../src/utils/Helper.js";
-import { log } from "../../../../../src/utils/Log.js";
-import RNG from "../../../../../src/utils/RNG.js";
-import Colors from "../../Colors.js";
+import Tilemap from "../../../../../../../src/game/Tilemap.js";
+import Helper from "../../../../../../../src/utils/Helper.js";
+import { log } from "../../../../../../../src/utils/Log.js";
+//import RNG from "../../../../../../../src/utils/RNG.js";
+import Colors from "../../../../Colors.js";
 
-import Constants from "../../Constants.js";
-import { char2id } from "../../utils/RLHelper.js";
+import Constants from "../../../../Constants.js";
+import { char2id } from "../../../../utils/RLTools.js";
 
 import Room from "./Room.js";
 
@@ -63,7 +63,8 @@ class RoomLayoutGenerator {
 	 * Generate a new Overworld.
 	 */
 	generate() {
-		RNG.seed(1234567);
+		// DEBUG: hard-coded seed
+		//RNG.seed(1234567);
 
 		// start with initial room in the center
 		this.addRooms(30, [this.getRoom(this.x_center, this.y_center)]);

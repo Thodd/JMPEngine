@@ -24,6 +24,10 @@ class RLCell {
 		};
 	}
 
+	getMap() {
+		return this._map;
+	}
+
 	/**
 	 * Marks the RLCell as dirty.
 	 * Extends to the containing RLMap.

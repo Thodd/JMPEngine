@@ -1,18 +1,23 @@
-import { log } from "../../../../../src/utils/Log.js";
-import { char2id } from "../../utils/RLHelper.js";
+import { log } from "../../../../../../src/utils/Log.js";
+import { char2id } from "../../../utils/RLTools.js";
 
-import MapBase from "./MapBase.js";
+import RLMap from "../../../core/RLMap.js";
 
-import RoomLayoutGenerator from "../levelgen/RoomLayoutGenerator.js";
-import Constants from "../../Constants.js";
-import Colors from "../../Colors.js";
+import OverworldController from "./OverworldController.js";
 
-class Overworld extends MapBase {
+import ActorBase from "../actors/ActorBase.js";
+import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
+import Constants from "../../../Constants.js";
+import Colors from "../../../Colors.js";
+
+class OverworldMap extends RLMap {
 	constructor() {
 		super({
 			sheet: "tileset",
 
-			// the RLMap's maximum dimensions are calculated based on the room# and the viewport size
+			controllerClass: OverworldController,
+
+			// the RLMap's maximum dimensions are calculated based on the room count and the viewport size
 			w: Constants.VIEWPORT_WIDTH * Constants.OVERWORLD_ROOM_COLUMNS,
 			h: Constants.VIEWPORT_HEIGHT * Constants.OVERWORLD_ROOM_ROWS,
 
@@ -32,16 +37,8 @@ class Overworld extends MapBase {
 	}
 
 	/**
-	 * Returns the RoomLayoutGenerator for this Overworld instance.
-	 * The RoomLayoutGenerator contains a list of all available Rooms which can be used for the game.
-	 * @returns {RoomLayoutGenerator}
-	 */
-	getRoomLayoutGenerator() {
-		return this.roomLayoutGenerator;
-	}
-
-	/**
 	 * Generate Overworld.
+	 * @override
 	 */
 	generate() {
 		// create a random room layout
@@ -63,8 +60,26 @@ class Overworld extends MapBase {
 		});
 	}
 
+	populate() {
+		// TODO: create actors
+		// TODO: add them to this.getController().getTimeline();
+	}
+
+	/**
+	 * Create a simple player actor.
+	 * @override
+	 * @returns {RLActor} the player actor instance
+	 */
+	createPlayerActor() {
+		let player = new ActorBase();
+		player.id = char2id("@");
+		player.color = Colors[0];
+		return player;
+	}
+
 	/**
 	 * Place the player on the Overworld for the first time.
+	 * @override
 	 */
 	placePlayer() {
 		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
@@ -83,4 +98,4 @@ class Overworld extends MapBase {
 	}
 }
 
-export default Overworld;
+export default OverworldMap;

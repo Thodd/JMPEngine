@@ -2,13 +2,16 @@
 
 ## open
 
-* [ ] Connect Rooms in all adjacent directions
-* [ ] Enrich Rooms with tile-coordinate information for scrolling via the GameController
+* [ ] RLActors need a **Stats** object for timeline handling (speed, energy, ...)
+  * [ ] Make first "random walking NPC" possible
+* [ ] Pad the World-Room map with 1 tile of mountains around it
+  * Right now it can happen that the valid rooms are generated to the border :(
+  * This can also be used to make nicer outlines for the forest/island edge (see ARPG generation)
 * [ ] Explore FOV ???
 
 * [ ] Integrate "monochrome" features into grid-based engine
-  * [ ] Refactor Animation System to fit the grid based style
-    * Animation instance gets: Map, Actor or Cell
+  * [x] Refactor Animation System to fit the grid based style
+    * [ ] Test system
   * [ ] Control-Schemes via GameController
 ## ideas
 
@@ -25,6 +28,8 @@
 
 ## done
 
+* [x] Connect Rooms in all adjacent directions
+* [x] Enrich Rooms with tile-coordinate information for scrolling via the GameController
 * [x] Event-Based input handling
   * Extend Keyboard class to collect events until the end of frame and then fire an Event with multiple pressed keys
 * [x] Render RLMap

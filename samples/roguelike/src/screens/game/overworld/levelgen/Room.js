@@ -1,5 +1,5 @@
-import { warn } from "../../../../../src/utils/Log.js";
-import Constants from "../../Constants.js";
+import { warn } from "../../../../../../../src/utils/Log.js";
+import Constants from "../../../../Constants.js";
 
 const _adjacentMapping = {
 	"0-1":  "N",
