@@ -2,12 +2,13 @@
 
 ## open
 
-* [ ] RLActors need a **Stats** object for timeline handling (speed, energy, ...)
-  * [ ] Make first "random walking NPC" possible
+* [ ] Scrolling
+* [ ] TileTypes & Collision
+* [ ] Explore FOV ???
+* [ ] Make first "random walking NPC" possible
 * [ ] Pad the World-Room map with 1 tile of mountains around it
   * Right now it can happen that the valid rooms are generated to the border :(
   * This can also be used to make nicer outlines for the forest/island edge (see ARPG generation)
-* [ ] Explore FOV ???
 
 * [ ] Integrate "monochrome" features into grid-based engine
   * [x] Refactor Animation System to fit the grid based style
@@ -28,6 +29,7 @@
 
 ## done
 
+* [x] RLActors need a **Stats** object for timeline handling (speed, energy, ...)
 * [x] Connect Rooms in all adjacent directions
 * [x] Enrich Rooms with tile-coordinate information for scrolling via the GameController
 * [x] Event-Based input handling

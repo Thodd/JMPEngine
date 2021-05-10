@@ -46,7 +46,6 @@ class RLMap extends Entity {
 
 		// call public lifecycle hooks for Map generation & population
 		this.generate();
-		this.populate();
 		this._playerActor = this.createPlayerActor();
 		this.placePlayer();
 
@@ -109,13 +108,6 @@ class RLMap extends Entity {
 	 * @public
 	 */
 	generate() {}
-
-	/**
-	 * Hook to populate the generated map with NPCs.
-	 * Add the NPCs to the RLMapController's timeline.
-	 * @public
-	 */
-	populate() {}
 
 	/**
 	 * Hook to create a player actor.

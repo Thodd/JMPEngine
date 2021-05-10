@@ -9,6 +9,13 @@ class RLActor {
 		this.isActive = true;
 		this.isVisible = true;
 
+		// default stats
+		// includes information for on Timeline/Turn-Scheduling implementation
+		this._timelineInfo = {
+			speed: 100,
+			energy: 100
+		};
+
 		this._renderInfo = {
 			id: 0,
 			color: 0xFFFFFF,
@@ -44,6 +51,14 @@ class RLActor {
 		return this._renderInfo.background;
 	}
 	// ***************************************************************
+
+	/**
+	 * Returns the timeline information.
+	 * @returns {object}
+	 */
+	getTimelineInfo() {
+		return this._timelineInfo;
+	}
 
 	/**
 	 * Marks the RLActor as dirty.

@@ -56,13 +56,25 @@ class OverworldMap extends RLMap {
 				tile.id = char2id(".");
 				tile.color = Colors[1];
 			}
-			tile.background = Colors[9];
+			//tile.background = Colors[9];
 		});
-	}
 
-	populate() {
 		// TODO: create actors
 		// TODO: add them to this.getController().getTimeline();
+		let timeline = this.getController().getTimeline();
+
+		let a = new ActorBase();
+		a.id = char2id("w");
+		a.color = Colors[7];
+		a.takeTurn = function() {
+			let c = this.getMap().get(this.getCell().x+1, this.getCell().y);
+			this.moveTo(c);
+		};
+
+		timeline.addActor(a);
+
+		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(a);
 	}
 
 	/**
