@@ -9,11 +9,15 @@ import ActorBase from "../actors/ActorBase.js";
 import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
 import Constants from "../../../Constants.js";
 import Colors from "../../../Colors.js";
+import Tile from "../tiling/Tile.js";
+import TileTypes from "../tiling/TileTypes.js";
 
 class OverworldMap extends RLMap {
 	constructor() {
 		super({
 			sheet: "tileset",
+
+			cellClass: Tile,
 
 			controllerClass: OverworldController,
 
@@ -50,13 +54,10 @@ class OverworldMap extends RLMap {
 		this.each((tile) => {
 			let r = Math.random();
 			if (r < 0.05) {
-				tile.id = char2id("♠");
-				tile.color = Colors[11];
+				tile.setType(TileTypes.TREE);
 			} else {
-				tile.id = char2id(".");
-				tile.color = Colors[1];
+				tile.setType(TileTypes.FLOOR);
 			}
-			//tile.background = Colors[9];
 		});
 
 		// TODO: create actors

@@ -1,6 +1,8 @@
+import EventBus from "../../../../../src/utils/EventBus.js";
 import Keyboard from "../../../../../src/input/Keyboard.js";
 import Timeline from "./Timeline.js";
 
+import Events from "../../Events.js";
 import AnimationSystem from "../animations/AnimationSystem.js";
 
 /**
@@ -22,6 +24,9 @@ class RLMapController {
 
 		// register event handler for input
 		Keyboard.registerEndOfFrameHandler(this._handleInput.bind(this));
+
+		// register end-of-turn listener
+		EventBus.subscribe(Events.END_OF_PLAYER_TURN, this._handleEndOfPlayerTurn.bind(this));
 	}
 
 	/**
@@ -104,11 +109,10 @@ class RLMapController {
 	handleInput() {}
 
 	/**
-	 * Ends a player turn.
+	 * Event-Handler for ending the players turn.
 	 * Starts animation processing immediately.
-	 * @public
 	 */
-	endPlayerTurn() {
+	_handleEndOfPlayerTurn() {
 		// we synchronously calculate all NPC turns & schedule their animations
 		this._timeline.advanceNPCs();
 

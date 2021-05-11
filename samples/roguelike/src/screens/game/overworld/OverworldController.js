@@ -1,7 +1,10 @@
+import EventBus from "../../../../../../src/utils/EventBus.js";
 import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
 
 import RLMapController from "../../../core/controller/RLMapController.js";
+import Events from "../../../Events.js";
+import TileTypes from "../tiling/TileTypes.js";
 
 class GameLogicController extends RLMapController {
 	/**
@@ -39,6 +42,10 @@ class GameLogicController extends RLMapController {
 			dy = +1;
 		}
 
+		if (Keyboard.wasPressedOrIsDown(Keys.ENTER)) {
+			c.setType(TileTypes.TREE);
+		}
+
 		this._player.moveTo(this._map.get(c.x + dx, c.y + dy));
 
 		// TODO: after move check if we need to perform a scroll animation
@@ -46,7 +53,7 @@ class GameLogicController extends RLMapController {
 		//       - activate NPCs in the "newRoom"
 		// let dim = this._currentRoom.dimensions;
 
-		this.endPlayerTurn();
+		EventBus.publish(Events.END_OF_PLAYER_TURN);
 	}
 }
 

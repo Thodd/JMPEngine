@@ -2,13 +2,19 @@
 
 ## open
 
+* [ ] Make Actor move by changing x/y properties
 * [ ] Scrolling
-* [ ] TileTypes & Collision
+* [x] TileTypes
+  * [ ] Move Sanity-Check to a separate tool which cross checks ALL manually defined things:
+    * [ ] e.g. TileTypes, TileVisuals, Flavor-Texts, ...
+* [ ] Collision
 * [ ] Explore FOV ???
 * [ ] Make first "random walking NPC" possible
 * [ ] Pad the World-Room map with 1 tile of mountains around it
   * Right now it can happen that the valid rooms are generated to the border :(
   * This can also be used to make nicer outlines for the forest/island edge (see ARPG generation)
+
+* [ ] Drop-Loot --> DropSystem instance per RLMap --> fire "drop" event, deregister on screen switch.
 
 * [ ] Integrate "monochrome" features into grid-based engine
   * [x] Refactor Animation System to fit the grid based style
@@ -29,6 +35,7 @@
 
 ## done
 
+* [x] endPlayerTurn --> Make it an event fired on the global event-bus
 * [x] RLActors need a **Stats** object for timeline handling (speed, energy, ...)
 * [x] Connect Rooms in all adjacent directions
 * [x] Enrich Rooms with tile-coordinate information for scrolling via the GameController
