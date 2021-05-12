@@ -4,6 +4,7 @@ import AnimationPhase from "./AnimationPhase.js";
 class AnimationSystem {
 	constructor() {
 		this._phases = [];
+		this._phasesByName = {};
 	}
 
 	/**
@@ -13,16 +14,16 @@ class AnimationSystem {
 	addPhases(phases) {
 		// create AnimationPhases instances
 		phases.forEach((p) => {
-			let animPhase = p;
-
-			// if a string or object is given, we make sure to create a valid AnimationPhase
-			if (!(p instanceof AnimationPhase)) {
-				let args = p;
-				if (typeof args == "string") {
-					args = {name: p};
-				}
-				animPhase = new AnimationPhase(args);
+			// if a string is given, we make sure to create a valid AnimationPhase args object
+			let args = p;
+			if (typeof args == "string") {
+				args = {name: p};
 			}
+
+			assert(args.name != null, "The given AnimationPhase definition does not contain a mandatory name!", "AnimationSystem");
+
+			let animPhase = new AnimationPhase(args);
+			this._phasesByName[args.name] = animPhase;
 
 			this._phases.push(animPhase);
 		});
@@ -48,8 +49,7 @@ class AnimationSystem {
 			anims = [anims];
 		}
 
-		// get phase by name
-		let phase = this._phases[phaseName];
+		let phase = this._phasesByName[phaseName];
 		assert(phase != null, `No AnimationPhase with name '${phaseName}' found.`, "AnimationSystem");
 
 		// relay scheduling to the animation phase

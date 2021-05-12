@@ -44,6 +44,10 @@ class Room {
 		this.dimensions.y_max = this.dimensions.y_min + Constants.VIEWPORT_HEIGHT - 1;
 	}
 
+	getMap() {
+		return this.rlMap;
+	}
+
 	addActor(a) {
 		this.actors.push(a);
 	}

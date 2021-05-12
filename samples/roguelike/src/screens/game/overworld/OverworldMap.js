@@ -68,8 +68,8 @@ class OverworldMap extends RLMap {
 		a.id = char2id("w");
 		a.color = Colors[7];
 		a.takeTurn = function() {
-			let c = this.getMap().get(this.getCell().x+1, this.getCell().y);
-			this.moveTo(c);
+			let c = this.getCell();
+			this.moveTo(c.x + 1, c.y);
 		};
 
 		timeline.addActor(a);

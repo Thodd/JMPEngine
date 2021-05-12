@@ -2,7 +2,6 @@
 
 ## open
 
-* [ ] Make Actor move by changing x/y properties
 * [ ] Scrolling
 * [x] TileTypes
   * [ ] Move Sanity-Check to a separate tool which cross checks ALL manually defined things:
@@ -35,6 +34,7 @@
 
 ## done
 
+* [x] Make Actor move by changing x/y properties
 * [x] endPlayerTurn --> Make it an event fired on the global event-bus
 * [x] RLActors need a **Stats** object for timeline handling (speed, energy, ...)
 * [x] Connect Rooms in all adjacent directions

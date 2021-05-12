@@ -71,27 +71,42 @@ class RLActor {
 		}
 	}
 
-	// TODO: Move the actor relative if x/y are directly changed
-	// TODO: implement > move(cell)
-	// TODO: implement > removeFromCell()
-	set x(v){}
-	get x() {}
-
-	set y(v) {}
-	get y() {}
+	/**
+	 * Moves the RLActor to the given position in its RLMap.
+	 * @param {int} x x-coordinate
+	 * @param {int} y y-coordinate
+	 * @returns {boolean} whether the move could be performed
+	 * @public
+	 */
+	moveTo(x, y) {
+		if (this._cell) {
+			let targetCell = this._cell._map.get(x,y);
+			if (targetCell) {
+				return this.moveToCell(targetCell);
+			} else {
+				warn(`Cannot move RLActor to (${x},${y}). RLCell does not exist. Coordinates out of bounds?`, "RLActor");
+			}
+		} else {
+			warn(`Cannot move RLActor to (${x},${y}). RLActor is not yet added to an RLCell`, "RLActor");
+		}
+		return false;
+	}
 
 	/**
 	 * Moves the actor to the given RLCell.
 	 * @param {RLCell} cell the new cell
+	 * @returns {boolean} whether the move could be performed
 	 * @public
 	 */
-	moveTo(cell) {
+	moveToCell(cell) {
 		if (cell) {
 			this.removeFromCell();
 			cell.addActor(this);
+			return true;
 		} else {
-			warn("Actor cannot be moved to undefined cell!", "RLActor")
+			warn("RLActor cannot be moved to undefined cell!", "RLActor")
 		}
+		return false;
 	}
 
 	/**
