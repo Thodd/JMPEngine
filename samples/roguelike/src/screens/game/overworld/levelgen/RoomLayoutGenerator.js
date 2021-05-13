@@ -1,11 +1,7 @@
-import Tilemap from "../../../../../../../src/game/Tilemap.js";
 import Helper from "../../../../../../../src/utils/Helper.js";
 import { log } from "../../../../../../../src/utils/Log.js";
 //import RNG from "../../../../../../../src/utils/RNG.js";
-import Colors from "../../../../Colors.js";
 
-import Constants from "../../../../Constants.js";
-import { char2id } from "../../../../utils/RLTools.js";
 
 import Room from "./Room.js";
 
@@ -68,30 +64,6 @@ class RoomLayoutGenerator {
 
 		// start with initial room in the center
 		this.addRooms(30, [this.getRoom(this.x_center, this.y_center)]);
-
-		// debug minimap
-		this.minimap = new Tilemap({
-			sheet: "minimap",
-			x: 0,
-			y: 0,
-			w: this.mapRoomColumns,
-			h: this.mapRoomRows
-		});
-		this.minimap.layer = Constants.Layers.UI;
-
-		this.each((r) => {
-			let id = r.isFilled ? char2id("♠") : char2id("▲");
-			let color = r.isFilled ? Colors[3] : Colors[8];
-			let tile = this.minimap.get(r.x, r.y);
-			tile.set(id);
-			tile.setColor(color);
-		});
-
-		this.minimap.get(5,5).set(char2id("⌂"));
-		this.minimap.get(5,5).setColor(Colors[5]);
-
-		this.minimap.get(3,5).set(char2id("@"));
-		this.minimap.get(3,5).setColor(Colors[0]);
 	}
 
 	/**

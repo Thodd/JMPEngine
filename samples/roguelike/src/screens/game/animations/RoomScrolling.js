@@ -1,6 +1,10 @@
 import AnimationBase from "../../../core/animations/AnimationBase.js";
 
 class RoomScrolling extends AnimationBase {
+	/**
+	 * @override
+	 * @param {object} info scrolling information, from/to Rooms
+	 */
 	setInfo(info) {
 		this._map = info.to.getMap();
 
@@ -24,6 +28,9 @@ class RoomScrolling extends AnimationBase {
 		}
 	}
 
+	/**
+	 * @override
+	 */
 	animate() {
 		if (this._map.viewport.x != this._targetX) {
 			this._map.viewport.x += this._xdir;

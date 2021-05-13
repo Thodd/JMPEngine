@@ -40,15 +40,10 @@ class AnimationSystem {
 
 	/**
 	 * Schedules Animations for processing begining the next frame.
-	 * @param {Animation|Animation[]} anims one or more animations
+	 * @param {Animation} the animation to schedule
 	 * @param {string} phaseName the name of the AnimationPhase in which the given animations should be played
 	 */
-	schedule(anims, phaseName) {
-		// make sure we have an array
-		if (!Array.isArray(anims)) {
-			anims = [anims];
-		}
-
+	schedule(phaseName, anims) {
 		let phase = this._phasesByName[phaseName];
 		assert(phase != null, `No AnimationPhase with name '${phaseName}' found.`, "AnimationSystem");
 

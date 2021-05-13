@@ -4,9 +4,10 @@ import Spritesheets from "../../../../../src/assets/Spritesheets.js";
 import Screen from "../../../../../src/game/Screen.js";
 import BitmapText from "../../../../../src/game/BitmapText.js";
 import Entity from "../../../../../src/game/Entity.js";
+import Tilemap from "../../../../../src/game/Tilemap.js";
 
 // RL Stuff
-import { xx, yy } from "../../utils/RLTools.js";
+import { xx, yy, char2id } from "../../utils/RLTools.js";
 import Constants from "../../Constants.js";
 import Colors from "../../Colors.js";
 
@@ -103,20 +104,50 @@ Would you mind helping me find a new one?`,
 			color: Colors[0]
 		}));
 
-		// add minimap for debugging
+		this._minimapDebug();
+	}
+
+	_minimapDebug() {
+
+		// debug minimap
+		this._minimap = new Tilemap({
+			sheet: "tileset",
+			x: 0,
+			y: 0,
+			w: Constants.OVERWORLD_ROOM_COLUMNS,
+			h: Constants.OVERWORLD_ROOM_ROWS
+		});
+		this._minimap.x = xx(1);
+		this._minimap.y = yy(1);
+		this._minimap.layer = Constants.Layers.UI;
+
+		this._map.roomLayoutGenerator.each((r) => {
+			let id = r.isFilled ? char2id("♠") : char2id("▲");
+			let color = r.isFilled ? Colors[3] : Colors[8];
+			let tile = this._minimap.get(r.x, r.y);
+			tile.set(id);
+			tile.setColor(color);
+		});
+
+		this._minimap.get(5,5).set(char2id("⌂"));
+		this._minimap.get(5,5).setColor(Colors[5]);
+
+		this._minimap.get(3,5).set(char2id("@"));
+		this._minimap.get(3,5).setColor(Colors[0]);
+
+		// minimap background
 		let minimapBG = new Entity();
+		minimapBG.layer = Constants.Layers.UI;
 		minimapBG.x = xx(1);
 		minimapBG.y = yy(1);
 		let pixiMinimapBG = new PIXI.Graphics();
 		pixiMinimapBG.beginFill(Colors[9]);
-		pixiMinimapBG.drawRect(0, 0, Constants.OVERWORLD_ROOM_COLUMNS * 8, Constants.OVERWORLD_ROOM_ROWS * 8);
+		pixiMinimapBG.drawRect(0, 0, Constants.OVERWORLD_ROOM_COLUMNS * Constants.TILE_WIDTH, Constants.OVERWORLD_ROOM_ROWS * Constants.TILE_HEIGHT);
 		pixiMinimapBG.endFill();
 		minimapBG.configSprite({replaceWith: pixiMinimapBG});
 		this.add(minimapBG);
 
-		this._map.roomLayoutGenerator.minimap.x = xx(1);
-		this._map.roomLayoutGenerator.minimap.y = yy(1);
-		this.add(this._map.roomLayoutGenerator.minimap);
+		this.add(this._minimap);
 	}
 }
 

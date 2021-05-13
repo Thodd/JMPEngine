@@ -20,7 +20,7 @@ class RLMapController {
 		this._animationsRunning = false;
 
 		// timeline for actors turn handling
-		this._timeline = new Timeline()
+		this._timeline = new Timeline();
 
 		// register event handler for input
 		Keyboard.registerEndOfFrameHandler(this._handleInput.bind(this));

@@ -1,13 +1,15 @@
 import EventBus from "../../../../../../src/utils/EventBus.js";
 import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
+import { log } from "../../../../../../src/utils/Log.js";
 
 import RLMapController from "../../../core/controller/RLMapController.js";
 import Events from "../../../Events.js";
-import TileTypes from "../tiling/TileTypes.js";
-import { log } from "../../../../../../src/utils/Log.js";
 import AnimationPool from "../../../core/animations/AnimationPool.js";
+import AnimationChain from "../../../core/animations/AnimationChain.js";
+
 import RoomScrolling from "../animations/RoomScrolling.js";
+import ScreenShake from "../animations/ScreenShake.js";
 
 class GameLogicController extends RLMapController {
 	/**
@@ -46,8 +48,11 @@ class GameLogicController extends RLMapController {
 			dy = +1;
 		}
 
+		// testing screen shake
 		if (Keyboard.wasPressedOrIsDown(Keys.ENTER)) {
-			c.setType(TileTypes.TREE);
+			let chain = AnimationPool.get(AnimationChain, {});
+			chain.add(AnimationPool.get(ScreenShake, {map: this.getMap()}));
+			this.getAnimationSystem().schedule("GENERAL", chain);
 		}
 
 		let playerMoved = false;
@@ -59,8 +64,7 @@ class GameLogicController extends RLMapController {
 			playerMoved = this._player.moveTo(targetX, targetY);
 		}
 
-		// TODO: after move check if we need to perform a scroll animation
-		//       - deactivate NPCs in the "oldRoom"
+		// TODO: - deactivate NPCs in the "oldRoom"
 		//       - activate NPCs in the "newRoom"
 		if (playerMoved) {
 			let dim = this._currentRoom.dimensions;
@@ -83,13 +87,15 @@ class GameLogicController extends RLMapController {
 			}
 
 			if (cardinalDirection != null) {
+				// get a RoomScrolling Animation from the Pool ...
 				let scrollAnimation = AnimationPool.get(RoomScrolling, {
 					from: this._currentRoom,
 					to: this._currentRoom[cardinalDirection],
 					//instant: true
 				});
-				let animSystem = this.getAnimationSystem();
-				animSystem.schedule(scrollAnimation, "SCROLLING");
+				// ... and schedule it
+				this.getAnimationSystem().schedule("SCROLLING", scrollAnimation);
+
 				this._currentRoom = this._currentRoom[cardinalDirection];
 			}
 		}

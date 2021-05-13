@@ -18,8 +18,8 @@ class AnimationPhase {
 		return phase;
 	}
 
-	schedule(anims) {
-		this._animations.push(...anims);
+	schedule(anim) {
+		this._animations.push(anim);
 	}
 
 	update() {

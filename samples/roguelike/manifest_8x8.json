@@ -18,11 +18,6 @@
 				"url": "./img/8x8.png",
 				"w": 8,
 				"h": 8
-			},
-			"minimap": {
-				"url": "./img/8x8.png",
-				"w": 8,
-				"h": 8
 			}
 		},
 		"fonts": {
