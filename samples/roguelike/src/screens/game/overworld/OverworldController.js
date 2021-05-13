@@ -50,9 +50,14 @@ class GameLogicController extends RLMapController {
 			c.setType(TileTypes.TREE);
 		}
 
-		let newX = c.x + dx;
-		let newY = c.y + dy;
-		let playerMoved = this._player.moveTo(newX, newY);
+		let playerMoved = false;
+		let targetX = c.x + dx;
+		let targetY = c.y + dy;
+		let targetCell = this.getMap().get(targetX, targetY);
+
+		if (targetCell && targetCell.isFree()) {
+			playerMoved = this._player.moveTo(targetX, targetY);
+		}
 
 		// TODO: after move check if we need to perform a scroll animation
 		//       - deactivate NPCs in the "oldRoom"
@@ -63,16 +68,16 @@ class GameLogicController extends RLMapController {
 			// detect the cardinal direction in which the player leaves the Room
 			// we make else-if checks to prevent diagonal movement, horizontal movement wins in this case
 			let cardinalDirection = null;
-			if (newX < dim.x_min) {
+			if (targetX < dim.x_min) {
 				log("WEST", "Scrolling");
 				cardinalDirection = "W";
-			} else if (newX > dim.x_max) {
+			} else if (targetX > dim.x_max) {
 				log("EAST", "Scrolling");
 				cardinalDirection = "E";
-			} else if (newY < dim.y_min) {
+			} else if (targetY < dim.y_min) {
 				log("NORTH", "Scrolling");
 				cardinalDirection = "N";
-			} else if (newY > dim.y_max) {
+			} else if (targetY > dim.y_max) {
 				log("SOUTH", "Scrolling");
 				cardinalDirection = "S";
 			}

@@ -64,6 +64,23 @@ class Tile extends RLCell {
 		this.color = renderInfo.color;
 		this.background = renderInfo.background || 0x000000;
 	}
+
+	isFree() {
+		let isWalkable = this._type.isWalkable;
+
+		// in principle the tile is free, we now check if an actor is blocking it
+		if (isWalkable) {
+			let actors = this.getActors();
+			for (let i = 0; i < actors.length; i++) {
+				if (!actors[i].isWalkable) {
+					isWalkable = false;
+					break;
+				}
+			}
+		}
+
+		return isWalkable;
+	}
 }
 
 export default Tile;

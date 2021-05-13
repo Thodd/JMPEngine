@@ -71,6 +71,21 @@ class Room {
 	/**
 	 * Safely retrieves an adjacent Room to this instance.
 	 * Only Rooms in the Moore neighborhood can be retrieved this way.
+	 * The Moore neighborhood is the set of directly surounding cells,
+	 * all 4 cardinal and all 4 diagonal directions.
+	 *
+	 * NW  N  NE
+	 *   \ | /
+	 * W - * - E
+	 *   / | \
+	 * SW  S  SE
+	 *
+	 * @example
+	 * this.getAdjacent("W"); // returns the Room to the west
+	 * this.getAdjacent("NE"); // returns the Room to the north-east
+	 * this.getAdjacent(0, 1); // returns the room to the south (x:0, y:+1)
+	 * this.getAdjacent(-1, 1); // returns the room to the south-west (x:-1, y:+1)
+	 *
 	 * @param {int|string} x either a direction string ("N", "NE", "E", ...) or an x-delta of 0, 1 or -1
 	 * @param {int} [y] y-delta: 0, 1 or -1, optional if string argument is given
 	 * @returns {Room|null} the adjacent room or null if no room is present at the given coordinates

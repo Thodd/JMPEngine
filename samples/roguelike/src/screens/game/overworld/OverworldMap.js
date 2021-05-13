@@ -11,6 +11,7 @@ import Constants from "../../../Constants.js";
 import Colors from "../../../Colors.js";
 import Tile from "../tiling/Tile.js";
 import TileTypes from "../tiling/TileTypes.js";
+import Helper from "../../../../../../src/utils/Helper.js";
 
 class OverworldMap extends RLMap {
 	constructor() {
@@ -67,9 +68,15 @@ class OverworldMap extends RLMap {
 		let a = new ActorBase();
 		a.id = char2id("w");
 		a.color = Colors[7];
+
 		a.takeTurn = function() {
 			let c = this.getCell();
-			this.moveTo(c.x + 1, c.y);
+			let adjacentCells = c.getNeumannNeighborCells();
+			let randomDir = Helper.choose(Object.keys(adjacentCells));
+			let targetCell = adjacentCells[randomDir];
+			if (targetCell.isFree()) {
+				this.moveToCell(targetCell);
+			}
 		};
 
 		timeline.addActor(a);

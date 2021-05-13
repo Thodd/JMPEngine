@@ -62,15 +62,20 @@ class GameScreen extends Screen {
 		}));
 		this.add(new BitmapText({
 			font: "rlfont",
-			leading: 2,
 			text: "HP: █████░░░░░",
 			x: xx(1),
-			y: yy(44),
+			y: yy(43),
 			color: Colors[7]
 		}));
 		this.add(new BitmapText({
 			font: "rlfont",
-			leading: 2,
+			text: "SP: ███████░░░",
+			x: xx(1),
+			y: yy(44),
+			color: Colors[3]
+		}));
+		this.add(new BitmapText({
+			font: "rlfont",
 			text: "* : 2/6 (23)",
 			x: xx(1),
 			y: yy(45),
@@ -78,7 +83,6 @@ class GameScreen extends Screen {
 		}));
 		this.add(new BitmapText({
 			font: "rlfont",
-			leading: 2,
 			text: "$ : 203",
 			x: xx(1),
 			y: yy(46),
@@ -96,7 +100,7 @@ Ah, what ya gonna do, eh?
 Would you mind helping me find a new one?`,
 			x: xx(19),
 			y: yy(42),
-			color: Colors[8]
+			color: Colors[0]
 		}));
 
 		// add minimap for debugging
