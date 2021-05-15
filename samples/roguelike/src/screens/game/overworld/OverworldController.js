@@ -8,6 +8,8 @@ import Events from "../../../Events.js";
 import AnimationPool from "../../../core/animations/AnimationPool.js";
 import AnimationChain from "../../../core/animations/AnimationChain.js";
 
+import Colors from "../../../Colors.js";
+
 import RoomScrolling from "../animations/RoomScrolling.js";
 import ScreenShake from "../animations/ScreenShake.js";
 
@@ -55,6 +57,10 @@ class GameLogicController extends RLMapController {
 			this.getAnimationSystem().schedule("GENERAL", chain);
 		}
 
+		if (Keyboard.wasPressedOrIsDown(Keys.SPACE)) {
+			c.background = Colors[10];
+		}
+
 		let playerMoved = false;
 		let targetX = c.x + dx;
 		let targetY = c.y + dy;
@@ -98,6 +104,8 @@ class GameLogicController extends RLMapController {
 
 				this._currentRoom = this._currentRoom[cardinalDirection];
 			}
+
+			this.getFOVSystem().update(targetCell, 8);
 		}
 
 		EventBus.publish(Events.END_OF_PLAYER_TURN);

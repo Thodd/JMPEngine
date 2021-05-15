@@ -5,6 +5,7 @@ import Entity from "../../../../src/game/Entity.js";
 
 import RLCell from "./RLCell.js";
 import RLMapController from "./controller/RLMapController.js";
+import FOV from "./controller/FOV.js";
 
 /**
  * Responsible for rendering a roguelike optimized Tilemap.
@@ -259,6 +260,7 @@ class RLMap extends Entity {
 				for (let y = 0; y < vpH; y++) {
 					// get sprite from pool and update texture
 					let spr = this._spritesPool[i];
+					i++; // advance to next sprite
 
 					// we just make everything invisible at first,
 					// this way we don't have left-over tiles outside the viewport
@@ -272,30 +274,53 @@ class RLMap extends Entity {
 					let cell = this._map[vpX+x] ? this._map[vpX+x][vpY+y] : undefined;
 					if (cell) {
 						let cellRenderInfo = cell._renderInfo;
+
+						// tile rendering can be skipped if it is wrapped in darkness
+						if (cellRenderInfo.lightLevel == FOV.LightLevels.DARKNESS) {
+							continue;
+						}
+
 						// we check if there is an Actor on the Cell AND if it's visible
 						let actor = cell.getTopActor();
-						let actorRenderInfo = actor && actor.isVisible ? actor._renderInfo : {};
 
-						let id = actorRenderInfo.id || cellRenderInfo.id;
-						let color = actorRenderInfo.color || cellRenderInfo.color;
-						let background = actorRenderInfo.background || cellRenderInfo.background;
+						// basic cell render info
+						let id = cellRenderInfo.id;
+						let color = cellRenderInfo.color;
+						let background = cellRenderInfo.background;
+
+						// check if the actor is visible
+						if (actor && actor.isVisible &&
+							cellRenderInfo.lightLevel != FOV.LightLevels.SHADOW) {
+							let actorRenderInfo = actor._renderInfo || {};
+							id = actorRenderInfo.id || id;
+							color = actorRenderInfo.color || color;
+							background = actorRenderInfo.background || background;
+						}
 
 						// update tile texture
 						spr.visible = true;
 						spr.texture = this._sheet.textures[id];
+
+						// if tile is wrapped in shadow, overwrite the foreground color
+						if (cellRenderInfo.lightLevel == FOV.LightLevels.SHADOW) {
+							color = FOV.Colors.SHADOW.color;
+						}
 
 						// FG coloring
 						spr.tint = color;
 
 						// draw BG if needed
 						if (background) {
+							// if tile is wrapped in shadow, overwrite the background color
+							if (cellRenderInfo.lightLevel == FOV.LightLevels.SHADOW) {
+								background = FOV.Colors.SHADOW.background;
+							}
 							this._backgroundGFX.beginFill(background);
 							this._backgroundGFX.drawRect(spr.x, spr.y, this._sheet.w, this._sheet.h);
 							this._backgroundGFX.endFill();
 						}
-					}
 
-					i++;
+					}
 				}
 			}
 

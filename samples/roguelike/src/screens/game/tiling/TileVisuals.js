@@ -12,7 +12,7 @@ const TileVisuals = {
 		variants: [
 			{
 				id: char2id("·"),
-				color: Colors[1]
+				color: Colors[12]
 			},
 			{
 				id: char2id("."),
@@ -20,7 +20,7 @@ const TileVisuals = {
 			},
 			{
 				id: char2id(","),
-				color: Colors[1]
+				color: Colors[11]
 			}
 		],
 		probability: 0.1

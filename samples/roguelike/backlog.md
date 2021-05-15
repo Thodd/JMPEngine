@@ -2,19 +2,17 @@
 
 ## open
 
-* [ ] Explore FOV ???
-* [x] TileTypes
-  * [ ] Move Sanity-Check to a separate tool which cross checks ALL manually defined things:
-    * [ ] e.g. TileTypes, TileVisuals, Flavor-Texts, ...
 * [ ] Pad the World-Room map with 1 tile of mountains around it
   * Right now it can happen that the valid rooms are generated to the border :(
   * This can also be used to make nicer outlines for the forest/island edge (see ARPG generation)
 
+* [x] TileTypes
+  * [ ] Move Sanity-Check to a separate tool which cross checks ALL manually defined things:
+    * [ ] e.g. TileTypes, TileVisuals, Flavor-Texts, ...
+
 * [ ] Drop-Loot --> DropSystem instance per RLMap --> fire "drop" event, deregister on screen switch.
 
 * [ ] Integrate "monochrome" features into grid-based engine
-  * [x] Refactor Animation System to fit the grid based style
-    * [ ] Test system
   * [ ] Control-Schemes via GameController
 ## ideas
 
@@ -31,6 +29,9 @@
 
 ## done
 
+* [x] Refactor Animation System to fit the grid based style
+  * [x] Test system
+* [x] Simple FOV based on Bresenham's line algorithm
 * [x] Make first "random walking NPC" possible
 * [x] Scrolling
 * [x] Collision

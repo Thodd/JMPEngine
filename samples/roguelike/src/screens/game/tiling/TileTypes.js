@@ -4,21 +4,21 @@ const TileTypes = {
 	VOID: {
 		name: "VOID",
 		isWalkable: true,
-		blocksFOV: false,
+		blocksLight: false,
 		visuals: TileVisuals.VOID
 	},
 
 	FLOOR: {
 		name: "FLOOR",
 		isWalkable: true,
-		blocksFOV: false,
+		blocksLight: false,
 		visuals: TileVisuals.FLOOR
 	},
 
 	TREE: {
 		name: "TREE",
 		isWalkable: false,
-		blocksFOV: true,
+		blocksLight: true,
 		visuals: TileVisuals.TREE
 	}
 }

@@ -20,6 +20,10 @@ class Tile extends RLCell {
 	setType(type) {
 		if (type) {
 			this._type = type;
+
+			// track whether the tile type is blocking light, used for FOV calculation
+			this.blocksLight = type.blocksLight || false;
+
 			this._changeVisuals(type);
 		} else {
 			this._type = TileTypes.VOID;

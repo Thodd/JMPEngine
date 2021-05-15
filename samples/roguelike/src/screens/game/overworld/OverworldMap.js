@@ -62,7 +62,6 @@ class OverworldMap extends RLMap {
 		});
 
 		// TODO: create actors
-		// TODO: add them to this.getController().getTimeline();
 		let timeline = this.getController().getTimeline();
 
 		let a = new ActorBase();

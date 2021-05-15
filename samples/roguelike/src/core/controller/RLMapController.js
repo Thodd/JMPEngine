@@ -4,6 +4,7 @@ import Timeline from "./Timeline.js";
 
 import Events from "../../Events.js";
 import AnimationSystem from "../animations/AnimationSystem.js";
+import FOV from "./FOV.js";
 
 /**
  * Base class for RLMapController(s).
@@ -21,6 +22,9 @@ class RLMapController {
 
 		// timeline for actors turn handling
 		this._timeline = new Timeline();
+
+		// standard fov implementation
+		this._fov = new FOV(this._map);
 
 		// register event handler for input
 		Keyboard.registerEndOfFrameHandler(this._handleInput.bind(this));
@@ -66,6 +70,15 @@ class RLMapController {
 	 */
 	getAnimationSystem() {
 		return this._animationSystem;
+	}
+
+	/**
+	 * Returns the currently used FOV System.
+	 * @returns {FOV}
+	 * @public
+	 */
+	getFOVSystem() {
+		return this._fov;
 	}
 
 	/**

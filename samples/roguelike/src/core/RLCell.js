@@ -1,8 +1,4 @@
-const FOV_LEVEL = {
-	DARK: 0,
-	SHADOW: 1,
-	LIT: 2
-};
+import FOV from "./controller/FOV.js";
 
 /**
  * Maps directions to relative coordinates.
@@ -33,11 +29,8 @@ class RLCell {
 			id: 0,
 			color: 0xFFFFFF,
 			background: undefined,
-			fov: {
-				level: FOV_LEVEL.LIT,
-				color: 0xFFFFFF,
-				background: undefined
-			}
+			lightLevel: FOV.LightLevels.DARKNESS,
+			blocksLight: false,
 		};
 	}
 
@@ -84,6 +77,24 @@ class RLCell {
 
 	get background() {
 		return this._renderInfo.background;
+	}
+
+	set blocksLight(v) {
+		this.dirty();
+		this._renderInfo.blocksLight = v;
+	}
+
+	get blocksLight() {
+		return this._renderInfo.blocksLight;
+	}
+
+	set lightLevel(v) {
+		this.dirty();
+		this._renderInfo.lightLevel = v;
+	}
+
+	get lightLevel() {
+		return this._renderInfo.lightLevel;
 	}
 
 	/**
@@ -245,7 +256,5 @@ class RLCell {
 		return Object.assign({}, this._mooreCells);
 	}
 }
-
-RLCell.FOV_LEVEL = FOV_LEVEL;
 
 export default RLCell;
