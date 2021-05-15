@@ -20,6 +20,9 @@ class GameLogicController extends RLMapController {
 	init() {
 		this._player = this.getMap().getPlayerActor();
 
+		// initial FOV calculation
+		this.getFOVSystem().update(this._player.getCell(), 8);
+
 		// initially we start with the room the player was placed in
 		this._currentRoom = this._player.getRoom();
 	}
