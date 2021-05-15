@@ -21,7 +21,7 @@ class GameLogicController extends RLMapController {
 		this._player = this.getMap().getPlayerActor();
 
 		// initial FOV calculation
-		this.getFOVSystem().update(this._player.getCell(), 8);
+		this.getFOVSystem().update(this._player.getCell(), 10);
 
 		// initially we start with the room the player was placed in
 		this._currentRoom = this._player.getRoom();
@@ -108,7 +108,7 @@ class GameLogicController extends RLMapController {
 				this._currentRoom = this._currentRoom[cardinalDirection];
 			}
 
-			this.getFOVSystem().update(targetCell, 8);
+			this.getFOVSystem().update(targetCell, 10);
 		}
 
 		EventBus.publish(Events.END_OF_PLAYER_TURN);

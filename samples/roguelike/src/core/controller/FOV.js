@@ -82,8 +82,10 @@ FOV.Colors = {
 	"SHADOW": {
 		// color: 0x293531,
 		// background: 0x19211e
-		color: 0x394b45,
-		background: 0x232d2a
+		// color: 0x394b45,
+		// background: 0x232d2a
+		color: 0x170b5b,
+		background: 0x1c115a
 	}
 }
 
