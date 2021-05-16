@@ -1,3 +1,4 @@
+import Helper from "../../../../../../src/utils/Helper.js"
 import RLActor from "../../../core/RLActor.js";
 
 /**
@@ -28,6 +29,20 @@ class ActorBase extends RLActor {
 	getRoom() {
 		return this.room;
 	}
+
+	/**
+	 * Makes a random move to a free adjacent cell.
+	 */
+	makeRandomMove() {
+		let c = this.getCell();
+		let adjacentCells = c.getNeumannNeighborCells();
+		let randomDir = Helper.choose(Object.keys(adjacentCells));
+		let targetCell = adjacentCells[randomDir];
+		if (targetCell.isFree()) {
+			this.moveToCell(targetCell);
+		}
+	}
+
 }
 
 export default ActorBase;

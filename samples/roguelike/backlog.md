@@ -2,6 +2,22 @@
 
 ## open
 
+* [ ] NPCs
+  * [ ] First enemy: Snake
+    * [x] randomly walk around
+    * [ ] be attacked by other actor
+    * [ ] attack another actor
+  * [ ] Wolf
+  * [ ] Bear
+  * [ ] Firefly (casts light around itself 1 tile radius)
+    * [ ] Lightsource
+      * [ ] An actor can carry a light-source which illuminates their surroundings
+    * friendly, cannot be attacked
+    * doesn't block the player
+
+* [ ] Make minimap switch places
+  * [ ] Make it "toggleable" (is this correct?)
+
 * [ ] Pad the World-Room map with 1 tile of mountains around it
   * Right now it can happen that the valid rooms are generated to the border :(
   * This can also be used to make nicer outlines for the forest/island edge (see ARPG generation)

@@ -1,4 +1,5 @@
 import { warn } from "../../../../src/utils/Log.js";
+import RNG from "../../../../src/utils/RNG.js";
 class RLActor {
 	constructor() {
 		this._cell = null;
@@ -53,14 +54,6 @@ class RLActor {
 	// ***************************************************************
 
 	/**
-	 * Returns the timeline information.
-	 * @returns {object}
-	 */
-	getTimelineInfo() {
-		return this._timelineInfo;
-	}
-
-	/**
 	 * Marks the RLActor as dirty.
 	 * Extends to its RLCell and the containing RLMap.
 	 * @public
@@ -69,6 +62,21 @@ class RLActor {
 		if (this._cell) {
 			this._cell.dirty();
 		}
+	}
+
+	/**
+	 * Encourages the RLActor to take a turn.
+	 * Gameplay logic should happen here.
+	 * @public
+	 */
+	takeTurn() {}
+
+	/**
+	 * Returns the timeline information.
+	 * @returns {object}
+	 */
+	getTimelineInfo() {
+		return this._timelineInfo;
 	}
 
 	/**
@@ -110,6 +118,55 @@ class RLActor {
 	}
 
 	/**
+	 * Tries to move an RLActor to a given RLCell while checking if the goal Cell is free.
+	 * Returns whether the move could be performed.
+	 *
+	 * @param {RLCell} cell the cell to which the actor should be moved
+	 * @returns {boolean} whether the move could be performed
+	 */
+	moveToWithCollision(cell) {
+		if (cell && cell.isFree()) {
+			this.moveToCell(cell);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Very simple "step-towards" logic.
+	 * Compares the coordinates and randomly picks a tile closer to the target actor.
+	 * Obviously not as clever as using Dijkstra or A*, but good enough for a simple AI.
+	 */
+	moveTowardsActor(targetActor) {
+		let myCell = this.getCell();
+		let targetCell = targetActor.getCell();
+		let dx = -1 * Math.sign(myCell.x - targetCell.x);
+		let dy = -1 * Math.sign(myCell.y - targetCell.y);
+
+		let possibleGoalTiles = [];
+
+		if (dx != 0) {
+			possibleGoalTiles.push(myCell.getRelative(dx, 0));
+		}
+		if (dy != 0) {
+			possibleGoalTiles.push(myCell.getRelative(0, dy));
+		}
+
+		// decide if we take the horizontal or vertical tile first
+		let r = RNG.random() > 0.5;
+		let firstTile = r ? possibleGoalTiles[0] : possibleGoalTiles[1];
+		let secondTile = !r ? possibleGoalTiles[0] : possibleGoalTiles[1];
+
+		// try first movement possibility
+		let moveMade = this.moveToWithCollision(firstTile);
+
+		// try second possibility (if any)
+		if (secondTile && !moveMade) {
+			this.moveToWithCollision(secondTile);
+		}
+	}
+
+	/**
 	 * Removes the actor from its RLCell (if its added).
 	 * @public
 	 */
@@ -118,6 +175,36 @@ class RLActor {
 			this._cell.removeActor(this);
 		}
 	}
+
+
+	/**
+	 * Checks if this RLActor is standing one tile away from the given actor.
+	 *
+	 * @param {RLActor} actor the actor to check
+	 * @param {boolean} diagonal whether diagonal tiles should be checked
+	 * @public
+	 */
+	isStandingAdjacent(actor, diagonal = false) {
+		let c1 = this.getCell();
+		let c2 = actor.getCell();
+		let xDif = Math.abs(c1.x - c2.x);
+		let yDif = Math.abs(c1.y - c2.y);
+
+		// anything farther than 1 is not considered "adjacent"
+		if (xDif > 1 || yDif > 1) {
+			return false;
+		}
+
+		if (diagonal) {
+			if (xDif === 1 || yDif === 1) {
+				return true;
+			}
+		} else {
+			return (xDif === 1 && yDif === 0) || (xDif === 0 && yDif === 1);
+		}
+	}
+
+	// ********* Convenience functions *********
 
 	/**
 	 * Returns the cell to which this actor is added.
@@ -178,11 +265,21 @@ class RLActor {
 	}
 
 	/**
-	 * Encourages the RLActor to take a turn.
-	 * Gameplay logic should happen here.
+	 * Shorthand convenience function to retrieve the player actor instance
+	 * associated with this RLActor.
+	 * Only returns something if the RLActor is added to an RLCell in an RLMap.
+	 * @returns {RLActor|undefined} the player actor or undefined if this RLActor is not added to an RLCell
 	 * @public
 	 */
-	takeTurn() {}
+	getPlayerActor() {
+		let map = this.getMap();
+		if (map) {
+			return map.getPlayerActor();
+		} else {
+			warn("Could not retrieve player actor via RLActor. The RLActor is not added to an RLCell.", "RLActor");
+		}
+	}
+
 }
 
 export default RLActor;

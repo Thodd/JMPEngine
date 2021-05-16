@@ -25,9 +25,6 @@ class FOV {
 			});
 			this._currentlyLitCells = [];
 
-			// center point is always lit
-			centerCell.lightLevel = FOV.LightLevels.LIT;
-
 			let cx = centerCell.x;
 			let cy = centerCell.y;
 
@@ -40,8 +37,10 @@ class FOV {
 						let p = lineOfSight[i];
 						let tile = this._map.get(p.x, p.y);
 						if (tile) {
-							tile.lightLevel = FOV.LightLevels.LIT;
-							this._currentlyLitCells.push(tile);
+							if (tile.lightLevel != FOV.LightLevels.ALWAYS) {
+								tile.lightLevel = FOV.LightLevels.LIT;
+								this._currentlyLitCells.push(tile);
+							}
 							// if the tile is blocking the light, we stop the processing of the other potential points
 							// in the line-of-sight
 							if (tile.blocksLight) {
@@ -80,12 +79,12 @@ FOV.Colors = {
 		background: undefined
 	},
 	"SHADOW": {
-		// color: 0x293531,
-		// background: 0x19211e
+		color: 0x293531,
+		background: 0x19211e
 		// color: 0x394b45,
 		// background: 0x232d2a
-		color: 0x170b5b,
-		background: 0x1c115a
+		// color: 0x170b5b,
+		// background: 0x1c115a
 	}
 }
 

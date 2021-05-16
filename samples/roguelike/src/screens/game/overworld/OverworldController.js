@@ -12,6 +12,8 @@ import Colors from "../../../Colors.js";
 
 import RoomScrolling from "../animations/RoomScrolling.js";
 import ScreenShake from "../animations/ScreenShake.js";
+import FOV from "../../../core/controller/FOV.js";
+import { char2id } from "../../../utils/RLTools.js";
 
 class GameLogicController extends RLMapController {
 	/**
@@ -60,8 +62,17 @@ class GameLogicController extends RLMapController {
 			this.getAnimationSystem().schedule("GENERAL", chain);
 		}
 
+		// BG test
 		if (Keyboard.wasPressedOrIsDown(Keys.SPACE)) {
 			c.background = Colors[10];
+		}
+		//lighting test
+		if (Keyboard.wasPressedOrIsDown(Keys.L)) {
+			c.lightLevel = FOV.LightLevels.ALWAYS;
+			if (Keyboard.wasPressedOrIsDown(Keys.SHIFT)) {
+				c.color = Colors[5];
+				c.id = char2id("i");
+			}
 		}
 
 		let playerMoved = false;

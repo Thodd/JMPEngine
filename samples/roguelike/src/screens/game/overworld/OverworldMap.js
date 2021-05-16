@@ -6,12 +6,13 @@ import RLMap from "../../../core/RLMap.js";
 import OverworldController from "./OverworldController.js";
 
 import ActorBase from "../actors/ActorBase.js";
+import EnemyBase from "../actors/npcs/enemies/EnemyBase.js";
+
 import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
 import Constants from "../../../Constants.js";
 import Colors from "../../../Colors.js";
 import Tile from "../tiling/Tile.js";
 import TileTypes from "../tiling/TileTypes.js";
-import Helper from "../../../../../../src/utils/Helper.js";
 
 class OverworldMap extends RLMap {
 	constructor() {
@@ -64,19 +65,9 @@ class OverworldMap extends RLMap {
 		// TODO: create actors
 		let timeline = this.getController().getTimeline();
 
-		let a = new ActorBase();
-		a.id = char2id("w");
+		let a = new EnemyBase();
+		a.id = char2id("s");
 		a.color = Colors[7];
-
-		a.takeTurn = function() {
-			let c = this.getCell();
-			let adjacentCells = c.getNeumannNeighborCells();
-			let randomDir = Helper.choose(Object.keys(adjacentCells));
-			let targetCell = adjacentCells[randomDir];
-			if (targetCell.isFree()) {
-				this.moveToCell(targetCell);
-			}
-		};
 
 		timeline.addActor(a);
 

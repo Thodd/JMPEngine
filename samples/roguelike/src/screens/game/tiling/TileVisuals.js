@@ -12,7 +12,7 @@ const TileVisuals = {
 		variants: [
 			{
 				id: char2id("·"),
-				color: Colors[1]
+				color: Colors[11]
 			},
 			{
 				id: char2id("."),

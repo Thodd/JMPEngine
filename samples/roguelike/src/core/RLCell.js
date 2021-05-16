@@ -144,6 +144,17 @@ class RLCell {
 	}
 
 	/**
+	 * Returns whether an RLCell is free for an RLActor to move to.
+	 * Important: Should be overwritten in subclasses with game logic!
+	 * Base implementation always returns true!
+	 *
+	 * @returns {boolean} whether the cell is considered free
+	 */
+	isFree() {
+		return true;
+	}
+
+	/**
 	 * Internal function to cache the map of all adjacent cells.
 	 */
 	_initNeighborCells() {
