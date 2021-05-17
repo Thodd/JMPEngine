@@ -1,4 +1,4 @@
-import Constants from "../Constants.js";
+import Constants from "../../gamecontent/Constants.js";
 import Fonts from "../../../../../src/assets/Fonts.js";
 
 // create char <-> id mapping

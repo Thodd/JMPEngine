@@ -1,7 +1,7 @@
 import RNG from "../../../../../../src/utils/RNG.js";
 
 const BattleCalculator = {
-	battle(attacker, defender, weaponSlot) {
+	battle(/*attacker, defender, weaponSlot*/) {
 		let result = {
 			defenderWasHit: false,
 			damage: 0

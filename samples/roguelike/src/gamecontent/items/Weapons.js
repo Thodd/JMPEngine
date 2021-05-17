@@ -1,7 +1,7 @@
 import ItemType from "../../engine/inventory/ItemType.js"
 
-import ItemCategories from "./ItemCategories.js";
-import EquipmentSlots from "./EquipmentSlots.js";
+import ItemCategories from "../../engine/inventory/ItemCategories.js";
+import EquipmentSlots from "../../engine/inventory/EquipmentSlots.js";
 import { char2id } from "../../engine/utils/RLTools.js";
 import Colors from "../../engine/Colors.js";
 

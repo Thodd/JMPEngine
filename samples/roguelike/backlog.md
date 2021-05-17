@@ -2,30 +2,17 @@
 
 ## open
 
-* [ ] Re-think: Project restructuring (again)
-  * /engine contains base classes
-  * /gamecontent contains special sub-classes
-  * [ ] Overworld/OverworldController -> /gamecontent
-  * [ ] EquipmentSlots & ItemCategories -> /engine
-  * [ ] Dedicated Item category base-classes?
-  * [ ] Tiling
-    * [ ] Tile Class stays in -> /engine
-    * [ ] TileType base class (similar to ItemType) -> /engine
-    * [ ] Move tile-types & visuals to -> /gamecontent
-      * [ ] Use a factory approach like with ItemType ???
-  * [ ] Move "Constants" -> /gamecontent
-  * [ ] Move "Colors" -> /gamecontent
-
 * [ ] Backpack/Inventory
   * [x] ItemType -> base class for all items
   * [ ] Give Backpack to ActorBase.js
   * [ ] Equip initial Weapons
-* [ ] Melee battle --> needs Inventory/Backpack first
 
 * [ ] Special Player actor -> /engine
   * [ ] extends ActorBase
   * [ ] overwrites getSats() and getBackpack()
   * [ ] references satic PlayerState -> /engine
+
+* [ ] Melee battle --> needs Inventory/Backpack first
 
 * [ ] pick-up items & weapons (actors in the grid)
   * [ ] ItemBase.js in /engine/actors/...
@@ -50,9 +37,8 @@
   * Right now it can happen that the valid rooms are generated to the border :(
   * This can also be used to make nicer outlines for the forest/island edge (see ARPG generation)
 
-* [x] TileTypes
-  * [ ] Move Sanity-Check to a separate tool which cross checks ALL manually defined things:
-    * [ ] e.g. TileTypes, TileVisuals, Flavor-Texts, ...
+* [ ] Sanity-Check for ALL manually defined things:
+  * [ ] e.g. TileTypes, TileVisuals, Flavor-Texts, ...
 
 * [ ] Drop-Loot --> DropSystem instance per RLMap --> fire "drop" event, deregister on screen switch.
 
@@ -61,11 +47,14 @@
 ## ideas
 
 * Lightsource -> Flashlight
-  * Player has a "battery" level which keeps shrinking
+  * Player has a hidden counter
+    * Random Event: after a random amount of turns, the flashlight looses power
+      * this recovers after a couple of turns
+      * spawns monsters close by
   * If the battery runs out, the visible circle is only ~3 tiles
-    * Collect batteries instead of health ?
+    * Sanity suffers?
 
-* Red hering items
+* Red herring items
   * seem important, but are useless
   * only 1 or 2 per game
 
@@ -78,6 +67,19 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] Re-think: Project restructuring (again)
+  * /engine contains base classes
+  * /gamecontent contains special sub-classes
+  * [x] Overworld/OverworldController -> toplevel
+  * [x] EquipmentSlots & ItemCategories -> /engine
+  * [x] Tiling
+    * [x] Tile Class stays in -> /engine
+    * [x] TileType base class (similar to ItemType) -> /engine
+    * [x] Move tile-types & visuals to -> /gamecontent
+      * [x] Use a factory approach like with ItemType
+  * [x] Move "Constants" -> /gamecontent
+  * [x] Move "Colors" -> /gamecontent
 
 * [x] Restructure project
   * [x] core (clubs)

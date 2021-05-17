@@ -3,17 +3,17 @@ import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
 import { log } from "../../../../../../src/utils/Log.js";
 
-import RLMapController from "../../core/controller/RLMapController.js";
-import Events from "../Events.js";
-import AnimationPool from "../../core/animations/AnimationPool.js";
-import AnimationChain from "../../core/animations/AnimationChain.js";
+import RLMapController from "../core/controller/RLMapController.js";
+import Events from "../engine/Events.js";
+import AnimationPool from "../core/animations/AnimationPool.js";
+import AnimationChain from "../core/animations/AnimationChain.js";
 
-import Colors from "../Colors.js";
+import Colors from "../gamecontent/Colors.js";
 
-import RoomScrolling from "../animations/RoomScrolling.js";
-import ScreenShake from "../animations/ScreenShake.js";
-import FOV from "../../core/controller/FOV.js";
-import { char2id } from "../utils/RLTools.js";
+import RoomScrolling from "../engine/animations/RoomScrolling.js";
+import ScreenShake from "../engine/animations/ScreenShake.js";
+import FOV from "../core/controller/FOV.js";
+import { char2id } from "../engine/utils/RLTools.js";
 
 class GameLogicController extends RLMapController {
 	/**

@@ -1,6 +1,6 @@
 import EnemyBase from "../../../engine/actors/EnemyBase.js";
 import { char2id } from "../../../engine/utils/RLTools.js";
-import Colors from "../../../engine/Colors.js";
+import Colors from "../../../gamecontent/Colors.js";
 class Snake extends EnemyBase {
 	constructor() {
 		super();

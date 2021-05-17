@@ -8,11 +8,11 @@ import Tilemap from "../../../../../src/game/Tilemap.js";
 
 // RL Stuff
 import { xx, yy, char2id } from "../../engine/utils/RLTools.js";
-import Constants from "../../engine/Constants.js";
-import Colors from "../../engine/Colors.js";
+import Constants from "../../gamecontent/Constants.js";
+import Colors from "../../gamecontent/Colors.js";
 
 // map gen
-import OverworldMap from "../../engine/overworld/OverworldMap.js";
+import OverworldMap from "../../overworld/OverworldMap.js";
 
 class GameScreen extends Screen {
 	constructor() {

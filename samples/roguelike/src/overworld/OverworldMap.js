@@ -1,18 +1,22 @@
 import { log } from "../../../../../../src/utils/Log.js";
-import { char2id } from "../utils/RLTools.js";
+import { char2id } from "../engine/utils/RLTools.js";
 
-import RLMap from "../../core/RLMap.js";
+// core imports
+import RLMap from "../core/RLMap.js";
 
+// engine imports
+import ActorBase from "../engine/actors/ActorBase.js";
+import Tile from "../engine/tiling/Tile.js";
+
+// content imports
+import Constants from "../gamecontent/Constants.js";
+import Colors from "../gamecontent/Colors.js";
+import TileTypes from "../gamecontent/tiling/TileTypes.js";
+import Snake from "../gamecontent/npcs/enemies/Snake.js";
+
+// own stuff
 import OverworldController from "./OverworldController.js";
-
-import ActorBase from "../actors/ActorBase.js";
-import Snake from "../../gamecontent/npcs/enemies/Snake.js";
-
 import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
-import Constants from "../Constants.js";
-import Colors from "../Colors.js";
-import Tile from "../tiling/Tile.js";
-import TileTypes from "../tiling/TileTypes.js";
 
 class OverworldMap extends RLMap {
 	constructor() {
@@ -65,6 +69,7 @@ class OverworldMap extends RLMap {
 		// TODO: create actors
 		let timeline = this.getController().getTimeline();
 
+		// v--- DEBUGGING and Testing actors ---v
 		let snek = new Snake();
 		timeline.addActor(snek);
 

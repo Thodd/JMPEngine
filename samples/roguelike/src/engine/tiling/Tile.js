@@ -2,13 +2,13 @@ import { assert, warn } from "../../../../../../src/utils/Log.js";
 import { random, randomInteger } from "../../../../../../src/utils/RNG.js";
 
 import RLCell from "../../core/RLCell.js";
-import TileTypes from "./TileTypes.js";
+import TileType from "./TileType.js";
 
 class Tile extends RLCell {
 	constructor(map, x, y) {
 		super(map, x, y);
 
-		this._type = TileTypes.VOID;
+		this._type = TileType.VOID;
 	}
 
 	/**
@@ -26,7 +26,7 @@ class Tile extends RLCell {
 
 			this._changeVisuals(type);
 		} else {
-			this._type = TileTypes.VOID;
+			this._type = TileType.VOID;
 			warn("No tile type given. Defaulting to VOID.", "Tile");
 		}
 	}

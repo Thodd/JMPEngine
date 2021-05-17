@@ -33,7 +33,7 @@ class ItemType {
 	/**
 	 * Checks if the ItemType fits into one or more categories.
 	 *
-	 * @param {ItemTypes.Categories[]|ItemTypes.Categories} cats the categories/category which should be checked
+	 * @param {ItemCategories[]|ItemCategories} cats the categories/category which should be checked
 	 */
 	hasCategory(cats) {
 		// mutliple categorys given

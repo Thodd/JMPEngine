@@ -1,12 +1,7 @@
-import Colors from "../Colors.js";
-import { char2id } from "../utils/RLTools.js";
+import Colors from "../../gamecontent/Colors.js";
+import { char2id } from "../../engine/utils/RLTools.js";
 
 const TileVisuals = {
-
-	VOID: {
-		id: char2id("◙"),
-		color: Colors[0]
-	},
 
 	FLOOR: {
 		variants: [
