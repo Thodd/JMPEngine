@@ -1,4 +1,4 @@
-import AnimationBase from "../../../core/animations/AnimationBase.js";
+import AnimationBase from "../../core/animations/AnimationBase.js";
 
 class ScreenShake extends AnimationBase {
 	/**

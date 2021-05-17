@@ -3,17 +3,17 @@ import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
 import { log } from "../../../../../../src/utils/Log.js";
 
-import RLMapController from "../../../core/controller/RLMapController.js";
-import Events from "../../../Events.js";
-import AnimationPool from "../../../core/animations/AnimationPool.js";
-import AnimationChain from "../../../core/animations/AnimationChain.js";
+import RLMapController from "../../core/controller/RLMapController.js";
+import Events from "../Events.js";
+import AnimationPool from "../../core/animations/AnimationPool.js";
+import AnimationChain from "../../core/animations/AnimationChain.js";
 
-import Colors from "../../../Colors.js";
+import Colors from "../Colors.js";
 
 import RoomScrolling from "../animations/RoomScrolling.js";
 import ScreenShake from "../animations/ScreenShake.js";
-import FOV from "../../../core/controller/FOV.js";
-import { char2id } from "../../../utils/RLTools.js";
+import FOV from "../../core/controller/FOV.js";
+import { char2id } from "../utils/RLTools.js";
 
 class GameLogicController extends RLMapController {
 	/**
@@ -33,7 +33,7 @@ class GameLogicController extends RLMapController {
 	 * @override
 	 */
 	setupAnimationPhases() {
-		return ["SCROLLING", "GENERAL", "MELEE_ATTACKS"];
+		return ["SCROLLING", "PLAYER_ATTACKS", "ENEMY_ATTACKS"];
 	}
 
 	/**
@@ -59,7 +59,7 @@ class GameLogicController extends RLMapController {
 		if (Keyboard.wasPressedOrIsDown(Keys.ENTER)) {
 			let chain = AnimationPool.get(AnimationChain, {});
 			chain.add(AnimationPool.get(ScreenShake, {map: this.getMap()}));
-			this.getAnimationSystem().schedule("GENERAL", chain);
+			this.getAnimationSystem().schedule("PLAYER_ATTACKS", chain);
 		}
 
 		// BG test

@@ -1,5 +1,5 @@
-import { log } from "../../../../../../../../src/utils/Log.js";
-import ActorBase from "../../ActorBase.js";
+import { log } from "../../../../../src/utils/Log.js";
+import ActorBase from "./ActorBase.js";
 
 class EnemyBase extends ActorBase {
 	takeTurn() {

@@ -1,5 +1,5 @@
-import Colors from "../../../Colors.js";
-import { char2id } from "../../../utils/RLTools.js";
+import Colors from "../Colors.js";
+import { char2id } from "../utils/RLTools.js";
 
 const TileVisuals = {
 

@@ -1,7 +1,7 @@
 import { assert, warn } from "../../../../../../src/utils/Log.js";
 import { random, randomInteger } from "../../../../../../src/utils/RNG.js";
 
-import RLCell from "../../../core/RLCell.js";
+import RLCell from "../../core/RLCell.js";
 import TileTypes from "./TileTypes.js";
 
 class Tile extends RLCell {

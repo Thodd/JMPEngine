@@ -2,7 +2,7 @@ import EventBus from "../../../../../src/utils/EventBus.js";
 import Keyboard from "../../../../../src/input/Keyboard.js";
 import Timeline from "./Timeline.js";
 
-import Events from "../../Events.js";
+import Events from "../../engine/Events.js";
 import AnimationSystem from "../animations/AnimationSystem.js";
 import FOV from "./FOV.js";
 

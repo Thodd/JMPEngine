@@ -32,9 +32,6 @@
   * [ ] Control-Schemes via GameController
 ## ideas
 
-* [x] Room-Structure for overworld
-  * [x] Room 2 Room scrolling like in Zelda
-
 * Charaters you have not talked to will have a brighter color
   * Once you talked to a character it's color will be diminished
   * Characters who are still relevant will always be bright, e.g. Quest is not finished yet
@@ -45,11 +42,21 @@
 
 ## done
 
+* [x] Restructure project
+  * [x] core (clubs)
+  * [x] game engine (spades)
+    * [x] Base classes: ActorBase, Equipment/Inventory, BattleCalculator
+      * e.g. Enemies, Items, Levelgen ...
+  * [x] game content (diamonds)
+  * [x] screen (hearts)
+
 * [x] Refactor Animation System to fit the grid based style
   * [x] Test system
 * [x] Simple FOV based on Bresenham's line algorithm
 * [x] Make first "random walking NPC" possible
-* [x] Scrolling
+* [x] Room-Structure for overworld
+  * [x] Room 2 Room scrolling like in Zelda
+  * [x] scrolling implementation
 * [x] Collision
 * [x] Make Actor move by changing x/y properties
 * [x] endPlayerTurn --> Make it an event fired on the global event-bus

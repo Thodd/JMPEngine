@@ -1,16 +1,16 @@
 import { log } from "../../../../../../src/utils/Log.js";
-import { char2id } from "../../../utils/RLTools.js";
+import { char2id } from "../utils/RLTools.js";
 
-import RLMap from "../../../core/RLMap.js";
+import RLMap from "../../core/RLMap.js";
 
 import OverworldController from "./OverworldController.js";
 
 import ActorBase from "../actors/ActorBase.js";
-import EnemyBase from "../actors/npcs/enemies/EnemyBase.js";
+import EnemyBase from "../actors/EnemyBase.js";
 
 import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
-import Constants from "../../../Constants.js";
-import Colors from "../../../Colors.js";
+import Constants from "../Constants.js";
+import Colors from "../Colors.js";
 import Tile from "../tiling/Tile.js";
 import TileTypes from "../tiling/TileTypes.js";
 

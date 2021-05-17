@@ -7,12 +7,12 @@ import Entity from "../../../../../src/game/Entity.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 
 // RL Stuff
-import { xx, yy, char2id } from "../../utils/RLTools.js";
-import Constants from "../../Constants.js";
-import Colors from "../../Colors.js";
+import { xx, yy, char2id } from "../../engine/utils/RLTools.js";
+import Constants from "../../engine/Constants.js";
+import Colors from "../../engine/Colors.js";
 
 // map gen
-import OverworldMap from "./overworld/OverworldMap.js";
+import OverworldMap from "../../engine/overworld/OverworldMap.js";
 
 class GameScreen extends Screen {
 	constructor() {
