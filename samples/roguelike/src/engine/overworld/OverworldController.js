@@ -71,7 +71,7 @@ class GameLogicController extends RLMapController {
 			c.lightLevel = FOV.LightLevels.ALWAYS;
 			if (Keyboard.wasPressedOrIsDown(Keys.SHIFT)) {
 				c.color = Colors[5];
-				c.id = char2id("i");
+				c.id = char2id("f");
 			}
 		}
 

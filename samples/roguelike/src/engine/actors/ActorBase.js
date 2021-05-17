@@ -18,6 +18,17 @@ class ActorBase extends RLActor {
 		this.isWalkable = false;
 
 		this._isDead = false;
+
+		// by default we take the class as a name
+		this.name = this.constructor.name;
+	}
+
+	/**
+	 * Returns the name of the Actor. Defaults to the class name.
+	 * @returns {string} the name of the actor
+	 */
+	toString() {
+		return this.name;
 	}
 
 	set isDead(v) {
@@ -83,9 +94,11 @@ class ActorBase extends RLActor {
 			// now do the actual battle
 			let battleResult = BattleCalculator.battle(this, defender, "MELEE");
 
-			let battleMessage = `${this} attacks ${defender}.`;
+			let battleMessage = `${this} attacks ${defender} `;
 			if (battleResult.damage == 0) {
-				battleMessage += ` ${this} misses!`;
+				battleMessage += `and misses!`;
+			} else {
+				battleMessage += `for ${battleResult.damage} dmg.`;
 			}
 			log(battleMessage);
 

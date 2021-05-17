@@ -6,7 +6,7 @@ import RLMap from "../../core/RLMap.js";
 import OverworldController from "./OverworldController.js";
 
 import ActorBase from "../actors/ActorBase.js";
-import EnemyBase from "../actors/EnemyBase.js";
+import Snake from "../../gamecontent/npcs/enemies/Snake.js";
 
 import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
 import Constants from "../Constants.js";
@@ -65,14 +65,11 @@ class OverworldMap extends RLMap {
 		// TODO: create actors
 		let timeline = this.getController().getTimeline();
 
-		let a = new EnemyBase();
-		a.id = char2id("s");
-		a.color = Colors[7];
-
-		timeline.addActor(a);
+		let snek = new Snake();
+		timeline.addActor(snek);
 
 		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
-		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(a);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(snek);
 	}
 
 	/**

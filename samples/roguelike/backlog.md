@@ -2,11 +2,19 @@
 
 ## open
 
+* [ ] Backpack/Inventory
+  * [ ] Carry items
+  * [ ] Equip Weapons
+
+* [ ] pick-up items & weapons
+
+* [ ] Melee battle --> needs Inventory/Backpack first
+
 * [ ] NPCs
   * [ ] First enemy: Snake
     * [x] randomly walk around
-    * [ ] be attacked by other actor
     * [ ] attack another actor
+    * [ ] be attacked by other actor
   * [ ] Wolf
   * [ ] Bear
   * [ ] Firefly (casts light around itself 1 tile radius)

@@ -7,7 +7,13 @@ const BattleCalculator = {
 			damage: 0
 		};
 
-		let attackWeapon = attacker.getBackpack().getItemFromSlot(weaponSlot);
+		// let attackWeapon = attacker.getBackpack().getItemFromSlot(weaponSlot);
+		let attackWeapon = {
+			values: {
+				acc: 0.9,
+				dmg: 2
+			}
+		};
 
 		if (attackWeapon) {
 			let battleValues = attackWeapon.values;
