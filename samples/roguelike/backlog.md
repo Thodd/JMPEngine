@@ -2,13 +2,33 @@
 
 ## open
 
+* [ ] Re-think: Project restructuring (again)
+  * /engine contains base classes
+  * /gamecontent contains special sub-classes
+  * [ ] Overworld/OverworldController -> /gamecontent
+  * [ ] EquipmentSlots & ItemCategories -> /engine
+  * [ ] Dedicated Item category base-classes?
+  * [ ] Tiling
+    * [ ] Tile Class stays in -> /engine
+    * [ ] TileType base class (similar to ItemType) -> /engine
+    * [ ] Move tile-types & visuals to -> /gamecontent
+      * [ ] Use a factory approach like with ItemType ???
+  * [ ] Move "Constants" -> /gamecontent
+  * [ ] Move "Colors" -> /gamecontent
+
 * [ ] Backpack/Inventory
-  * [ ] Carry items
-  * [ ] Equip Weapons
-
-* [ ] pick-up items & weapons
-
+  * [x] ItemType -> base class for all items
+  * [ ] Give Backpack to ActorBase.js
+  * [ ] Equip initial Weapons
 * [ ] Melee battle --> needs Inventory/Backpack first
+
+* [ ] Special Player actor -> /engine
+  * [ ] extends ActorBase
+  * [ ] overwrites getSats() and getBackpack()
+  * [ ] references satic PlayerState -> /engine
+
+* [ ] pick-up items & weapons (actors in the grid)
+  * [ ] ItemBase.js in /engine/actors/...
 
 * [ ] NPCs
   * [ ] First enemy: Snake
@@ -39,6 +59,15 @@
 * [ ] Integrate "monochrome" features into grid-based engine
   * [ ] Control-Schemes via GameController
 ## ideas
+
+* Lightsource -> Flashlight
+  * Player has a "battery" level which keeps shrinking
+  * If the battery runs out, the visible circle is only ~3 tiles
+    * Collect batteries instead of health ?
+
+* Red hering items
+  * seem important, but are useless
+  * only 1 or 2 per game
 
 * Charaters you have not talked to will have a brighter color
   * Once you talked to a character it's color will be diminished
