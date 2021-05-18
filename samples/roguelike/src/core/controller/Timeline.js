@@ -28,15 +28,15 @@ class Timeline {
 
 				// TODO: Introduce WHILE loop to take more than 1 turn --> needs refactoring of animation scheduling
 				//       (return animations after turn instead of scheduling directly)
-				let stats = a.getTimelineInfo();
-				if (stats.energy >= 100) {
+				let timelineInfo = a.getTimelineInfo();
+				if (timelineInfo.energy >= 100) {
 					// actor takes turn
 					a.takeTurn();
 					// standard turn cost of 100 energy
-					stats.energy -= 100;
+					timelineInfo.energy -= 100;
 				}
 
-				stats.energy += stats.speed;
+				timelineInfo.energy += timelineInfo.speed;
 			}
 		}
 

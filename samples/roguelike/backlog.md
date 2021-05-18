@@ -2,16 +2,6 @@
 
 ## open
 
-* [ ] Backpack/Inventory
-  * [x] ItemType -> base class for all items
-  * [ ] Give Backpack to ActorBase.js
-  * [ ] Equip initial Weapons
-
-* [ ] Special Player actor -> /engine
-  * [ ] extends ActorBase
-  * [ ] overwrites getSats() and getBackpack()
-  * [ ] references satic PlayerState -> /engine
-
 * [ ] Melee battle --> needs Inventory/Backpack first
 
 * [ ] pick-up items & weapons (actors in the grid)
@@ -67,6 +57,16 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] Special Player actor -> /gamecontent
+  * [x] extends ActorBase
+  * [x] overwrites getSats() and getBackpack()
+  * [x] references satic PlayerState -> /gamecontent
+
+* [x] Backpack/Inventory
+  * [x] ItemType -> base class for all items
+  * [x] Give Backpack to ActorBase.js
+  * [x] Equip initial Weapons
 
 * [x] Re-think: Project restructuring (again)
   * /engine contains base classes

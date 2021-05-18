@@ -1,9 +1,11 @@
+// engine imports
 import ItemType from "../../engine/inventory/ItemType.js"
-
 import ItemCategories from "../../engine/inventory/ItemCategories.js";
 import EquipmentSlots from "../../engine/inventory/EquipmentSlots.js";
 import { char2id } from "../../engine/utils/RLTools.js";
-import Colors from "../../engine/Colors.js";
+
+// gamecontent imports
+import Colors from "../Colors.js";
 
 // TODO: is a projectile type necessary? why not just render "*" for each projectile?
 //       But it looks nicer if we render "/" or "←" though...

@@ -10,8 +10,7 @@ class RLActor {
 		this.isActive = true;
 		this.isVisible = true;
 
-		// default stats
-		// includes information for on Timeline/Turn-Scheduling implementation
+		// default timeline info for turn scheduling
 		this._timelineInfo = {
 			speed: 100,
 			energy: 100

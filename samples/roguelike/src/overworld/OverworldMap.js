@@ -1,18 +1,17 @@
+// JMP imports
 import { log } from "../../../../../../src/utils/Log.js";
-import { char2id } from "../engine/utils/RLTools.js";
 
 // core imports
 import RLMap from "../core/RLMap.js";
 
 // engine imports
-import ActorBase from "../engine/actors/ActorBase.js";
 import Tile from "../engine/tiling/Tile.js";
 
 // content imports
 import Constants from "../gamecontent/Constants.js";
-import Colors from "../gamecontent/Colors.js";
 import TileTypes from "../gamecontent/tiling/TileTypes.js";
-import Snake from "../gamecontent/npcs/enemies/Snake.js";
+import Player from "../gamecontent/actors/player/Player.js";
+import Rat from "../gamecontent/actors/enemies/Rat.js";
 
 // own stuff
 import OverworldController from "./OverworldController.js";
@@ -70,11 +69,11 @@ class OverworldMap extends RLMap {
 		let timeline = this.getController().getTimeline();
 
 		// v--- DEBUGGING and Testing actors ---v
-		let snek = new Snake();
-		timeline.addActor(snek);
+		let ratEnemy = new Rat();
+		timeline.addActor(ratEnemy);
 
 		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
-		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(snek);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(ratEnemy);
 	}
 
 	/**
@@ -83,10 +82,7 @@ class OverworldMap extends RLMap {
 	 * @returns {RLActor} the player actor instance
 	 */
 	createPlayerActor() {
-		let player = new ActorBase();
-		player.id = char2id("@");
-		player.color = Colors[0];
-		return player;
+		return new Player();
 	}
 
 	/**

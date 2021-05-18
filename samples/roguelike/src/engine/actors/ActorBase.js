@@ -4,6 +4,9 @@ import { warn, log } from "../../../../../src/utils/Log.js";
 import RLActor from "../../core/RLActor.js";
 
 import BattleCalculator from "../combat/BattleCalculator.js";
+import Stats from "../combat/Stats.js";
+import Backpack from "../inventory/Backpack.js";
+import EquipmentSlots from "../inventory/EquipmentSlots.js";
 
 /**
  * Base class for all game Actors.
@@ -21,6 +24,12 @@ class ActorBase extends RLActor {
 
 		// by default we take the class as a name
 		this.name = this.constructor.name;
+
+		// each actor has a backpack for weapons and loot
+		this._backpack = new Backpack();
+
+		// Stats object
+		this._stats = new Stats();
 	}
 
 	/**
@@ -31,6 +40,36 @@ class ActorBase extends RLActor {
 		return this.name;
 	}
 
+	/**
+	 * @override
+	 */
+	getTimelineInfo() {
+		// timeline info is contained in the Stats object
+		return this._stats._timelineInfo;
+	}
+
+	/**
+	 * Returns the backpack of the actor.
+	 * @returns {Backpack} the backpack of the actor
+	 * @public
+	 */
+	getBackpack() {
+		return this._backpack;
+	}
+
+	/**
+	 * Returns the stats value object for the actor.
+	 * @returns {Stats} the stats value object of the actor
+	 * @public
+	 */
+	getStats() {
+		return this._stats;
+	}
+
+	/**
+	 * Marks an actor as dead.
+	 * Dead actors are removed from the game entirely, including the Timeline.
+	 */
 	set isDead(v) {
 		if (v != true) {
 			warn("An Actor cannot be set to 'undead'. Something went wrong :D", "ActorBase");
@@ -39,6 +78,9 @@ class ActorBase extends RLActor {
 		// TODO: remove from timeline
 	}
 
+	/**
+	 * Returns whether the actor is dead.
+	 */
 	get isDead() {
 		return this._isDead;
 	}
@@ -54,6 +96,7 @@ class ActorBase extends RLActor {
 	/**
 	 * Returns the Room in which this actor is placed.
 	 * @returns {Room} the Room of this actor
+	 * @public
 	 */
 	getRoom() {
 		return this.room;
@@ -85,14 +128,8 @@ class ActorBase extends RLActor {
 			// determine animation phase
 			//let phase = this.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
 
-			// bump animation
-			// whether we hit or miss is irrelevant, we always perform the attack animation
-			// let bump = AnimationPool.get(BumpAnimation, this);
-			// bump.bumpTowards(defender.getTile());
-			// this.scheduleAnimation(bump, phase);
-
 			// now do the actual battle
-			let battleResult = BattleCalculator.battle(this, defender, "MELEE");
+			let battleResult = BattleCalculator.battle(this, defender, EquipmentSlots.MELEE);
 
 			let battleMessage = `${this} attacks ${defender} `;
 			if (battleResult.damage == 0) {
