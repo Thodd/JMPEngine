@@ -1,7 +1,10 @@
 import Helper from "../../../../../src/utils/Helper.js"
 import { log } from "../../../../../src/utils/Log.js";
+import AnimationPool from "../../core/animations/AnimationPool.js";
 
 import RLActor from "../../core/RLActor.js";
+import Hurt from "../../gamecontent/animations/Hurt.js";
+import ScreenShake from "../../gamecontent/animations/ScreenShake.js";
 
 import BattleCalculator from "../combat/BattleCalculator.js";
 import Stats from "../combat/Stats.js";
@@ -75,16 +78,34 @@ class ActorBase extends RLActor {
 
 	/**
 	 * Hook to set the visuals of the Actor.
+	 * Can be overriden in subclasses for special handling.
+	 *
+	 * By default an object with id, color and background is used.
+	 * e.g.
+	 * {
+	 *    id: char2id("/"),
+	 *    color: 0xFF0085
+	 *    background: undefined // can be optional
+	 * }
+	 * @protected
 	 */
-	defineVisuals() {}
+	defineVisuals(v) {
+		this.id = v.id
+		this.color = v.color;
+		this.background = v.background;
+	}
 
 	/**
 	 * Hook to set the stat value of the Actor.
+	 * Can be overriden in subclasses for special handling.
+	 * @protected
 	 */
 	defineStats() {}
 
 	/**
 	 * Hook to equip the initial weapon of the Actor.
+	 * Can be overriden in subclasses for special handling.
+	 * @protected
 	 */
 	equipInitialWeapon() {}
 
@@ -127,10 +148,6 @@ class ActorBase extends RLActor {
 		// Only attack living actors
 		// it might happen that an actor dies on a turn before we had a chance to attack it
 		if (!defender.isDead) {
-
-			// determine animation phase
-			// let phase = this.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
-
 			// now do the actual battle
 			let battleResult = BattleCalculator.battle(this, defender, EquipmentSlots.MELEE);
 
@@ -146,11 +163,26 @@ class ActorBase extends RLActor {
 	}
 
 	takeDamage(dmg) {
-		let stats = this.getStats();
-		stats.hp -= dmg;
+		if (dmg > 0) {
+			let stats = this.getStats();
+			stats.hp -= dmg;
 
-		if (stats.hp <= 0) {
-			this.die();
+			// determine animation phase
+			let phase = this.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
+
+			// hurt
+			let hurtAnim = AnimationPool.get(Hurt, { actor: this });
+			this.getAnimationSystem().schedule(phase, hurtAnim);
+
+			// screen shake if the player is hit
+			if (this.isPlayer) {
+				let shakeAnim = AnimationPool.get(ScreenShake, { map: this.getMap() });
+				this.getAnimationSystem().schedule(phase, shakeAnim);
+			}
+
+			if (stats.hp <= 0) {
+				this.die();
+			}
 		}
 	}
 

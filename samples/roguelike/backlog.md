@@ -2,19 +2,14 @@
 
 ## open
 
-* [ ] Melee battle
-  * [x] --> needs Inventory/Backpack first
-  * [x] deal damage & take damage
-  * [ ] attack/hurt animation
-
 * [ ] pick-up items & weapons (actors in the grid)
   * [ ] ItemBase.js in /engine/actors/...
 
 * [ ] NPCs
-  * [ ] First enemy: Snake
+  * [x] First enemy: Rat
     * [x] randomly walk around
-    * [ ] attack another actor
-    * [ ] be attacked by other actor
+    * [x] attack another actor/player
+    * [x] be attacked by other actor
   * [ ] Wolf
   * [ ] Bear
   * [ ] Firefly (casts light around itself 1 tile radius)
@@ -60,6 +55,11 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] Melee battle
+  * [x] --> needs Inventory/Backpack first
+  * [x] deal damage & take damage
+  * [x] attack/hurt animation
 
 * [x] Special Player actor -> /gamecontent
   * [x] extends ActorBase

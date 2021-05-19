@@ -15,6 +15,12 @@ class Entity {
 		this.x = x;
 		this.y = y;
 
+		// track the original starting position of the Entity
+		this._startX = null;
+		this._startY = null;
+		this.startX = this.x;
+		this.startY = this.y;
+
 		this._ID = INSTANCE_COUNT++;
 
 		this._screen = null;
@@ -109,6 +115,30 @@ class Entity {
 			return this._pixiSprite.alpha;
 		}
 		return 1;
+	}
+
+	set startX(v) {
+		if (this._startX == null) {
+			this._startX = v;
+		} else {
+			warn("The starting coordinates of an Entity are immutable!", "Entity");
+		}
+	}
+
+	get startX() {
+		return this._startX;
+	}
+
+	set startY(v) {
+		if (this._startY == null) {
+			this._startY = v;
+		} else {
+			warn("The starting coordinates of an Entity are immutable!", "Entity");
+		}
+	}
+
+	get startY() {
+		return this._startY;
 	}
 
 	/**

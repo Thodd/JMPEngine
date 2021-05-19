@@ -24,7 +24,11 @@ class ScreenShake extends AnimationBase {
 		} else if (this._shakeCount == 2) {
 			this._map.x += 2;
 		} else {
-			this._map.x -= 2;
+			// reset map entity to its origin
+			// this way we prevent multiple screenshake animations to mess up the UI positioning
+			this._map.x = this._map.startX;
+			this._map.y = this._map.startY;
+
 			this.done();
 		}
 

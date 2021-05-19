@@ -215,21 +215,26 @@ class RLActor {
 	isStandingAdjacent(actor, diagonal = false) {
 		let c1 = this.getCell();
 		let c2 = actor.getCell();
-		let xDif = Math.abs(c1.x - c2.x);
-		let yDif = Math.abs(c1.y - c2.y);
+		// might happen that the actor we want to check is not added to a cell anymore,
+		// e.g. when it died the same turn
+		if (c1 && c2) {
+			let xDif = Math.abs(c1.x - c2.x);
+			let yDif = Math.abs(c1.y - c2.y);
 
-		// anything farther than 1 is not considered "adjacent"
-		if (xDif > 1 || yDif > 1) {
-			return false;
-		}
-
-		if (diagonal) {
-			if (xDif === 1 || yDif === 1) {
-				return true;
+			// anything farther than 1 is not considered "adjacent"
+			if (xDif > 1 || yDif > 1) {
+				return false;
 			}
-		} else {
-			return (xDif === 1 && yDif === 0) || (xDif === 0 && yDif === 1);
+
+			if (diagonal) {
+				if (xDif === 1 || yDif === 1) {
+					return true;
+				}
+			} else {
+				return (xDif === 1 && yDif === 0) || (xDif === 0 && yDif === 1);
+			}
 		}
+		return false;
 	}
 
 	// ********* Convenience functions *********

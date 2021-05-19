@@ -14,8 +14,8 @@ import AnimationChain from "../core/animations/AnimationChain.js";
 import Events from "../engine/Events.js";
 import { char2id } from "../engine/utils/RLTools.js";
 import EnemyBase from "../engine/actors/EnemyBase.js";
-import RoomScrolling from "../engine/animations/RoomScrolling.js";
-import ScreenShake from "../engine/animations/ScreenShake.js";
+import RoomScrolling from "../gamecontent/animations/RoomScrolling.js";
+import ScreenShake from "../gamecontent/animations/ScreenShake.js";
 
 // gamecontent imports
 import Colors from "../gamecontent/Colors.js";

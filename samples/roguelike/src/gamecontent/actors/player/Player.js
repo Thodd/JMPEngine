@@ -11,18 +11,16 @@ import Weapons from "../../items/Weapons.js";
 import PlayerState from "./PlayerState.js";
 
 class Player extends ActorBase {
-	constructor(spec) {
-		super(spec);
+	constructor() {
+		super({
+			visuals: {
+				id: char2id("@"),
+				color: Colors[0]
+			}
+		});
+
 		// helps to distinguish the
 		this.isPlayer = true;
-	}
-
-	/**
-	 * @override
-	 */
-	defineVisuals() {
-		this.id = char2id("@");
-		this.color = Colors[0];
 	}
 
 	/**

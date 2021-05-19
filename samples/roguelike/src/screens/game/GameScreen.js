@@ -20,8 +20,6 @@ class GameScreen extends Screen {
 
 		// create world map and place it on the screen
 		this._map = new OverworldMap();
-		this._map.x = xx(1);
-		this._map.y = yy(1);
 		this.add(this._map);
 
 		this._initUIElements();

@@ -3,14 +3,6 @@ import EquipmentSlots from "../inventory/EquipmentSlots.js";
 
 class EnemyBase extends ActorBase {
 	/**
-	 * @override
-	 */
-	defineVisuals(v) {
-		this.id = v.id
-		this.color = v.color;
-	}
-
-	/**
 	 * Sets the initial stats of the Enemy.
 	 * @param {object} spec a map of all stats that should be set
 	 * @override

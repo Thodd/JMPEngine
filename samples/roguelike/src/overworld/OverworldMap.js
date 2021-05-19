@@ -5,6 +5,7 @@ import { log } from "../../../../../../src/utils/Log.js";
 import RLMap from "../core/RLMap.js";
 
 // engine imports
+import { xx, yy } from "../engine/utils/RLTools.js";
 import Tile from "../engine/tiling/Tile.js";
 
 // content imports
@@ -25,6 +26,10 @@ class OverworldMap extends RLMap {
 			cellClass: Tile,
 
 			controllerClass: OverworldController,
+
+			// position on screen
+			x: xx(1),
+			y: yy(1),
 
 			// the RLMap's maximum dimensions are calculated based on the room count and the viewport size
 			w: Constants.VIEWPORT_WIDTH * Constants.OVERWORLD_ROOM_COLUMNS,
@@ -72,8 +77,12 @@ class OverworldMap extends RLMap {
 		let ratEnemy = new Rat();
 		timeline.add(ratEnemy);
 
+		let ratEnemy2 = new Rat();
+		timeline.add(ratEnemy2);
+
 		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
-		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(ratEnemy);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 15).addActor(ratEnemy);
+		this.get(centerRoom.dimensions.x_min + 14, centerRoom.dimensions.y_min + 15).addActor(ratEnemy2);
 	}
 
 	/**
