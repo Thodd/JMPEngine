@@ -4,11 +4,11 @@ class Timeline {
 		this.actorsToBeRemoved = [];
 	}
 
-	addActor(a) {
+	add(a) {
 		this.actors.push(a);
 	}
 
-	removeActor(a) {
+	remove(a) {
 		// mark actor as removed so we don't give it a turn later on
 		// this is important because an actor might be removed/die during another actors turn
 		a._isRemoved = true;
@@ -24,7 +24,7 @@ class Timeline {
 		for (let i = 0, len = this.actors.length; i < len; i++) {
 			let a = this.actors[i];
 			// only actors which have not been removed are allowed to take a turn!!
-			if (!a._isRemoved && a.isActive) {
+			if (!a._isRemoved && a.isActive && !a.isDead) {
 
 				// TODO: Introduce WHILE loop to take more than 1 turn --> needs refactoring of animation scheduling
 				//       (return animations after turn instead of scheduling directly)

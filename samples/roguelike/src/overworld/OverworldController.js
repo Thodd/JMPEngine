@@ -1,20 +1,24 @@
+// JMP imports
 import EventBus from "../../../../../../src/utils/EventBus.js";
 import Keyboard from "../../../../../../src/input/Keyboard.js";
 import Keys from "../../../../../../src/input/Keys.js";
 import { log } from "../../../../../../src/utils/Log.js";
 
+// core imports
+import FOV from "../core/controller/FOV.js";
 import RLMapController from "../core/controller/RLMapController.js";
-import Events from "../engine/Events.js";
 import AnimationPool from "../core/animations/AnimationPool.js";
 import AnimationChain from "../core/animations/AnimationChain.js";
 
-import Colors from "../gamecontent/Colors.js";
-
+// engine imports
+import Events from "../engine/Events.js";
+import { char2id } from "../engine/utils/RLTools.js";
+import EnemyBase from "../engine/actors/EnemyBase.js";
 import RoomScrolling from "../engine/animations/RoomScrolling.js";
 import ScreenShake from "../engine/animations/ScreenShake.js";
-import FOV from "../core/controller/FOV.js";
-import { char2id } from "../engine/utils/RLTools.js";
 
+// gamecontent imports
+import Colors from "../gamecontent/Colors.js";
 class GameLogicController extends RLMapController {
 	/**
 	 * @override
@@ -40,7 +44,7 @@ class GameLogicController extends RLMapController {
 	 * @override
 	 */
 	handleInput() {
-		let c = this._player.getCell();
+		let playerCell = this._player.getCell();
 
 		let dx = 0;
 		let dy = 0;
@@ -64,26 +68,40 @@ class GameLogicController extends RLMapController {
 
 		// BG test
 		if (Keyboard.wasPressedOrIsDown(Keys.SPACE)) {
-			c.background = Colors[10];
+			playerCell.id = char2id("/");
+			playerCell.color = Colors[0]
+			playerCell.background = Colors[7];
 		}
+
 		//lighting test
 		if (Keyboard.wasPressedOrIsDown(Keys.L)) {
-			c.lightLevel = FOV.LightLevels.ALWAYS;
+			playerCell.lightLevel = FOV.LightLevels.ALWAYS;
 			if (Keyboard.wasPressedOrIsDown(Keys.SHIFT)) {
-				c.color = Colors[5];
-				c.id = char2id("f");
+				playerCell.color = Colors[5];
+				playerCell.id = char2id("f");
 			}
 		}
 
 		let playerMoved = false;
-		let targetX = c.x + dx;
-		let targetY = c.y + dy;
+		let targetX = playerCell.x + dx;
+		let targetY = playerCell.y + dy;
 		let targetCell = this.getMap().get(targetX, targetY);
 
-		if (targetCell && targetCell.isFree()) {
-			playerMoved = this._player.moveTo(targetX, targetY);
+		if (targetCell && targetCell != playerCell) {
+			if (targetCell.isFree()) {
+				playerMoved = this._player.moveTo(targetX, targetY);
+			} else {
+				// handle "bump"
+				let actors = targetCell.getActors();
+				actors.forEach((a) => {
+					if (a instanceof EnemyBase) {
+						this._player.meleeAttackActor(a);
+					} else {
+						log("talking to a friendly NPC :)", "Player");
+					}
+				})
+			}
 		}
-
 		// TODO: - deactivate NPCs in the "oldRoom"
 		//       - activate NPCs in the "newRoom"
 		if (playerMoved) {

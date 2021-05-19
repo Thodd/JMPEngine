@@ -70,7 +70,7 @@ class OverworldMap extends RLMap {
 
 		// v--- DEBUGGING and Testing actors ---v
 		let ratEnemy = new Rat();
-		timeline.addActor(ratEnemy);
+		timeline.add(ratEnemy);
 
 		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
 		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 16).addActor(ratEnemy);

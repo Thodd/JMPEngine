@@ -2,7 +2,10 @@
 
 ## open
 
-* [ ] Melee battle --> needs Inventory/Backpack first
+* [ ] Melee battle
+  * [x] --> needs Inventory/Backpack first
+  * [x] deal damage & take damage
+  * [ ] attack/hurt animation
 
 * [ ] pick-up items & weapons (actors in the grid)
   * [ ] ItemBase.js in /engine/actors/...

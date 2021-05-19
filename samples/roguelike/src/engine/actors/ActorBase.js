@@ -1,5 +1,5 @@
 import Helper from "../../../../../src/utils/Helper.js"
-import { warn, log } from "../../../../../src/utils/Log.js";
+import { log } from "../../../../../src/utils/Log.js";
 
 import RLActor from "../../core/RLActor.js";
 
@@ -11,16 +11,18 @@ import EquipmentSlots from "../inventory/EquipmentSlots.js";
 /**
  * Base class for all game Actors.
  * Enhances the RLActor class with additional things like Rooms, ...
+ * @param {object} [spec] the specification of the actor
+ * @param {object} [spec.visuals] the visual definition (if any)
+ * @param {object} [spec.stats] the stats definition (if any)
+ * @param {object} [spec.weapon] the weapon definition (if any)
  */
 class ActorBase extends RLActor {
-	constructor() {
+	constructor(spec) {
 		super();
 
 		// by default an Actor cannot be passed over by another actor
 		// this might be changed for Items, loot-drops etc.
 		this.isWalkable = false;
-
-		this._isDead = false;
 
 		// by default we take the class as a name
 		this.name = this.constructor.name;
@@ -30,6 +32,11 @@ class ActorBase extends RLActor {
 
 		// Stats object
 		this._stats = new Stats();
+
+		// call definition hooks to setup the actor
+		this.defineVisuals(spec?.visuals);
+		this.defineStats(spec?.stats);
+		this.equipInitialWeapon(spec?.weapon);
 	}
 
 	/**
@@ -67,23 +74,19 @@ class ActorBase extends RLActor {
 	}
 
 	/**
-	 * Marks an actor as dead.
-	 * Dead actors are removed from the game entirely, including the Timeline.
+	 * Hook to set the visuals of the Actor.
 	 */
-	set isDead(v) {
-		if (v != true) {
-			warn("An Actor cannot be set to 'undead'. Something went wrong :D", "ActorBase");
-		}
-		this._isDead = true;
-		// TODO: remove from timeline
-	}
+	defineVisuals() {}
 
 	/**
-	 * Returns whether the actor is dead.
+	 * Hook to set the stat value of the Actor.
 	 */
-	get isDead() {
-		return this._isDead;
-	}
+	defineStats() {}
+
+	/**
+	 * Hook to equip the initial weapon of the Actor.
+	 */
+	equipInitialWeapon() {}
 
 	/**
 	 * Sets the Room for this Actor.
@@ -126,7 +129,7 @@ class ActorBase extends RLActor {
 		if (!defender.isDead) {
 
 			// determine animation phase
-			//let phase = this.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
+			// let phase = this.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
 
 			// now do the actual battle
 			let battleResult = BattleCalculator.battle(this, defender, EquipmentSlots.MELEE);
@@ -136,16 +139,23 @@ class ActorBase extends RLActor {
 				battleMessage += `and misses!`;
 			} else {
 				battleMessage += `for ${battleResult.damage} dmg.`;
+				defender.takeDamage(battleResult.damage);
 			}
 			log(battleMessage);
-
-			// defender is hurt by this actor, schedule hurt animation
-			// can also be "0! for a miss!
-			// let hurtAnim = defender.updateHP(-battleResult.damage, this);
-			// if (hurtAnim) {
-			// 	this.scheduleAnimation(hurtAnim, phase);
-			// }
 		}
+	}
+
+	takeDamage(dmg) {
+		let stats = this.getStats();
+		stats.hp -= dmg;
+
+		if (stats.hp <= 0) {
+			this.die();
+		}
+	}
+
+	die() {
+		this.isDead = true;
 	}
 }
 

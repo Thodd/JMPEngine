@@ -10,6 +10,8 @@ class RLActor {
 		this.isActive = true;
 		this.isVisible = true;
 
+		this._isDead = false;
+
 		// default timeline info for turn scheduling
 		this._timelineInfo = {
 			speed: 100,
@@ -61,6 +63,33 @@ class RLActor {
 		if (this._cell) {
 			this._cell.dirty();
 		}
+	}
+
+	/**
+	 * Marks an actor as dead.
+	 * Dead actors are removed from the game entirely, including the Timeline.
+	 */
+	set isDead(v) {
+		if (this._cell) {
+			if (v != true) {
+				warn("An Actor cannot be set to 'undead'. Something went wrong...", "ActorBase");
+			}
+			this._isDead = true;
+
+			// first remove the actor from the timeline...
+			this.getTimeline().remove(this);
+			// ... then remove it from its cell
+			this.removeFromCell();
+		} else {
+			warn("Cannot set 'isDead' for an actor that was not added to a Cell yet!", "ActorBase");
+		}
+	}
+
+	/**
+	 * Returns whether the actor is dead.
+	 */
+	get isDead() {
+		return this._isDead;
 	}
 
 	/**
@@ -249,6 +278,18 @@ class RLActor {
 	getController() {
 		let map = this.getMap();
 		return map && map.getController();
+	}
+
+	/**
+	 * Shorthand convenience function to retrieve the Timeline instance
+	 * associated with this RLActor.
+	 * Only returns something if the RLActor is added to an RLCell in an RLMap.
+	 * @returns {Timeline|undefined}
+	 * @public
+	 */
+	getTimeline() {
+		let ctr = this.getController();
+		return ctr && ctr.getTimeline();
 	}
 
 	/**

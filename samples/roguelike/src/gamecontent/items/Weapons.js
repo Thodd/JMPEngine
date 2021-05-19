@@ -72,7 +72,7 @@ _create({
  * WEAPONS: melee
  */
 _create({
-	id: "KNIFE_POCKET",
+	id: "POCKET_KNIFE",
 	equippableAs: [EquipmentSlots.MELEE],
 	visuals: {
 		id: char2id("`"),
@@ -106,7 +106,7 @@ _create({
 	}
 });
 _create({
-	id: "KNIFE_KITCHEN",
+	id: "KITCHEN_KNIFE",
 	equippableAs: [EquipmentSlots.MELEE],
 	visuals: {
 		id: char2id("`"),
