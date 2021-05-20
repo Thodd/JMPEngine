@@ -24,7 +24,6 @@ class ActorBase extends RLActor {
 		super();
 
 		// by default an Actor cannot be passed over by another actor
-		// this might be changed for Items, loot-drops etc.
 		this.isWalkable = false;
 
 		// by default we take the class as a name

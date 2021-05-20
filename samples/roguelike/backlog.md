@@ -2,8 +2,11 @@
 
 ## open
 
-* [ ] pick-up items & weapons (actors in the grid)
-  * [ ] ItemBase.js in /engine/actors/...
+* [ ] items & weapons (actors in the grid)
+  * [x] ItemBase.js in /engine/actors/...
+  * [x] render items
+  * [ ] pick-up into backpack
+    * [ ] Log player backpack to console for debugging
 
 * [ ] NPCs
   * [x] First enemy: Rat

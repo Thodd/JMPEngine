@@ -7,10 +7,12 @@ import RLMap from "../core/RLMap.js";
 // engine imports
 import { xx, yy } from "../engine/utils/RLTools.js";
 import Tile from "../engine/tiling/Tile.js";
+import ItemBase from "../engine/actors/ItemBase.js";
 
 // content imports
 import Constants from "../gamecontent/Constants.js";
 import TileTypes from "../gamecontent/tiling/TileTypes.js";
+import Weapons from "../gamecontent/items/Weapons.js";
 import Player from "../gamecontent/actors/player/Player.js";
 import Rat from "../gamecontent/actors/enemies/Rat.js";
 
@@ -74,15 +76,27 @@ class OverworldMap extends RLMap {
 		let timeline = this.getController().getTimeline();
 
 		// v--- DEBUGGING and Testing actors ---v
+		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
+
 		let ratEnemy = new Rat();
 		timeline.add(ratEnemy);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 15).addActor(ratEnemy);
 
 		let ratEnemy2 = new Rat();
 		timeline.add(ratEnemy2);
-
-		let centerRoom = this.roomLayoutGenerator.getCenterRoom();
-		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 15).addActor(ratEnemy);
 		this.get(centerRoom.dimensions.x_min + 14, centerRoom.dimensions.y_min + 15).addActor(ratEnemy2);
+
+		// items
+		let weaponItem = new ItemBase(Weapons.THROWING_KNIFES);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 18).addActor(weaponItem);
+		let weaponItem2 = new ItemBase(Weapons.KITCHEN_KNIFE);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 19).addActor(weaponItem2);
+		let weaponItem3 = new ItemBase(Weapons.WRENCH);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 20).addActor(weaponItem3);
+		let weaponItem4 = new ItemBase(Weapons.AXE);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 21).addActor(weaponItem4);
+		let weaponItem5 = new ItemBase(Weapons.METAL_ROD);
+		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 22).addActor(weaponItem5);
 	}
 
 	/**

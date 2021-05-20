@@ -1,4 +1,5 @@
 import { fail } from "../../../../../src/utils/Log.js";
+import { char2id } from "../utils/RLTools.js";
 
 /**
  * ItemType class
@@ -16,6 +17,11 @@ class ItemType {
 		}
 
 		this.values = spec.values || {};
+
+		this.visuals = spec.visuals || {
+			id: char2id("?"),
+			color: 0xFF0085
+		};
 
 		// Equippable
 		this.equippableAs = spec.equippableAs || [];
@@ -35,7 +41,7 @@ class ItemType {
 	 *
 	 * @param {ItemCategories[]|ItemCategories} cats the categories/category which should be checked
 	 */
-	hasCategory(cats) {
+	isA(cats) {
 		// mutliple categorys given
 		if (Array.isArray(cats)) {
 			return cats.indexOf(this.category) >= 0;

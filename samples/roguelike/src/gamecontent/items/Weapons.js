@@ -143,7 +143,7 @@ _create({
 	id: "HAMMER",
 	equippableAs: [EquipmentSlots.MELEE],
 	visuals: {
-		id: char2id("╤"),
+		id: char2id("⌠"),
 		color: Colors[13]
 	},
 	text: {
@@ -160,7 +160,7 @@ _create({
 	id: "HATCHET",
 	equippableAs: [EquipmentSlots.MELEE],
 	visuals: {
-		id: char2id("╒"),
+		id: char2id("⌠"),
 		color: Colors[0]
 	},
 	text: {
