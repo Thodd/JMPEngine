@@ -7,14 +7,24 @@ class FOV {
 	constructor(map) {
 		this._map = map;
 
+		this._defaultClampValues = {
+			x_min: 0,
+			y_min: 0,
+			x_max: this._map.w,
+			y_max: this._map.h
+		};
+
 		this._isActive = true;
 
 		// the list of all currently lit cells
 		this._currentlyLitCells = [];
 	}
 
-	update(centerCell, radius) {
+	update(centerCell, radius, clampValues) {
 		if (this._isActive) {
+
+			clampValues = clampValues || this._defaultClampValues;
+
 			// place the currently lit cells into shadow
 			this._currentlyLitCells.forEach((cell) => {
 				// only place dynamically lit cells in shadow
@@ -28,9 +38,15 @@ class FOV {
 			let cx = centerCell.x;
 			let cy = centerCell.y;
 
+			// clamp the max/min x/y coordinates based on the given values (defaults to the map width/height)
+			let x_min = Math.max(clampValues.x_min, cx - radius);
+			let y_min = Math.max(clampValues.y_min, cy - radius);
+			let x_max = Math.min(clampValues.x_max, cx + radius);
+			let y_max = Math.min(clampValues.y_max, cy + radius);
+
 			// cast a set of rays to light all cells in a certain radius around the center point
-			for (let x = cx - radius; x < cx + radius; x++) {
-				for (let y = cy - radius; y < cy + radius; y++) {
+			for (let x = x_min; x < x_max; x++) {
+				for (let y = y_min; y < y_max; y++) {
 					let lineOfSight = Algorithms.bresenham(cx, cy, x, y);
 
 					for (let i = 0; i < lineOfSight.length; i++) {

@@ -43,17 +43,23 @@
 
 
 ## Map Design
-  * Points of interest in the Town
-    * Supermarket
-    * Church
-    * Diner
-    * Auto repair shop
-    * School
-    * Library
-    * Mayors office
-    * Random houses you can enter (with a zombie inside ;)
-    * Town-Square (always in the middle)
-  * Road goes through the forest from left to right, ends in darkness
+* Generate a POI in a Room
+  * Connect POI door/entrance to:
+    * eachother
+    * a main road
+  * Some POIs are not connected
+    * e.g. secret cabib in the woods (bloody)
+* Points of interest in the Town
+  * Supermarket
+  * Church
+  * Diner
+  * Auto repair shop
+  * School
+  * Library
+  * Mayors office
+  * Random houses you can enter (with a zombie inside ;)
+  * Town-Square (always in the middle)
+* Road goes through the forest from left to right, ends in darkness
 
 F = Forest Room
 @ = Town Room

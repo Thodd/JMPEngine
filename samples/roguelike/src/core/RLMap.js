@@ -195,6 +195,22 @@ class RLMap extends Entity {
 	}
 
 	/**
+	 * Returns the width of the RLMap.
+	 * NOT the viewport width!
+	 */
+	get width() {
+		return this._config.w;
+	}
+
+	/**
+	 * Returns the height of the RLMap.
+	 * NOT the viewport height!
+	 */
+	get height() {
+		return this._config.h;
+	}
+
+	/**
 	 * Initialize the map and create all RLCell instances.
 	 */
 	_initMap() {

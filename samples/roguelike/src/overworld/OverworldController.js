@@ -26,11 +26,11 @@ class GameLogicController extends RLMapController {
 	init() {
 		this._player = this.getMap().getPlayerActor();
 
-		// initial FOV calculation
-		this.getFOVSystem().update(this._player.getCell(), 10);
-
 		// initially we start with the room the player was placed in
 		this._currentRoom = this._player.getRoom();
+
+		// initial FOV calculation
+		this.updateFOV();
 	}
 
 	/**
@@ -38,6 +38,21 @@ class GameLogicController extends RLMapController {
 	 */
 	setupAnimationPhases() {
 		return ["SCROLLING", "PLAYER_ATTACKS", "ENEMY_ATTACKS"];
+	}
+
+	/**
+	 * Updates the FOV around the player.
+	 * Min/Max values are clamped based on the current Room.
+	 * This way the light does not "spill over" into the next Room.
+	 */
+	updateFOV() {
+		let dim = this._currentRoom.dimensions;
+		this.getFOVSystem().update(this._player.getCell(), 10, {
+			x_min: dim.x_min,
+			x_max: dim.x_max+1,
+			y_min: dim.y_min,
+			y_max: dim.y_max+1,
+		});
 	}
 
 	/**
@@ -137,7 +152,7 @@ class GameLogicController extends RLMapController {
 				this._currentRoom = this._currentRoom[cardinalDirection];
 			}
 
-			this.getFOVSystem().update(targetCell, 10);
+			this.updateFOV();
 		}
 
 		EventBus.publish(Events.END_OF_PLAYER_TURN);
