@@ -1,5 +1,4 @@
 import ActorBase from "./ActorBase.js";
-import EquipmentSlots from "../inventory/EquipmentSlots.js";
 
 class EnemyBase extends ActorBase {
 	/**
@@ -13,14 +12,6 @@ class EnemyBase extends ActorBase {
 
 		// speed is handled via the Timeline Info
 		this._stats._timelineInfo.speed = spec.speed;
-	}
-
-	/**
-	 * @override
-	 */
-	equipInitialWeapon(w) {
-		this.getBackpack().addItem(w);
-		this.getBackpack().equipItem(w, EquipmentSlots.MELEE);
 	}
 }
 

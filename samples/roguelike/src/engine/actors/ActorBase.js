@@ -1,15 +1,21 @@
+// JMP imports
 import Helper from "../../../../../src/utils/Helper.js"
 import { log } from "../../../../../src/utils/Log.js";
+
+// core imports
 import AnimationPool from "../../core/animations/AnimationPool.js";
-
 import RLActor from "../../core/RLActor.js";
-import HPUpdate from "../../gamecontent/animations/HPUpdate.js";
-import ScreenShake from "../../gamecontent/animations/ScreenShake.js";
 
-import BattleCalculator from "../combat/BattleCalculator.js";
+// engine imports
+import ItemBase from "./ItemBase.js";
 import Stats from "../combat/Stats.js";
 import Backpack from "../inventory/Backpack.js";
 import EquipmentSlots from "../inventory/EquipmentSlots.js";
+import BattleCalculator from "../combat/BattleCalculator.js";
+
+// gamecontent imports
+import HPUpdate from "../../gamecontent/animations/HPUpdate.js";
+import ScreenShake from "../../gamecontent/animations/ScreenShake.js";
 
 /**
  * Base class for all game Actors.
@@ -86,7 +92,12 @@ class ActorBase extends RLActor {
 	 * Can be overriden in subclasses for special handling.
 	 * @protected
 	 */
-	equipInitialWeapon() {}
+	equipInitialWeapon(w) {
+		if (w) {
+			this.getBackpack().addItem(w);
+			this.getBackpack().equipItem(w, EquipmentSlots.MELEE);
+		}
+	}
 
 	/**
 	 * Sets the Room for this Actor.
@@ -167,6 +178,25 @@ class ActorBase extends RLActor {
 
 		if (stats.hp <= 0) {
 			this.die();
+		}
+	}
+
+	/**
+	 * Let's the actor pickup an item from the floor.
+	 * Item is placed in the Backpack.
+	 */
+	pickupItemFromFloor() {
+		let cell = this.getCell();
+		let possibleItems = cell.getActors();
+
+		let bp = this.getBackpack();
+		for (let item of possibleItems) {
+			if (item instanceof ItemBase) {
+				bp.addItem(item.getType());
+				item.removeFromCell();
+
+				log(`Picked up: '${item.getType().text.name}'`, "Player");
+			}
 		}
 	}
 

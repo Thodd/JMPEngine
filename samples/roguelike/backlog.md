@@ -2,21 +2,21 @@
 
 ## open
 
-* [ ] items & weapons (actors in the grid)
-  * [x] ItemBase.js in /engine/actors/...
-  * [x] render items
-  * [ ] pick-up into backpack
-
 * [ ] UI: Log
   * Makes debugging a bit easier, "who hits who", "who misses", item pickups etc.
+
+* [ ] UI: Player HP
+
+* [ ] Refactor Control-Schemes from OverworldController
 
 * [ ] NPCs
   * [x] First enemy: Rat
     * [x] randomly walk around
     * [x] attack another actor/player
     * [x] be attacked by other actor
-  * [ ] Wolf
-  * [ ] Bear
+  * [ ] rabbid dog
+  * [ ] Thing
+    * [ ] Strong and slow
   * [ ] Firefly (casts light around itself 1 tile radius)
     * [ ] Lightsource
       * [ ] An actor can carry a light-source which illuminates their surroundings
@@ -35,8 +35,6 @@
 
 * [ ] Drop-Loot --> DropSystem instance per RLMap --> fire "drop" event, deregister on screen switch.
 
-* [ ] Integrate "monochrome" features into grid-based engine
-  * [ ] Control-Schemes via GameController
 ## ideas
 
 * Lightsource -> Flashlight
@@ -60,6 +58,11 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] items & weapons (actors in the grid)
+  * [x] ItemBase.js in /engine/actors/...
+  * [x] render items
+  * [x] pick-up into backpack
 
 * [x] Melee battle
   * [x] --> needs Inventory/Backpack first

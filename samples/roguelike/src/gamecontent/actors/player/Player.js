@@ -37,8 +37,9 @@ class Player extends ActorBase {
 	 * @override
 	 */
 	equipInitialWeapon() {
-		this.getBackpack().addItem(Weapons.POCKET_KNIFE);
-		this.getBackpack().equipItem(Weapons.POCKET_KNIFE, EquipmentSlots.MELEE);
+		let bp = this.getBackpack();
+		bp.addItem(Weapons.POCKET_KNIFE);
+		bp.equipItem(Weapons.POCKET_KNIFE, EquipmentSlots.MELEE);
 	}
 
 	/**
@@ -62,6 +63,7 @@ class Player extends ActorBase {
 	getStats() {
 		return PlayerState.getStats();
 	}
+
 }
 
 export default Player;

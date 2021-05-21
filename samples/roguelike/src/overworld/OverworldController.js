@@ -85,6 +85,7 @@ class GameLogicController extends RLMapController {
 			}
 		} else if (Keyboard.wasPressedOrIsDown(Keys.G)) {
 			// pickup items
+			this._player.pickupItemFromFloor();
 		} else if (Keyboard.wasPressedOrIsDown(Keys.PERIOD)) {
 			// wait
 			this._player.updateHP(1);
