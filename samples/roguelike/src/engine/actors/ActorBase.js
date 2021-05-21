@@ -3,7 +3,7 @@ import { log } from "../../../../../src/utils/Log.js";
 import AnimationPool from "../../core/animations/AnimationPool.js";
 
 import RLActor from "../../core/RLActor.js";
-import Hurt from "../../gamecontent/animations/Hurt.js";
+import HPUpdate from "../../gamecontent/animations/HPUpdate.js";
 import ScreenShake from "../../gamecontent/animations/ScreenShake.js";
 
 import BattleCalculator from "../combat/BattleCalculator.js";
@@ -21,10 +21,10 @@ import EquipmentSlots from "../inventory/EquipmentSlots.js";
  */
 class ActorBase extends RLActor {
 	constructor(spec) {
-		super();
+		super(spec);
 
 		// by default an Actor cannot be passed over by another actor
-		this.isWalkable = false;
+		this.walkable = false;
 
 		// by default we take the class as a name
 		this.name = this.constructor.name;
@@ -36,7 +36,6 @@ class ActorBase extends RLActor {
 		this._stats = new Stats();
 
 		// call definition hooks to setup the actor
-		this.defineVisuals(spec?.visuals);
 		this.defineStats(spec?.stats);
 		this.equipInitialWeapon(spec?.weapon);
 	}
@@ -73,25 +72,6 @@ class ActorBase extends RLActor {
 	 */
 	getStats() {
 		return this._stats;
-	}
-
-	/**
-	 * Hook to set the visuals of the Actor.
-	 * Can be overriden in subclasses for special handling.
-	 *
-	 * By default an object with id, color and background is used.
-	 * e.g.
-	 * {
-	 *    id: char2id("/"),
-	 *    color: 0xFF0085
-	 *    background: undefined // can be optional
-	 * }
-	 * @protected
-	 */
-	defineVisuals(v) {
-		this.id = v.id
-		this.color = v.color;
-		this.background = v.background;
 	}
 
 	/**
@@ -146,7 +126,7 @@ class ActorBase extends RLActor {
 	meleeAttackActor(defender) {
 		// Only attack living actors
 		// it might happen that an actor dies on a turn before we had a chance to attack it
-		if (!defender.isDead) {
+		if (!defender.dead) {
 			// now do the actual battle
 			let battleResult = BattleCalculator.battle(this, defender, EquipmentSlots.MELEE);
 
@@ -155,38 +135,43 @@ class ActorBase extends RLActor {
 				battleMessage += `and misses!`;
 			} else {
 				battleMessage += `for ${battleResult.damage} dmg.`;
-				defender.takeDamage(battleResult.damage);
+				defender.updateHP(-battleResult.damage, this);
 			}
 			log(battleMessage);
 		}
 	}
 
-	takeDamage(dmg) {
-		if (dmg > 0) {
-			let stats = this.getStats();
-			stats.hp -= dmg;
+	/**
+	 * Changes the HP of the Actor by the given amount.
+	 * @param {number} hpDelta the HP delta
+	 * @param {ActorBase} source the source actor responsible for the HP update of this actor
+	 */
+	updateHP(hpDelta, source=this) {
+		let stats = this.getStats();
+		stats.hp += hpDelta;
 
-			// determine animation phase
-			let phase = this.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
+		// determine animation phase
+		let phase = source.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
 
-			// hurt
-			let hurtAnim = AnimationPool.get(Hurt, { actor: this });
-			this.getAnimationSystem().schedule(phase, hurtAnim);
+		let hpUpdateAnim = AnimationPool.get(HPUpdate, {
+			actor: this,
+			hpDelta: hpDelta
+		});
+		this.getAnimationSystem().schedule(phase, hpUpdateAnim);
 
-			// screen shake if the player is hit
-			if (this.isPlayer) {
-				let shakeAnim = AnimationPool.get(ScreenShake, { map: this.getMap() });
-				this.getAnimationSystem().schedule(phase, shakeAnim);
-			}
+		// shake screen if the player is hurt
+		if (this.isPlayer && hpDelta < 0) {
+			let shakeAnim = AnimationPool.get(ScreenShake, { map: this.getMap() });
+			this.getAnimationSystem().schedule(phase, shakeAnim);
+		}
 
-			if (stats.hp <= 0) {
-				this.die();
-			}
+		if (stats.hp <= 0) {
+			this.die();
 		}
 	}
 
 	die() {
-		this.isDead = true;
+		this.dead = true;
 	}
 }
 

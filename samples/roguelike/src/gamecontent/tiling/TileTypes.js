@@ -21,14 +21,14 @@ function _create(spec) {
 
 _create({
 	name: "FLOOR",
-	isWalkable: true,
+	walkable: true,
 	blocksLight: false,
 	visuals: TileVisuals.FLOOR
 });
 
 _create({
 	name: "TREE",
-	isWalkable: false,
+	walkable: false,
 	blocksLight: true,
 	visuals: TileVisuals.TREE
 });

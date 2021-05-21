@@ -24,7 +24,7 @@ class Timeline {
 		for (let i = 0, len = this.actors.length; i < len; i++) {
 			let a = this.actors[i];
 			// only actors which have not been removed are allowed to take a turn!!
-			if (!a._isRemoved && a.isActive && !a.isDead) {
+			if (!a._isRemoved && a.active && !a.dead) {
 
 				// TODO: Introduce WHILE loop to take more than 1 turn --> needs refactoring of animation scheduling
 				//       (return animations after turn instead of scheduling directly)
@@ -48,6 +48,7 @@ class Timeline {
 				this.actors.splice(i, 1);
 			}
 		}
+		this.actorsToBeRemoved = [];
 	}
 
 }

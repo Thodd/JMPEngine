@@ -107,6 +107,21 @@ class RLCell {
 	}
 
 	/**
+	 * Retrieves the first actor in the list that is visible.
+	 * Important for correctly rendering a cell.
+	 * Invisible RLActors should not hide any actually visible actors.
+	 * @returns {RLActor}
+	 * @public
+	 */
+	getTopVisibleActor() {
+		for (let i = this._actors.length-1; i >= 0; i--) {
+			if (this._actors[i].visible) {
+				return this._actors[i];
+			}
+		}
+	}
+
+	/**
 	 * Retrieves the full list of all actors.
 	 * Can be sorted if needed. Sorting changes the result of getTopActor().
 	 * @returns {RLActor[]}

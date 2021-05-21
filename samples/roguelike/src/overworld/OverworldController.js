@@ -19,12 +19,14 @@ import ScreenShake from "../gamecontent/animations/ScreenShake.js";
 
 // gamecontent imports
 import Colors from "../gamecontent/Colors.js";
+import { exposeOnWindow } from "../../../../src/utils/Helper.js";
 class GameLogicController extends RLMapController {
 	/**
 	 * @override
 	 */
 	init() {
 		this._player = this.getMap().getPlayerActor();
+		exposeOnWindow("player", this._player);
 
 		// initially we start with the room the player was placed in
 		this._currentRoom = this._player.getRoom();
@@ -60,63 +62,68 @@ class GameLogicController extends RLMapController {
 	 */
 	handleInput() {
 		let playerCell = this._player.getCell();
+		let playerMoved = false;
+		let targetX;
+		let targetY;
 
-		let dx = 0;
-		let dy = 0;
-		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
-			dx = -1;
-		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
-			dx = +1;
-		}
-		if (Keyboard.wasPressedOrIsDown(Keys.UP)) {
-			dy = -1;
-		} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
-			dy = +1;
-		}
-
-		// testing screen shake
 		if (Keyboard.wasPressedOrIsDown(Keys.ENTER)) {
+			// testing screen shake
 			let chain = AnimationPool.get(AnimationChain, {});
 			chain.add(AnimationPool.get(ScreenShake, {map: this.getMap()}));
 			this.getAnimationSystem().schedule("PLAYER_ATTACKS", chain);
-		}
-
-		// BG test
-		if (Keyboard.wasPressedOrIsDown(Keys.SPACE)) {
+		} else if (Keyboard.wasPressedOrIsDown(Keys.SPACE)) {
+			// BG test
 			playerCell.id = char2id("/");
 			playerCell.color = Colors[0]
 			playerCell.background = Colors[7];
-		}
-
-		//lighting test
-		if (Keyboard.wasPressedOrIsDown(Keys.L)) {
+		} else if (Keyboard.wasPressedOrIsDown(Keys.L)) {
+			//lighting test
 			playerCell.lightLevel = FOV.LightLevels.ALWAYS;
 			if (Keyboard.wasPressedOrIsDown(Keys.SHIFT)) {
 				playerCell.color = Colors[5];
 				playerCell.id = char2id("f");
 			}
-		}
+		} else if (Keyboard.wasPressedOrIsDown(Keys.G)) {
+			// pickup items
+		} else if (Keyboard.wasPressedOrIsDown(Keys.PERIOD)) {
+			// wait
+			this._player.updateHP(1);
+		} else {
+			// movement input handling
+			let dx = 0;
+			let dy = 0;
+			if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
+				dx = -1;
+			} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
+				dx = +1;
+			}
+			if (Keyboard.wasPressedOrIsDown(Keys.UP)) {
+				dy = -1;
+			} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
+				dy = +1;
+			}
 
-		let playerMoved = false;
-		let targetX = playerCell.x + dx;
-		let targetY = playerCell.y + dy;
-		let targetCell = this.getMap().get(targetX, targetY);
+			targetX = playerCell.x + dx;
+			targetY = playerCell.y + dy;
+			let targetCell = this.getMap().get(targetX, targetY);
 
-		if (targetCell && targetCell != playerCell) {
-			if (targetCell.isFree()) {
-				playerMoved = this._player.moveTo(targetX, targetY);
-			} else {
-				// handle "bump"
-				let actors = targetCell.getActors();
-				actors.forEach((a) => {
-					if (a instanceof EnemyBase) {
-						this._player.meleeAttackActor(a);
-					} else {
-						log("talking to a friendly NPC :)", "Player");
-					}
-				})
+			if (targetCell && targetCell != playerCell) {
+				if (targetCell.isFree()) {
+					playerMoved = this._player.moveTo(targetX, targetY);
+				} else {
+					// handle "bump"
+					let actors = targetCell.getActors();
+					actors.forEach((a) => {
+						if (a instanceof EnemyBase) {
+							this._player.meleeAttackActor(a);
+						} else {
+							log("talking to a friendly NPC :)", "Player");
+						}
+					})
+				}
 			}
 		}
+
 		// TODO: - deactivate NPCs in the "oldRoom"
 		//       - activate NPCs in the "newRoom"
 		if (playerMoved) {

@@ -297,7 +297,7 @@ class RLMap extends Entity {
 						}
 
 						// we check if there is an Actor on the Cell AND if it's visible
-						let actor = cell.getTopActor();
+						let actor = cell.getTopVisibleActor();
 
 						// basic cell render info
 						let id = cellRenderInfo.id;
@@ -305,7 +305,7 @@ class RLMap extends Entity {
 						let background = cellRenderInfo.background;
 
 						// check if the actor is visible
-						if (actor && actor.isVisible &&
+						if (actor && actor.visible &&
 							cellRenderInfo.lightLevel != FOV.LightLevels.SHADOW) {
 							let actorRenderInfo = actor._renderInfo || {};
 							id = actorRenderInfo.id || id;

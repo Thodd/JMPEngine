@@ -6,7 +6,9 @@
   * [x] ItemBase.js in /engine/actors/...
   * [x] render items
   * [ ] pick-up into backpack
-    * [ ] Log player backpack to console for debugging
+
+* [ ] UI: Log
+  * Makes debugging a bit easier, "who hits who", "who misses", item pickups etc.
 
 * [ ] NPCs
   * [x] First enemy: Rat

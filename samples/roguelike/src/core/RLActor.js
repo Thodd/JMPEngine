@@ -1,16 +1,16 @@
 import { warn } from "../../../../src/utils/Log.js";
 import RNG from "../../../../src/utils/RNG.js";
 class RLActor {
-	constructor() {
+	constructor(spec) {
 		this._cell = null;
 		this.x = null;
 		this.y = null;
 
 		// can be turned off, so the actor does not take a turn, even if its added to a Timeline
-		this.isActive = true;
-		this.isVisible = true;
+		this.active = true;
+		this.visible = true;
 
-		this._isDead = false;
+		this._dead = false;
 
 		// default timeline info for turn scheduling
 		this._timelineInfo = {
@@ -23,6 +23,8 @@ class RLActor {
 			color: 0xFFFFFF,
 			background: undefined
 		};
+
+		this.defineVisuals(spec?.visuals);
 	}
 
 	// ********* Visual Rendering Information Setters/Getters *********
@@ -54,6 +56,26 @@ class RLActor {
 	}
 	// ***************************************************************
 
+
+	/**
+	 * Hook to set the visuals of the Actor.
+	 * Can be overriden in subclasses for special handling.
+	 *
+	 * By default an object with id, color and background is used.
+	 * e.g.
+	 * {
+	 *    id: char2id("/"),
+	 *    color: 0xFF0085
+	 *    background: undefined // can be optional
+	 * }
+	 * @protected
+	 */
+	defineVisuals(v) {
+		this.id = v?.id
+		this.color = v?.color;
+		this.background = v?.background;
+	}
+
 	/**
 	 * Marks the RLActor as dirty.
 	 * Extends to its RLCell and the containing RLMap.
@@ -69,27 +91,27 @@ class RLActor {
 	 * Marks an actor as dead.
 	 * Dead actors are removed from the game entirely, including the Timeline.
 	 */
-	set isDead(v) {
+	set dead(v) {
 		if (this._cell) {
 			if (v != true) {
 				warn("An Actor cannot be set to 'undead'. Something went wrong...", "ActorBase");
 			}
-			this._isDead = true;
+			this._dead = true;
 
 			// first remove the actor from the timeline...
 			this.getTimeline().remove(this);
 			// ... then remove it from its cell
 			this.removeFromCell();
 		} else {
-			warn("Cannot set 'isDead' for an actor that was not added to a Cell yet!", "ActorBase");
+			warn("Cannot set 'dead' for an actor that was not added to a Cell yet!", "ActorBase");
 		}
 	}
 
 	/**
 	 * Returns whether the actor is dead.
 	 */
-	get isDead() {
-		return this._isDead;
+	get dead() {
+		return this._dead;
 	}
 
 	/**

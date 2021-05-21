@@ -70,20 +70,20 @@ class Tile extends RLCell {
 	}
 
 	isFree() {
-		let isWalkable = this._type.isWalkable;
+		let walkable = this._type.walkable;
 
 		// in principle the tile is free, we now check if an actor is blocking it
-		if (isWalkable) {
+		if (walkable) {
 			let actors = this.getActors();
 			for (let i = 0; i < actors.length; i++) {
-				if (!actors[i].isWalkable) {
-					isWalkable = false;
+				if (!actors[i].walkable) {
+					walkable = false;
 					break;
 				}
 			}
 		}
 
-		return isWalkable;
+		return walkable;
 	}
 }
 

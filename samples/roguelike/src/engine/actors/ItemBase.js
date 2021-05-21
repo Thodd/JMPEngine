@@ -6,7 +6,7 @@ class ItemBase extends RLActor {
 		this._type = type;
 
 		// Other actors can walk over Items
-		this.isWalkable = true;
+		this.walkable = true;
 
 		// define visuals
 		this.id = type.visuals.id;

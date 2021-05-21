@@ -6,7 +6,7 @@ import { char2id } from "../utils/RLTools.js";
 class TileType {
 	constructor(spec) {
 		this.name = spec.name;
-		this.isWalkable = spec.isWalkable != undefined ? spec.isWalkable : true;
+		this.walkable = spec.walkable != undefined ? spec.walkable : true;
 		this.blocksLight = spec.blocksLight != undefined ? spec.blocksLight : false;
 		this.visuals = spec.visuals || {
 			id: 0,
@@ -22,7 +22,7 @@ class TileType {
  */
 TileType.VOID = new TileType({
 	name: "VOID",
-	isWalkable: true,
+	walkable: true,
 	blocksLight: false,
 	visuals: {
 		id: char2id("◙"),
