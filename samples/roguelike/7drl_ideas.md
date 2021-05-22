@@ -83,7 +83,10 @@ H = Harbor Room
 ## Quests
 * Find key to hotel room
   * hidden in the hotel
-  *
+* Use Metaldetector in forest to find burried box
+  * Box contains some item...
+  * "Beep" when in the correct room
+    * Indicate the direction: north, south, etc.
 * Find food to feed a dog
   * in: supermarket, hotel, diner
   * dog has key on its collar

@@ -3,6 +3,7 @@
 ## open
 
 * [ ] UI: Log
+  * Event-based
   * Makes debugging a bit easier, "who hits who", "who misses", item pickups etc.
 
 * [ ] UI: Player HP
