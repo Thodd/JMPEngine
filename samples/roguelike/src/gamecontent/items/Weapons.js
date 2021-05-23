@@ -246,21 +246,21 @@ _create({
  * WEAPONS: ranged
  */
 _create({
-	id: "THROWING_KNIFES",
+	id: "THROWING_KNIVES",
 	equippableAs: [EquipmentSlots.RANGED],
 	visuals: {
 		id: char2id("»"),
 		color: Colors[5]
 	},
 	text: {
-		name: "Throwing Knifes",
-		innerName: "a set of throwing knifes",
+		name: "Throwing Knives",
+		innerName: "a set of throwing knives",
 		flavor: "A staple of carnival culture."
 	},
 	values: {
-		ammoType: "THROWING_KNIFES",
+		ammoType: "THROWING_KNIVES",
 		magazine: 0,
-		projectileType: ProjectileTypes.THROWING_KNIFES,
+		projectileType: ProjectileTypes.THROWING_KNIVES,
 		dmg: 0.5,
 		acc: 0.95,
 	}
