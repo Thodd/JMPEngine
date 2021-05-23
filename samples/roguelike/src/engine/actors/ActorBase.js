@@ -1,12 +1,13 @@
 // JMP imports
 import Helper from "../../../../../src/utils/Helper.js"
-import { log } from "../../../../../src/utils/Log.js";
+import EventBus from "../../../../../src/utils/EventBus.js";
 
 // core imports
 import AnimationPool from "../../core/animations/AnimationPool.js";
 import RLActor from "../../core/RLActor.js";
 
 // engine imports
+import Events from "../Events.js";
 import ItemBase from "./ItemBase.js";
 import Stats from "../combat/Stats.js";
 import Backpack from "../inventory/Backpack.js";
@@ -141,14 +142,17 @@ class ActorBase extends RLActor {
 			// now do the actual battle
 			let battleResult = BattleCalculator.battle(this, defender, EquipmentSlots.MELEE);
 
-			let battleMessage = `${this} attacks ${defender} `;
+			// craft battle message
+			let battleMessage = this.isPlayer ? `I try to attack the ${defender}... ` : `The ${this} attacks me and `;
 			if (battleResult.damage == 0) {
-				battleMessage += `and misses!`;
+				battleMessage += this.isPlayer ? "and miss." : `misses! Close!`;
 			} else {
-				battleMessage += `for ${battleResult.damage} dmg.`;
-				defender.updateHP(-battleResult.damage, this);
+				battleMessage += this.isPlayer ? "and hit!" : "hits. Ouch.";
 			}
-			log(battleMessage);
+			EventBus.publish(Events.HISTORY, battleMessage);
+
+			// finally update the defenders HP
+			defender.updateHP(-battleResult.damage, this);
 		}
 	}
 
@@ -158,26 +162,28 @@ class ActorBase extends RLActor {
 	 * @param {ActorBase} source the source actor responsible for the HP update of this actor
 	 */
 	updateHP(hpDelta, source=this) {
-		let stats = this.getStats();
-		stats.hp += hpDelta;
+		if (hpDelta != 0) {
+			let stats = this.getStats();
+			stats.hp += hpDelta;
 
-		// determine animation phase
-		let phase = source.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
+			// determine animation phase
+			let phase = source.isPlayer ? "PLAYER_ATTACKS" : "ENEMY_ATTACKS";
 
-		let hpUpdateAnim = AnimationPool.get(HPUpdate, {
-			actor: this,
-			hpDelta: hpDelta
-		});
-		this.getAnimationSystem().schedule(phase, hpUpdateAnim);
+			let hpUpdateAnim = AnimationPool.get(HPUpdate, {
+				actor: this,
+				hpDelta: hpDelta
+			});
+			this.getAnimationSystem().schedule(phase, hpUpdateAnim);
 
-		// shake screen if the player is hurt
-		if (this.isPlayer && hpDelta < 0) {
-			let shakeAnim = AnimationPool.get(ScreenShake, { map: this.getMap() });
-			this.getAnimationSystem().schedule(phase, shakeAnim);
-		}
+			// shake screen if the player is hurt
+			if (this.isPlayer && hpDelta < 0) {
+				let shakeAnim = AnimationPool.get(ScreenShake, { map: this.getMap() });
+				this.getAnimationSystem().schedule(phase, shakeAnim);
+			}
 
-		if (stats.hp <= 0) {
-			this.die();
+			if (stats.hp <= 0) {
+				this.die();
+			}
 		}
 	}
 
@@ -195,13 +201,16 @@ class ActorBase extends RLActor {
 				bp.addItem(item.getType());
 				item.removeFromCell();
 
-				log(`Picked up: '${item.getType().text.name}'`, "Player");
+				if (this.isPlayer) {
+					EventBus.publish(Events.HISTORY, `I pick up ${item.getType().text.innerName}.`);
+				}
 			}
 		}
 	}
 
 	die() {
 		this.dead = true;
+		EventBus.publish(Events.HISTORY, `The ${this} dies!`);
 	}
 }
 

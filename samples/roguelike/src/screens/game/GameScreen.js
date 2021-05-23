@@ -1,15 +1,19 @@
-// Engine imports
+// JMP imports
 import PIXI from "../../../../../src/core/PIXIWrapper.js";
-import Spritesheets from "../../../../../src/assets/Spritesheets.js";
 import Screen from "../../../../../src/game/Screen.js";
 import BitmapText from "../../../../../src/game/BitmapText.js";
 import Entity from "../../../../../src/game/Entity.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 
-// RL Stuff
+// engine imports
 import { xx, yy, char2id } from "../../engine/utils/RLTools.js";
+
+// gamecontent imports
 import Constants from "../../gamecontent/Constants.js";
 import Colors from "../../gamecontent/Colors.js";
+
+// ui imports
+import History from "../../ui/History.js";
 
 // map gen
 import OverworldMap from "../../overworld/OverworldMap.js";
@@ -23,33 +27,18 @@ class GameScreen extends Screen {
 		this.add(this._map);
 
 		this._initUIElements();
+
+		this.history = new History({
+			screen: this,
+			x: xx(19),
+			y: yy(42)
+		});
 	}
 
 	/**
 	 * Just some debugging information and UI Element design drafts
 	 */
 	_initUIElements() {
-		// sizes
-		let sheet = Spritesheets.getSheet("tileset");
-		let tw = sheet.w;
-		let th = sheet.h;
-
-		// Background for UI Elements at the bottom
-		let bottomUIBG = new Entity();
-		let pixiBottomUIBG = new PIXI.Graphics();
-		pixiBottomUIBG.beginFill(Colors[9]);
-		// --- stats
-		pixiBottomUIBG.drawRect(0, 0, 17 * tw, 6 * th);
-		// --- log
-		pixiBottomUIBG.drawRect(18 * tw, 0, 42 * tw, 6 * th);
-		pixiBottomUIBG.endFill();
-		bottomUIBG.configSprite({
-			replaceWith: pixiBottomUIBG
-		});
-		bottomUIBG.x = xx(1);
-		bottomUIBG.y = yy(42);
-		this.add(bottomUIBG);
-
 		// Stats texts
 		this.add(new BitmapText({
 			font: "rlfont",
@@ -86,20 +75,6 @@ class GameScreen extends Screen {
 			x: xx(1),
 			y: yy(46),
 			color: Colors[5]
-		}));
-
-		// Log
-		this.add(new BitmapText({
-			font: "rlfont",
-			text:
-`Dr Strand:
-Damn. I broke my wrench.
-Guess I'm just too strong.
-Ah, what ya gonna do, eh?
-Would you mind helping me find a new one?`,
-			x: xx(19),
-			y: yy(42),
-			color: Colors[0]
 		}));
 
 		this._minimapDebug();

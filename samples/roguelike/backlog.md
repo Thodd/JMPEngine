@@ -2,10 +2,6 @@
 
 ## open
 
-* [ ] UI: Log
-  * Event-based
-  * Makes debugging a bit easier, "who hits who", "who misses", item pickups etc.
-
 * [ ] UI: Player HP
 
 * [ ] Refactor Control-Schemes from OverworldController
@@ -59,6 +55,10 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] UI: Log
+  * Event-based
+  * Makes debugging a bit easier, "who hits who", "who misses", item pickups etc.
 
 * [x] items & weapons (actors in the grid)
   * [x] ItemBase.js in /engine/actors/...
