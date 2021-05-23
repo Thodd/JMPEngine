@@ -1,5 +1,10 @@
+// JMP imports
 import { warn } from "../../../../src/utils/Log.js";
 import RNG from "../../../../src/utils/RNG.js";
+
+/**
+ * Base class for RLActors.
+ */
 class RLActor {
 	constructor(spec) {
 		this._cell = null;

@@ -1,6 +1,8 @@
+// JMP imports
 import { warn } from "../../../../../src/utils/Log.js";
 import EventBus from "../../../../../src/utils/EventBus.js";
 
+// own imports
 import Events from "../Events.js";
 
 /**

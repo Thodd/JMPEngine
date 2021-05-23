@@ -1,6 +1,9 @@
+// JMP imports
 import { exposeOnWindow } from "../../../../../src/utils/Helper.js";
 import { log, fail } from "../../../../../src/utils/Log.js";
 
+// own imports
+// a map of all animations, keyed by their class-name
 const animations = {};
 
 /**

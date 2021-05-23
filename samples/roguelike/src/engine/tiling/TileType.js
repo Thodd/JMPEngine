@@ -1,3 +1,4 @@
+// own imports
 import { char2id } from "../utils/RLTools.js";
 
 /**

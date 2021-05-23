@@ -3,6 +3,8 @@
 ## open
 
 * [ ] UI: Player HP
+  * [x] Color change depending on HP/HP_MAX
+  * [ ] animation... what animation???
 
 * [ ] Refactor Control-Schemes from OverworldController
 

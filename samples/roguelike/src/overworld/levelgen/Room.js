@@ -1,4 +1,7 @@
+// JMP imports
 import { warn } from "../../../../../../../src/utils/Log.js";
+
+// gamecontent imports
 import Constants from "../../gamecontent/Constants.js";
 
 const _adjacentMapping = {
@@ -12,6 +15,12 @@ const _adjacentMapping = {
 	"-1-1": "NW"
 };
 
+/**
+ * Room class.
+ * A room's dimensions are defined by a x_min/y_min and x_max/y_max values counted in tiles.
+ * Each room borders a set of 8 other rooms. Exceptions are the border rooms on the edge
+ * of the map.
+ */
 class Room {
 	constructor(rlMap, x, y) {
 		this.rlMap = rlMap;

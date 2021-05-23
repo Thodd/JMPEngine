@@ -1,5 +1,10 @@
+// core imports
 import AnimationBase from "../../core/animations/AnimationBase.js";
 
+/**
+ * Room scrolling animation.
+ * Slowly scrolls from one Room to the next.
+ */
 class RoomScrolling extends AnimationBase {
 	/**
 	 * @override

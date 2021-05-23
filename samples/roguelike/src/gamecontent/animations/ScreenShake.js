@@ -1,5 +1,9 @@
+// core imports
 import AnimationBase from "../../core/animations/AnimationBase.js";
 
+/**
+ * Shakes the screen.
+ */
 class ScreenShake extends AnimationBase {
 	/**
 	 * @override

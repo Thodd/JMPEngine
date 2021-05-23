@@ -1,7 +1,12 @@
+// JMP imports
 import EventBus from "../../../../../src/utils/EventBus.js";
 
+// own imports
 import Events from "../Events.js";
 
+/**
+ * Base class for actor status values.
+ */
 class Stats {
 	constructor(fireEvents) {
 		this._fireEvents = fireEvents;
@@ -17,7 +22,7 @@ class Stats {
 	_statChange() {
 		// fire events on each stat change, only the PlayerState is registered to the stat change -> UI Update needed
 		if (this._fireEvents) {
-			EventBus.publish(Events.UPDATE_STATS, this);
+			EventBus.publish(Events.STATS_CHANGED, this);
 		}
 	}
 

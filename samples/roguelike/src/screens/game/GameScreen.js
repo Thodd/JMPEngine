@@ -14,6 +14,7 @@ import Colors from "../../gamecontent/Colors.js";
 
 // ui imports
 import History from "../../ui/History.js";
+import PlayerHealth from "../../ui/PlayerHealth.js";
 
 // map gen
 import OverworldMap from "../../overworld/OverworldMap.js";
@@ -27,19 +28,23 @@ class GameScreen extends Screen {
 		this.add(this._map);
 
 		this._initUIElements();
+	}
 
-		this.history = new History({
-			screen: this,
-			x: xx(19),
-			y: yy(42)
-		});
+	begin() {
+		this._history.sub();
+		this._playerHealth.sub();
+	}
+
+	end() {
+		this._history.unsub();
+		this._playerHealth.unsub();
 	}
 
 	/**
 	 * Just some debugging information and UI Element design drafts
 	 */
 	_initUIElements() {
-		// Stats texts
+		// Player Name
 		this.add(new BitmapText({
 			font: "rlfont",
 			leading: 2,
@@ -48,34 +53,20 @@ class GameScreen extends Screen {
 			y: yy(42),
 			color: Colors[0]
 		}));
-		this.add(new BitmapText({
-			font: "rlfont",
-			text: "HP: █████░░░░░",
+
+		// player health
+		this._playerHealth = new PlayerHealth({
+			screen: this,
 			x: xx(1),
-			y: yy(43),
-			color: Colors[7]
-		}));
-		this.add(new BitmapText({
-			font: "rlfont",
-			text: "SP: ███████░░░",
-			x: xx(1),
-			y: yy(44),
-			color: Colors[3]
-		}));
-		this.add(new BitmapText({
-			font: "rlfont",
-			text: "* : 2/6 (23)",
-			x: xx(1),
-			y: yy(45),
-			color: Colors[2]
-		}));
-		this.add(new BitmapText({
-			font: "rlfont",
-			text: "$ : 203",
-			x: xx(1),
-			y: yy(46),
-			color: Colors[5]
-		}));
+			y: yy(44)
+		});
+
+		// history
+		this._history = new History({
+			screen: this,
+			x: xx(19),
+			y: yy(42)
+		});
 
 		this._minimapDebug();
 	}

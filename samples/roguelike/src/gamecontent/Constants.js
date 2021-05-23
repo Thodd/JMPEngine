@@ -1,3 +1,4 @@
+// JMP imports
 import Spritesheets from "../../../../src/assets/Spritesheets.js";
 
 const sheet = Spritesheets.getSheet("tileset");

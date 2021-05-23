@@ -1,9 +1,17 @@
+// JMP imports
 import { assert, warn } from "../../../../../../src/utils/Log.js";
 import { random, randomInteger } from "../../../../../../src/utils/RNG.js";
 
+// core imports
 import RLCell from "../../core/RLCell.js";
+
+// own imports
 import TileType from "./TileType.js";
 
+/**
+ * Engine subclass of RLCell.
+ * Implements game engine specific features, e.g. type handling.
+ */
 class Tile extends RLCell {
 	constructor(map, x, y) {
 		super(map, x, y);

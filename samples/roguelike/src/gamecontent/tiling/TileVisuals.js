@@ -1,6 +1,12 @@
-import Colors from "../../gamecontent/Colors.js";
+// engine imports
 import { char2id } from "../../engine/utils/RLTools.js";
 
+// gamecontent imports
+import Colors from "../../gamecontent/Colors.js";
+
+/**
+ * Defines the visuals of each tile.
+ */
 const TileVisuals = {
 
 	FLOOR: {

@@ -1,6 +1,14 @@
+// JMP imports
 import { assert } from "../../../../../src/utils/Log.js";
+
+// own imports
 import AnimationPhase from "./AnimationPhase.js";
 
+/**
+ * AnimationSystem class.
+ * Handles AnimationPhases and the general animation update cycle.
+ * Used by the map controllers.
+ */
 class AnimationSystem {
 	constructor() {
 		this._phases = [];

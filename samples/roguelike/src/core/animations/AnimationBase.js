@@ -1,3 +1,7 @@
+/**
+ * Base class for all animations.
+ * Override animate() ins subclasses.
+ */
 class AnimationBase {
 	constructor() {
 		this._isChain = false;

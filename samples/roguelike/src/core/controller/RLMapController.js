@@ -1,9 +1,13 @@
+// JMP imports
 import EventBus from "../../../../../src/utils/EventBus.js";
 import Keyboard from "../../../../../src/input/Keyboard.js";
-import Timeline from "./Timeline.js";
 
+// engine imports
 import Events from "../../engine/Events.js";
+
+// own imports
 import AnimationSystem from "../animations/AnimationSystem.js";
+import Timeline from "./Timeline.js";
 import FOV from "./FOV.js";
 
 /**

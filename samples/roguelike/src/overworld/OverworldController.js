@@ -20,7 +20,8 @@ import ScreenShake from "../gamecontent/animations/ScreenShake.js";
 // gamecontent imports
 import Colors from "../gamecontent/Colors.js";
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
-class GameLogicController extends RLMapController {
+
+class OverworldController extends RLMapController {
 	/**
 	 * @override
 	 */
@@ -167,4 +168,4 @@ class GameLogicController extends RLMapController {
 	}
 }
 
-export default GameLogicController;
+export default OverworldController;

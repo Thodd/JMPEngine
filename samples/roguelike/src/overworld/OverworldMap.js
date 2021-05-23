@@ -16,7 +16,7 @@ import Weapons from "../gamecontent/items/Weapons.js";
 import Player from "../gamecontent/actors/player/Player.js";
 import Rat from "../gamecontent/actors/enemies/Rat.js";
 
-// own stuff
+// own imports
 import OverworldController from "./OverworldController.js";
 import RoomLayoutGenerator from "./levelgen/RoomLayoutGenerator.js";
 

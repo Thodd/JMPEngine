@@ -1,3 +1,9 @@
+/**
+ * Simple Timeline for actor turn scheduling.
+ * Each actor has a speed: 0 to 100.
+ * When the energy level is 100, a turn is taken.
+ * Each turn the energy level is increased by the speed of the actor.
+ */
 class Timeline {
 	constructor() {
 		this.actors = [];

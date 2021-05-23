@@ -7,7 +7,7 @@ import EquipmentSlots from "../../../engine/inventory/EquipmentSlots.js";
 import Colors from "../../Colors.js";
 import Weapons from "../../items/Weapons.js";
 
-// own stuff
+// own imports
 import PlayerState from "./PlayerState.js";
 
 class Player extends ActorBase {
@@ -24,7 +24,6 @@ class Player extends ActorBase {
 	}
 
 	/**
-	 * Nothing yet.
 	 * @override
 	 */
 	defineStats() {

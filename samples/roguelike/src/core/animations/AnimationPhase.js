@@ -1,4 +1,7 @@
+// JMP imports
 import { assert } from "../../../../../src/utils/Log.js";
+
+// own imports
 import AnimationPool from "./AnimationPool.js";
 
 class AnimationPhase {

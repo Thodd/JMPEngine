@@ -1,4 +1,7 @@
+// JMP imports
 import { fail } from "../../../../../src/utils/Log.js";
+
+// own imports
 import { char2id } from "../utils/RLTools.js";
 
 /**

@@ -1,14 +1,19 @@
+// core imports
 import AnimationBase from "../../core/animations/AnimationBase.js";
-import ActorBase from "../../engine/actors/ActorBase.js";
+import RLActor from "../../core/RLActor.js";
+
+// engine imports
 import { char2id } from "../../engine/utils/RLTools.js";
+
+// gamecontent imports
 import Colors from "../Colors.js";
 
 class HPUpdate extends AnimationBase {
 	constructor() {
 		super();
-		// we keep a reusable animation actor,
+		// we keep a simple reusable animation actor,
 		// we only want to display the HPUpdate animation for a couple of frames
-		this._animationActor = new ActorBase();
+		this._animationActor = new RLActor();
 	}
 
 	setVisuals(hpDelta) {
@@ -16,7 +21,7 @@ class HPUpdate extends AnimationBase {
 		this._animationActor.visible = false;
 
 		// visuals
-		this._animationActor.id = hpDelta < 0 ? char2id("/") : char2id("▲");
+		this._animationActor.id = hpDelta < 0 ? char2id("▼") : char2id("▲");
 		this._animationActor.color = hpDelta < 0 ? Colors[0] : Colors[3];
 		this._animationActor.background = hpDelta < 0 ? Colors[7] : Colors[11];
 	}

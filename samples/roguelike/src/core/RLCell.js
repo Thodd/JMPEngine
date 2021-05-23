@@ -14,6 +14,9 @@ const _adjacentMapping = {
 	"NW": {x: -1, y: -1},
 };
 
+/**
+ * Base class for RLCells.
+ */
 class RLCell {
 	constructor(map, x, y) {
 		this._map = map;

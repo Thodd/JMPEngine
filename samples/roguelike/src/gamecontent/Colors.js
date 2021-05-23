@@ -1,3 +1,6 @@
+/**
+ * Color map.
+ */
 const Colors = [
 	// light variants
 	0xeee0b5,

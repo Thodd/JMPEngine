@@ -1,8 +1,12 @@
+// engine imports
 import TileType from "../../engine/tiling/TileType.js";
+
+// own imports
 import TileVisuals from "./TileVisuals.js";
 
 /**
  * Map of all tile types.
+ * Game specific.
  */
 const TileTypes = {};
 

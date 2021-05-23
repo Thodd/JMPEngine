@@ -1,5 +1,4 @@
 // JMP imports
-import EventBus from "../../../../src/utils/EventBus.js";
 import BitmapText from "../../../../src/game/BitmapText.js";
 
 // engine imports
@@ -9,9 +8,15 @@ import Events from "../engine/Events.js";
 import Colors from "../gamecontent/Colors.js";
 import { yy } from "../engine/utils/RLTools.js";
 
-class History {
+// own imports
+import UIBase from "./UIBase.js";
+
+class History extends UIBase {
 	constructor(spec) {
-		EventBus.subscribe(Events.HISTORY, this.update.bind(this));
+		super({
+			screen: spec.screen,
+			event: Events.HISTORY
+		});
 
 		this._screen = spec.screen;
 

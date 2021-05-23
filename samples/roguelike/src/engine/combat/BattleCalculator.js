@@ -1,3 +1,4 @@
+// JMP imports
 import RNG from "../../../../../../src/utils/RNG.js";
 
 const BattleCalculator = {

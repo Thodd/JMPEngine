@@ -1,8 +1,10 @@
+// JMP imports
 import PIXI from "../../../../src/core/PIXIWrapper.js";
 import { fail } from "../../../../src/utils/Log.js";
 import Spritesheets from "../../../../src/assets/Spritesheets.js";
 import Entity from "../../../../src/game/Entity.js";
 
+// own imports
 import RLCell from "./RLCell.js";
 import RLMapController from "./controller/RLMapController.js";
 import FOV from "./controller/FOV.js";

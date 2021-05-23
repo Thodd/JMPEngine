@@ -1,3 +1,4 @@
+// core imports
 import RLActor from "../../core/RLActor.js";
 
 class ItemBase extends RLActor {

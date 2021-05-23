@@ -16,7 +16,7 @@ import ItemTypes from "../../items/ItemTypes.js";
 import BaseActor from "../BaseActor.js";
 import Enemy from "../enemies/Enemy.js";
 
-// own stuff
+// own imports
 import PlayerState from "./PlayerState.js";
 import UISystem from "../../ui/UISystem.js";
 import TileHighlight from "../../animations/effects/TileHighlight.js";

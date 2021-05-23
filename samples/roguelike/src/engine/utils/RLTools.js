@@ -1,5 +1,8 @@
-import Constants from "../../gamecontent/Constants.js";
+// JMP imports
 import Fonts from "../../../../../src/assets/Fonts.js";
+
+// gamecontent imports
+import Constants from "../../gamecontent/Constants.js";
 
 // create char <-> id mapping
 const _font = Fonts.getFont(Constants.FONT_NAME);

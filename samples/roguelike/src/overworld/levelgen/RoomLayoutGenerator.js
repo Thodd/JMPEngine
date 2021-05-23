@@ -1,8 +1,9 @@
+// JMP imports
 import Helper from "../../../../../../../src/utils/Helper.js";
 import { log } from "../../../../../../../src/utils/Log.js";
 //import RNG from "../../../../../../../src/utils/RNG.js";
 
-
+// own imports
 import Room from "./Room.js";
 
 /**
