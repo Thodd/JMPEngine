@@ -2,10 +2,6 @@
 
 ## open
 
-* [ ] UI: Player HP
-  * [x] Color change depending on HP/HP_MAX
-  * [ ] animation... what animation???
-
 * [ ] Refactor Control-Schemes from OverworldController
 
 * [ ] NPCs
@@ -13,7 +9,16 @@
     * [x] randomly walk around
     * [x] attack another actor/player
     * [x] be attacked by other actor
-  * [ ] rabbid dog
+  * [ ] rabid dog
+  * [ ] Funghi
+    * stationary, but hurts on touch
+    * glowing green (1 tile, after first time visible -> ALWAYS)
+      * luminous after "charging" it with your lightsource
+    * walkable
+    * "attacks" if you come 1 tile too close
+    * is destroyed on "walkover"
+    * 0.5 dmg
+    * overgrowth a part of the map
   * [ ] Thing
     * [ ] Strong and slow
   * [ ] Firefly (casts light around itself 1 tile radius)
@@ -57,6 +62,10 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] UI: Player HP
+  * [x] Color change depending on HP/HP_MAX
+  * [x] animation... what animation???  -->  spooky shaking
 
 * [x] UI: Log
   * Event-based

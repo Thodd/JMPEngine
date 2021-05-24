@@ -1,7 +1,6 @@
 // JMP imports
 import PIXI from "../../../../../src/core/PIXIWrapper.js";
 import Screen from "../../../../../src/game/Screen.js";
-import BitmapText from "../../../../../src/game/BitmapText.js";
 import Entity from "../../../../../src/game/Entity.js";
 import Tilemap from "../../../../../src/game/Tilemap.js";
 
@@ -44,21 +43,11 @@ class GameScreen extends Screen {
 	 * Just some debugging information and UI Element design drafts
 	 */
 	_initUIElements() {
-		// Player Name
-		this.add(new BitmapText({
-			font: "rlfont",
-			leading: 2,
-			text: "Thor Heyerdahl",
-			x: xx(1),
-			y: yy(42),
-			color: Colors[0]
-		}));
-
 		// player health
 		this._playerHealth = new PlayerHealth({
 			screen: this,
 			x: xx(1),
-			y: yy(44)
+			y: yy(42)
 		});
 
 		// history

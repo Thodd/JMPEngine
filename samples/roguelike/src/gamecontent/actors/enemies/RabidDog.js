@@ -9,29 +9,24 @@ import Weapons from "../../items/Weapons.js";
 // stat definitions
 const def = {
 	visuals: {
-		id: char2id("r"),
+		id: char2id("d"),
 		color: Colors[7]
 	},
 	stats: {
-		hp: 2,
-		speed: 75,
+		hp: 3,
+		speed: 100,
 	},
-	weapon: Weapons.TEETH
+	weapon: Weapons.FANGS
 };
 
-class Rat extends EnemyBase {
+class RabidDog extends EnemyBase {
 	constructor() {
 		super(def);
 	}
 
 	takeTurn() {
-		if (this.isStandingAdjacent(this.getPlayerActor())) {
-			this.meleeAttackActor(this.getPlayerActor());
-		} else {
-			this.makeRandomMove();
-		}
-		// this.moveTowardsActor(this.getPlayerActor());
+		// TODO: dog AI
 	}
 }
 
-export default Rat;
+export default RabidDog;

@@ -87,7 +87,7 @@ class OverworldMap extends RLMap {
 		this.get(centerRoom.dimensions.x_min + 14, centerRoom.dimensions.y_min + 15).addActor(ratEnemy2);
 
 		// items
-		let weaponItem = new ItemBase(Weapons.THROWING_KNIFES);
+		let weaponItem = new ItemBase(Weapons.THROWING_KNIVES);
 		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 18).addActor(weaponItem);
 		let weaponItem2 = new ItemBase(Weapons.KITCHEN_KNIFE);
 		this.get(centerRoom.dimensions.x_min + 16, centerRoom.dimensions.y_min + 19).addActor(weaponItem2);

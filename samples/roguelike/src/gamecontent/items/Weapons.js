@@ -34,6 +34,23 @@ const _create = function(spec) {
 // ----------------------------- Weapon definitons begin here -----------------------------
 
 _create({
+	id: "TEETH",
+	equippableAs: [EquipmentSlots.MELEE],
+	visuals: {
+		id: char2id(`"`),
+		color: Colors[7]
+	},
+	text: {
+		name: "Teeth",
+		innerName: "a set of sharp teeth",
+		flavor: "Sharp and pointy."
+	},
+	values: {
+		dmg: 0.5,
+		acc: 1
+	}
+});
+_create({
 	id: "FANGS",
 	equippableAs: [EquipmentSlots.MELEE],
 	visuals: {
@@ -46,7 +63,7 @@ _create({
 		flavor: "Don't bite off more than you can chew!"
 	},
 	values: {
-		dmg: 1,
+		dmg: 1.5,
 		acc: 0.9
 	}
 });
