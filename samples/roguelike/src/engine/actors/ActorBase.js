@@ -192,6 +192,7 @@ class ActorBase extends RLActor {
 	 * Item is placed in the Backpack.
 	 */
 	pickupItemFromFloor() {
+		let pickedUpSomething = false;
 		let cell = this.getCell();
 		let possibleItems = cell.getActors();
 
@@ -201,11 +202,15 @@ class ActorBase extends RLActor {
 				bp.addItem(item.getType());
 				item.removeFromCell();
 
+				pickedUpSomething = true;
+
 				if (this.isPlayer) {
 					EventBus.publish(Events.HISTORY, `I pick up ${item.getType().text.innerName}.`);
 				}
 			}
 		}
+
+		return pickedUpSomething;
 	}
 
 	die() {

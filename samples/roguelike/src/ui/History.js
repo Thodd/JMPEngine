@@ -55,19 +55,21 @@ class History extends UIBase {
 	 * @param {object} evt event data storing the new messages
 	 */
 	update(evt) {
-		// track all messages
-		this._entries.push(evt.data);
+		if (evt.data) {
+			// track all messages
+			this._entries.push(evt.data);
 
-		// make sure we don't store too many entries
-		if (this._entries.length > 6) {
-			this._entries.shift();
-		}
+			// make sure we don't store too many entries
+			if (this._entries.length > 6) {
+				this._entries.shift();
+			}
 
-		//this._text.setText(this._entries.join("\n"));
-		for (let i = 0; i < this._entries.length; i++) {
-			let line = this["_line"+i];
-			line.setText(this._entries[i]);
-			line.setColor(this._colors[i]);
+			//this._text.setText(this._entries.join("\n"));
+			for (let i = 0; i < this._entries.length; i++) {
+				let line = this["_line"+i];
+				line.setText(this._entries[i]);
+				line.setColor(this._colors[i]);
+			}
 		}
 	}
 }

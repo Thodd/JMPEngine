@@ -2,7 +2,11 @@
 
 ## open
 
-* [ ] Refactor Control-Schemes from OverworldController
+* [ ] Inventory UI
+  * [ ] Separate Entity Overlay
+    * [ ] Uses PlayerState to access Backpack
+    * [ ] Gets a reference to Controller for resuming standard movement ControlScheme
+  * [ ] Equipping and using items from the backpack
 
 * [ ] NPCs
   * [x] First enemy: Rat
@@ -62,6 +66,8 @@
 * Animated tiles, simple visual change: Only flip through TileVisuals + dt
 
 ## done
+
+* [x] Refactor Control-Schemes from OverworldController
 
 * [x] UI: Player HP
   * [x] Color change depending on HP/HP_MAX
