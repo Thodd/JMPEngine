@@ -1,0 +1,34 @@
+{
+	"title": "Roguelike 8x8",
+
+	"startScreen": "./src/Shmup.js",
+
+	"w": 160,
+	"h": 144,
+
+	"layers": 7,
+	"scale": 2,
+
+	"bg": "0x000000",
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"enemies": {
+				"url": "./img/enemies.png",
+				"w": 16,
+				"h": 16
+			},
+			"ship": {
+				"url": "./img/ship.png",
+				"w": 16,
+				"h": 16
+			},
+			"projectiles": {
+				"url": "./img/projectiles.png",
+				"w": 16,
+				"h": 16
+			}
+		}
+	}
+}

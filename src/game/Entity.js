@@ -204,6 +204,13 @@ class Entity {
 	}
 
 	/**
+	 * Whether the Entity was destroyed.
+	 */
+	get isDestroyed() {
+		return this._isDestroyed;
+	}
+
+	/**
 	 * Removes the Entity from its current screen.
 	 * The Entity is NOT destroyed, and can be re-added to another screen.
 	 */
