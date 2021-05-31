@@ -1,6 +1,7 @@
 // jmp imports
 import BitmapText from "../../../src/game/BitmapText.js";
 import Screen from "../../../src/game/Screen.js";
+import RNG from "../../../src/utils/RNG.js";
 
 // own imports
 import Ship from "./Ship.js";
@@ -12,6 +13,9 @@ class Shmup extends Screen {
 	constructor() {
 		super();
 
+		this.ship = new Ship();
+		this.add(this.ship);
+
 		for (let i = 0; i < 10; i++) {
 			let squid = new Squid();
 			squid.x = i * 16;
@@ -19,28 +23,12 @@ class Shmup extends Screen {
 			this.add(squid);
 		}
 
-		// let cucumber = new Entity();
-		// cucumber.configSprite({
-		// 	sheet: "enemies",
-		// 	animations: {
-		// 		default: "idle",
-		// 		idle: {
-		// 			frames: [17, 18, 17, 19],
-		// 			dt: 10
-		// 		}
-		// 	}
-		// });
-		// this.add(cucumber);
-
-		// cucumber.x = 40;
-		// cucumber.y = 20;
-
-
+		// global particle-emitter, used by every entity in the screen
 		this.particleEmitter = new ParticleEmitter();
 		this.particleEmitter.layer = Constants.Layers.OVER_PLAYER;
 		this.add(this.particleEmitter);
 
-
+		// UI Text
 		let text = new BitmapText({
 			font: "font1",
 			x: 4,
@@ -52,8 +40,26 @@ class Shmup extends Screen {
 		this.add(text);
 
 
-		this.ship = new Ship();
-		this.add(this.ship);
+		// particle test
+		let w = this.getWidth();
+		let h = this.getHeight();
+		let i = this.registerFrameEventInterval(() => {
+			this.particleEmitter.emit({
+				x: RNG.randomInteger(10, w - 10),
+				y: RNG.randomInteger(10, h - 10),
+				gravity: 0.5, // gives off a speed effect
+				delay: 1,
+				amount: 10,
+				maxAge: 20,
+				maxRadius: 2,
+				colors: [0x008751, 0x00e436]
+			});
+		}, 10);
+
+		// cancel after 5 seconds
+		this.registerFrameEvent(() => {
+			this.cancelFrameEvent(i);
+		}, 5* 60);
 	}
 }
 

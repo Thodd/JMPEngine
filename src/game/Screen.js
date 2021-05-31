@@ -8,6 +8,8 @@ import PIXI from "../core/PIXIWrapper.js";
 
 let INSTANCE_COUNT = 0;
 
+let FRAME_EVENT_ID = 0;
+
 /**
  * Screen class
  *
@@ -24,6 +26,7 @@ let INSTANCE_COUNT = 0;
  * [+] begin                   (called every activation)      -> game logic, recurring things which need to be done before any other game logic
  *
  * [+] update                  (called each frame)            -> update hook for the Screen (game logic)
+ * [-] process frame-events    (called each frame)            -> process the scheduled frame-events
  * [-] update entities         (called each frame)            -> update entities (game logic)
  * [+] endOfFrame update       (called each frame)            -> 2nd update  for the Screen AFTER all entities have been updated (game logic)
  *
@@ -38,6 +41,7 @@ class Screen {
 		this._toBeAdded = [];
 		this._toBeRemoved = [];
 		this._layerChanges = [];
+		this._frameEvents = [];
 
 		// @PIXI: create pixi render container to hold all sprites
 		this._pixiContainer = new PIXI.Container();
@@ -358,42 +362,71 @@ class Screen {
 	}
 
 	/**
-	 * Registers a one-time frame event.
+	 * Internal helper function to create a frame-event information object.
+	 * @param {function} fn callback to be invoked once the frame-limit is reached
+	 * @param {int} limit frame limit
+	 * @returns {object} the frame-event object
+	 * @private
+	 */
+	_createFrameEvent(fn, limit) {
+		return {
+			id: FRAME_EVENT_ID++,
+			fn: fn,
+			frameCount: 0,
+			frameLimit: limit,
+			resolved: false
+		};
+	}
+
+	/**
+	 * Registers a one-time frame-event.
 	 * The given callback is called after the given amount of frames have passed.
 	 * Similar to JavaScript's setTimeout() function, but based on the Engine's framecount
 	 * instead of milliseconds.
 	 *
 	 * @param {function} fn callback to be called after the given number of frames have passed
-	 * @param {int} frames number of frames before the given callback is called
+	 * @param {int} limit number of frames before the given callback is called
 	 * @returns {int} frameEvent-id, used to cancel a callback before it was called
 	 * @public
 	 */
-	registerFrameEventOnce(fn, frames) {
-
+	registerFrameEvent(fn, limit) {
+		let feInfo = this._createFrameEvent(fn, limit);
+		feInfo.once = true;
+		this._frameEvents.push(feInfo);
+		return feInfo.id;
 	}
 
 	/**
-	 * Registers an infinitely repeating frame event.
+	 * Registers an infinitely repeating frame-event.
 	 * The given callback is called after the given amount of frames have passed.
 	 * Similar to JavaScript's setInterval() function, but based on the Engine's framecount
 	 * instead of milliseconds.
 	 *
 	 * @param {function} fn callback to be called after the given number of frames have passed
-	 * @param {int} frames number of frames before the given callback is called
+	 * @param {int} limit number of frames before the given callback is called
 	 * @returns {int} frameEvent-id, used to cancel a callback before its next call
 	 * @public
 	 */
-	registerFrameEventInterval(fn, frames) {
-
+	registerFrameEventInterval(fn, limit) {
+		let feInfo = this._createFrameEvent(fn, limit);
+		this._frameEvents.push(feInfo);
+		return feInfo.id;
 	}
 
 	/**
-	 * Cancels the frame event with the given ID.
+	 * Cancels the frame-event with the given ID.
 	 * @param {int} id the frameEvent-id to cancel
 	 * @public
 	 */
 	cancelFrameEvent(id) {
-
+		for (let i = 0; i < this._frameEvents.length; i++) {
+			let fe = this._frameEvents[i];
+			if (fe.id == id) {
+				fe.resolved = true;
+				this._frameEvents._isDirty = true;
+				return; // exit
+			}
+		}
 	}
 
 	/**
@@ -405,7 +438,27 @@ class Screen {
 		this.update(dt);
 
 		// Phase [2]: Process timeouts and intervals
+		let feLength = this._frameEvents.length;
+		for (let i = 0; i < feLength; i++) {
+			let fe = this._frameEvents[i];
+			if (fe && !fe.resolved) {
+				// count the frames for each frame-event
+				fe.frameCount++;
+				if (fe.frameCount > fe.frameLimit) {
+					// invoke callback once the frame-event limit is reached
+					fe.fn();
 
+					// one-time frame-events are resolved, intervals reset their frameCount
+					if (fe.once) {
+						fe.resolved = true;
+						// mark the frame-events list as dirty for house-keeping at the end of the frame
+						this._frameEvents._isDirty = true;
+					} else {
+						fe.frameCount = 0;
+					}
+				}
+			}
+		}
 
 		// Phase [3]: update entities (game logic)
 		let len = this._entities.length;
@@ -429,7 +482,7 @@ class Screen {
 		// Phase [4]: End of frame update (game logic)
 		this.endOfFrame();
 
-		// Phase [5]: Housekeeping (interal)
+		// Phase [5]: Housekeeping (internal)
 		this._houseKeeping();
 
 		// Phase [6]: Updating rendering information (interal)
@@ -437,7 +490,9 @@ class Screen {
 	}
 
 	/**
-	 * Safely adds and removes entities after the logic update loop.
+	 * Clean up and house keeping of Screen lifecycle information.
+	 *   1. Safely adds and removes entities after the logic update loop
+	 *   2. Clear completed frame-events
 	 */
 	_houseKeeping() {
 		// add scheduled entities
@@ -500,6 +555,14 @@ class Screen {
 			if (er.removed) {
 				er.removed(this);
 			}
+		}
+
+		// clean-up frame-events completed or canceled frame
+		if (this._frameEvents._isDirty) {
+			this._frameEvents = this._frameEvents.filter(function(fe) {
+				return !fe.resolved;
+			});
+			this._frameEvents._isDirty = false;
 		}
 	}
 

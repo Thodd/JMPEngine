@@ -39,8 +39,6 @@ class Enemy extends Entity {
 
 			// TODO: When Enemy has HP left --> hurt animation (blink) & iv-frames
 
-			// TODO: Move ParticleEmitter to JMP engine
-
 			// TODO: Starfield background
 
 
