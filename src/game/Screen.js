@@ -358,6 +358,45 @@ class Screen {
 	}
 
 	/**
+	 * Registers a one-time frame event.
+	 * The given callback is called after the given amount of frames have passed.
+	 * Similar to JavaScript's setTimeout() function, but based on the Engine's framecount
+	 * instead of milliseconds.
+	 *
+	 * @param {function} fn callback to be called after the given number of frames have passed
+	 * @param {int} frames number of frames before the given callback is called
+	 * @returns {int} frameEvent-id, used to cancel a callback before it was called
+	 * @public
+	 */
+	registerFrameEventOnce(fn, frames) {
+
+	}
+
+	/**
+	 * Registers an infinitely repeating frame event.
+	 * The given callback is called after the given amount of frames have passed.
+	 * Similar to JavaScript's setInterval() function, but based on the Engine's framecount
+	 * instead of milliseconds.
+	 *
+	 * @param {function} fn callback to be called after the given number of frames have passed
+	 * @param {int} frames number of frames before the given callback is called
+	 * @returns {int} frameEvent-id, used to cancel a callback before its next call
+	 * @public
+	 */
+	registerFrameEventInterval(fn, frames) {
+
+	}
+
+	/**
+	 * Cancels the frame event with the given ID.
+	 * @param {int} id the frameEvent-id to cancel
+	 * @public
+	 */
+	cancelFrameEvent(id) {
+
+	}
+
+	/**
 	 * Internal update method.
 	 * Updates the Screen itself and then the entities.
 	 */
@@ -365,7 +404,10 @@ class Screen {
 		// Phase [1]: Screen update hook (game logic)
 		this.update(dt);
 
-		// Phase [2]: update entities (game logic)
+		// Phase [2]: Process timeouts and intervals
+
+
+		// Phase [3]: update entities (game logic)
 		let len = this._entities.length;
 
 		for (let i = 0; i < len; i++) {
@@ -384,13 +426,13 @@ class Screen {
 			}
 		}
 
-		// Phase [3]: End of frame update (game logic)
+		// Phase [4]: End of frame update (game logic)
 		this.endOfFrame();
 
-		// Phase [4]: Housekeeping (interal)
+		// Phase [5]: Housekeeping (interal)
 		this._houseKeeping();
 
-		// Phase [5]: Updating rendering information (interal)
+		// Phase [6]: Updating rendering information (interal)
 		this._updateRenderInfos();
 	}
 

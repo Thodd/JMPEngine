@@ -5,6 +5,7 @@ import Keys from "../../../src/input/Keys.js";
 import Constants from "./Constants.js";
 import Entity from "../../../src/game/Entity.js";
 import Bullet from "./effects/Bullet.js";
+import FrameCounter from "../../../src/utils/FrameCounter.js";
 
 class Ship extends Entity {
 	constructor() {
@@ -30,6 +31,7 @@ class Ship extends Entity {
 		this.x = Manifest.get("/w") / 2 - 4;
 		this.y = Manifest.get("/h") - 16;
 	}
+
 	update() {
 		if (Keyboard.down(Keys.LEFT)) {
 			this.x-=1;
@@ -43,13 +45,28 @@ class Ship extends Entity {
 			this.y+=1;
 		}
 
-		if (Keyboard.pressed(Keys.S)) {
+		if (Keyboard.down(Keys.S)) {
+			let myScreen = this.getScreen();
+
+			this.canShoot = false;
+
+			// TODO: implement frame-events
+			let i = myScreen.registerFrameEventOnce(5, function() {
+				this.canShoot = true;
+			}.bind(this));
+
+			// screen.registerFrameEventInterval(5, function() {
+
+			// });
+
+			// screen.cancelFrameEvent(i);
+
 			// get a projectile instance from the Bullet pool
-			let bl = Bullet.get(Bullet.Types.LASER, this.getScreen());
+			let bl = Bullet.get(Bullet.Types.LASER, myScreen);
 			bl.x = this.x-4;
 			bl.y = this.y;
 
-			let br = Bullet.get(Bullet.Types.LASER, this.getScreen());
+			let br = Bullet.get(Bullet.Types.LASER, myScreen);
 			br.x = this.x+4;
 			br.y = this.y;
 		}

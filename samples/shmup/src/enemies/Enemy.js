@@ -39,13 +39,17 @@ class Enemy extends Entity {
 
 			// TODO: When Enemy has HP left --> hurt animation (blink) & iv-frames
 
+			// TODO: Move ParticleEmitter to JMP engine
+
+			// TODO: Starfield background
+
 
 			if (this.hp <= 0) {
 				log("enemy died");
 				this.getScreen().particleEmitter.emit({
 					x: this.x + 8,
 					y: this.y + 8,
-					//gravity: -1,
+					gravity: 1, // gives off a speed effect
 					delay: 1,
 					colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
 				});
