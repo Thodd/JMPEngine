@@ -18,6 +18,7 @@ class _Bullet extends Entity {
 
 		this.active = true;
 		this.visible = true;
+		this.setCollidable(true);
 
 		this.configSprite({
 			sheet: "projectiles",
@@ -41,7 +42,7 @@ class _Bullet extends Entity {
 	update() {
 		this.y -= 3;
 
-		// hide and deactive the bullet
+		// hide and deactive the bullet if off-screen
 		if (this.y < -20) {
 			this.release();
 		}
@@ -77,6 +78,7 @@ const Bullet = {
 	release(b) {
 		b.active = false;
 		b.visible = false;
+		b.setCollidable(false);
 		pool.push(b);
 	},
 

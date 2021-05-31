@@ -6,15 +6,18 @@ import Screen from "../../../src/game/Screen.js";
 import Ship from "./Ship.js";
 import Squid from "./enemies/Squid.js";
 import Constants from "./Constants.js";
+import ParticleEmitter from "./effects/ParticleEmitter.js";
 
 class Shmup extends Screen {
 	constructor() {
 		super();
 
-		let squid = new Squid();
-		squid.x = 20;
-		squid.y = 20;
-		this.add(squid);
+		for (let i = 0; i < 10; i++) {
+			let squid = new Squid();
+			squid.x = i * 16;
+			squid.y = 20;
+			this.add(squid);
+		}
 
 		// let cucumber = new Entity();
 		// cucumber.configSprite({
@@ -32,6 +35,10 @@ class Shmup extends Screen {
 		// cucumber.x = 40;
 		// cucumber.y = 20;
 
+
+		this.particleEmitter = new ParticleEmitter();
+		this.particleEmitter.layer = Constants.Layers.OVER_PLAYER;
+		this.add(this.particleEmitter);
 
 
 		let text = new BitmapText({

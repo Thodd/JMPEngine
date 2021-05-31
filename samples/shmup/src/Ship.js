@@ -1,3 +1,4 @@
+import Manifest from "../../../src/assets/Manifest.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
 
@@ -26,8 +27,8 @@ class Ship extends Entity {
 			h: 8
 		});
 
-		this.x = 64  - 8;
-		this.y = 128 - 16;
+		this.x = Manifest.get("/w") / 2 - 4;
+		this.y = Manifest.get("/h") - 16;
 	}
 	update() {
 		if (Keyboard.down(Keys.LEFT)) {

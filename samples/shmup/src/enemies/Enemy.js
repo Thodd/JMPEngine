@@ -7,7 +7,7 @@ class Enemy extends Entity {
 	constructor() {
 		super();
 		// base HP
-		this.hp = 1;
+		this.hp = 2;
 
 		// render layer
 		this.layer = Constants.Layers.ENEMIES;
@@ -30,12 +30,25 @@ class Enemy extends Entity {
 		let bulletCollision = this.collidesWithTypes(["player_bullet"],false);
 		if (bulletCollision) {
 
+			// important: release the bullet, so we don't handle
+			// additional collision checks in the next frame!
 			bulletCollision.release();
 
 			this.hp -= 1;
 
+
+			// TODO: When Enemy has HP left --> hurt animation (blink) & iv-frames
+
+
 			if (this.hp <= 0) {
 				log("enemy died");
+				this.getScreen().particleEmitter.emit({
+					x: this.x + 8,
+					y: this.y + 8,
+					//gravity: -1,
+					delay: 1,
+					colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+				});
 				this.destroy();
 			}
 		}
