@@ -3,6 +3,21 @@ import Entity from "../../../../src/game/Entity.js";
 import FrameCounter from "../../../../src/utils/FrameCounter.js";
 import RNG from "../../../../src/utils/RNG.js";
 
+// particle pool
+const particlePool = [];
+function get() {
+	let p = particlePool.pop();
+	if (p) {
+		return p;
+	} else {
+		return {};
+	}
+}
+function release(p) {
+	p.released = true;
+	particlePool.push(p);
+}
+
 class ParticleEmitter extends Entity {
 	constructor() {
 		super();
@@ -14,8 +29,6 @@ class ParticleEmitter extends Entity {
 		});
 
 		this._emissions = [];
-
-		this.fc = new FrameCounter(0);
 	}
 
 	emit(spec) {
@@ -39,22 +52,26 @@ class ParticleEmitter extends Entity {
 
 		// create a framecounter if needed
 		if (emi.delay) {
-			emi.fc = new FrameCounter(emi.delay);
+			emi.delay = {
+				frames: 0,
+				maxFrames: emi.delay
+			};
 		}
 
 		// spawn particles
 		while (emi.amount > 0) {
 			emi.amount--;
 
-			let p = {
-				x: emi.x,
-				y: emi.y,
-				age: emi.maxAge,
-				color: emi.colors[0],
-				speed: RNG.randomInteger(1, emi.maxSpeed)
-			};
+			let p = get();
+			p.released = false; // particle is retrieved & alive again
+			p.x = emi.x;
+			p.y = emi.y;
+			p.age = emi.maxAge;
+			p.color = emi.colors[0];
+			p.speed = RNG.randomInteger(1, emi.maxSpeed);
 			p.dx = RNG.randomInteger(-1, 1) * p.speed;
 			p.dy = RNG.randomInteger(-1, 1) * p.speed;
+
 			emi.particles.push(p);
 		}
 
@@ -73,7 +90,15 @@ class ParticleEmitter extends Entity {
 	processEmission(emi) {
 
 		// skip frames until the configured delay is reached
-		let updateParticles = emi.fc ? emi.fc.isReady() : true;
+		let updateParticles = true;
+		if (emi.delay) {
+			emi.delay.frames++;
+			if (emi.delay.frames <= emi.delay.maxFrames) {
+				updateParticles = false;
+			} else {
+				emi.delay.frames = 0;
+			}
+		}
 
 		// the allDead depends on the update-cycle of the particles
 		// we only need to check for dead particles if they are updated anyway
@@ -81,14 +106,18 @@ class ParticleEmitter extends Entity {
 
 		for (let p of emi.particles) {
 			// update only living particles
-			if (updateParticles && p.age > 0) {
-				p.x += p.dx;
-				p.y += p.dy;
-				p.age--;
-				allDead = false;
+			if (updateParticles) {
+				if (p.age > 0) {
+					p.x += p.dx;
+					p.y += p.dy;
+					p.age--;
+					allDead = false;
 
-				// apply gravity if set, default is 0
-				p.dy += emi.gravity;
+					// apply gravity if set, default is 0
+					p.dy += emi.gravity;
+				} else if (!p.released) {
+					release(p);
+				}
 			}
 
 			let lifePercent = p.age/emi.maxAge;

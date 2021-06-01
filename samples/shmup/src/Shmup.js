@@ -57,10 +57,12 @@ class Shmup extends Screen {
 		}, 10);
 
 		// cancel after 5 seconds
-		this.registerFrameEvent(() => {
-			this.cancelFrameEvent(i);
-		}, 5* 60);
+		// this.registerFrameEvent(() => {
+		// 	this.cancelFrameEvent(i);
+		// }, 5* 60);
 	}
+
+	debug() {}
 }
 
 export default Shmup;
