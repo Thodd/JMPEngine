@@ -28,6 +28,9 @@
 				"url": "./img/projectiles.png",
 				"w": 16,
 				"h": 16
+			},
+			"particles": {
+				"url": "./img/particles.png"
 			}
 		}
 	}

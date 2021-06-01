@@ -43,8 +43,9 @@ class Shmup extends Screen {
 		// particle test
 		let w = this.getWidth();
 		let h = this.getHeight();
-		let i = this.registerFrameEventInterval(() => {
+		this.registerFrameEventInterval(() => {
 			this.particleEmitter.emit({
+				sheet: "particles",
 				x: RNG.randomInteger(10, w - 10),
 				y: RNG.randomInteger(10, h - 10),
 				gravity: 0.5, // gives off a speed effect
@@ -52,7 +53,7 @@ class Shmup extends Screen {
 				amount: 10,
 				maxAge: 20,
 				maxRadius: 2,
-				colors: [0x008751, 0x00e436]
+				colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
 			});
 		}, 10);
 

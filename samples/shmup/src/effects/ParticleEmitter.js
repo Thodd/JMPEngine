@@ -1,33 +1,54 @@
+import Spritesheets from "../../../../src/assets/Spritesheets.js";
 import PIXI from "../../../../src/core/PIXIWrapper.js";
 import Entity from "../../../../src/game/Entity.js";
-import FrameCounter from "../../../../src/utils/FrameCounter.js";
 import RNG from "../../../../src/utils/RNG.js";
 
-// particle pool
-const particlePool = [];
-function get() {
-	let p = particlePool.pop();
-	if (p) {
+/**
+ * Pool for all Particle Sprite instances.
+ */
+class ParticlePool {
+	constructor(pixiContainer) {
+		this._pool = [];
+		this._pixiContainer = pixiContainer;
+	}
+	get() {
+		let p = this._pool.pop();
+		if (!p) {
+			p = new PIXI.Sprite();
+			this._pixiContainer.addChild(p);
+		}
+		// show sprite before it leaves the pool
+		p.visible = true;
 		return p;
-	} else {
-		return {};
+	}
+	release(p) {
+		this._pool.push(p);
+		p.released = true;
+		// hide sprite upon release
+		// better to keep all sprites in the container instead of manipulating even more arrays each frame
+		p.visible = false;
 	}
 }
-function release(p) {
-	p.released = true;
-	particlePool.push(p);
-}
 
+/**
+ * ParticleEmitter class.
+ * Call emit(...) to emit a bunch of particles.
+ * Each ParticleEmitter instance pools it's own particles and re-emits them if needed.
+ * @public
+ */
 class ParticleEmitter extends Entity {
 	constructor() {
 		super();
 
-		// renderplane for primitives
-		this._gfx = new PIXI.Graphics();
+		// container for particles sprites
+		this._particleContainer = new PIXI.Container();
 		this.configSprite({
-			replaceWith: this._gfx
+			replaceWith: this._particleContainer
 		});
 
+		this._particlePool = new ParticlePool(this._particleContainer);
+
+		// all active emissions
 		this._emissions = [];
 	}
 
@@ -58,16 +79,22 @@ class ParticleEmitter extends Entity {
 			};
 		}
 
+		emi.sheet = Spritesheets.getSheet(emi.sheet);
+
 		// spawn particles
 		while (emi.amount > 0) {
 			emi.amount--;
 
-			let p = get();
+			let p = this._particlePool.get(this._particleContainer);
+
+			// set texture
+			p.texture = emi.sheet.textures[0];
+
 			p.released = false; // particle is retrieved & alive again
 			p.x = emi.x;
 			p.y = emi.y;
 			p.age = emi.maxAge;
-			p.color = emi.colors[0];
+			p.tint = emi.colors[0];
 			p.speed = RNG.randomInteger(1, emi.maxSpeed);
 			p.dx = RNG.randomInteger(-1, 1) * p.speed;
 			p.dy = RNG.randomInteger(-1, 1) * p.speed;
@@ -79,58 +106,53 @@ class ParticleEmitter extends Entity {
 	}
 
 	update() {
-		this._gfx.clear();
-
 		this._emissions = this._emissions.filter(function(e) { return !e.ended; });
 		this._emissions.forEach((emi) => {
-			this.processEmission(emi);
+
+			// skip frames until the configured delay is reached
+			if (emi.delay) {
+				emi.delay.frames++;
+				if (emi.delay.frames <= emi.delay.maxFrames) {
+					this.processEmission(emi);
+				} else {
+					emi.delay.frames = 0;
+				}
+			} else {
+				this.processEmission(emi);
+			}
 		});
 	}
 
 	processEmission(emi) {
-
-		// skip frames until the configured delay is reached
-		let updateParticles = true;
-		if (emi.delay) {
-			emi.delay.frames++;
-			if (emi.delay.frames <= emi.delay.maxFrames) {
-				updateParticles = false;
-			} else {
-				emi.delay.frames = 0;
-			}
-		}
-
-		// the allDead depends on the update-cycle of the particles
-		// we only need to check for dead particles if they are updated anyway
-		let allDead = updateParticles;
+		// if set to true at the end of the particle processing, we consider the emission as "ended"
+		let allDead = true;
 
 		for (let p of emi.particles) {
 			// update only living particles
-			if (updateParticles) {
-				if (p.age > 0) {
-					p.x += p.dx;
-					p.y += p.dy;
-					p.age--;
-					allDead = false;
+			if (p.age > 0) {
+				p.x += p.dx;
+				p.y += p.dy;
+				p.age--;
+				allDead = false;
 
-					// apply gravity if set, default is 0
-					p.dy += emi.gravity;
-				} else if (!p.released) {
-					release(p);
-				}
+				// apply gravity if set, default is 0
+				p.dy += emi.gravity;
+
+				// percentage of a particles lifespan
+				let lifePercent = p.age/emi.maxAge;
+
+				// cycle through the color list based on the age to maxage percentage
+				let colorIndex = Math.floor((1 - lifePercent) * emi.colors.length);
+				p.tint = emi.colors[colorIndex];
+
+				// size sprite wrt. the radius
+				let r = lifePercent * emi.maxRadius;
+				p.width = r * 2;
+				p.height = r * 2;
+			} else if (!p.released) {
+				// release every dead particles back to the pool
+				this._particlePool.release(p);
 			}
-
-			let lifePercent = p.age/emi.maxAge;
-
-			// cycle through the color list based on the age to maxage percentage
-			let colorIndex = Math.floor((1 - lifePercent) * emi.colors.length);
-
-			// circle radius
-			let r = lifePercent * emi.maxRadius;
-
-			this._gfx.beginFill(emi.colors[colorIndex]);
-			this._gfx.drawCircle(p.x, p.y, r);
-			this._gfx.endFill();
 		}
 
 		// end the emission if all particles are dead,
