@@ -7,6 +7,9 @@ class IntroScreen extends Screen {
 	constructor(){
 		super();
 
+		// promise resolves after the intro
+		// the engine boot orchestration waits for this to resolve and then loads the
+		// start-screen defined in the game manifest
 		this.endCounter = new FrameCounter(180);
 		this.endPromise = new Promise((resolve) => {
 			this.finish = resolve;
@@ -51,6 +54,7 @@ class IntroScreen extends Screen {
 		});
 		this.animatedText.visible = false;
 		this.animatedText.col = 0;
+		this.add(this.animatedText);
 
 		// we delay the color changing for 2 frames
 		let colorAnimationDelay = new FrameCounter(2);
@@ -76,8 +80,6 @@ class IntroScreen extends Screen {
 				}
 			}
 		};
-
-		this.add(this.animatedText);
 	}
 
 	update() {

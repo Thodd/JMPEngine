@@ -11,6 +11,11 @@ class ParticlePool {
 		this._pool = [];
 		this._pixiContainer = pixiContainer;
 	}
+
+	/**
+	 * Retrieves a particle from the pool.
+	 * @returns {PIXI.Sprite} the particle instance
+	 */
 	get() {
 		let p = this._pool.pop();
 		if (!p) {
@@ -22,6 +27,11 @@ class ParticlePool {
 		p.visible = true;
 		return p;
 	}
+
+	/**
+	 * Releases a particle to the pool
+	 * @param {PIXI.Sprite} p the particle
+	 */
 	release(p) {
 		this._pool.push(p);
 		p.released = true;
@@ -29,12 +39,53 @@ class ParticlePool {
 		// better to keep all sprites in the container instead of manipulating even more arrays each frame
 		p.visible = false;
 	}
+
+	/**
+	 * Clears the pool.
+	 */
+	destroy() {
+		this._pool = null;
+		this._pixiContainer = null;
+	}
 }
 
 /**
+ * @class
  * ParticleEmitter class.
  * Call emit(...) to emit a bunch of particles.
  * Each ParticleEmitter instance pools it's own particles and re-emits them if needed.
+ * @example
+ * let pe = new ParticleEmitter({
+ *     // the sprite sheet to use
+ *     sheet: "particles",
+ *     // constantly applied to a particle, for simplicity we don't accelerate
+ *     gravity: 0.2,
+ *     // update delay in frames
+ *     delay: 1,
+ *     // number of particles for each emit
+ *     amount: 20,
+ *     // the lifetime of a particle in frames
+ *     maxAge: 20,
+ *     // deviation from the starting angle in pixels, added randomly to a particle (+ and -)
+ *     deviation: 1,
+ *     // the radius for a particle, scales the given spritesheet from the center (PIXI anchor=0.5,0.5)
+ *     maxRadius: 2,
+ *     // minimum speed for a single particle
+ *     minSpeed: 1,
+ *     // maximum speed for a single particle
+ *     maxSpeed: 3,
+ *     // origin angle in degress for each emission
+ *     // if undefined the particles are emitted in 360 degrees
+ *     angle: 0,
+ *     // color cycle array, each particle is tinted with the color corresponding to its lifetime
+ *     // the older the particle the higher the color index in this array
+ *     colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+ * });
+ * // emit a bunch of particles at (10, 120) based on the above definition
+ * pe.emit({
+ *     x: 10,
+ *     y: 120
+ * });
  * @public
  */
 class ParticleEmitter extends Entity {
@@ -89,6 +140,17 @@ class ParticleEmitter extends Entity {
 		this._emissions = [];
 	}
 
+	/**
+	 * Emits a set of particles based on the ParticleEmitters defintion.
+	 * @example
+	 *   let pe = new ParticleEmitter();
+	 *   pe.emit({
+	 *      x: 10,
+	 *      y: 120
+	 *   });
+	 * @param {object} spec the emission start information
+	 * @public
+	 */
 	emit(spec) {
 
 		let emi = {
@@ -144,6 +206,9 @@ class ParticleEmitter extends Entity {
 		this._emissions.push(emi);
 	}
 
+	/**
+	 * Internal update.
+	 */
 	update() {
 		this._emissions = this._emissions.filter(function(e) {
 			return !e.ended;
@@ -152,19 +217,24 @@ class ParticleEmitter extends Entity {
 			if (emi.delay) {
 				// once the configured delay has passed we update the emission
 				if (emi.delay.frames >= emi.delay.maxFrames) {
-					this.processEmission(emi);
+					this._processEmission(emi);
 					emi.delay.frames = 0;
 				} else {
 					// skip frames until the configured delay is reached
 					emi.delay.frames++;
 				}
 			} else {
-				this.processEmission(emi);
+				this._processEmission(emi);
 			}
 		});
 	}
 
-	processEmission(emi) {
+	/**
+	 * Processes an emission by updating all its particles.
+	 * @param {object} emi the emission information object
+	 * @private
+	 */
+	_processEmission(emi) {
 		// if set to true at the end of the particle processing, we consider the emission as "ended"
 		let allDead = true;
 
@@ -199,6 +269,15 @@ class ParticleEmitter extends Entity {
 		// end the emission if all particles are dead,
 		// call optional onEnd callback
 		emi.ended = allDead;
+	}
+
+	/**
+	 * Destroys the ParticleEmitter.
+	 * Safely destroys all particles.
+	 */
+	destroy() {
+		super.destroy();
+		this._particlePool.destroy();
 	}
 }
 
