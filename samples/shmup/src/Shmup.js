@@ -7,7 +7,7 @@ import RNG from "../../../src/utils/RNG.js";
 import Ship from "./Ship.js";
 import Squid from "./enemies/Squid.js";
 import Constants from "./Constants.js";
-import ParticleEmitter from "./effects/ParticleEmitter.js";
+import ParticleEmitter from "../../../src/game/ParticleEmitter.js";
 
 class Shmup extends Screen {
 	constructor() {
@@ -24,7 +24,13 @@ class Shmup extends Screen {
 		}
 
 		// global particle-emitter, used by every entity in the screen
-		this.particleEmitter = new ParticleEmitter();
+		this.particleEmitter = new ParticleEmitter({
+			sheet: "particles",
+			x: this.x + 8,
+			y: this.y + 8,
+			delay: 1,
+			colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+		});
 		this.particleEmitter.layer = Constants.Layers.OVER_PLAYER;
 		this.add(this.particleEmitter);
 
@@ -43,24 +49,33 @@ class Shmup extends Screen {
 		// particle test
 		let w = this.getWidth();
 		let h = this.getHeight();
+
+		this.fireworksEmitter = new ParticleEmitter({
+			sheet: "particles",
+			gravity: 0.2, // gives off a speed effect
+			delay: 1,
+			amount: 20,
+			maxAge: 20,
+			deviation: 1,
+
+			maxRadius: 2,
+
+			minSpeed: 1,
+			maxSpeed: 3,
+
+			angle: 0,
+
+			colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+		});
+		this.add(this.fireworksEmitter);
 		this.registerFrameEventInterval(() => {
-			this.particleEmitter.emit({
-				sheet: "particles",
+			this.fireworksEmitter.emit({
+				// x: 40,
+				// y: 100,
 				x: RNG.randomInteger(10, w - 10),
 				y: RNG.randomInteger(10, h - 10),
-				gravity: 0.5, // gives off a speed effect
-				delay: 1,
-				amount: 10,
-				maxAge: 20,
-				maxRadius: 2,
-				colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
 			});
 		}, 10);
-
-		// cancel after 5 seconds
-		// this.registerFrameEvent(() => {
-		// 	this.cancelFrameEvent(i);
-		// }, 5* 60);
 	}
 
 	debug() {}

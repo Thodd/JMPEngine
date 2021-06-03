@@ -45,12 +45,8 @@ class Enemy extends Entity {
 			if (this.hp <= 0) {
 				log("enemy died");
 				this.getScreen().particleEmitter.emit({
-					sheet: "particles",
 					x: this.x + 8,
-					y: this.y + 8,
-					gravity: 1, // gives off a speed effect
-					delay: 1,
-					colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+					y: this.y + 8
 				});
 				this.destroy();
 			}

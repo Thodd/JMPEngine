@@ -1,7 +1,7 @@
 # todo
 
 * [x] HUD
-* [ ] ParticleEmitter in core Engine package
+* [x] ParticleEmitter in core Engine package
 * [ ] Fence Sprites
 * [ ] Tunnel
   * [ ] Alternate colors -> Lights on top
