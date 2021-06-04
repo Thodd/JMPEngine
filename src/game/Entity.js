@@ -445,15 +445,23 @@ class Entity {
 	 * @param {object} config
 	 */
 	playAnimation(config) {
+		// get old animation first
+		let oldAnimation = this._currentAnimation;
+
 		// new animation definition
 		this._currentAnimation = this._spriteConfig.animations[config.name];
 
 		if (this._currentAnimation) {
+			let animationSwitched = (oldAnimation && oldAnimation != this._currentAnimation)
+
 			// register new handlers if given
 			this._currentAnimation.done = config.done;
 			this._currentAnimation.change = config.change;
 
-			if (this._currentAnimation && config.reset) {
+			// reset the animation on two possible conditions:
+			// a) reset is forced by the caller
+			// b) we switched animations
+			if (config.reset || animationSwitched) {
 				this._currentAnimation.currentFrame = 0;
 
 				// frameData can be an object or a number

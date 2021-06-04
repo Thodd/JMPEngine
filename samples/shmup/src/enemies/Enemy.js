@@ -2,6 +2,7 @@ import { log } from "../../../../src/utils/Log.js";
 import Entity from "../../../../src/game/Entity.js";
 
 import Constants from "../Constants.js";
+import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
 class Enemy extends Entity {
 	constructor() {
@@ -23,37 +24,54 @@ class Enemy extends Entity {
 			w: 8,
 			h: 8
 		});
+
+		// hurt animation
+		this.canBeHurt = true;
+		this.ivFramesCounter = new FrameCounter(10);
 	}
 
 	update() {
+
+		this.checkCollision();
+
+		if (!this.isDestroyed) {
+			this.aiUpdate();
+		}
+	}
+
+	hurt(dmg) {
+		this.hp -= dmg;
+
+		this.playAnimation({name: "hurt", reset:true});
+
+		if (this.hp <= 0) {
+			log("enemy died");
+			this.getScreen().particleEmitter.emit({
+				x: this.x + 8,
+				y: this.y + 8
+			});
+			this.destroy();
+			return;
+		}
+
+		this.canBeHurt = false;
+	}
+
+	checkCollision() {
+
 		// check for death
 		let bulletCollision = this.collidesWithTypes(["player_bullet"],false);
 		if (bulletCollision) {
 
-			// important: release the bullet, so we don't handle
-			// additional collision checks in the next frame!
+			// release the bullet
+			// TODO: piercing projectiles, are not released ?
 			bulletCollision.release();
 
-			this.hp -= 1;
-
-
-			// TODO: When Enemy has HP left --> hurt animation (blink) & iv-frames
+			if (this.canBeHurt) {
+				this.hurt(1);
+			}
 
 			// TODO: Starfield background
-
-
-			if (this.hp <= 0) {
-				log("enemy died");
-				this.getScreen().particleEmitter.emit({
-					x: this.x + 8,
-					y: this.y + 8
-				});
-				this.destroy();
-			}
-		}
-
-		if (!this.isDestroyed) {
-			this.aiUpdate();
 		}
 	}
 

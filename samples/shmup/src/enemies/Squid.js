@@ -11,6 +11,10 @@ class Squid extends Enemy {
 				idle: {
 					frames: [4, {id: 5, dt: 10}],
 					dt: 60
+				},
+				hurt: {
+					frames: [0, 6],
+					dt: 2
 				}
 			}
 		});

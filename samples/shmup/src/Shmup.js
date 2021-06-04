@@ -16,7 +16,7 @@ class Shmup extends Screen {
 		this.ship = new Ship();
 		this.add(this.ship);
 
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 8; i++) {
 			let squid = new Squid();
 			squid.x = i * 16;
 			squid.y = 20;
@@ -39,7 +39,7 @@ class Shmup extends Screen {
 			font: "font1",
 			x: 4,
 			y: 2,
-			text: "L*2         0001352",
+			text: "L*2     0001352",
 			color: 0xc2c3c7
 		});
 		text.layer = Constants.Layers.UI;
@@ -47,35 +47,35 @@ class Shmup extends Screen {
 
 
 		// particle test
-		let w = this.getWidth();
-		let h = this.getHeight();
+		// let w = this.getWidth();
+		// let h = this.getHeight();
 
-		this.fireworksEmitter = new ParticleEmitter({
-			sheet: "particles",
-			gravity: 0.2, // gives off a speed effect
-			delay: 1,
-			amount: 20,
-			maxAge: 20,
-			deviation: 1,
+		// this.fireworksEmitter = new ParticleEmitter({
+		// 	sheet: "particles",
+		// 	gravity: 0.2, // gives off a speed effect
+		// 	delay: 1,
+		// 	amount: 20,
+		// 	maxAge: 20,
+		// 	deviation: 1,
 
-			maxRadius: 2,
+		// 	maxRadius: 2,
 
-			minSpeed: 1,
-			maxSpeed: 3,
+		// 	minSpeed: 1,
+		// 	maxSpeed: 3,
 
-			angle: 0,
+		// 	angle: 0,
 
-			colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
-		});
-		this.add(this.fireworksEmitter);
-		this.registerFrameEventInterval(() => {
-			this.fireworksEmitter.emit({
-				// x: 40,
-				// y: 100,
-				x: RNG.randomInteger(10, w - 10),
-				y: RNG.randomInteger(10, h - 10),
-			});
-		}, 10);
+		// 	colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+		// });
+		// this.add(this.fireworksEmitter);
+		// this.registerFrameEventInterval(() => {
+		// 	this.fireworksEmitter.emit({
+		// 		// x: 40,
+		// 		// y: 100,
+		// 		x: RNG.randomInteger(10, w - 10),
+		// 		y: RNG.randomInteger(10, h - 10),
+		// 	});
+		// }, 10);
 	}
 
 	debug() {}
