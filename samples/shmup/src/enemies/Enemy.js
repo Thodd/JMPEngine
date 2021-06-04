@@ -2,13 +2,14 @@ import { log } from "../../../../src/utils/Log.js";
 import Entity from "../../../../src/game/Entity.js";
 
 import Constants from "../Constants.js";
-import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
 class Enemy extends Entity {
 	constructor() {
 		super();
-		// base HP
+		// base values
 		this.hp = 2;
+		this.ivFrames = 20;
+		this.knockback = 1; // in px
 
 		// render layer
 		this.layer = Constants.Layers.ENEMIES;
@@ -24,40 +25,22 @@ class Enemy extends Entity {
 			w: 8,
 			h: 8
 		});
-
-		// hurt animation
-		this.canBeHurt = true;
-		this.ivFramesCounter = new FrameCounter(10);
 	}
 
 	update() {
 
-		this.checkCollision();
+		this.checkProjectileCollision();
 
 		if (!this.isDestroyed) {
 			this.aiUpdate();
 		}
 	}
 
-	hurt(dmg) {
-		this.hp -= dmg;
-
-		this.playAnimation({name: "hurt", reset:true});
-
-		if (this.hp <= 0) {
-			log("enemy died");
-			this.getScreen().particleEmitter.emit({
-				x: this.x + 8,
-				y: this.y + 8
-			});
-			this.destroy();
-			return;
-		}
-
-		this.canBeHurt = false;
-	}
-
-	checkCollision() {
+	/**
+	 * Process collision with projectiles.
+	 * Hurts the enemy if IV-Frames are not active (bound to hurt animation).
+	 */
+	checkProjectileCollision() {
 
 		// check for death
 		let bulletCollision = this.collidesWithTypes(["player_bullet"],false);
@@ -67,12 +50,41 @@ class Enemy extends Entity {
 			// TODO: piercing projectiles, are not released ?
 			bulletCollision.release();
 
-			if (this.canBeHurt) {
+			// push back a little
+			this.y -= this.knockback;
+
+			if (!this.isPlayingAnimation("hurt")) {
+				// TODO: laser power as damage!
 				this.hurt(1);
 			}
 
 			// TODO: Starfield background
 		}
+	}
+
+	hurt(dmg) {
+		let myScreen = this.getScreen();
+
+		this.hp -= dmg;
+
+		this.playAnimation({ name: "hurt", reset:true });
+
+		// schedule frame event to end the hurt animation
+		myScreen.registerFrameEvent(() => {
+			this.playAnimation({ name: "idle" });
+		}, this.ivFrames);
+
+		if (this.hp <= 0) {
+			log("enemy died");
+			myScreen.enemyDeathEmitter.emit({
+				x: this.x + 8,
+				y: this.y + 8
+			});
+			this.destroy();
+			return;
+		}
+
+		this.canBeHurt = false;
 	}
 
 	aiUpdate() {}

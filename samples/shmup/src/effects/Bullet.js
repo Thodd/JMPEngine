@@ -34,9 +34,18 @@ class _Bullet extends Entity {
 
 	/**
 	 * Release the bullet back to the pool.
+	 * @param {explode} whether the bullet should explode or be removed "silently"
 	 */
-	release() {
+	release(explode=true) {
 		Bullet.release(this);
+
+		if (explode) {
+			// bullet explosion
+			this.getScreen().projectileHitEmitter.emit({
+				x: this.x + this._type.hitbox.x,
+				y: this.y + this._type.hitbox.y
+			});
+		}
 	}
 
 	update() {

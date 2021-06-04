@@ -205,6 +205,7 @@ class Entity {
 
 	/**
 	 * Whether the Entity was destroyed.
+	 * @public
 	 */
 	get isDestroyed() {
 		return this._isDestroyed;
@@ -213,6 +214,7 @@ class Entity {
 	/**
 	 * Removes the Entity from its current screen.
 	 * The Entity is NOT destroyed, and can be re-added to another screen.
+	 * @public
 	 */
 	removeFromScreen() {
 		if (this._screen) {
@@ -236,6 +238,7 @@ class Entity {
 	 * If the debug option Entity.RENDER_HITBOX or this.RENDER_HITBOX is set, a PIXI.Graphics object is
 	 * created for rendering the hitbox. Please keep this in mind with respect to render performance.
 	 * @param {object} cfg Hitbox dimensions (x, y, w, h)
+	 * @public
 	 */
 	updateHitbox(cfg) {
 		this._hitbox._collidable = true;
@@ -264,13 +267,39 @@ class Entity {
 	}
 
 	/**
+	 * Returns the hitbox dimensions.
+	 * Changes to this object will not be reflected in collision detection!
+	 * Call updateHitbox() instead.
+	 * @returns the hitbox dimensions
+	 * @public
+	 */
+	getHitbox() {
+		return {
+			x: this._hitbox.x,
+			y: this._hitbox.y,
+			w: this._hitbox.w,
+			h: this._hitbox.h
+		};
+	}
+
+	/**
 	 * Sets whether the entity shall partake in collision detection based
 	 * on itshitbox definition.
 	 *
 	 * @param {boolean} b whether the entity shall partake in collision detection
+	 * @public
 	 */
 	setCollidable(b) {
 		this._hitbox._collidable = b;
+	}
+
+	/**
+	 * Returns whether the Entity is set to collidable or not.
+	 * @returns whether the Entity is set to collidable
+	 * @public
+	 */
+	getCollidable() {
+		return this._hitbox._collidable;
 	}
 
 	/**
@@ -443,6 +472,7 @@ class Entity {
 	/**
 	 * Plays an animation
 	 * @param {object} config
+	 * @public
 	 */
 	playAnimation(config) {
 		// get old animation first
@@ -475,6 +505,16 @@ class Entity {
 		} else {
 			fail(`Cannot play unknown animation '${config.name}'`, "Entity");
 		}
+	}
+
+	/**
+	 * Checks whether the Entity is currently playing this animation of the given name.
+	 * @param {string} name the animation name
+	 * @returns whether the Entity is currently playing this animation of the given name
+	 * @public
+	 */
+	isPlayingAnimation(name) {
+		return this._currentAnimation && this._currentAnimation.name == name;
 	}
 
 	/**

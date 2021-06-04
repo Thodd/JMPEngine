@@ -1,12 +1,12 @@
-# todos
+# Backlog
 
 ## open
 
-* [ ] Enemy Hurt animation when hit + iv-frames
 * [ ] Starfield BG effect
 
 ## done
 
+* [x] Enemy Hurt animation when hit + iv-frames
 * [x] Frame Events on Screen class
 * [x] Move ParticleEmitter to Engine package
 * [x] Particle Emitter features

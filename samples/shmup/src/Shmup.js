@@ -1,7 +1,6 @@
 // jmp imports
 import BitmapText from "../../../src/game/BitmapText.js";
 import Screen from "../../../src/game/Screen.js";
-import RNG from "../../../src/utils/RNG.js";
 
 // own imports
 import Ship from "./Ship.js";
@@ -23,16 +22,28 @@ class Shmup extends Screen {
 			this.add(squid);
 		}
 
-		// global particle-emitter, used by every entity in the screen
-		this.particleEmitter = new ParticleEmitter({
+		// global particle-emitters, used by every entity in the screen
+		this.enemyDeathEmitter = new ParticleEmitter({
 			sheet: "particles",
-			x: this.x + 8,
-			y: this.y + 8,
 			delay: 1,
 			colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
 		});
-		this.particleEmitter.layer = Constants.Layers.OVER_PLAYER;
-		this.add(this.particleEmitter);
+		this.enemyDeathEmitter.layer = Constants.Layers.OVER_PLAYER;
+		this.add(this.enemyDeathEmitter);
+
+		// global particle-emitter, used by every entity in the screen
+		this.projectileHitEmitter = new ParticleEmitter({
+			sheet: "particles",
+			delay: 1,
+			gravity: 0.2,
+			maxAge: 5,
+			angle: 0,
+			deviation: 1,
+			maxRadius: 2,
+			colors: [0x008751, 0x00e436, 0xc2c3c7, 0xfff1e8]
+		});
+		this.projectileHitEmitter.layer = Constants.Layers.OVER_PLAYER;
+		this.add(this.projectileHitEmitter);
 
 		// UI Text
 		let text = new BitmapText({
