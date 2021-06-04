@@ -2,6 +2,7 @@ import { log } from "../../../../src/utils/Log.js";
 import Entity from "../../../../src/game/Entity.js";
 
 import Constants from "../Constants.js";
+import FrameCounter from "../../../../src/utils/FrameCounter.js";
 
 class Enemy extends Entity {
 	constructor() {
@@ -25,9 +26,15 @@ class Enemy extends Entity {
 			w: 8,
 			h: 8
 		});
+
+		this.moveFC = new FrameCounter(2);
 	}
 
 	update() {
+
+		if (this.moveFC.isReady()) {
+			this.y+=1;
+		}
 
 		this.checkProjectileCollision();
 
@@ -62,6 +69,12 @@ class Enemy extends Entity {
 		}
 	}
 
+	/**
+	 * Hurts the enemy by the given amount of damage.
+	 *
+	 * @param {int} dmg the damage taken
+	 * @returns whether the enemy died
+	 */
 	hurt(dmg) {
 		let myScreen = this.getScreen();
 
@@ -81,10 +94,10 @@ class Enemy extends Entity {
 				y: this.y + 8
 			});
 			this.destroy();
-			return;
+			return true;
 		}
 
-		this.canBeHurt = false;
+		return false;
 	}
 
 	aiUpdate() {}

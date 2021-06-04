@@ -40,6 +40,9 @@
 				"url": "./img/vfr95_blue.png",
 				"w": 8,
 				"h": 8
+			},
+			"particles": {
+				"url": "./img/particles.png"
 			}
 		},
 		"fonts": {

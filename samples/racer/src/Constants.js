@@ -38,8 +38,10 @@ const Constants = {
 		TRACK: 0,
 		THINGS: 1,
 		CAR_FRONT: 2,
-		CAR_BACK: 3,
-		UI: 4
+		PARTICLES: 3,
+		CAR_BACK: 4,
+		FIREWORKS: 5,
+		UI: 6
 	}
 };
 

@@ -158,6 +158,7 @@ class ParticleEmitter extends Entity {
 			y: spec.y,
 			particles: [],
 			ended: false,
+			angle: spec.angle
 		};
 
 		// define the delay counter for this emission
@@ -188,8 +189,8 @@ class ParticleEmitter extends Entity {
 			p.width = r;
 			p.height = r;
 
-			if (this.spec.angle != undefined) {
-				let deg = this.spec.angle;
+			let deg = emi.angle || this.spec.angle;
+			if (deg != undefined) {
 				let angle = (deg - 135) * Math.PI / 180;
 				p.dx = (Math.cos(angle) - Math.sin(angle)) * p.speed
 				p.dy = (Math.sin(angle) + Math.cos(angle)) * p.speed

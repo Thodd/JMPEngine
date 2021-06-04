@@ -1,36 +1,41 @@
+// JMP imports
 import PIXI from "../../../src/core/PIXIWrapper.js";
-
 import Screen from "../../../src/game/Screen.js";
 import BitmapText from "../../../src/game/BitmapText.js";
 import Keyboard from "../../../src/input/Keyboard.js";
 import Keys from "../../../src/input/Keys.js";
+import RNG from "../../../src/utils/RNG.js";
 
+// game imports
 import Constants from "./Constants.js";
 import M4th from "./M4th.js";
 import Helper from "../../../src/utils/Helper.js";
 import FrameCounter from "../../../src/utils/FrameCounter.js";
 import Entity from "../../../src/game/Entity.js";
+import ParticleEmitter from "../../../src/game/ParticleEmitter.js";
 
 /**
- * The basic implementation of the Race-Track definition and rendering is based on Jake Gordons canvas based racing tech demo.
+ * This project is a tech-demo of the Pseudo 3D canvas-based racer concept by Jake Gordon.
  * See: https://codeincomplete.com/articles/javascript-racer/ for a general overview of the tech
  * Code: https://github.com/jakesgordon/javascript-racer/
- * Some code parts are taken as-is. Some parts are modified and adapted, others are written entirely by me (Thorsten Hochreuter).
+ * Licensing and attributions see below.
+ * Some parts are taken as-is from Jakes project, others are modified and adapted or newly written by me (Thorsten Hochreuter).
  *
- * The project extends the rendering engine with additional features, like tunnels, lap timing, graphical effects (e.g. car perspective).
- * Furthermore the project now uses WebGL for rendering, based on top of the JMP Game Engine which internally uses PIXI.js for optimized
- * sprite and primitives rendering.
+ * This project extends the original by PIXI.js based rendering.
+ * Additional features include: tunnels, lap timing, graphical effects (e.g. car perspective), particle system.
+ * Furthermore thanks to PIXI.js the project now uses WebGL for rendering.
  *
  * Everything in this project is available under "MIT License".
  *
  * This includes:
- * - Custom game coding (either by Thorsten Hochreuter, Jake Gordon)
- * - The JMP Game Engine
- * - PIXI
- * - Graphics, sprites and sounds
+ * - race-track, perspective calculation and basic math implementation (Jake Gordon)
+ * - Custom game coding (by Thorsten Hochreuter)
+ * - The JMP Game Engine (by Thorsten Hochreuter)
+ * - PIXI.js
+ * - Graphics, sprites and sounds (by Thorsten Hochreuter)
  *
  * Graphics, sprites and sounds are created by me (Thorsten Hochreuter, https://github.com/Thodd).
- * The whole project was created with Visual Studio Code and Aseprite on MacOS.
+ * The whole project was created with Visual Studio Code, Aseprite, 1BitDragon and Garageband on MacOS.
  *
  * See also the LICENSE file in the "/racer" folder.
  *
@@ -48,7 +53,7 @@ class RaceTrack extends Screen {
 
 		// time tracking
 		this.timing = {
-			maxLaps: 1,
+			maxLaps: 3,
 			start: 0,
 			current: 0,
 			minutes: "00",
@@ -72,6 +77,8 @@ class RaceTrack extends Screen {
 		this.createTrack();
 
 		this.initGFX();
+
+		this.initParticleEmitters();
 
 		this.render();
 	}
@@ -252,6 +259,58 @@ class RaceTrack extends Screen {
 		};
 	}
 
+	initParticleEmitters() {
+
+		// particle emitter for dirt effect
+		this.roadParticles = new ParticleEmitter({
+			sheet: "particles",
+			colors: [0x222222, 0x5f574f, 0xc2c3c7, 0xfff1e8],
+			angle: 180,
+			maxAge: 10,
+			amount: 5,
+			maxRadius: 3
+		});
+		this.roadParticles.layer = Constants.LAYERS.PARTICLES;
+		this.add(this.roadParticles);
+
+		// particle emitter for spark effect
+		this.sparkParticles = new ParticleEmitter({
+			sheet: "particles",
+			colors: [0xff004d, 0xffa300, 0xffec27],
+			angle: 180,
+			maxAge: 10,
+			amount: 5,
+			maxRadius: 3,
+			deviation: 10
+		});
+		this.sparkParticles.layer = Constants.LAYERS.PARTICLES;
+		this.add(this.sparkParticles);
+
+		// fireworks emitter for finishing the last lap
+		this.fireworksEmitter = new ParticleEmitter({
+			sheet: "particles",
+			gravity: 0.3,
+			delay: 1,
+			amount: 30,
+			maxAge: 20,
+			deviation: 1,
+
+			maxRadius: 2,
+
+			minSpeed: 2,
+			maxSpeed: 4,
+
+			angle: 0,
+
+			colors: [0xff004d, 0xffa300, 0xffec27, 0xc2c3c7, 0xfff1e8]
+		});
+		this.fireworksEmitter.layer = Constants.LAYERS.FIREWORKS;
+		this.add(this.fireworksEmitter);
+	}
+
+	/**
+	 * Check if the player presses ENTER to start the race.
+	 */
 	checkGameStart() {
 		if (!this.started) {
 			if (Keyboard.down(Keys.ENTER)) {
@@ -262,12 +321,15 @@ class RaceTrack extends Screen {
 		}
 	}
 
+	/**
+	 * Evaluate lap time based on a checkpoint
+	 */
 	clearCheckpoint() {
 		if (!this.finished) {
 			// find player segment first
 			let playerSegment = this.findSegment(this.position + this.playerZ);
 
-			// We check if the player has crossed 3 specific segments on the halfway point of the track.
+			// We check if the player has crossed 3 specific segments at the halfway point of the track.
 			// If so, we set a flag that the checkpoint was cleared and the next time the
 			// player passes the first 3 segments of the track we consider the lap completed.
 			// This checkpoint system prevents us from counting a lap multiple times when two update loops
@@ -304,6 +366,9 @@ class RaceTrack extends Screen {
 		}
 	}
 
+	/**
+	 * Tracks laptime.
+	 */
 	trackTime() {
 		this.timing.current = performance.now();
 		let elapsedSeconds  = (this.timing.current - this.timing.start) / 1000;
@@ -318,6 +383,27 @@ class RaceTrack extends Screen {
 		this.timing.total   = `${this.timing.minutes}'${this.timing.seconds}"${this.timing.millis}`;
 	}
 
+	/**
+	 * Trigger "you are the best player ever" fireworks.
+	 * Nudges the player to be happy. Good job. Everybody clap.
+	 */
+	showFireworks() {
+		if (!this.fireWorkInterval) {
+			let w = this.getWidth();
+			let h = this.getHeight();
+			this.fireWorkInterval = this.registerFrameEventInterval(() => {
+				this.fireworksEmitter.emit({
+					x: RNG.randomInteger(10, w - 10),
+					y: RNG.randomInteger(10, h - 10),
+				});
+			}, 10);
+		}
+	}
+
+	/**
+	 * Basic Update loop.
+	 * Handles input, rerendering and state checks.
+	 */
 	update() {
 		this.checkGameStart();
 		this.clearCheckpoint();
@@ -330,6 +416,8 @@ class RaceTrack extends Screen {
 		// we only track time while the race is on
 		if (!this.finished) {
 			this.trackTime();
+		} else {
+			this.showFireworks();
 		}
 
 		this.updateUI();
@@ -436,7 +524,7 @@ class RaceTrack extends Screen {
 		let lapTimingString = `#${laps}: ${this.timing.total}`;
 
 		for (let i = 0; i < this.timing.laptimes.length; i++) {
-			//_gfx.alpha(1/(i+2));
+			// alpha(1/(i+2)) ???
 			let timing = this.timing.laptimes[i];
 			lapTimingString += `\n#${timing.lap}: ${timing.time}`;
 		}
@@ -452,7 +540,9 @@ class RaceTrack extends Screen {
 
 		// fill tacho
 		this._ui.tacho.tachoBox.visible = true;
+
 		// this is some rather dirty PIXI mask magic :D
+		// but good enough for a simple game like this
 		this._ui.tacho.tachoBoxMask.clear();
 		this._ui.tacho.tachoBoxMask.beginFill(0x000000);
 		this._ui.tacho.tachoBoxMask.drawRect(this._ui.tacho.tachoBox.x, this._ui.tacho.tachoBox.y + 60 - fill, 22, fill);
@@ -460,6 +550,9 @@ class RaceTrack extends Screen {
 		this._ui.tacho.tachoBox._pixiSprite.mask = this._ui.tacho.tachoBoxMask;
 	}
 
+	/**
+	 * Simple collision check
+	 */
 	collides(x1, w1, x2, w2) {
 		if (x1 < x2 + w2 &&
 			x1 + w1 > x2) {
@@ -487,16 +580,32 @@ class RaceTrack extends Screen {
 		return e;
 	}
 
+	/**
+	 * Adds a new segment to the track
+	 * @param {number} curve curvature of the segment
+	 * @param {int} y y position
+	 */
 	addSegment(curve, y) {
 		let n = this.segments.length;
 		let zIndex = 1000 - n;
 		let alternate = Math.floor(n/Constants.RUMBLE_LENGTH)%2;
+		let lastY = this.lastY();
+
+		// define the styling of the slope wrt to the previous segment
+		// used to render a uphill/downhill effect
+		let slopeStyle = "flat";
+		if (y > lastY) {
+			slopeStyle = "uphill";
+		} else if (y < lastY) {
+			slopeStyle = "downhill";
+		}
 
 		this.segments.push({
 			index: n,
-				p1: { world: {y: this.lastY(), z: n * Constants.SEGMENT_LENGTH },     camera: {}, screen: {} },
+				p1: { world: {y: lastY, z: n * Constants.SEGMENT_LENGTH },     camera: {}, screen: {} },
 				p2: { world: {y: y,            z: (n+1) * Constants.SEGMENT_LENGTH }, camera: {}, screen: {} },
 			curve: curve,
+			slopeStyle: slopeStyle,
 			color: alternate ? Constants.COLORS.DARK : Constants.COLORS.LIGHT,
 			sprites: [],
 			looped: false,
@@ -671,7 +780,7 @@ class RaceTrack extends Screen {
 		// sharp left
 		this.addRoad(100, 50, 100, -4, 50);			// 150
 
-		// climp (forest?)
+		// climp (forest)
 		this.addRoad(50, 50, 50,  0,  -40);			// 110
 		this.addRoad(100, 50, 50,   2,  -50);		//  60
 
@@ -679,7 +788,7 @@ class RaceTrack extends Screen {
 
 		// chicane
 		this.addRoad(100, 100, 50, -3.5, 25);		// 135
-		this.addRoad(20,   20, 20,  0,    0);		// 135 ---
+		this.addRoad(20,   20, 20,  0,    0);		// 135
 		this.addRoad(100, 100, 50, 3.5, 25);		// 160
 
 		// short straight
@@ -743,6 +852,11 @@ class RaceTrack extends Screen {
 		this.addRoad(Constants.ROAD.LENGTH.MEDIUM, Constants.ROAD.LENGTH.MEDIUM, Constants.ROAD.LENGTH.MEDIUM,   Constants.ROAD.CURVE.NONE,      Constants.ROAD.HILL.LOW);
 	}
 
+	/**
+	 * Finds the segment at the respective (z) position
+	 * @param {int} z (z) position
+	 * @returns the segment at (z)
+	 */
 	findSegment(z) {
 		return this.segments[Math.floor(z/Constants.SEGMENT_LENGTH) % this.segments.length];
 	}
@@ -758,25 +872,28 @@ class RaceTrack extends Screen {
 		this._gfx.lineTo(p4.x, p4.y);
 	}
 
+	/**
+	 * Renders a segment based on the given definition
+	 */
 	renderSegment(width, lanes, x1, y1, w1, x2, y2, w2, fog, color) {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
-		let r1 = this.calculateRumbleWidth(w1, lanes);      //basic: *0.8;  raw: /2;
-		let r2 = this.calculateRumbleWidth(w2, lanes);      //basic: *0.8;  raw: /2;
+		let r1 = this.calculateRumbleWidth(w1, lanes);
+		let r2 = this.calculateRumbleWidth(w2, lanes);
 
-		let l1 = this.calculateLaneMarkerWidth(w1, lanes)*2;  //basic: *2;  raw: *1
-		let l2 = this.calculateLaneMarkerWidth(w2, lanes)*2;  //basic: *2;  raw: *1
+		let l1 = this.calculateLaneMarkerWidth(w1, lanes)*2;
+		let l2 = this.calculateLaneMarkerWidth(w2, lanes)*2;
 
-		// for rendering grass we use a Basic Mode layer underneath the road
-		// this optimizes the performance on higher resolutions
+		// grass
 		this._gfx.beginFill(color.grass);
 		this._gfx.drawRect(0, y2, width, y1 - y2);
 
-		// basic
+		// road & rumble
 		this.polyf({x:x1-w1-r1, y:y1}, {x:x1-w1, y:y1}, {x:x2-w2, y:y2}, {x:x2-w2-r2, y:y2}, color.rumble);
 		this.polyf({x:x1+w1+r1, y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2+w2+r2, y:y2}, color.rumble);
 		this.polyf({x:x1-w1,    y:y1}, {x:x1+w1, y:y1}, {x:x2+w2, y:y2}, {x:x2-w2,    y:y2}, color.road);
 
+		// lane
 		if (color.lane) {
 			lanew1 = w1*2/lanes;
 			lanew2 = w2*2/lanes;
@@ -787,7 +904,7 @@ class RaceTrack extends Screen {
 			}
 		}
 
-		// render some fog in the distance to mask artifacts, silent hill style :)
+		// render some fog in the distance to mask artifacts, silent hill style ;)
 		if (fog < 1) {
 			this._gfx.beginFill(Constants.COLORS.FOG, 1-fog);
 			this._gfx.drawRect(0, y1, width, y2-y1);
@@ -802,6 +919,11 @@ class RaceTrack extends Screen {
 		return projectedRoadWidth/Math.max(32, 8*lanes);
 	}
 
+	/**
+	 * Actively called render function.
+	 * Deviates from the JMP Engine's entity-based render mechanism,
+	 * since we need to draw polygons and sprites manually.
+	 */
 	render() {
 		let baseSegment = this.findSegment(this.position);
 		let basePercent = M4th.percentRemaining(this.position, Constants.SEGMENT_LENGTH);
@@ -879,6 +1001,7 @@ class RaceTrack extends Screen {
 
 				let clipY = segment.clip;
 
+				// offsetting and scaling a sprite
 				let offsetX = (sprite.offset < 0 ? -1 : 0);
 				let offsetY = -1
 				let destX = spriteX + (destW * (offsetX || 0));
@@ -893,7 +1016,6 @@ class RaceTrack extends Screen {
 						sprite._pixiSprite.width = destW;
 						sprite._pixiSprite.height = (destH - clipH);
 					}
-					//GFX.get(Constants.Layers.Things).spr_ext(sprite.sheet, sprite.id, 0, 0, spriteWidth, spriteHeight - (spriteHeight*clipH/destH), destX, destY, destW, destH - clipH);
 				} else {
 					if (sprite instanceof Entity) {
 						sprite.visible = false;
@@ -908,38 +1030,98 @@ class RaceTrack extends Screen {
 
 				// the wheels are shifted based on the curve to give the car a bit of perspective
 				let wheelShift = segment.curve;
+
+				// bob a bit during racing
 				let bobble = 0;
 
-				// change animation based on speed
-				let speedPercent = (this.speed/Constants.SPEED_MAX) * 100;
-				let anim = "idle";
-				if (speedPercent < 1) {
-					anim = "idle";
-				} else{
-					bobble = Helper.choose([0,1]);
-					if (speedPercent < 20) {
-						anim = "roll_slow";
-					} else if (speedPercent < 50) {
-						anim = "roll_mid";
-					} else if (speedPercent <= 100) {
-						anim = "roll_fast";
-					}
+				// shift the wheel base up or down depending on the slope style
+				let bodyShift = 0;
+				if (segment.slopeStyle == "uphill") {
+					bodyShift = 1;
+				} else if (segment.slopeStyle == "downhill") {
+					bodyShift = -1;
 				}
 
 				// position the car
 				this._racecarBody.visible = true;
 				this._racecarBody.x = Constants.SCREEN_WIDTH/2 - carW/2;
-				this._racecarBody.y = Constants.SCREEN_HEIGHT - carH - 10 - bobble;
+				this._racecarBody.y = Constants.SCREEN_HEIGHT - carH - 10;
 
 				this._racecarFrontWheels.visible = true;
-				this._racecarFrontWheels.playAnimation({name: anim});
 				this._racecarFrontWheels.x = Constants.SCREEN_WIDTH/2 - carW/2 + wheelShift * 3;
-				this._racecarFrontWheels.y = Constants.SCREEN_HEIGHT - carH - 10 - bobble;
+				this._racecarFrontWheels.y = Constants.SCREEN_HEIGHT - carH - 10 - bodyShift;
 
 				this._racecarBackWheels.visible = true;
-				this._racecarBackWheels.playAnimation({name: anim});
 				this._racecarBackWheels.x = Constants.SCREEN_WIDTH/2 - carW/2 - wheelShift * 2;
-				this._racecarBackWheels.y = Constants.SCREEN_HEIGHT - carH - 10 - bobble;
+				this._racecarBackWheels.y = Constants.SCREEN_HEIGHT - carH - 10 + bodyShift;
+
+				// change animation based on speed
+				let emitParticles = false;
+				let speedPercent = (this.speed/Constants.SPEED_MAX) * 100;
+				let anim = "idle";
+				if (speedPercent < 1) {
+					anim = "idle";
+				} else {
+					bobble = Helper.choose([0,1]);
+					if (speedPercent < 20) {
+						anim = "roll_slow";
+					} else if (speedPercent < 50) {
+						emitParticles = true;
+						anim = "roll_mid";
+					} else if (speedPercent <= 100) {
+						emitParticles = true;
+						anim = "roll_fast";
+					}
+				}
+
+				// emitting particles only while we have some form of speed
+				if (emitParticles) {
+					// drifting through a curve always renders particles
+					if (wheelShift) {
+						// left tire
+						this.roadParticles.emit({
+							x: this._racecarBackWheels.x + 20,
+							y: this._racecarBackWheels.y + 30,
+							angle: 180 + wheelShift * 10
+						});
+						// right tire
+						this.roadParticles.emit({
+							x: this._racecarBackWheels.x + carW - 20,
+							y: this._racecarBackWheels.y + 30,
+							angle: 180 + wheelShift * 10
+						});
+					} else {
+						// left tire
+						this.roadParticles.emit({
+							x: this._racecarBackWheels.x + 20,
+							y: this._racecarBackWheels.y + 15,
+							angle: 180 + wheelShift * 10
+						});
+						// right tire
+						this.roadParticles.emit({
+							x: this._racecarBackWheels.x + carW - 20,
+							y: this._racecarBackWheels.y + 15,
+							angle: 180
+						});
+					}
+
+					// sparks on the bottom of the car
+					if (anim == "roll_fast" && wheelShift == 0 && Math.random() < 0.01) {
+						this.sparkParticles.emit({
+							x: this._racecarBackWheels.x + carW/2,
+							y: this._racecarBackWheels.y + 30,
+						});
+					}
+				}
+
+				// bobble
+				this._racecarBody.y -= bobble;
+				this._racecarFrontWheels.y -= bobble;
+				this._racecarBackWheels.y -= bobble;
+
+				// wheel rolling animations
+				this._racecarFrontWheels.playAnimation({name: anim});
+				this._racecarBackWheels.playAnimation({name: anim});
 			}
 		}
 	}

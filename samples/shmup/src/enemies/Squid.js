@@ -9,11 +9,11 @@ class Squid extends Enemy {
 			animations: {
 				default: "idle",
 				idle: {
-					frames: [4, {id: 5, dt: 10}],
+					frames: [1, {id: 2, dt: 10}],
 					dt: 60
 				},
 				hurt: {
-					frames: [0, 6],
+					frames: [0, 3],
 					dt: 2
 				}
 			}

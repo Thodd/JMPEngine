@@ -3,6 +3,7 @@ body {
 }
 
 #jmpshmup {
+	margin-top: 50px;
 	display: inline-block;
 	padding: 30px;
 	background: #e8b065;

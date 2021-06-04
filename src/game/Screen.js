@@ -370,7 +370,9 @@ class Screen {
 	 */
 	_createFrameEvent(fn, limit) {
 		return {
-			id: FRAME_EVENT_ID++,
+			// IDs are pre-incremented to avoid 0.
+			// game logic might check for "!id", to not create 2 intervals accidentally
+			id: ++FRAME_EVENT_ID,
 			fn: fn,
 			frameCount: 0,
 			frameLimit: limit,
