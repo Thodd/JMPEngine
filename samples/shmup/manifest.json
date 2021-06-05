@@ -4,7 +4,7 @@
 	"startScreen": "./src/Shmup.js",
 
 	"w": 128,
-	"h": 128,
+	"h": 144,
 
 	"layers": 7,
 	"scale": 3,

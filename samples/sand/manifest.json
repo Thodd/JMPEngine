@@ -1,0 +1,23 @@
+{
+	"name": "Sand",
+
+	"startScreen": "./src/Sand.js",
+
+	"w": "144",
+	"h": "128",
+
+	"scale": 3,
+
+	"bg": "0x000000",
+
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"pixel": {
+				"url": "./img/1x1.png"
+			}
+		}
+	}
+
+}
