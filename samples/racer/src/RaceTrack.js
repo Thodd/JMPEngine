@@ -1037,9 +1037,9 @@ class RaceTrack extends Screen {
 				// shift the wheel base up or down depending on the slope style
 				let bodyShift = 0;
 				if (segment.slopeStyle == "uphill") {
-					bodyShift = 1;
+					bodyShift = 2;
 				} else if (segment.slopeStyle == "downhill") {
-					bodyShift = -1;
+					bodyShift = -2;
 				}
 
 				// position the car
