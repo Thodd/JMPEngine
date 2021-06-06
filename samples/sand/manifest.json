@@ -3,12 +3,12 @@
 
 	"startScreen": "./src/Sand.js",
 
-	"w": "144",
-	"h": "128",
+	"w": 176,
+	"h": 144,
 
 	"scale": 3,
 
-	"bg": "0x000000",
+	"bg": "0x1D2B53",
 
 	"skipIntro": true,
 
@@ -16,6 +16,11 @@
 		"spritesheets": {
 			"pixel": {
 				"url": "./img/1x1.png"
+			},
+			"happy": {
+				"url": "./img/happy.png",
+				"w": 32,
+				"h": 16
 			}
 		}
 	}
