@@ -7,19 +7,25 @@ import Keys from "../../../src/input/Keys.js";
 import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import BitmapText from "../../../src/game/BitmapText.js";
+import RNG from "../../../src/utils/RNG.js";
 
 const MAX_X = Manifest.get("/w");
 const MAX_Y = Manifest.get("/h");
 
-// pico8 color palette (minus the bg color: #1D2B53)
-const COLORS = [
-	0x000000, 0x7E2553, 0x008751, 0xAB5236,
-	0x5F574F, 0xC2C3C7, 0xFFF1E8, 0xFF004D,
-	0xFFA300, 0xFFEC27, 0x00E436, 0x29ADFF,
-	0x83769C, 0xFF77A8, 0xFFCCAA];
+const OBSTACLES_COUNT = 10;
 
-// let's start with white
-let COLOR_INDEX = 6;
+// pico8 color palette (minus the colors that don't look well as sand)
+const COLORS = [
+	/*0x000000, 0x1D2B53,*/ 0x7E2553, 0x008751,
+	0xAB5236, 0x5F574F, 0xC2C3C7, 0xFFF1E8,
+	0xFF004D, 0xFFA300, 0xFFEC27, 0x00E436,
+	0x29ADFF, /*0x83769c,*/ 0xFF77A8, 0xFFCCAA];
+
+const COLOR_TEXT = 0xFFF1E8;
+const COLOR_OBSTACLES = 0x83769c;
+
+// start color
+let COLOR_INDEX = 8;
 
 const helpMessage =
 ` [^] and [v]:
@@ -28,7 +34,6 @@ const helpMessage =
     Move
  [S]:
     snow :)
-
  Press [S] to start!`;
 
 class Sand extends Screen {
@@ -91,7 +96,7 @@ class Sand extends Screen {
 		// help text
 		this.helpText = new BitmapText({
 			font: "font1",
-			color: COLORS[6],
+			color: COLOR_TEXT,
 			x: 3,
 			y: MAX_Y / 2 - 16,
 			leading: 2,
@@ -142,12 +147,31 @@ class Sand extends Screen {
 		}
 	}
 
+	createObstacles() {
+		for (let i = 0; i < OBSTACLES_COUNT; i++) {
+			let x = RNG.randomInteger(32, MAX_X - 32);
+			let y = RNG.randomInteger(32, MAX_Y - 32);
+			this.fillRect(x, y, RNG.randomInteger(10, 20), RNG.randomInteger(10, 20));
+		}
+	}
+
+	fillRect(x, y, w, h) {
+		for (let yy = y; yy < y + h; yy++) {
+			for (let xx = x; xx < x + w; xx++) {
+				this.fixPixel(xx, yy);
+				let p = this.getParticle(xx, yy);
+				p.tint = COLOR_OBSTACLES;
+			}
+		}
+	}
+
 	update() {
 		// start game
 		if (!this.started) {
 			if (Keyboard.pressed(Keys.S)) {
 				this.started = true;
 				this.helpText.visible = false;
+				this.createObstacles();
 			} else {
 				return;
 			}
