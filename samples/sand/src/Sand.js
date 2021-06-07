@@ -34,7 +34,8 @@ const helpMessage =
     Move
  [S]:
     snow :)
- Press [S] to start!`;
+ Press [S] to start!
+ I try to attack the Rat... and hit!`;
 
 class Sand extends Screen {
 	constructor() {
@@ -165,6 +166,10 @@ class Sand extends Screen {
 		}
 	}
 
+	/**
+	 * Physics simulation.
+	 * Processes each sand-particle
+	 */
 	update() {
 		// start game
 		if (!this.started) {

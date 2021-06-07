@@ -1,0 +1,30 @@
+{
+	"title": "Roguelike 16x16",
+
+	"startScreen": "./src/screens/game/GameScreen.js",
+
+	"w": 480,
+	"h": 288,
+
+	"layers": 7,
+	"scale": 1,
+
+	"bg": "0x170b0b",
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"tileset": {
+				"url": "./img/simple_mood_16x16.png",
+				"w": 16,
+				"h": 16
+			}
+		},
+		"fonts": {
+			"rlfont": {
+				"spritesheet": "tileset",
+				"charOrder": " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
+			}
+		}
+	}
+}

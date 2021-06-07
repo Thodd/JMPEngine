@@ -1,0 +1,16 @@
+body {
+	background: #333333;
+	color: #dddddd;
+	font-family: monospace;
+	margin-top:60px;
+}
+
+#jmprogue {
+	display: inline-block;
+	padding: 50px;
+	background: #624a28;
+}
+
+canvas {
+	box-shadow: 8px 8px 0px #47341b;
+}

@@ -1,0 +1,30 @@
+{
+	"title": "Roguelike 8x8",
+
+	"startScreen": "./src/screens/game/GameScreen.js",
+
+	"w": 240,
+	"h": 144,
+
+	"layers": 7,
+	"scale": 2,
+
+	"bg": "0x170b0b",
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"tileset": {
+				"url": "./img/8x8.png",
+				"w": 8,
+				"h": 8
+			}
+		},
+		"fonts": {
+			"rlfont": {
+				"spritesheet": "tileset",
+				"charOrder": " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
+			}
+		}
+	}
+}
