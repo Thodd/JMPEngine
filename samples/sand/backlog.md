@@ -1,8 +1,7 @@
-# todo
+# backlog
 
-* [ ] fix 1 pixel gap on 45% slope
-  * why ??? :D
-* [x] Cursor
+## open
+
 * [ ] Obstacles
 * [ ] Two modes
   * [x] Fun with colors
@@ -12,3 +11,9 @@
       * Night-time
       * Trees
       * Cozy af ;)
+
+## done
+
+* [x] fix 1 pixel gap on 45% slope
+  * why ??? :D
+* [x] Cursor

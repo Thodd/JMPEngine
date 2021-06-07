@@ -5,10 +5,11 @@ body {
 .jmpSample {
 	margin-top: 50px;
 	display: inline-block;
-	padding: 30px;
+	padding: 50px;
 	background: #e8b065;
 }
 
 canvas {
-	box-shadow: 5px 5px 0px #d0821e;
+	border: 1px solid #d0821e;
+	box-shadow: 10px 10px 0px #d0821e;
 }

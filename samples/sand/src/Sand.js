@@ -172,42 +172,41 @@ class Sand extends Screen {
 		if (Keyboard.wasPressedOrIsDown(Keys.S)) {
 			this.cursor.playAnimation({ name: "puke" });
 			this.spawnParticle(this.cursor.x + 16, this.cursor.y + 10);
-			this.spawnParticle(this.cursor.x + 16 - 3, this.cursor.y+11);
-			this.spawnParticle(this.cursor.x + 16 + 3, this.cursor.y+11);
+			this.spawnParticle(this.cursor.x + 16 - 5, this.cursor.y+11);
+			this.spawnParticle(this.cursor.x + 16 + 5, this.cursor.y+11);
 		} else {
 			this.cursor.playAnimation({ name: "smile" });
 		}
 
 		this.activeParticles.forEach((p) => {
-			// spread horizontally
-			let dx = Math.random() > 0.5 ? 1 : -1;
-			// gravity
-			let dy = 1;
 
-			let nx = p.x + dx;
-			let ny = p.y + dy;
+			// 1 particle below
+			if (!this.isFree(p.x, p.y + 1)) {
+				let dx = Math.random() > 0.5 ? 1 : -1;
 
-			// check 1: one down & one horizontal
-			if (this.isFree(nx, ny)) {
-				p.x = nx;
-				p.y = ny;
-				return;
-			} else {
-				// check 2: one down & one horizontal (other direction)
-				nx = p.x - dx;
-				if (this.isFree(nx, ny)) {
-					p.x = nx;
-					p.y = ny;
-					return;
+				// check [1]: 1 down, 1 horizontal randomly
+				if (this.isFree(p.x + dx, p.y + 1)) {
+					p.x += dx;
+					p.y += 1;
+				} else if (this.isFree(p.x - dx, p.y + 1)){
+					// check [2]: 1 down, 1 horizontal (other direction)
+					p.x -= dx;
+					p.y += 1;
 				} else {
-					// check 3: just one down, no horizontal
-					if (this.isFree(p.x, ny)) {
-						p.y = ny;
-						return;
-					} else {
-						// no possible movement, fix pixel
-						this.fixPixel(p.x, p.y);
-						this.releaseParticle(p);
+					this.fixPixel(p.x, p.y);
+					this.releaseParticle(p);
+				}
+			} else {
+				// free fall
+				p.y += 1;
+
+				// spread horizontally (20% chance)
+				if (Math.random() < 0.2) {
+					let dx = Math.random() > 0.5 ? 1 : -1;
+					if (this.isFree(p.x + dx, p.y)) {
+						p.x += dx;
+					} else if (this.isFree(p.x - dx, p.y)) {
+						p.x -= dx;
 					}
 				}
 			}

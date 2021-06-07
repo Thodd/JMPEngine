@@ -3,10 +3,10 @@
 
 	"startScreen": "./src/Sand.js",
 
-	"w": 176,
+	"w": 240,
 	"h": 144,
 
-	"scale": 3,
+	"scale": 2,
 
 	"bg": "0x1D2B53",
 
