@@ -143,11 +143,11 @@ class ActorBase extends RLActor {
 			let battleResult = BattleCalculator.battle(this, defender, EquipmentSlots.MELEE);
 
 			// craft battle message
-			let battleMessage = this.isPlayer ? `I try to attack the ${defender}... ` : `The ${this} attacks me and `;
+			let battleMessage = "";
 			if (battleResult.damage == 0) {
-				battleMessage += this.isPlayer ? "and miss." : `misses! Close!`;
+				battleMessage += this.isPlayer ? `I miss the ${defender}.` : `The ${defender} misses me!`;
 			} else {
-				battleMessage += this.isPlayer ? "and hit!" : "hits. Ouch.";
+				battleMessage += this.isPlayer ? `I hit the ${defender}.` : `The ${this} hits me!`;
 			}
 			EventBus.publish(Events.HISTORY, battleMessage);
 

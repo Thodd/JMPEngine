@@ -14,7 +14,7 @@ const Constants = {
 	OVERWORLD_ROOM_ROWS: 11,
 
 	// viewport & room size
-	VIEWPORT_WIDTH: 28,
+	VIEWPORT_WIDTH: 30,
 	VIEWPORT_HEIGHT: 15,
 
 	// Rendering Layers

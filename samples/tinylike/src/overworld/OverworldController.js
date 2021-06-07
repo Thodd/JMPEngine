@@ -6,14 +6,12 @@ import { log } from "../../../../../../src/utils/Log.js";
 
 // core imports
 import RLMapController from "../core/controller/RLMapController.js";
-import AnimationPool from "../core/animations/AnimationPool.js";
 
 // engine imports
 import Events from "../engine/Events.js";
 import EquipmentSlots from "../engine/inventory/EquipmentSlots.js";
 import ControlSchemes from "../engine/input/ControlSchemes.js";
 import EnemyBase from "../engine/actors/EnemyBase.js";
-import RoomScrolling from "../gamecontent/animations/RoomScrolling.js";
 
 // gamecontent imports
 import { exposeOnWindow } from "../../../../src/utils/Helper.js";
@@ -30,6 +28,9 @@ class OverworldController extends RLMapController {
 		this._currentRoom = this._player.getRoom();
 
 		// initial FOV calculation
+		let playerCell = this._player.getCell();
+		this.getMap().viewport.x = playerCell.x - 14;
+		this.getMap().viewport.y = playerCell.y - 7;
 		this.updateFOV();
 
 		// control scheme handle
@@ -49,17 +50,7 @@ class OverworldController extends RLMapController {
 	 * This way the light does not "spill over" into the next Room.
 	 */
 	updateFOV() {
-		let dim = this._currentRoom.dimensions;
-		this.getFOVSystem().update(this._player.getCell(), 10, {
-			// x_min: dim.x_min,
-			// x_max: dim.x_max+1,
-			// y_min: dim.y_min,
-			// y_max: dim.y_max+1,
-			x_min: 0,
-			x_max: 200,
-			y_min: 0,
-			y_max: 200
-		});
+		this.getFOVSystem().update(this._player.getCell(), 20);
 	}
 
 	/**
@@ -220,51 +211,15 @@ class OverworldController extends RLMapController {
 			}
 		}
 
-		// TODO: - deactivate NPCs in the "oldRoom"
-		//       - activate NPCs in the "newRoom"
 		if (playerMoved) {
-			let dim = this._currentRoom.dimensions;
-
-			// detect the cardinal direction in which the player leaves the Room
-			// we make else-if checks to prevent diagonal movement, horizontal movement wins in this case
-			let cardinalDirection = null;
-			if (targetX < dim.x_min) {
-				log("WEST", "Scrolling");
-				cardinalDirection = "W";
-			} else if (targetX > dim.x_max) {
-				log("EAST", "Scrolling");
-				cardinalDirection = "E";
-			} else if (targetY < dim.y_min) {
-				log("NORTH", "Scrolling");
-				cardinalDirection = "N";
-			} else if (targetY > dim.y_max) {
-				log("SOUTH", "Scrolling");
-				cardinalDirection = "S";
-			}
-
-			// if (cardinalDirection != null) {
-			// 	// get a RoomScrolling Animation from the Pool ...
-			// 	let scrollAnimation = AnimationPool.get(RoomScrolling, {
-			// 		from: this._currentRoom,
-			// 		to: this._currentRoom[cardinalDirection],
-			// 		//instant: true
-			// 	});
-			// 	// ... and schedule it
-			// 	this.getAnimationSystem().schedule("SCROLLING", scrollAnimation);
-
-			// 	this._currentRoom = this._currentRoom[cardinalDirection];
-			// }
-
-			// only after moving we update the FOV
-			// this.updateFOV();
+			playerCell = this._player.getCell();
+			this.getMap().viewport.x = playerCell.x - 14;
+			this.getMap().viewport.y = playerCell.y - 7;
+			this.updateFOV();
 
 			// end turn if the player could make a valid move
 			this.endPlayerTurn();
 		}
-		playerCell = this._player.getCell();
-		this.getMap().viewport.x = playerCell.x - 14;
-		this.getMap().viewport.y = playerCell.y - 7;
-		this.updateFOV();
 	}
 }
 

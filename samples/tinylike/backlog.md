@@ -2,6 +2,8 @@
 
 ## open
 
+* [ ] Split new messaeg to history in 2 lines if longer than 30 chars
+
 * [ ] Inventory UI
   * [ ] Separate Entity Overlay
     * [ ] Uses PlayerState to access Backpack

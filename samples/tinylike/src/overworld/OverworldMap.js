@@ -30,7 +30,7 @@ class OverworldMap extends RLMap {
 			controllerClass: OverworldController,
 
 			// position on screen
-			x: xx(1),
+			x: xx(0),
 			y: yy(1),
 
 			// the RLMap's maximum dimensions are calculated based on the room count and the viewport size

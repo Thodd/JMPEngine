@@ -10,8 +10,8 @@ class FOV {
 		this._defaultClampValues = {
 			x_min: 0,
 			y_min: 0,
-			x_max: this._map.w,
-			y_max: this._map.h
+			x_max: this._map.width,
+			y_max: this._map.height
 		};
 
 		this._isActive = true;
