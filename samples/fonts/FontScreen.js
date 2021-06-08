@@ -48,11 +48,11 @@ class FontScreen extends Screen {
 		/**
 		 * Multi-line Text Rendering Demo
 		 */
-		let multilineMessage = `<c=0xFF0085>This is a demo of the
-built-in</c> font: 'font0'.
+		let multilineMessage = `This is a demo of the
+built-in font: <c=0xFF0085>'font0'</c>.
 It supports kerning.
 The sample is rendered
-with a 'leading' of 2.`;
+with a <c=0x00FF85>'leading'</c> of 2.`;
 
 		let multilineTextColored = new BitmapText({text: multilineMessage, x: 5, y: 60, leading: 2});
 		this.add(multilineTextColored);
@@ -63,9 +63,9 @@ with a 'leading' of 2.`;
 		 */
 		let customMsg = `
 This is a custom
-font. It's is 8x8
+font. It's is <c=0x0085FF>8x8</c>
 pixels in format
-and monospaced.
+and <c=0x0085FF>monospaced</c>.
 A custom font is
 not required to
 use ASCII ordering.
@@ -83,8 +83,9 @@ non-ASCII symbols.
 `The following paragraph
 is a kerning & leading (3)
 test.
+Also: <c=0x85FF00>inline</c> <c=0x8500FF>colors</c>!
 
-[Lady Windermere]:
+<c=0x00FF85>[Lady Windermere]</c>:
 * taking her husband's
 hand to Lord Augustus *
 "Ah, you're marrying a

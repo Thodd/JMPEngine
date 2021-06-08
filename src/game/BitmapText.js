@@ -1,11 +1,11 @@
-import { warn } from "../utils/Log.js";
+import { fail, warn } from "../utils/Log.js";
 import Entity from "../game/Entity.js";
 import Fonts from "../assets/Fonts.js";
 
 import PIXI from "../core/PIXIWrapper.js";
 
 class BitmapText extends Entity {
-	constructor({text, x, y, font="font0", color=null, leading=0, noKerning=false}) {
+	constructor({text, x, y, font="font0", color=0xFFFFFF, leading=0, noKerning=false}) {
 		super(x, y);
 		this._text = null;
 		this.leading = leading;
@@ -42,6 +42,22 @@ class BitmapText extends Entity {
 
 	getColor() {
 		return this._color;
+	}
+
+	/**
+	 *
+	 * @param {object} err error information
+	 */
+	_errorColorValue(err) {
+		fail(
+			`BitmapText parser encountered broken color value ${err.colorValue} at line:${err.lineNumber}, pos:${err.pos}.
+Line text was: '${err.lineText}'.`, "BitmapText");
+	}
+
+	_errorClosingTag(err) {
+		fail(
+			`BitmapText parser encountered unexpected closing color tag at line:${err.lineNumber}, pos:${err.pos}.
+Line text was: '${err.lineText}'.`, "BitmapText");
 	}
 
 	/**
@@ -89,7 +105,7 @@ class BitmapText extends Entity {
 			let useKerning = kerningTree && !this.noKerning;
 
 			// color stack
-			let colorStack = [];
+			let colorStack = [this._color];
 
 			// loop var
 			let nextSprite = 0;
@@ -99,21 +115,55 @@ class BitmapText extends Entity {
 			for (let i = 0; i < lines.length; i++) {
 
 				let line = lines[i];
-				let lineLength = line.length;
+				// keep a reference on the original line, in case the color coding is broken
+				let originalLine = line;
+				// same with the original position
+				let originalX = 0;
 
 				let kerningValueAcc = 0;
 				let x = 0;
 				let shift = 0;
 
 				// loop through all characters per line
-				while (x < lineLength) {
+				while (x < line.length) {
 					let char = line[x];
+					let color = colorStack[colorStack.length-1];
 
-					// color lookahead
+					// inline color lookahead
+					// not the most elegant parser, but good enough.
+					// A bit too greedy in case of broken tags, but whatever
+					// [Comment to future self]: Write a real parser if more tags need to be added :)
 					if (char == "<") {
-						let next4 = line.substr(x+1, 4);
-						if (next4 == "c=0x") {
-							// TODO: this is stupid, but let's get it running before optimizing
+						let next3 = line.substr(x+1, 3);
+						if (next3 == "c=0") {
+							// get color and starting tokens <c=0x......>
+							let colorRaw = line.substr(x+3, 8);
+							let colorValue = parseInt(colorRaw);
+							if (isNaN(colorValue)) {
+								this._errorColorValue({
+									lineNumber: i,
+									pos: originalX,
+									lineText: originalLine
+								});
+							}
+							colorStack.push(colorValue);
+							line = line.substr(x+12, line.length);
+							x = 0;
+							continue;
+						} else if (next3 == "/c>") {
+							if (colorStack.length > 1) {
+								// consume closing tokens </c>
+								line = line.substr(x+4, line.length);
+								colorStack.pop();
+								x = 0;
+								continue;
+							} else {
+								this._errorClosingTag({
+									lineNumber: i,
+									pos: originalX,
+									lineText: originalLine
+								});
+							}
 						}
 					}
 
@@ -146,10 +196,8 @@ class BitmapText extends Entity {
 						shift += font.w;
 					}
 
-					// @PIXI: Tint the char if a global color was set
-					if (this._color != null) {
-						charSprite.tint = this._color;
-					}
+					// @PIXI: Tint the char
+					charSprite.tint = color;
 
 					// @PIXI: Make the sprite visible since it's in range
 					charSprite.visible = true;
@@ -159,6 +207,7 @@ class BitmapText extends Entity {
 
 					// next character in line
 					x++;
+					originalX++; // doesn't change in case of color coding
 				}
 
 				// shift next line down (and additionally space it by the given leading amount)

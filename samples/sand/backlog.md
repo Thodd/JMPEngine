@@ -2,8 +2,6 @@
 
 ## open
 
-* [ ] rework built-in Font handling
-  * [ ] Color support
 * [ ] Two modes
   * [x] Fun with colors
     * [x] Cycle colors with UP/DOWN
@@ -15,6 +13,8 @@
 
 ## done
 
+* [x] rework built-in Font handling
+  * [x] Color support
 * [x] Obstacles
 * [x] fix 1 pixel gap on 45% slope
   * why ??? :D

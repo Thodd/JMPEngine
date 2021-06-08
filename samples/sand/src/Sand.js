@@ -28,13 +28,11 @@ const COLOR_OBSTACLES = 0x83769c;
 let COLOR_INDEX = 8;
 
 const helpMessage =
-` [^] and [v]:
-    Change color
- [<] and [>]:
-    Move
- [S]:
-    snow :)
- Press [S] to start!`;
+`<c=0x00e436>[^]</c> / <c=0x00e436>[v]</c>: Change color
+<c=0x00e436>[<]</c> / <c=0x00e436>[>]</c>: Move cloud
+<c=0x00e436>[S]</c>      : let it snow :)
+
+   Press <c=0xff004d>[S]</c> to start!`;
 
 class Sand extends Screen {
 	constructor() {
@@ -99,7 +97,7 @@ class Sand extends Screen {
 		this.helpText = new BitmapText({
 			font: "font1",
 			color: COLOR_TEXT,
-			x: 3,
+			x: 16,
 			y: MAX_Y / 2 - 16,
 			leading: 2,
 			text: helpMessage
