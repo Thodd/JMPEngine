@@ -15,7 +15,7 @@ const Constants = {
 
 	// viewport & room size
 	VIEWPORT_WIDTH: 30,
-	VIEWPORT_HEIGHT: 15,
+	VIEWPORT_HEIGHT: 17,
 
 	// Rendering Layers
 	Layers: {

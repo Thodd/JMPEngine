@@ -12,7 +12,7 @@ import RNG from "../../../src/utils/RNG.js";
 const MAX_X = Manifest.get("/w");
 const MAX_Y = Manifest.get("/h");
 
-const OBSTACLES_COUNT = 10;
+const OBSTACLES_COUNT = 15;
 
 // pico8 color palette (minus the colors that don't look well as sand)
 const COLORS = [
@@ -84,9 +84,11 @@ class Sand extends Screen {
 		this.cursor.configSprite({
 			sheet: "happy",
 			animations: {
-				default: "smile",
-				smile: { frames: [0] },
-				puke: { frames: [1] }
+				default: "blank",
+				blank: { frames: [0] },
+				poop_idle: { frames: [1] },
+				poop_left: { frames: [2] },
+				poop_right: { frames: [3] },
 			}
 		});
 		this.cursor.x = MAX_X / 2 - 8;
@@ -182,10 +184,13 @@ class Sand extends Screen {
 		}
 
 		// move cursor
+		let dir = "idle";
 		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
 			this.cursor.x--;
+			dir = "left";
 		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
 			this.cursor.x++;
+			dir = "right";
 		}
 
 		// change color
@@ -198,12 +203,12 @@ class Sand extends Screen {
 
 		// rain sand
 		if (Keyboard.wasPressedOrIsDown(Keys.S)) {
-			this.cursor.playAnimation({ name: "puke" });
+			this.cursor.playAnimation({ name: `poop_${dir}` });
 			this.spawnParticle(this.cursor.x + 16, this.cursor.y + 10);
 			this.spawnParticle(this.cursor.x + 16 - 5, this.cursor.y+11);
 			this.spawnParticle(this.cursor.x + 16 + 5, this.cursor.y+11);
 		} else {
-			this.cursor.playAnimation({ name: "smile" });
+			this.cursor.playAnimation({ name: "blank" });
 		}
 
 		this.activeParticles.forEach((p) => {

@@ -2,7 +2,8 @@
 
 ## open
 
-* [ ] Obstacles
+* [ ] rework built-in Font handling
+  * [ ] Color support
 * [ ] Two modes
   * [x] Fun with colors
     * [x] Cycle colors with UP/DOWN
@@ -14,6 +15,7 @@
 
 ## done
 
+* [x] Obstacles
 * [x] fix 1 pixel gap on 45% slope
   * why ??? :D
 * [x] Cursor

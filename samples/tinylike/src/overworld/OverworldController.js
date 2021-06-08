@@ -28,9 +28,6 @@ class OverworldController extends RLMapController {
 		this._currentRoom = this._player.getRoom();
 
 		// initial FOV calculation
-		let playerCell = this._player.getCell();
-		this.getMap().viewport.x = playerCell.x - 14;
-		this.getMap().viewport.y = playerCell.y - 7;
 		this.updateFOV();
 
 		// control scheme handle
@@ -50,6 +47,9 @@ class OverworldController extends RLMapController {
 	 * This way the light does not "spill over" into the next Room.
 	 */
 	updateFOV() {
+		let playerCell = this._player.getCell();
+		this.getMap().viewport.x = playerCell.x - 14;
+		this.getMap().viewport.y = playerCell.y - 8;
 		this.getFOVSystem().update(this._player.getCell(), 20);
 	}
 
@@ -212,9 +212,6 @@ class OverworldController extends RLMapController {
 		}
 
 		if (playerMoved) {
-			playerCell = this._player.getCell();
-			this.getMap().viewport.x = playerCell.x - 14;
-			this.getMap().viewport.y = playerCell.y - 7;
 			this.updateFOV();
 
 			// end turn if the player could make a valid move

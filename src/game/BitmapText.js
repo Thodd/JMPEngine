@@ -5,10 +5,11 @@ import Fonts from "../assets/Fonts.js";
 import PIXI from "../core/PIXIWrapper.js";
 
 class BitmapText extends Entity {
-	constructor({text, x, y, font="font0", color=null, leading=0}) {
+	constructor({text, x, y, font="font0", color=null, leading=0, noKerning=false}) {
 		super(x, y);
 		this._text = null;
 		this.leading = leading;
+		this.noKerning = noKerning;
 
 		// @PIXI: Destroy the initial pixi sprite created by the super Entity constructor, shouldn't be much of an issue
 		this._pixiSprite.destroy();
@@ -84,6 +85,11 @@ class BitmapText extends Entity {
 			// shorthand vars
 			let font = this._font;
 			let kerningTree = font._kerningTree;
+			// only true of kerning is not explicitly deactivated
+			let useKerning = kerningTree && !this.noKerning;
+
+			// color stack
+			let colorStack = [];
 
 			// loop var
 			let nextSprite = 0;
@@ -102,6 +108,15 @@ class BitmapText extends Entity {
 				// loop through all characters per line
 				while (x < lineLength) {
 					let char = line[x];
+
+					// color lookahead
+					if (char == "<") {
+						let next4 = line.substr(x+1, 4);
+						if (next4 == "c=0x") {
+							// TODO: this is stupid, but let's get it running before optimizing
+						}
+					}
+
 					let charDef = font.getChar(char);
 					let charSprite = this._spritePool[nextSprite];
 
@@ -111,7 +126,7 @@ class BitmapText extends Entity {
 					charSprite.texture = charDef.texture;
 
 					// kerning lookahead for next character
-					if (kerningTree) {
+					if (useKerning) {
 						let lookahead = line[x+1];
 						if (lookahead != null) {
 							if ((kerningTree[char] && kerningTree[char][lookahead] != null)) {
@@ -124,7 +139,7 @@ class BitmapText extends Entity {
 					}
 
 					// apply spacing value if defined
-					if (kerningTree && char == " ") {
+					if (useKerning && char == " ") {
 						shift += kerningTree["spacing"] || font.w;
 					} else {
 						// default character shift for monospaced fonts

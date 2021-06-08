@@ -10,6 +10,9 @@ import { yy } from "../engine/utils/RLTools.js";
 
 // own imports
 import UIBase from "./UIBase.js";
+import PIXI from "../../../../src/core/PIXIWrapper.js";
+import Constants from "../gamecontent/Constants.js";
+import Entity from "../../../../src/game/Entity.js";
 
 class History extends UIBase {
 	constructor(spec) {
@@ -30,6 +33,9 @@ class History extends UIBase {
 
 		// initial render
 		this.update({data: "Looks like a forest..."});
+
+		// interval id for removing hiding the history
+		this.hideTimer = null;
 	}
 
 	getEntries() {
@@ -37,6 +43,19 @@ class History extends UIBase {
 	}
 
 	createUIElements(x, y) {
+		// BG
+		let bgGFX = new PIXI.Graphics();
+		bgGFX.beginFill(0x000000);
+		bgGFX.drawRect(0, 0, Constants.TILE_WIDTH * Constants.VIEWPORT_WIDTH, Constants.TILE_HEIGHT * 2);
+		bgGFX.endFill();
+		this.bgEntity = new Entity();
+		this.bgEntity.y = yy(16);
+		this.bgEntity.configSprite({
+			replaceWith: bgGFX
+		});
+		this.bgEntity.alpha = 0.5;
+		this._screen.add(this.bgEntity);
+
 		// init text elements
 		for (let i = 0; i < 2; i++) {
 			let line = new BitmapText({
@@ -69,7 +88,23 @@ class History extends UIBase {
 				let line = this["_line"+i];
 				line.setText(this._entries[i]);
 				line.setColor(this._colors[i]);
+				line.visible = true;
 			}
+
+			this.bgEntity.visible = true;
+
+			// remove previous timeout
+			if (this.hideTimer) {
+				this._screen.cancelFrameEvent(this.hideTimer);
+			}
+			// register new timeout for 180 frames (=3 seconds)
+			this.hideTimer = this._screen.registerFrameEvent(() => {
+				this.bgEntity.visible = false;
+				for (let i = 0; i < this._entries.length; i++) {
+					let line = this["_line"+i];
+					line.visible = false;
+				}
+			}, 180);
 		}
 	}
 }

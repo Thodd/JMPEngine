@@ -48,13 +48,13 @@ class FontScreen extends Screen {
 		/**
 		 * Multi-line Text Rendering Demo
 		 */
-		let multilineMessage = `This is a demo of the
-built-in font: 'font0'.
+		let multilineMessage = `<c=0xFF0085>This is a demo of the
+built-in</c> font: 'font0'.
 It supports kerning.
 The sample is rendered
 with a 'leading' of 2.`;
 
-		let multilineTextColored = new BitmapText({text: multilineMessage, x: 5, y: 60, color: 0xFF0085, leading: 2});
+		let multilineTextColored = new BitmapText({text: multilineMessage, x: 5, y: 60, leading: 2});
 		this.add(multilineTextColored);
 
 
