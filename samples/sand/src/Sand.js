@@ -8,6 +8,7 @@ import Screen from "../../../src/game/Screen.js";
 import Entity from "../../../src/game/Entity.js";
 import BitmapText from "../../../src/game/BitmapText.js";
 import RNG from "../../../src/utils/RNG.js";
+import ParticleEmitter from "../../../src/game/ParticleEmitter.js";
 
 const MAX_X = Manifest.get("/w");
 const MAX_Y = Manifest.get("/h");
@@ -91,7 +92,19 @@ class Sand extends Screen {
 		});
 		this.cursor.x = MAX_X / 2 - 8;
 		this.cursor.y = 2;
+		this.cursor.layer = 1;
 		this.add(this.cursor);
+
+		// particle poop
+		this.particlePooper = new ParticleEmitter({
+			colors: [0xFF004D, 0xFFA300, 0xFFEC27, 0x00E436, 0x29ADFF],
+			maxRadius: 2,
+			maxAge: 10,
+			maxSpeed: 1,
+			delay: 2
+		});
+		this.particlePooper.layer = 0;
+		this.add(this.particlePooper);
 
 		// help text
 		this.helpText = new BitmapText({
@@ -186,9 +199,19 @@ class Sand extends Screen {
 		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
 			this.cursor.x--;
 			dir = "left";
+			this.particlePooper.emit({
+				x: this.cursor.x + 25,
+				y: this.cursor.y + 8,
+				angle: 90
+			});
 		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
 			this.cursor.x++;
 			dir = "right";
+			this.particlePooper.emit({
+				x: this.cursor.x + 7,
+				y: this.cursor.y + 8,
+				angle: 270
+			});
 		}
 
 		// change color

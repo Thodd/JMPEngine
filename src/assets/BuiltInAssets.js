@@ -18,6 +18,12 @@ assets.spritesheets["font1"] = {
 	"w": 8,
 	"h": 8
 };
+// default spritesheet for particle system
+assets.spritesheets["__jmp_particles"] = {
+	"url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAACEUlEQVR4Xu3bYbOCIBCF4ev//9HeqRlLTWWXs6DA29fAyaezQCTT30Ne8zzPno8yTdPkaV+q7S0fwotlvfk7UKsBlkI7w62FWRywNtwetDRkMcC74WpBhgM+Da40ZBjg0+FKQYYAtoa3YEaMjzJgq3hRiNmArcNFlXQWYG94ShrdgL3i5SK6AHvHy0E0A46C50U0AY6G50EE8GKrx7JOTAKOmj5rCi8BR8ezIJ4Cgret7bNyBtC43e0CJH3HqkeIhwkEUAAE77qm9yn8SSCAAiB4thllncJNAgEUAMGz4e0X158EAgigT0BsvYyD7wSSvjzNFyKAeXbvXgAKeACKeABGATKBaJITgABqAmJvEgigKCB2J4EAigJidxIIoCggdieBAIoCYncSqAKyoZovyH5gvh0bqqIdgABGCIjX+IyBTCR+yc3fmgAC6BcQe/wkkBTaRXk6y2512PIUkBSmZXlCNW102SIJSArP/XhKPzh9r8tx0MaI6jpoQxn/qroBQfwiXh175bhrooRTZ4aTgCMnMYV3OYmsv5hRn+AKAxwxhRY8cwKXNI6SRCueG3CEJHrwsgB7RvTiZQP2iJiDJwH2Mi7mwi33b1oHpn4utjq5qHghCWw1iRF4oYCtQEbBhZbwUYk/rayj4YoDPiWRpeCqAd4FWRquOmCNzYlaaOt7CVnGpJY5lve9Y+YdWEf38Q+2U0AwOmLyYQAAAABJRU5ErkJggg==",
+	"w": 80,
+	"h": 80
+};
 
 // --------------- fonts ---------------
 // font0 - font-definition including kerning

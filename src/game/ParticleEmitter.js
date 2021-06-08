@@ -57,6 +57,7 @@ class ParticlePool {
  * @example
  * let pe = new ParticleEmitter({
  *     // the sprite sheet to use
+ *     // optional: when no sheet is given, a default circle with 40px radius will be used
  *     sheet: "particles",
  *     // constantly applied to a particle, for simplicity we don't accelerate
  *     gravity: 0.2,
@@ -94,6 +95,9 @@ class ParticleEmitter extends Entity {
 
 		// map emission info
 		this.spec = Object.assign({
+			// default sprite sheet, comes with the built-in assets
+			sheet: "__jmp_particles",
+
 			// base values (public)
 			x: 0,
 			y: 0,

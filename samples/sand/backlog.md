@@ -2,6 +2,8 @@
 
 ## open
 
+* ParticleEmitter
+  * default sheet -> circle
 * [ ] Two modes
   * [x] Fun with colors
     * [x] Cycle colors with UP/DOWN
