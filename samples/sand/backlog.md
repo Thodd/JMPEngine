@@ -2,19 +2,11 @@
 
 ## open
 
-* ParticleEmitter
-  * default sheet -> circle
-* [ ] Two modes
-  * [x] Fun with colors
-    * [x] Cycle colors with UP/DOWN
-  * [ ] Winter Wonderland
-    * [ ] Draw some cute winter landscape
-      * Night-time
-      * Trees
-      * Cozy af ;)
-
+* good enough :)
 ## done
 
+* [x] ParticleEmitter
+  * [x] default sheet -> circle
 * [x] rework built-in Font handling
   * [x] Color support
 * [x] Obstacles

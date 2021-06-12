@@ -31,9 +31,9 @@ let COLOR_INDEX = 8;
 const helpMessage =
 `<c=0x00e436>[^]</c> / <c=0x00e436>[v]</c>: Change color
 <c=0x00e436>[<]</c> / <c=0x00e436>[>]</c>: Move cloud
-<c=0x00e436>[S]</c>      : let it snow :)
+<c=0x00e436>[S]</c>      : let it snow :)`;
 
-   Press <c=0xff004d>[S]</c> to start!`;
+const startMessage = `Press <c=0xff004d>[S]</c> to start!`;
 
 class Sand extends Screen {
 	constructor() {
@@ -62,13 +62,6 @@ class Sand extends Screen {
 		});
 		this.add(this.containerEntity);
 
-		// jmp entity for the fixed graphics
-		this.fixedGraphicsEntity = new Entity();
-		this.fixedGraphicsEntity.configSprite({
-			replaceWith: this.fixedGraphics
-		});
-		this.add(this.fixedGraphicsEntity);
-
 		// map of "fixed" for collision detection
 		this.fixedPixels = [];
 		for (let x = 0; x < MAX_X; x++) {
@@ -78,22 +71,9 @@ class Sand extends Screen {
 			}
 		}
 
-		// cursor entity
-		this.cursor = new Entity();
-		this.cursor.configSprite({
-			sheet: "happy",
-			animations: {
-				default: "blank",
-				blank: { frames: [0] },
-				poop_idle: { frames: [1] },
-				poop_left: { frames: [2] },
-				poop_right: { frames: [3] },
-			}
-		});
-		this.cursor.x = MAX_X / 2 - 8;
-		this.cursor.y = 2;
-		this.cursor.layer = 1;
-		this.add(this.cursor);
+		this.setupCursor();
+
+		this.setupIntroTexts();
 
 		// particle poop
 		this.particlePooper = new ParticleEmitter({
@@ -106,6 +86,71 @@ class Sand extends Screen {
 		this.particlePooper.layer = 0;
 		this.add(this.particlePooper);
 
+		this._introPoopInterval = this.registerFrameEventInterval(() => {
+			this.particlePooper.emit({
+				x: 140,
+				y: 10,
+				angle: 90,
+				delay: 1,
+				amount: 20,
+				minSpeed: 1,
+				maxSpeed: 3,
+				gravity: 0.25,
+				maxAge: 20,
+				deviation: 1
+			});
+			this.particlePooper.emit({
+				x: 115,
+				y: 10,
+				angle: 270,
+				delay: 1,
+				amount: 20,
+				minSpeed: 1,
+				maxSpeed: 3,
+				gravity: 0.25,
+				maxAge: 20,
+				deviation: 1
+			});
+		}, 20);
+	}
+
+	setupCursor() {
+		// cursor entity
+		this.cursor = new Entity();
+		this.cursor.configSprite({
+			sheet: "happy",
+			offset: {
+				x: 16,
+				y: 8
+			},
+			animations: {
+				default: "blank",
+				blank: { frames: [0] },
+				poop_idle: { frames: [1] },
+				poop_left: { frames: [2] },
+				poop_right: { frames: [3] },
+			}
+		});
+		this.cursor.x = MAX_X / 2 - 8;
+		this.cursor.y = 2;
+		this.cursor.layer = 1;
+		// wobble effect
+		this.cursor.wobbleCount = 0;
+		this.cursor.getPixiSprite().anchor.set(0.5, 0.5);
+		this.cursor.update = function() {
+			// if not idling, we wobble :)
+			if (!this.isPlayingAnimation("blank")) {
+				this.wobbleCount += 0.1;
+				this.getPixiSprite().rotation = 0.1 * Math.sin(this.wobbleCount);
+			} else {
+				this.getPixiSprite().rotation = 0;
+			}
+		};
+
+		this.add(this.cursor);
+	}
+
+	setupIntroTexts() {
 		// help text
 		this.helpText = new BitmapText({
 			font: "font1",
@@ -116,6 +161,31 @@ class Sand extends Screen {
 			text: helpMessage
 		});
 		this.add(this.helpText);
+
+		// start message
+		this.startMessage = new BitmapText({
+			font: "font1",
+			color: COLOR_TEXT,
+			x: 44,
+			y: this.helpText.y + 7 * 8,
+			text: startMessage
+		});
+		const startTextContainer = this.startMessage.getPixiSprite();
+		const w = startTextContainer.getLocalBounds().width;
+		startTextContainer.pivot.x = w / 2;
+
+		this.startMessage.x += w / 2;
+
+		this.startMessage.wobbleCount = 0;
+		this.startMessage.update = function() {
+			let spr = this.getPixiSprite();
+			this.wobbleCount += 0.05;
+			let wobble = Math.sin(this.wobbleCount);
+			spr.rotation = 0.05 * wobble;
+			spr.scale.x = 1 + Math.abs(0.25 * wobble);
+			spr.scale.y = 1 + Math.abs(0.25 * wobble);
+		}
+		this.add(this.startMessage);
 	}
 
 	spawnParticle(x, y) {
@@ -187,7 +257,9 @@ class Sand extends Screen {
 		if (!this.started) {
 			if (Keyboard.pressed(Keys.S)) {
 				this.started = true;
-				this.helpText.visible = false;
+				this.helpText.removeFromScreen();
+				this.startMessage.removeFromScreen();
+				this.cancelFrameEvent(this._introPoopInterval);
 				this.createObstacles();
 			} else {
 				return;

@@ -50,7 +50,7 @@ class OverworldController extends RLMapController {
 		let playerCell = this._player.getCell();
 		this.getMap().viewport.x = playerCell.x - 14;
 		this.getMap().viewport.y = playerCell.y - 8;
-		this.getFOVSystem().update(this._player.getCell(), 20);
+		this.getFOVSystem().update(this._player.getCell(), 9);
 	}
 
 	/**

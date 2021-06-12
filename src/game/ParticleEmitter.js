@@ -3,6 +3,8 @@ import PIXI from "../core/PIXIWrapper.js";
 import Entity from "./Entity.js";
 import RNG from "../utils/RNG.js";
 
+const DEG_2_RAD = Math.PI / 180;
+
 /**
  * Pool for all Particle Sprite instances.
  */
@@ -152,29 +154,37 @@ class ParticleEmitter extends Entity {
 	 *      x: 10,
 	 *      y: 120
 	 *   });
-	 * @param {object} spec the emission start information
+	 * @param {object} emiDef the emission start information
 	 * @public
 	 */
-	emit(spec) {
+	emit(emiDef) {
 
 		let emi = {
-			x: spec.x,
-			y: spec.y,
+			x: emiDef.x,
+			y: emiDef.y,
 			particles: [],
 			ended: false,
-			angle: spec.angle
+			angle: emiDef.angle != undefined ? emiDef.angle : this.spec.angle,
+			maxAge: emiDef.maxAge || this.spec.maxAge,
+			delay: emiDef.delay || this.spec.delay,
+			amount: emiDef.amount || this.spec.amount,
+			minSpeed: emiDef.minSpeed || this.spec.minSpeed,
+			maxSpeed: emiDef.maxSpeed || this.spec.maxSpeed,
+			deviation: emiDef.deviation != undefined ? emiDef.deviation : this.spec.deviation,
+			gravity: emiDef.gravity != undefined ? emiDef.gravity : this.spec.gravity,
+			maxRadius: emiDef.maxRadius || this.spec.maxRadius
 		};
 
 		// define the delay counter for this emission
-		if (this.spec.delay) {
+		if (emi.delay) {
 			emi.delay = {
 				frames: 0,
-				maxFrames: this.spec.delay
+				maxFrames: emi.delay
 			};
 		}
 
 		// spawn particles
-		let i = this.spec.amount;
+		let i = emi.amount;
 		while (i > 0) {
 			i--;
 
@@ -186,23 +196,23 @@ class ParticleEmitter extends Entity {
 			p.released = false; // particle is retrieved & alive again
 			p.x = emi.x;
 			p.y = emi.y;
-			p.age = this.spec.maxAge;
+			p.age = emi.maxAge;
 			p.tint = this.spec.colors[0];
-			p.speed = RNG.randomFloat(this.spec.minSpeed, this.spec.maxSpeed);
-			let r = 2 * this.spec.maxRadius;
+			p.speed = RNG.randomFloat(emi.minSpeed, emi.maxSpeed);
+			let r = 2 * emi.maxRadius;
 			p.width = r;
 			p.height = r;
 
-			let deg = emi.angle || this.spec.angle;
+			let deg = emi.angle;
 			if (deg != undefined) {
-				let angle = (deg - 135) * Math.PI / 180;
+				let angle = (deg - 135) * DEG_2_RAD;
 				p.dx = (Math.cos(angle) - Math.sin(angle)) * p.speed
 				p.dy = (Math.sin(angle) + Math.cos(angle)) * p.speed
-				p.dx += RNG.randomFloat(-this.spec.deviation, this.spec.deviation);
-				p.dy += RNG.randomFloat(-this.spec.deviation, this.spec.deviation);
+				p.dx += RNG.randomFloat(-emi.deviation, emi.deviation);
+				p.dy += RNG.randomFloat(-emi.deviation, emi.deviation);
 			} else {
-				p.dx = RNG.randomFloat(-this.spec.deviation, this.spec.deviation) * p.speed;
-				p.dy = RNG.randomFloat(-this.spec.deviation, this.spec.deviation) * p.speed;
+				p.dx = RNG.randomFloat(-emi.deviation, emi.deviation) * p.speed;
+				p.dy = RNG.randomFloat(-emi.deviation, emi.deviation) * p.speed;
 			}
 
 			emi.particles.push(p);
@@ -252,10 +262,10 @@ class ParticleEmitter extends Entity {
 				allDead = false;
 
 				// apply gravity if set, default is 0
-				p.dy += this.spec.gravity;
+				p.dy += emi.gravity;
 
 				// percentage of a particles lifespan
-				let lifePercent = p.age/this.spec.maxAge;
+				let lifePercent = p.age/emi.maxAge;
 
 				// cycle through the color list based on the age to maxage percentage
 				let colorIndex = Math.floor((1 - lifePercent) * this.spec.colorCount);
