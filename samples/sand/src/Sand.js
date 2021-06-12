@@ -87,31 +87,54 @@ class Sand extends Screen {
 		this.add(this.particlePooper);
 
 		this._introPoopInterval = this.registerFrameEventInterval(() => {
+			// top
 			this.particlePooper.emit({
-				x: 132,
-				y: 10,
-				angle: 90,
+				x: 0,
+				y: 0,
+				angle: 135,
 				delay: 1,
 				amount: 20,
 				minSpeed: 1,
-				maxSpeed: 3,
-				gravity: 0.25,
+				maxSpeed: 2,
 				maxAge: 20,
 				deviation: 1
 			});
 			this.particlePooper.emit({
-				x: 107,
-				y: 10,
-				angle: 270,
+				x: MAX_X,
+				y: 0,
+				angle: 225,
 				delay: 1,
 				amount: 20,
 				minSpeed: 1,
-				maxSpeed: 3,
-				gravity: 0.25,
+				maxSpeed: 2,
 				maxAge: 20,
 				deviation: 1
 			});
-		}, 20);
+
+			// bottom
+			this.particlePooper.emit({
+				x: 0,
+				y: MAX_Y,
+				angle: 45,
+				delay: 1,
+				amount: 20,
+				minSpeed: 1,
+				maxSpeed: 2,
+				maxAge: 20,
+				deviation: 1
+			});
+			this.particlePooper.emit({
+				x: MAX_X,
+				y: MAX_Y,
+				angle: 315,
+				delay: 1,
+				amount: 20,
+				minSpeed: 1,
+				maxSpeed: 2,
+				maxAge: 20,
+				deviation: 1
+			});
+		}, 10);
 	}
 
 	setupCursor() {
