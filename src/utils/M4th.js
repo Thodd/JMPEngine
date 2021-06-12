@@ -18,10 +18,13 @@ function fov(angle) {
 	return 1 / Math.tan(angle/2);
 }
 
+const DEG_2_RAD = Math.PI / 180;
+
 export {
 	easeIn,
 	easeOut,
 	easeInOut,
 	interpolate,
-	fov
+	fov,
+	DEG_2_RAD
 }

@@ -88,7 +88,7 @@ class Sand extends Screen {
 
 		this._introPoopInterval = this.registerFrameEventInterval(() => {
 			this.particlePooper.emit({
-				x: 140,
+				x: 132,
 				y: 10,
 				angle: 90,
 				delay: 1,
@@ -100,7 +100,7 @@ class Sand extends Screen {
 				deviation: 1
 			});
 			this.particlePooper.emit({
-				x: 115,
+				x: 107,
 				y: 10,
 				angle: 270,
 				delay: 1,
@@ -131,21 +131,21 @@ class Sand extends Screen {
 				poop_right: { frames: [3] },
 			}
 		});
-		this.cursor.x = MAX_X / 2 - 8;
+		this.cursor.x = MAX_X / 2 - 16;
 		this.cursor.y = 2;
 		this.cursor.layer = 1;
 		// wobble effect
 		this.cursor.wobbleCount = 0;
-		this.cursor.getPixiSprite().anchor.set(0.5, 0.5);
+		this.cursor.pivotPoint = { x: 16, y: 8 };
 		this.cursor.update = function() {
 			// if not idling, we wobble :)
 			if (!this.isPlayingAnimation("blank")) {
 				this.wobbleCount += 0.1;
-				this.getPixiSprite().rotation = 0.1 * Math.sin(this.wobbleCount);
+				this.rotationDeg = 6 * Math.sin(this.wobbleCount);
 			} else {
-				this.getPixiSprite().rotation = 0;
+				this.rotationDeg = 0;
 			}
-		};
+		}
 
 		this.add(this.cursor);
 	}
@@ -170,20 +170,19 @@ class Sand extends Screen {
 			y: this.helpText.y + 7 * 8,
 			text: startMessage
 		});
-		const startTextContainer = this.startMessage.getPixiSprite();
-		const w = startTextContainer.getLocalBounds().width;
-		startTextContainer.pivot.x = w / 2;
+
+		const w = this.startMessage.getLocalBounds().width;
+		this.startMessage.pivotPoint = { x: w / 2 };
 
 		this.startMessage.x += w / 2;
 
 		this.startMessage.wobbleCount = 0;
 		this.startMessage.update = function() {
-			let spr = this.getPixiSprite();
 			this.wobbleCount += 0.05;
 			let wobble = Math.sin(this.wobbleCount);
-			spr.rotation = 0.05 * wobble;
-			spr.scale.x = 1 + Math.abs(0.25 * wobble);
-			spr.scale.y = 1 + Math.abs(0.25 * wobble);
+			this.rotationDeg = 4 * wobble;
+			const scale = 1 + Math.abs(0.25 * wobble);
+			this.scale = {x: scale, y: scale};
 		}
 		this.add(this.startMessage);
 	}

@@ -1,5 +1,6 @@
-import Spritesheets from "../assets/Spritesheets.js";
 import { warn, fail } from "../utils/Log.js";
+import { DEG_2_RAD } from "../utils/M4th.js";
+import Spritesheets from "../assets/Spritesheets.js";
 import FrameCounter from "../utils/FrameCounter.js";
 import Collision from "./Collision.js";
 
@@ -139,6 +140,115 @@ class Entity {
 
 	get startY() {
 		return this._startY;
+	}
+
+	/**
+	 * Changes the pivot point of the Entity (in pixels).
+	 * The pivot point is the center for rotation and scaling.
+	 * @example
+	 * this.pivotPoint = { x: 5, y: 20 }
+	 */
+	set pivotPoint(p) {
+		if (this._pixiSprite && this._pixiSprite) {
+			this._pixiSprite.pivot.x = p.x || this._pixiSprite.pivot.x;
+			this._pixiSprite.pivot.y = p.y || this._pixiSprite.pivot.y;
+		}
+	}
+
+	/**
+	 * Retrieve the currently set pivot point.
+	 */
+	get pivotPoint() {
+		const spr = this._pixiSprite;
+		if (spr && spr.pivot) {
+			return {
+				x: spr.pivot.x,
+				y: spr.pivot.y,
+			}
+		}
+	}
+
+	/**
+	 * Rotates the Entity in rad.
+	 */
+	set rotationRad(v) {
+		if (this._pixiSprite) {
+			this._pixiSprite.rotation = v;
+		}
+	}
+
+	/**
+	 * Rotates the Entity in degrees.
+	 */
+	set rotationDeg(v) {
+		if (this._pixiSprite) {
+			this._pixiSprite.rotation = v * DEG_2_RAD;
+		}
+	}
+
+	/**
+	 * Returns the current rotation in rad.
+	 */
+	get rotationRad() {
+		return this._pixiSprite && this._pixiSprite.rotation;
+	}
+
+	/**
+	 * Returns the current rotation in degree.
+	 */
+	get rotationDeg() {
+		return this._pixiSprite && (this._pixiSprite.rotation / DEG_2_RAD);
+	}
+
+	/**
+	 * Shorthand for scaling the PIXI Sprite of this Entity.
+	 * The center point of the scaling can be set via the pivotPoint property.
+	 */
+	set scale(p) {
+		const spr = this._pixiSprite;
+		if (spr) {
+			spr.scale.x = p.x || spr.scale.x;
+			spr.scale.y = p.y || spr.scale.y;
+		}
+	}
+
+	/**
+	 * Retrieve the scaling on X and Y:
+	 * @example
+	 * this.scale -> {x: 2, y: 1.5}
+	 */
+	get scale() {
+		const spr = this._pixiSprite;
+		if (spr) {
+			return {
+				x: spr.scale.x,
+				y: spr.scale.y
+			};
+		}
+	}
+
+	/**
+	 * Shorthand for this.getPixiSprite().getLocalBounds().
+	 * Does not respect rotation.
+	 * See also https://pixijs.download/release/docs/PIXI.Sprite.html#getLocalBounds.
+	 * @returns {PIXI.Rectangle} the local bounding rectangle
+	 */
+	getLocalBounds() {
+		if (this._pixiSprite) {
+			return this._pixiSprite.getLocalBounds();
+		}
+	}
+
+	/**
+	 * Shorthand for this.getPixiSprite().getBounds().
+	 * Respects rotation.
+	 * See also https://pixijs.download/release/docs/PIXI.Sprite.html#getBounds.
+	 * @returns {PIXI.Rectangle} the bounding rectangle
+	 */
+	getBounds() {
+		if (this._pixiSprite) {
+			return this._pixiSprite.getBounds();
+		}
 	}
 
 	/**
