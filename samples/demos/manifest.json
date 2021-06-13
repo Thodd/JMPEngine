@@ -1,0 +1,23 @@
+{
+	"name": "Demos",
+
+	"startScreen": "./src/SelectScreen.js",
+
+	"w": 240,
+	"h": 144,
+
+	"scale": 2,
+
+	"bg": "0x1D2B53",
+
+	"skipIntro": true,
+
+	"assets": {
+		"spritesheets": {
+			"pixel": {
+				"url": "./img/1x1.png"
+			}
+		}
+	}
+
+}

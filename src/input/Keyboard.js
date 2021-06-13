@@ -105,6 +105,7 @@ function deregister(key, handler) {
 	if (!contains(handler, endOfFrameHandlers)) {
 		endOfFrameHandlers.push(handler);
 	}
+	return handler;
 }
 
 /**
@@ -113,6 +114,7 @@ function deregister(key, handler) {
  */
 function deregisterEndOfFrameHandler(handler) {
 	remove(handler, endOfFrameHandlers);
+	return handler;
 }
 
 //Define symbolic names (strings) as placeholders for Key-Values
