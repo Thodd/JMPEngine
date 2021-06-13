@@ -622,7 +622,7 @@ class RaceTrack extends Screen {
 					offset: Helper.choose([-1.25, - 1.5, -1.75, -2]),
 					w: 100,
 					h: 100,
-					scale: 0.006,
+					scaleFactor: 0.006,
 					collisionData: []
 				});
 				sprLeft.collisionData.push({
@@ -638,7 +638,7 @@ class RaceTrack extends Screen {
 					offset: Helper.choose([1.25, 1.5, 1.75, 2]),
 					w: 100,
 					h: 100,
-					scale: 0.006,
+					scaleFactor: 0.006,
 					collisionData: []
 				});
 				sprRight.collisionData.push({
@@ -659,7 +659,7 @@ class RaceTrack extends Screen {
 				w: 600,
 				// ... for depth scaling however we also need the height
 				h: 130,
-				scale: 0.01,
+				scaleFactor: 0.01,
 				collisionData: [{
 					x: -1.6,
 					w: 30 * 0.01
@@ -677,10 +677,10 @@ class RaceTrack extends Screen {
 				offset: Helper.choose([-1.25, - 1.5, -1.75]),
 				w: 100,
 				h: 100,
-				scale: 0.003*2,
+				scaleFactor: 0.003*2,
 				collisionData: []
 			});
-			let sprScaledWidth = sprLeft.w * sprLeft.scale;
+			let sprScaledWidth = sprLeft.w * sprLeft.scaleFactor;
 			sprLeft.collisionData.push({
 				x: sprLeft.offset + sprScaledWidth * Math.sign(sprLeft.offset),
 				w: sprScaledWidth
@@ -694,10 +694,10 @@ class RaceTrack extends Screen {
 				offset: Helper.choose([1.25, 1.5, 1.75]),
 				w: 100,
 				h: 100,
-				scale: 0.006,
+				scaleFactor: 0.006,
 				collisionData: []
 			});
-			let sprScaledWidth = sprRight.w * sprRight.scale;
+			let sprScaledWidth = sprRight.w * sprRight.scaleFactor;
 			sprRight.collisionData.push({
 				x: sprRight.offset + sprScaledWidth * Math.sign(sprRight.offset),
 				w: sprScaledWidth
@@ -712,10 +712,10 @@ class RaceTrack extends Screen {
 					offset: Helper.choose([-1.25, - 1.5, -1.75, -2, -2.5, -3, -4]),
 					w: 100,
 					h: 100,
-					scale: Helper.choose([0.003, 0.01, 0.008, 0.015]),
+					scaleFactor: Helper.choose([0.003, 0.01, 0.008, 0.015]),
 					collisionData: []
 				});
-				let sprScaledWidth = sprLeft.w * sprLeft.scale;
+				let sprScaledWidth = sprLeft.w * sprLeft.scaleFactor;
 				sprLeft.collisionData.push({
 					x: sprLeft.offset + sprScaledWidth * Math.sign(sprLeft.offset),
 					w: sprScaledWidth
@@ -729,10 +729,10 @@ class RaceTrack extends Screen {
 					offset: Helper.choose([1.25, 1.5, 1.75, 2, 2.5, 3, 4]),
 					w: 100,
 					h: 100,
-					scale: Helper.choose([0.003, 0.01, 0.008, 0.015]),
+					scaleFactor: Helper.choose([0.003, 0.01, 0.008, 0.015]),
 					collisionData: []
 				});
-				sprScaledWidth = sprRight.w * sprRight.scale;
+				sprScaledWidth = sprRight.w * sprRight.scaleFactor;
 				sprRight.collisionData.push({
 					x: sprRight.offset + sprScaledWidth * Math.sign(sprRight.offset),
 					w: sprScaledWidth
@@ -996,8 +996,8 @@ class RaceTrack extends Screen {
 					spriteX     = segment.p1.screen.x + (spriteScale * sprite.offset * Constants.ROAD_WIDTH * Constants.SCREEN_WIDTH/2);
 				}
 
-				let destW  = Math.floor((spriteWidth * spriteScale * Constants.SCREEN_WIDTH) * (sprite.scale * Constants.ROAD_WIDTH));
-				let destH  = Math.floor((spriteHeight * spriteScale * Constants.SCREEN_WIDTH) * (sprite.scale * Constants.ROAD_WIDTH));
+				let destW  = Math.floor((spriteWidth * spriteScale * Constants.SCREEN_WIDTH) * (sprite.scaleFactor * Constants.ROAD_WIDTH));
+				let destH  = Math.floor((spriteHeight * spriteScale * Constants.SCREEN_WIDTH) * (sprite.scaleFactor * Constants.ROAD_WIDTH));
 
 				let clipY = segment.clip;
 
