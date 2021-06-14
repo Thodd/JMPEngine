@@ -10,7 +10,25 @@ const asString = [
 	"0xFF004D", "0xFFA300", "0xFFEC27", "0x00E436",
 	"0x29ADFF", "0x83769c", "0xFF77A8", "0xFFCCAA"];
 
+const asRGBA = [];
+
+(function() {
+	asString.forEach((hex) => {
+		let bytes = hex.match(/0x([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})/);
+		asRGBA.push({
+			r: parseInt(bytes[1], 16),
+			g: parseInt(bytes[2], 16),
+			b: parseInt(bytes[3], 16),
+			a: 0xFF
+		});
+	});
+}());
+
+const count = asInt.length;
+
 export default {
 	asInt,
-	asString
+	asString,
+	asRGBA,
+	count
 };

@@ -14,6 +14,7 @@ class DemoScreen extends Screen {
 			y: 144 - 10,
 			text: `Press <c=${ColorPalette.asString[8]}>ESC</c> to go back.`
 		});
+		this._pressEscapeText.layer = 1;
 		this.add(this._pressEscapeText);
 	}
 

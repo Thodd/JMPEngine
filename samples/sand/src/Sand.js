@@ -31,7 +31,7 @@ let COLOR_INDEX = 8;
 const helpMessage =
 `<c=0x00e436>[^]</c> / <c=0x00e436>[v]</c>: Change color
 <c=0x00e436>[<]</c> / <c=0x00e436>[>]</c>: Move cloud
-<c=0x00e436>[S]</c>      : let it snow :)`;
+<c=0x00e436>[S]</c>      : make it rain`;
 
 const startMessage = `Press <c=0xff004d>[S]</c> to start!`;
 

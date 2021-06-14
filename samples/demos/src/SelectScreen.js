@@ -8,6 +8,7 @@ import ColorPalette from "./ColorPalette.js";
 
 // list of all demo screens
 import Static from "./static/Static.js";
+import Plasma from "./plasma/Plasma.js";
 
 const demoList = [
 	{
@@ -16,7 +17,7 @@ const demoList = [
 	},
 	{
 		name: "Plasma",
-		screenClass: "Plasma"
+		screenClass: Plasma
 	},
 	{
 		name: "Moire",
@@ -64,7 +65,7 @@ class SelectScreen extends Screen {
 		this.title = new BitmapText({
 			font: "font1",
 			color: COLOR_TEXT,
-			text: `Choose <c=${ColorPalette.asString[8]}>Demo</c>`
+			text: `Choose Demo: [<c=${ColorPalette.asString[8]}>ENTER</c>]`
 		});
 		this.title.x = (240 - this.title.getLocalBounds().width) / 2;
 		this.title.y = 8;

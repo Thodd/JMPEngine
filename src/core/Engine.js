@@ -15,7 +15,7 @@ import { detectPIXI, getPixiApp } from "./PIXIWrapper.js";
 
 let pixiApp;
 
-let startTime = 0;
+let startFrameTime = 0;
 
 let resetKeyboard = null;
 
@@ -24,7 +24,7 @@ let currentScreen = null;
 let nextScreen = null;
 
 // timing
-let last;
+let lastFrameTime;
 
 // performance stats
 let stats;
@@ -88,6 +88,7 @@ const gameloop = () => {
 		resetKeyboard();
 	}
 
+	lastFrameTime = window.performance.now();
 
 	// end perf trace
 	if (DebugMode.enabled) {
@@ -259,16 +260,19 @@ const Engine = {
 	},
 
 	/**
-	 * Returns the passed time in (milli)seconds since the start of the Engine.
-	 * @param {string} [res] the optional timer resolution, "ms" = milliseconds
+	 * Returns the passed time in milliseconds since the start of the Engine.
 	 */
-	now: (res) => {
+	nowMillis() {
 		// resolution in milliseconds
-		if (res == "ms") {
-			return last - startTime;
-		}
+		return lastFrameTime - startFrameTime;
+	},
+
+	/**
+	 * Returns the passed time in seconds since the start of the Engine.
+	 */
+	nowSeconds() {
 		// resolution in seconds
-		return (last - startTime) / 1000;
+		return (lastFrameTime - startFrameTime) / 1000;
 	},
 
 	/**
@@ -313,8 +317,8 @@ const Engine = {
 		// TODO: mouse support
 
 		// take initial timing
-		last = window.performance.now();
-		startTime = last;
+		lastFrameTime = window.performance.now();
+		startFrameTime = lastFrameTime;
 
 		// kickstart gameloop
 		pixiApp.ticker.add(gameloop);
