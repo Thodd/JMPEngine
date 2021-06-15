@@ -5,12 +5,13 @@ import Keys from "../../../src/input/Keys.js";
 import BitmapText from "../../../src/game/BitmapText.js";
 
 import ColorPalette from "./ColorPalette.js";
+import DemoScreen from "./DemoScreen.js";
 
 // list of all demo screens
 import Static from "./static/Static.js";
 import Plasma from "./plasma/Plasma.js";
 import Sand from "./sand/Sand.js";
-import DemoScreen from "./DemoScreen.js";
+import Sunset from "./sunset/Sunset.js";
 
 const demoList = [
 	{
@@ -24,6 +25,10 @@ const demoList = [
 	{
 		name: "Sand",
 		screenClass: Sand
+	},
+	{
+		name: "Sunset",
+		screenClass: Sunset
 	},
 	{
 		name: "Moire",

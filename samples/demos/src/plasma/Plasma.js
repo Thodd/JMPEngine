@@ -85,18 +85,8 @@ class Plasma extends DemoScreen {
 		}
 	}
 
-	cls() {
-		let c = COLORS[0];
-		// dithering
-		for (let i = 0; i < 4000; i++) {
-			let x = Math.random() * 240 | 0;
-			let y = Math.random() * 144 | 0;
-			this.px.set(x, y, c.r, c.g, c.b, c.a);
-		}
-	}
-
 	update() {
-		this.cls();
+		this.px.clearDither(4000, COLORS[0]);
 
 		let t = Engine.nowSeconds() / 2;
 
