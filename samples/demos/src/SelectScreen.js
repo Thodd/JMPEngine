@@ -9,6 +9,8 @@ import ColorPalette from "./ColorPalette.js";
 // list of all demo screens
 import Static from "./static/Static.js";
 import Plasma from "./plasma/Plasma.js";
+import Sand from "./sand/Sand.js";
+import DemoScreen from "./DemoScreen.js";
 
 const demoList = [
 	{
@@ -18,6 +20,10 @@ const demoList = [
 	{
 		name: "Plasma",
 		screenClass: Plasma
+	},
+	{
+		name: "Sand",
+		screenClass: Sand
 	},
 	{
 		name: "Moire",
@@ -111,7 +117,9 @@ class SelectScreen extends Screen {
 	activateDemo() {
 		if (!currentDemoSelected.screenInstance) {
 			currentDemoSelected.screenInstance = new currentDemoSelected.screenClass();
-			currentDemoSelected.screenInstance.setMenuScreen(this);
+			if (currentDemoSelected.screenInstance instanceof DemoScreen) {
+				currentDemoSelected.screenInstance.setMenuScreen(this);
+			}
 		}
 		Engine.screen = currentDemoSelected.screenInstance;
 	}

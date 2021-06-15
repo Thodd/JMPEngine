@@ -16,6 +16,11 @@
 		"spritesheets": {
 			"pixel": {
 				"url": "./img/1x1.png"
+			},
+			"happy": {
+				"url": "./src/sand/img/happy.png",
+				"w": 32,
+				"h": 16
 			}
 		}
 	}

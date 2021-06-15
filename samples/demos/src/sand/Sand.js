@@ -1,14 +1,14 @@
-import Manifest from "../../../src/assets/Manifest.js";
-import { fail } from "../../../src/utils/Log.js";
-import PIXI from "../../../src/core/PIXIWrapper.js";
-import Spritesheets from "../../../src/assets/Spritesheets.js";
-import Keyboard from "../../../src/input/Keyboard.js";
-import Keys from "../../../src/input/Keys.js";
-import Screen from "../../../src/game/Screen.js";
-import Entity from "../../../src/game/Entity.js";
-import BitmapText from "../../../src/game/BitmapText.js";
-import RNG from "../../../src/utils/RNG.js";
-import ParticleEmitter from "../../../src/game/ParticleEmitter.js";
+import Manifest from "../../../../src/assets/Manifest.js";
+import { fail } from "../../../../src/utils/Log.js";
+import PIXI from "../../../../src/core/PIXIWrapper.js";
+import Spritesheets from "../../../../src/assets/Spritesheets.js";
+import Keyboard from "../../../../src/input/Keyboard.js";
+import Keys from "../../../../src/input/Keys.js";
+import Entity from "../../../../src/game/Entity.js";
+import BitmapText from "../../../../src/game/BitmapText.js";
+import RNG from "../../../../src/utils/RNG.js";
+import ParticleEmitter from "../../../../src/game/ParticleEmitter.js";
+import DemoScreen from "../DemoScreen.js";
 
 const MAX_X = Manifest.get("/w");
 const MAX_Y = Manifest.get("/h");
@@ -35,7 +35,7 @@ const helpMessage =
 
 const startMessage = `Press <c=0xff004d>[S]</c> to start!`;
 
-class Sand extends Screen {
+class Sand extends DemoScreen {
 	constructor() {
 		super();
 
@@ -326,6 +326,7 @@ class Sand extends Screen {
 			this.cursor.playAnimation({ name: "blank" });
 		}
 
+		// physics simulation & particle collision
 		this.activeParticles.forEach((p) => {
 
 			// 1 particle below
@@ -333,10 +334,10 @@ class Sand extends Screen {
 				let dx = Math.random() > 0.5 ? 1 : -1;
 
 				// check [1]: 1 down, 1 horizontal randomly
-				if (this.isFree(p.x + dx, p.y + 1)) {
+				if (this.isFree(p.x + dx, p.y + 1) && this.isFree(p.x + dx, p.y)) {
 					p.x += dx;
 					p.y += 1;
-				} else if (this.isFree(p.x - dx, p.y + 1)){
+				} else if (this.isFree(p.x - dx, p.y + 1) && this.isFree(p.x - dx, p.y)){
 					// check [2]: 1 down, 1 horizontal (other direction)
 					p.x -= dx;
 					p.y += 1;
