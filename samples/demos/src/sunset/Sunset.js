@@ -5,7 +5,8 @@ import ColorPalette from "../ColorPalette.js";
 import DemoScreen from "../DemoScreen.js";
 
 const COLOR_SKY = ColorPalette.asRGBA[8];
-const COLOR_SUN = ColorPalette.asRGBA[9];
+const COLOR_SUN = ColorPalette.asRGBA[10];
+const COLOR_SUN_REFLECTION = ColorPalette.asRGBA[9];
 const COLOR_WATER = ColorPalette.asRGBA[2];
 
 function isSameColor(ca, cb) {
@@ -68,23 +69,36 @@ class Sunset extends DemoScreen {
 			let shift = 4 * Math.sin((this.frameCount + i));
 			let line = this.sunLines[i];
 			let startX = (line.x + shift) | 0;
-			this.px.line(startX, startY + i, startX + line.length -1, startY + i, COLOR_SUN);
+			this.px.line(startX, startY + i, startX + line.length -1, startY + i, COLOR_SUN_REFLECTION);
 		}
 		// waves
-		RNG.seed(1337);
-		for (let y = this.sun.y+1; y < 144; y++) {
+		RNG.seed(1234);
+		for (let y = this.sun.y+1; y < 144; y+=2) {
 			for (let x = 0; x < 240; x++) {
-				if (RNG.random() < 0.1) {
+				if (RNG.random() < 0.005) {
 					let length = (RNG.random() * 10) | 0;
-
-					if (length > 0) {
-						let startX = (x + this.frameCount*20|0) % 250 - 10;
-						this.px.line(startX, y, startX + length, y, COLOR_SKY);
-
-						// TODO: clip pixels outside the buffer (don't wrap!)
-						// TODO: loop for lines  ->  Check COLOR  ->  sun reflection is darker
-
+					if (RNG.random() < 0.5) {
+						length *= Math.sin(this.frameCount);
+					} else {
+						length *= -Math.sin(this.frameCount);
 					}
+					length += 4;
+					length |= 0;
+
+					let startX = (x + this.frameCount*4|0) % 250 - 10;
+
+					for (let dx = startX - length; dx < startX + length; dx++) {
+						let bgColor = this.px.get(dx, y);
+						let color = COLOR_SKY;
+						if (isSameColor(bgColor, COLOR_SUN_REFLECTION) || isSameColor(bgColor, COLOR_SUN)) {
+							color = COLOR_SUN;
+						}
+						this.px.set(dx, y, color);
+					}
+
+						// TODO: Size the waves based on distance to the bottom (log?)
+						// TODO: clip pixels outside the buffer (don't wrap!)
+
 				}
 			}
 		}
