@@ -1,5 +1,6 @@
 import PIXI from "../core/PIXIWrapper.js";
 import Entity from "./Entity.js";
+import { bresenham } from "../utils/M4th.js";
 
 /**
  * Special Class to render pixels.
@@ -66,6 +67,8 @@ import Entity from "./Entity.js";
 		this._pixels[off+1] = g;
 		this._pixels[off+2] = b;
 		this._pixels[off+3] = a != undefined ? a : 0xFF;
+
+		this._isDirty = true;
 	}
 
 	get(x, y) {
@@ -96,6 +99,8 @@ import Entity from "./Entity.js";
 				this._pixels[off+3] = a != undefined ? a : 0xFF;
 			}
 		}
+
+		this._isDirty = true;
 	}
 
 	clearDither(n, r, g, b, a) {
@@ -111,7 +116,7 @@ import Entity from "./Entity.js";
 		// but only fill the pixels which fulfil "dx^2 + dy^2 <= r^2"
 		for(let dy = -radius; dy <= radius; dy++) {
 			for(let dx = -radius; dx <= radius; dx++) {
-				if((dx * dx) + (dy * dy) <= (radius * radius) + (radius * 0.8)) {
+				if((dx * dx) + (dy * dy) <= (radius * radius) + (radius * 0.6)) {
 					this.set(centerX + dx, centerY + dy, r, g, b, a);
 				}
 			}
@@ -123,6 +128,17 @@ import Entity from "./Entity.js";
 			for (let dy = y; dy < y + h; dy++) {
 				this.set(dx, dy, r, g, b, a);
 			}
+		}
+	}
+
+	line(x0, y0, x1, y1, r, g, b, a) {
+		if (x0 == x1 && y0 == y1) {
+			return [];
+		}
+		let points = bresenham(x0, y0, x1, y1);
+		let len = points.length;
+		for (let p of points) {
+			this.set(p.x, p.y, r, g, b, a);
 		}
 	}
 }
