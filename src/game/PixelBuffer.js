@@ -131,6 +131,14 @@ import { bresenham } from "../utils/M4th.js";
 		}
 	}
 
+	ditherRect(x, y, w, h, n, r, g, b, a) {
+		for (let i = 0; i < n; i++) {
+			let dx = x + Math.random() * w | 0;
+			let dy = y + Math.random() * h | 0;
+			this.set(dx, dy, r, g, b, a);
+		}
+	}
+
 	line(x0, y0, x1, y1, r, g, b, a) {
 		if (x0 == x1 && y0 == y1) {
 			return [];
