@@ -11,7 +11,8 @@ const COLOR_WATER = ColorPalette.asRGBA[2];
 const COLOR_HORIZON = ColorPalette.asRGBA[4];
 
 function isSameColor(ca, cb) {
-	if (ca.r == cb.r &&
+	if (ca && cb && // null check pixel might be out of range
+		ca.r == cb.r &&
 		ca.g == cb.g &&
 		ca.b == cb.b &&
 		ca.a == cb.a) {

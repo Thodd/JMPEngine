@@ -21,6 +21,11 @@
 				"url": "./src/sand/img/happy.png",
 				"w": 32,
 				"h": 16
+			},
+			"track": {
+				"url": "./src/mode7/img/track.png",
+				"w": 16,
+				"h": 16
 			}
 		}
 	}

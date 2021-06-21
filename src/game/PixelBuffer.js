@@ -1,6 +1,8 @@
 import PIXI from "../core/PIXIWrapper.js";
 import Entity from "./Entity.js";
 import { bresenham } from "../utils/M4th.js";
+import Spritesheets from "../assets/Spritesheets.js";
+import { fail } from "../utils/Log.js";
 
 /**
  * Special Class to render pixels.
@@ -9,7 +11,7 @@ import { bresenham } from "../utils/M4th.js";
  * Use with caution.
  * Primitives, lines etc. should be rendered via a PIXI.Graphics instance.
  */
- class PixelBuffer extends Entity {
+class PixelBuffer extends Entity {
 	constructor({width=240, height=144}) {
 		super();
 
@@ -22,6 +24,14 @@ import { bresenham } from "../utils/M4th.js";
 		this.configSprite({
 			texture: this._texture
 		});
+	}
+
+	get width() {
+		return this._width;
+	}
+
+	get height() {
+		return this._height;
 	}
 
 	_updateRenderInfos() {
@@ -72,6 +82,10 @@ import { bresenham } from "../utils/M4th.js";
 	}
 
 	get(x, y) {
+		if (x < 0 || y < 0 || x >= this._width || y >= this._height) {
+			return ;
+		}
+
 		let off = 4 * (y * this._width + x);
 		return {
 			r: this._pixels[off+0],
@@ -149,6 +163,57 @@ import { bresenham } from "../utils/M4th.js";
 			this.set(p.x, p.y, r, g, b, a);
 		}
 	}
+
+	/**
+	 * Fast pixel sample copy operation.
+	 * Copies a pixel from the given source PixelBuffer 'buf'
+	 * to this PixelBuffer instance.
+	 *
+	 * @param {int} tx target x in this PixelBuffer
+	 * @param {int} ty target y in this PixelBuffer
+	 * @param {PixelBuffer} buf source buffer from where to copy
+	 * @param {int} sx source x in the source PixelBuffer 'buf'
+	 * @param {int} sy source y in the source PixelBuffer 'buf
+	 */
+	copyPixel(tx, ty, srcBuf, sx, sy) {
+		// check pixel bounds
+		if (sx < 0 || sy < 0 || sx >= srcBuf._width || sy >= srcBuf._height ||
+			tx < 0 || ty < 0 || tx >= this._width || ty >= this._height) {
+				return;
+		}
+		const t_off = 4 * (ty * this._width + tx);
+		const s_off = 4 * (sy * srcBuf._width + sx);
+		this._pixels[t_off + 0] = srcBuf._pixels[s_off + 0];
+		this._pixels[t_off + 1] = srcBuf._pixels[s_off + 1];
+		this._pixels[t_off + 2] = srcBuf._pixels[s_off + 2];
+		this._pixels[t_off + 3] = srcBuf._pixels[s_off + 3];
+	}
 }
+
+/**
+ * Creates a new PixelBuffer instance from the given spritesheet.
+ *
+ * @param {string} sheetName the name of the spritesheet
+ * @returns PixelBuffer
+ */
+PixelBuffer.fromSpritesheet = function(sheetName) {
+	const sheet = Spritesheets.getSheet(sheetName);
+
+	if (sheet) {
+		const cnvs = document.createElement("canvas");
+		const w = sheet.rawImage.width;
+		const h = sheet.rawImage.height;
+		cnvs.width = w;
+		cnvs.height = h;
+		const ctx = cnvs.getContext("2d");
+		ctx.drawImage(sheet.rawImage, 0, 0);
+
+		const px = new PixelBuffer({width: w, height: h});
+		px._pixels = ctx.getImageData(0, 0, w, h).data;
+		return px;
+	} else {
+		fail(`Spritesheet ${sheetName} not found!`, "PixelBuffer");
+	}
+};
 
 export default PixelBuffer;
