@@ -1,5 +1,8 @@
-import Spritesheets from "../../../../src/assets/Spritesheets.js";
 import PixelBuffer from "../../../../src/game/PixelBuffer.js";
+import Keyboard from "../../../../src/input/Keyboard.js";
+import Keys from "../../../../src/input/Keys.js";
+
+import ColorPalette from "../ColorPalette.js";
 import DemoScreen from "../DemoScreen.js";
 
 const WIDTH = 240;
@@ -11,6 +14,32 @@ class Mode7 extends DemoScreen {
 	constructor() {
 		super();
 
+		this.px = new PixelBuffer({width: 240, height: 144});
+		this.add(this.px);
+
+		this.frameCount = 0;
+
+		// this.camera = {
+		// 	x: -this.source.w / 2,
+		// 	y: this.source.h / 2,
+		// 	z: 15
+		// };
+		// this.horizon = 44;
+		// this.th = -320 * Math.PI;
+
+		this.camera = {
+			x: 0,
+			y: 0,
+			angle: 0
+		};
+
+		this.frustum = {
+			near: 0.01,
+			far: 0.1,
+			fov: Math.PI / 4
+		};
+
+
 		// we create a pixel buffer from a source texture to access single pixels
 		const sourceBuffer = PixelBuffer.fromSpritesheet("track");
 		this.source = {
@@ -19,54 +48,123 @@ class Mode7 extends DemoScreen {
 			h: sourceBuffer.height
 		};
 
-		this.px = new PixelBuffer({width: 240, height: 144});
-		this.add(this.px);
+		// this.source = this.createGrid(1024, 1024);
+	}
 
-		this.frameCount = 0;
+	createGrid(w, h) {
+		let grid = new PixelBuffer({
+			width: w,
+			height: h
+		});
+
+		for (let x = 0; x < w; x += 32) {
+			for (let y = 0; y < h; y += 1) {
+				grid.set(x + 0, y, ColorPalette.asRGBA[8]);
+				grid.set(x + 1, y, ColorPalette.asRGBA[8]);
+				grid.set(x - 1, y, ColorPalette.asRGBA[8]);
+
+				grid.set(y, x + 0, ColorPalette.asRGBA[12]);
+				grid.set(y, x + 1, ColorPalette.asRGBA[12]);
+				grid.set(y, x - 1, ColorPalette.asRGBA[12]);
+			}
+		}
+
+		return {
+			buffer: grid,
+			w: w,
+			h: h
+		};
 	}
 
 	update() {
-		this.frameCount++;
+		this.px.clear(ColorPalette.asRGBA[1]);
 
-		//The new coords that will be used to get the pixel on the texture
-		let dx, dy;
+		let far1 = {
+			x: this.camera.x + Math.cos(this.camera.angle - this.frustum.fov) * this.frustum.far,
+			y: this.camera.y + Math.sin(this.camera.angle - this.frustum.fov) * this.frustum.far
+		};
+		let far2 = {
+			x: this.camera.x + Math.cos(this.camera.angle + this.frustum.fov) * this.frustum.far,
+			y: this.camera.y + Math.sin(this.camera.angle + this.frustum.fov) * this.frustum.far
+		};
 
-		//z - the incrementable variable that beggins at -300 and go to 300, because
-		//the depth will be in the center of the HEIGHT
-		let z = 0;
+		let near1 = {
+			x: this.camera.x + Math.cos(this.camera.angle - this.frustum.fov) * this.frustum.near,
+			y: this.camera.y + Math.sin(this.camera.angle - this.frustum.fov) * this.frustum.near
+		};
+		let near2 = {
+			x: this.camera.x + Math.cos(this.camera.angle + this.frustum.fov) * this.frustum.near,
+			y: this.camera.y + Math.sin(this.camera.angle + this.frustum.fov) * this.frustum.near
+		};
 
-		//Scales just to control de scale of the printed pixel. It is not necessary
-		let scaleX = 16;
-		let scaleY = 16;
+		for (let y = 0; y < HEIGHT_HALF; y++) {
+			let sampleDepth = y / HEIGHT_HALF; // normalize
 
-		//Mode 7 - loop (Left Top to Down)
-		for(let y = 40; y < HEIGHT; y++){
+			let scanStart = {
+				x: (far1.x - near1.x) / sampleDepth + near1.x,
+				y: (far1.y - near1.y) / sampleDepth + near1.y
+			}
+			let scanEnd = {
+				x: (far2.x - near2.x) / sampleDepth + near2.x,
+				y: (far2.y - near2.y) / sampleDepth + near2.y
+			}
 
-			if (z > 0) {
-				dy = y / z; //The new dy coord generated
-				if (dy < 0) {
-					dy *= -1; //Control the dy because the z starting with a negative number
+			for (let x = 0; x < WIDTH; x++) {
+				let sampleWidth = x / WIDTH;
+				let sample = {
+					x: (scanEnd.x - scanStart.x) * sampleWidth + scanStart.x,
+					y: (scanEnd.y - scanStart.y) * sampleWidth + scanStart.y
+				};
+
+				sample.x %= 1;
+				sample.y %= 1;
+
+				let rgba;
+				if (isNaN(sample.x) || isNaN(sample.y)) {
+					rgba = ColorPalette.asRGBA[11]; // green
+				} else {
+					rgba = this.source.buffer.sample(sample.x, sample.y);
 				}
-				dy += this.frameCount/50;
-				dy *= scaleY; //Increase the size using scale
-				dy %= this.source.h; //Repeat the pixel avoiding get texture out of bounds
 
-				for(let x = 0; x < WIDTH; x++){
-
-					dx = (WIDTH_HALF - x) / z; //The new dx coord generated
-					if(dx < 0) {
-						dx *= -1; //Control the dx to dont be negative
-					}
-					dx *= scaleX; //Increase the size using scale
-					dx += this.frameCount/50;
-					dx %= this.source.w; //Repeat the pixel avoiding get texture out of bounds
-
-					//Set x,y of the view image with the dx,dy pixel in the texture
-					this.px.set(x, y, this.source.buffer.get(dx | 0, dy | 0));
+				if (rgba) {
+					this.px.set(x, y + HEIGHT_HALF, rgba);
+				} else {
+					// outside map, no sample found
+					this.px.set(x, y + HEIGHT_HALF, ColorPalette[0]);
 				}
 			}
-			//Increment depth
-			z++;
+		}
+
+		// camera controls
+		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
+			this.camera.angle -= 0.025;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
+			this.camera.angle += 0.025;
+		}
+		if (Keyboard.wasPressedOrIsDown(Keys.UP)) {
+			this.camera.x += Math.cos(this.camera.angle) * 0.0025;
+			this.camera.y += Math.sin(this.camera.angle) * 0.0025;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
+			this.camera.x -= Math.cos(this.camera.angle) * 0.0025;
+			this.camera.y -= Math.sin(this.camera.angle) * 0.0025;
+		}
+
+		if (Keyboard.wasPressedOrIsDown(Keys.Q)) {
+			this.frustum.near += 0.005;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.A)) {
+			this.frustum.near -= 0.005;
+		}
+
+		if (Keyboard.wasPressedOrIsDown(Keys.W)) {
+			this.frustum.far += 0.005;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.S)) {
+			this.frustum.far -= 0.005;
+		}
+
+		if (Keyboard.wasPressedOrIsDown(Keys.E)) {
+			this.frustum.fov += 0.005;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.D)) {
+			this.frustum.fov -= 0.005;
 		}
 	}
 }
