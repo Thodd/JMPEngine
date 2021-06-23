@@ -1,3 +1,6 @@
+import PIXI from "../../../../src/core/PIXIWrapper.js";
+import Entity from "../../../../src/game/Entity.js";
+import BitmapText from "../../../../src/game/BitmapText.js";
 import PixelBuffer from "../../../../src/game/PixelBuffer.js";
 import Keyboard from "../../../../src/input/Keyboard.js";
 import Keys from "../../../../src/input/Keys.js";
@@ -19,18 +22,16 @@ class Mode7 extends DemoScreen {
 
 		this.frameCount = 0;
 
-		// this.camera = {
-		// 	x: -this.source.w / 2,
-		// 	y: this.source.h / 2,
-		// 	z: 15
-		// };
-		// this.horizon = 44;
-		// this.th = -320 * Math.PI;
-
 		this.camera = {
-			x: 0,
-			y: 0,
+			x: 124,
+			y: 10,
 			angle: 0
+		};
+
+		this.projValues = {
+			focalLength: 399,
+			horizon: 73,
+			scale: 31
 		};
 
 		this.frustum = {
@@ -48,35 +49,123 @@ class Mode7 extends DemoScreen {
 			h: sourceBuffer.height
 		};
 
-		// this.source = this.createGrid(1024, 1024);
+		// help text
+		let bgGfx = new PIXI.Graphics();
+		bgGfx.beginFill(ColorPalette.asInt[1]);
+		bgGfx.drawRect(0, 48, 240, 28);
+		bgGfx.endFill();
+		this.helpBG = new Entity();
+		this.helpBG.layer = 1;
+		this.helpBG.configSprite({ replaceWith: bgGfx });
+		this.add(this.helpBG);
+
+		this.helpText = new BitmapText({
+			x: 4,
+			y: 50,
+			font: "font1",
+			text:
+`[<c=${ColorPalette.asString[8]}>Arrow-Keys</c>]: move & rotate
+ [<c=${ColorPalette.asString[8]}>Q</c>] / [<c=${ColorPalette.asString[8]}>A</c>]  : focal length
+ [<c=${ColorPalette.asString[8]}>E</c>] / [<c=${ColorPalette.asString[8]}>D</c>]  : camera height`
+		});
+		this.helpText.layer = 2;
+		this.add(this.helpText);
 	}
 
-	createGrid(w, h) {
-		let grid = new PixelBuffer({
-			width: w,
-			height: h
-		});
+	begin() {
+		super.begin();
 
-		for (let x = 0; x < w; x += 32) {
-			for (let y = 0; y < h; y += 1) {
-				grid.set(x + 0, y, ColorPalette.asRGBA[8]);
-				grid.set(x + 1, y, ColorPalette.asRGBA[8]);
-				grid.set(x - 1, y, ColorPalette.asRGBA[8]);
+		this.helpText.alpha = 1;
+		this.helpBG.alpha = 1;
 
-				grid.set(y, x + 0, ColorPalette.asRGBA[12]);
-				grid.set(y, x + 1, ColorPalette.asRGBA[12]);
-				grid.set(y, x - 1, ColorPalette.asRGBA[12]);
-			}
+		this.helpTimer = this.registerFrameEvent(() => {
+			this.helpFadeInterval = this.registerFrameEventInterval(() => {
+				this.helpText.alpha -= 0.1;
+				this.helpBG.alpha -= 0.1;
+
+				if (this.helpText.alpha < 0) {
+					this.cancelFrameEvent(this.helpFadeInterval);
+				}
+			}, 5);
+		}, 120);
+	}
+
+	end() {
+		super.end();
+
+		this.cancelFrameEvent(this.helpTimer);
+		this.cancelFrameEvent(this.helpFadeInterval);
+	}
+
+	/**
+	 * You can find a very good overview of the basic concept here:
+	 * https://fenixfox-studios.com/content/mode_7/
+	 */
+	update() {
+		// camera controls
+		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
+			this.camera.angle -= 0.025;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
+			this.camera.angle += 0.025;
 		}
 
-		return {
-			buffer: grid,
-			w: w,
-			h: h
-		};
+		if (Keyboard.wasPressedOrIsDown(Keys.UP)) {
+			this.camera.x += Math.sin(this.camera.angle) * 2;
+			this.camera.y -= Math.cos(this.camera.angle) * 2;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.DOWN)) {
+			this.camera.x -= Math.sin(this.camera.angle) * 2;
+			this.camera.y += Math.cos(this.camera.angle) * 2;
+		}
+
+		if (Keyboard.wasPressedOrIsDown(Keys.Q)) {
+			this.projValues.focalLength += 1;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.A)) {
+			this.projValues.focalLength -= 1;
+		}
+
+		if (Keyboard.wasPressedOrIsDown(Keys.E)) {
+			this.projValues.scale += 1;
+		} else if (Keyboard.wasPressedOrIsDown(Keys.D)) {
+			this.projValues.scale -= 1;
+		}
+
+		this.px.clear(ColorPalette.asRGBA[1]);
+
+		for(let y = -HEIGHT_HALF; y < HEIGHT_HALF; y++) {
+			let dy = y + HEIGHT_HALF;
+
+			if (y >= (-HEIGHT_HALF)) {
+				for (let x = -WIDTH_HALF; x < WIDTH_HALF; x++) {
+					let dx = x + WIDTH_HALF;
+
+					// projection
+					let px = x;
+					let py = y + this.projValues.focalLength;
+					let pz = y + this.projValues.horizon;
+
+					let space_x = px / pz;
+					let space_y = py / -pz;
+
+					// space -> screen -> sample coords
+					let screen_x = space_x * Math.cos(this.camera.angle) - space_y * Math.sin(this.camera.angle);
+					let screen_y = space_x * Math.sin(this.camera.angle) + space_y * Math.cos(this.camera.angle);
+					let sample_x = screen_x * this.projValues.scale + this.camera.x;
+					let sample_y = screen_y * this.projValues.scale + this.camera.y;
+
+					sample_x = (sample_x < 0 ? sample_x * -1 : sample_x) | 0;
+					sample_y = (sample_y < 0 ? sample_y * -1 : sample_y) | 0;
+
+					this.px.copyPixel(dx, dy, this.source.buffer, sample_x, sample_y);
+				}
+			}
+		}
 	}
 
-	update() {
+	/**
+	 * And another great implementation (and I believe more versatile) is by javidx9:
+	 * https://www.youtube.com/watch?v=ybLZyY655iY
+	 */
+	updateJavidx9() {
 		this.px.clear(ColorPalette.asRGBA[1]);
 
 		let far1 = {
@@ -97,8 +186,8 @@ class Mode7 extends DemoScreen {
 			y: this.camera.y + Math.sin(this.camera.angle + this.frustum.fov) * this.frustum.near
 		};
 
-		for (let y = 0; y < HEIGHT_HALF; y++) {
-			let sampleDepth = y / HEIGHT_HALF; // normalize
+		for (let y = 0; y < HEIGHT; y++) {
+			let sampleDepth = y / HEIGHT; // normalize
 
 			let scanStart = {
 				x: (far1.x - near1.x) / sampleDepth + near1.x,
@@ -127,17 +216,22 @@ class Mode7 extends DemoScreen {
 				}
 
 				if (rgba) {
-					this.px.set(x, y + HEIGHT_HALF, rgba);
+					this.px.set(x, y, rgba);
 				} else {
 					// outside map, no sample found
-					this.px.set(x, y + HEIGHT_HALF, ColorPalette[0]);
+					this.px.set(x, y, ColorPalette[0]);
 				}
 			}
 		}
 
 		// camera controls
 		if (Keyboard.wasPressedOrIsDown(Keys.LEFT)) {
-			this.camera.angle -= 0.025;
+			if (Keyboard.wasPressedOrIsDown(Keys.ALT)) {
+				this.camera.x -= Math.cos(this.camera.angle) * 0.0025;
+				this.camera.y += Math.sin(this.camera.angle) * 0.0025;
+			} else {
+				this.camera.angle -= 0.025;
+			}
 		} else if (Keyboard.wasPressedOrIsDown(Keys.RIGHT)) {
 			this.camera.angle += 0.025;
 		}
@@ -156,9 +250,9 @@ class Mode7 extends DemoScreen {
 		}
 
 		if (Keyboard.wasPressedOrIsDown(Keys.W)) {
-			this.frustum.far += 0.005;
+			this.frustum.far += 0.0025;
 		} else if (Keyboard.wasPressedOrIsDown(Keys.S)) {
-			this.frustum.far -= 0.005;
+			this.frustum.far -= 0.0025;
 		}
 
 		if (Keyboard.wasPressedOrIsDown(Keys.E)) {
