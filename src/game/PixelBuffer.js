@@ -95,16 +95,6 @@ class PixelBuffer extends Entity {
 		}
 	}
 
-	/**
-	 * Samples the given normalized point from the PixelBuffer.
-	 * @param {number} fx sampling point x, decimal value between 0..1
-	 * @param {number} fy sampling point y, decimal value between 0..1
-	 * @returns the sampled color at (fx, fy)
-	 */
-	sample(fx, fy) {
-		return this.get(fx * this._width | 0, fy * this._height - 1 | 0);
-	}
-
 	clear(r, g, b, a) {
 		if (typeof r === "object") {
 			let color = r;
