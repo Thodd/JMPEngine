@@ -10,17 +10,6 @@ const COLOR_SUN_REFLECTION = ColorPalette.asRGBA[9];
 const COLOR_WATER = ColorPalette.asRGBA[2];
 const COLOR_HORIZON = ColorPalette.asRGBA[4];
 
-function isSameColor(ca, cb) {
-	if (ca && cb && // null check pixel might be out of range
-		ca.r == cb.r &&
-		ca.g == cb.g &&
-		ca.b == cb.b &&
-		ca.a == cb.a) {
-			return true;
-		}
-	return false;
-}
-
 class Sunset extends DemoScreen {
 	constructor() {
 		super();
@@ -49,7 +38,7 @@ class Sunset extends DemoScreen {
 			let lineLength = 0;
 			for (let x = 0; x < 240; x++) {
 				let c = this.px.get(x, y);
-				if (isSameColor(c, COLOR_SUN)) {
+				if (ColorPalette.isSameColor(c, COLOR_SUN)) {
 					startX = startX || x; // track start X
 					lineLength++;
 				}
@@ -100,7 +89,7 @@ class Sunset extends DemoScreen {
 						for (let dx = startX - length; dx < startX + length; dx++) {
 							let bgColor = this.px.get(dx, y);
 							let color = COLOR_SKY;
-							if (isSameColor(bgColor, COLOR_SUN_REFLECTION) || isSameColor(bgColor, COLOR_SUN)) {
+							if (ColorPalette.isSameColor(bgColor, COLOR_SUN_REFLECTION) || ColorPalette.isSameColor(bgColor, COLOR_SUN)) {
 								color = COLOR_SUN;
 							}
 							this.px.set(dx, y, color);

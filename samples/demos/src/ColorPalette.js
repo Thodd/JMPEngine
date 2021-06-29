@@ -26,9 +26,21 @@ const asRGBA = [];
 
 const count = asInt.length;
 
+function isSameColor(ca, cb) {
+	if (ca && cb && // null check pixel might be out of range
+		ca.r == cb.r &&
+		ca.g == cb.g &&
+		ca.b == cb.b &&
+		ca.a == cb.a) {
+			return true;
+		}
+	return false;
+}
+
 export default {
 	asInt,
 	asString,
 	asRGBA,
-	count
+	count,
+	isSameColor
 };

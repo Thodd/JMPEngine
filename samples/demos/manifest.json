@@ -26,6 +26,9 @@
 				"url": "./src/mode7/img/track.png",
 				"w": 16,
 				"h": 16
+			},
+			"flag": {
+				"url": "./src/flag/img/flag.png"
 			}
 		}
 	}

@@ -13,6 +13,7 @@ import Plasma from "./plasma/Plasma.js";
 import Sand from "./sand/Sand.js";
 import Sunset from "./sunset/Sunset.js";
 import Mode7 from "./mode7/Mode7.js";
+import Flag from "./flag/Flag.js";
 
 const demoList = [
 	{
@@ -34,6 +35,10 @@ const demoList = [
 	{
 		name: "Mode7",
 		screenClass: Mode7
+	},
+	{
+		name: "Flag",
+		screenClass: Flag
 	}
 ]
 

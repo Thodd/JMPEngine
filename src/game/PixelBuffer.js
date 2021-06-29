@@ -186,6 +186,8 @@ class PixelBuffer extends Entity {
 		this._pixels[t_off + 1] = srcBuf._pixels[s_off + 1];
 		this._pixels[t_off + 2] = srcBuf._pixels[s_off + 2];
 		this._pixels[t_off + 3] = srcBuf._pixels[s_off + 3];
+
+		this._isDirty = true;
 	}
 }
 
